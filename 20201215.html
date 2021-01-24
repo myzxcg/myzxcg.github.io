@@ -1,0 +1,572 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" href="/img/favicon.ico">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Technology Blog">
+  <meta name="author" content="MYZXCG">
+  <meta name="keywords" content="Cyber Security">
+  <title>Windows https流量抓取与解密 - MYZ&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      
+        
+          
+        
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.22.0/themes/prism.min.css" />
+      
+      
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.22.0/plugins/line-numbers/prism-line-numbers.min.css" />
+      
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"myzxcg.com","root":"/","version":"1.8.6","typing":{"enable":true,"typeSpeed":80,"cursorChar":"_","loop":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"#"},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":"G-RLPQJE3YTB","tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"6Fu9AJHglaqmAVjpYMdOOBEi-MdYXbMMI","app_key":"0GcKEskKSnNfqn5dbNITfO4H","server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MYZ's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                
+                Blog
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                
+                Links
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/post.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Windows https流量抓取与解密">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      MYZXCG
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-15 22:03" pubdate>
+        2020年12月15日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      977 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      15
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Windows https流量抓取与解密</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：1 个月前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在获取目标Windows机器权限后，有时需要访问目标登陆过的管理后台。一般情况下，方法有很多。可以抓取浏览器密码，通过密码登陆（不推荐）；可以导出浏览器cookie，通过cookie登陆。</p>
+<p>但是在某些情况下，如后台还要校验user-agent或自定义了header头，并且网站时https的，这就需要解密流量了。</p>
+<p><strong>注：</strong>本文介绍的方法都需要目标机器的管理员权限。</p>
+<h2 id="SSLKEYLOGFILE-Rawcap"><a href="#SSLKEYLOGFILE-Rawcap" class="headerlink" title="SSLKEYLOGFILE+Rawcap"></a>SSLKEYLOGFILE+Rawcap</h2><ol>
+<li><p>在目标机器上执行</p>
+<p><code>setx SSLKEYLOGFILE  c:\windows\tasks\ssl.log</code></p>
+<p>或修改注册表<code>reg add &quot;HKCU\Environment&quot; /v &quot;SSLKEYLOGFILE&quot; /t REG_SZ /d &quot;c:\windows\tasks\ssl.log&quot; /f</code></p>
+<p>通过指定SSLKEYLOGFILE环境变量，设置浏览器与https网站通信的预主密钥文件生成的位置（为了解密https流量）。之后再将该文件导入Wireshark。（Wireshark–&gt;首选项–&gt;协议–&gt;TLS–&gt;设置(pre)-master-secert log filename）</p>
+<p><img src="images/image-20201215224132404.png" srcset="/img/loading.gif" alt=""></p>
+<p><strong>解释一下为什么通过预主密钥文件就能解密https流量：</strong></p>
+<blockquote>
+<p>https握手过程可以简单概述为非对称加密和对称加密两个阶段。非对称加密是为了协商对称加密所用的会话密钥。协商出会话密钥后，后面所有http流量都用该密钥进行加密。</p>
+<p>客户端和服务器端结合client random、server random、pre master secret（预主密钥）这三个值，并使用相同的算法生成对称加密阶段的会话密钥。这里导出的预主密钥文件就包含这三个值，所以掌握了这三个值就能得到会话密钥，也就能解出对应的https流量。</p>
+</blockquote>
+</li>
+<li><p>在目标机器上抓包，推荐一个windows上的抓包工具<a target="_blank" rel="noopener" href="https://www.netresec.com/?page=rawcap">Rawcap.exe</a>。</p>
+<p><code>rawcap.exe -s 60 192.168.1.2 ss.pcap</code> 这条命令意思是抓取192.168.1.2网卡上的流量，60秒后退出程序，并将抓取的流量存储到ss.pcap。</p>
+<p><img src="images/image-20201215225805673.png" srcset="/img/loading.gif" alt=""></p>
+</li>
+<li><p>之后将SSLKEYLOGFILE指定的文件ssl.log和ss.pcap拖回本地，导入wireshark即可解密https流量。（以freebuf为例）</p>
+<p><img src="images/image-20201215230226787.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="Mitmweb进行中间人攻击"><a href="#Mitmweb进行中间人攻击" class="headerlink" title="Mitmweb进行中间人攻击"></a>Mitmweb进行中间人攻击</h2><p>这种方式就相当于平常用burpsuite抓https流量，需要提前导入burpsuite的证书。</p>
+<p>如果要抓取https流量，那么需要先导入mitmweb的证书。</p>
+<h3 id="首先上传mitmweb到目标机器，再执行"><a href="#首先上传mitmweb到目标机器，再执行" class="headerlink" title="首先上传mitmweb到目标机器，再执行:"></a>首先上传mitmweb到目标机器，再执行:</h3><p><code>mitmweb.exe --web-host 172.19.211.213 --web-port 1234 --listen-host 172.19.211.213 --listen-port 8888 --no-web-open-browser</code></p>
+<p>在172.19.211.213的8888端口监听连接，mitmweb的web接口开在172.19.211.213的1234端口。</p>
+<p><img src="images/image-20201216110920719.png" srcset="/img/loading.gif" alt=""></p>
+<h3 id="安装证书"><a href="#安装证书" class="headerlink" title="安装证书:"></a>安装证书:</h3><p>通过172.19.211.213:8888代理访问<a target="_blank" rel="noopener" href="http://mitm.it/cert/pem，下载证书。">http://mitm.it/cert/pem，下载证书。</a><br><strong>静默安装证书 ：</strong><code>certutil -addstore &quot;Root&quot; &quot;C:\Users\Administrator\Desktop\1.pem&quot;</code></p>
+<p><img src="images/image-20201216110840441.png" srcset="/img/loading.gif" alt=""></p>
+<p><strong>Tips:</strong> 在选择mitmproxy的证书时，不要选mitmproxy-ca-cert.p12，因为用certutil安装时，需要密码，但密码又不知道。有知道解决方法的师傅可以指点一下。</p>
+<p>导入成功后:</p>
+<p><img src="images/image-20201216111458799.png" srcset="/img/loading.gif" alt=""></p>
+<h3 id="设置代理"><a href="#设置代理" class="headerlink" title="设置代理"></a>设置代理</h3><p>开启代理服务器后，需要设置代理。</p>
+<p>有两种方法:</p>
+<h4 id="一种是直接全局设置"><a href="#一种是直接全局设置" class="headerlink" title="一种是直接全局设置:"></a>一种是直接全局设置:</h4><p>启用本地IE代理设置，值为1表示启用</p>
+<p><code>reg add &quot;HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings&quot; /v ProxyEnable /t REG_DWORD /d 1 /f</code></p>
+<p>设置代理服务器地址和端口号</p>
+<p><code>reg add &quot;HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings&quot; /v ProxyServer /d &quot;172.19.211.213:8888&quot; /f</code></p>
+<h4 id="另一种是通过pac，设置指定的网站走代理"><a href="#另一种是通过pac，设置指定的网站走代理" class="headerlink" title="另一种是通过pac，设置指定的网站走代理"></a>另一种是通过pac，设置指定的网站走代理</h4><p><code>reg add &quot;HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings&quot; /v AutoConfigURL /t REG_SZ /d &quot;http://ip/11.pac&quot; /f</code></p>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;pac文件，仅代理*.xxx.com
+function FindProxyForURL(url, host) &#123;
+   if (shExpMatch(url,&quot;*.xxx.com&#x2F;*&quot;)) &#123;
+     return &quot;PROXY 172.19.211.213:8888&quot;;
+   &#125;
+   return &quot;DIRECT&quot;; 
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+
+<p>设置好代理后访问:<a target="_blank" rel="noopener" href="http://172.19.211.213:1234">http://172.19.211.213:1234</a> 即可查看或修改流量。(真实环境中可以开socks代理访问)</p>
+<p><img src="images/image-20201216111151347.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读:"></a>推荐阅读:</h2><p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000021559557?_ea=29659396">HTTPS详解二：SSL / TLS 工作原理和详细握手过程_个人文章 - SegmentFault 思否</a></p>
+</li>
+</ol>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/windows/">windows</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/20210116.html">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">AutoIt SendKey绕过云盾堡垒机两步验证</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/20201213.html">
+                        <span class="hidden-mobile">Cobalt Strike去特征：配置Nginx反向代理、CDN与Cloudflare Worker</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.waitElementVisible('gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', function () {
+        var gitalk = new Gitalk({
+          clientID: 'e0d54f3fea956b581e05',
+          clientSecret: '1afd7215dc03a3fa856eb90ad3269d4e9b28a68e',
+          repo: 'myzxcg.github.io',
+          owner: 'myzxcg',
+          admin: ["myzxcg"],
+          id: 'baa641b341c780c3adc073e8548dce43',
+          language: 'zh-CN',
+          labels: ["Gitalk"],
+          perPage: 10,
+          pagerDirection: 'last',
+          createIssueManually: true,
+          distractionFreeMode: false
+        });
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+    
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+    <!-- Google gtag.js -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RLPQJE3YTB"></script>
+    <script defer>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-RLPQJE3YTB');
+    </script>
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

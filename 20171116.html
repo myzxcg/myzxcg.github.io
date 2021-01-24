@@ -1,0 +1,593 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" href="/img/favicon.ico">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Technology Blog">
+  <meta name="author" content="MYZXCG">
+  <meta name="keywords" content="Cyber Security">
+  <title>文件上传绕过 - MYZ&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      
+        
+          
+        
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.22.0/themes/prism.min.css" />
+      
+      
+        <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.22.0/plugins/line-numbers/prism-line-numbers.min.css" />
+      
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"myzxcg.com","root":"/","version":"1.8.6","typing":{"enable":true,"typeSpeed":80,"cursorChar":"_","loop":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":3},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"#"},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":null,"google":null,"gtag":"G-RLPQJE3YTB","tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"6Fu9AJHglaqmAVjpYMdOOBEi-MdYXbMMI","app_key":"0GcKEskKSnNfqn5dbNITfO4H","server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>MYZ's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                
+                Blog
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                
+                Links
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/post.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="文件上传绕过">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-author" aria-hidden="true"></i>
+      MYZXCG
+    </span>
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2017-11-16 21:37" pubdate>
+        2017年11月16日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.9k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      26
+       分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- LeanCloud 统计文章PV -->
+      <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="leancloud-page-views"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">文件上传绕过</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：3 年前
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h2 id="文件上传校验姿势"><a href="#文件上传校验姿势" class="headerlink" title="文件上传校验姿势"></a>文件上传校验姿势</h2><ul>
+<li>客户端javascript校验（一般只校验后缀名）</li>
+<li>服务端校验<ul>
+<li>文件头content-type字段校验（image/gif）</li>
+<li>文件内容头校验（GIF89a）</li>
+<li>后缀名黑名单校验</li>
+<li>后缀名白名单校验</li>
+<li>自定义正则校验</li>
+</ul>
+</li>
+<li>WAF设备校验（根据不同的WAF产品而定）</li>
+</ul>
+<h2 id="文件内容检测"><a href="#文件内容检测" class="headerlink" title="文件内容检测"></a>文件内容检测</h2><p>有些waf不会防asp/php/jsp后缀的文件，但是他会检测里面的内容</p>
+<h3 id="例1"><a href="#例1" class="headerlink" title="例1:"></a>例1:</h3><ol>
+<li>先上传一个内容为木马的txt后缀文件，因为后缀名的关系没有检验内容</li>
+<li>然后再上传一个.php的文件，内容为<?php Include(“上传的txt文件路径”);?><br>此时，这个php文件就会去引用txt文件的内容，从而绕过校验，下面列举包含的语法：<div class="code-wrapper"><pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span> <span class="token keyword">Include</span><span class="token punctuation">(</span><span class="token double-quoted-string string">"上传的txt文件路径"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token delimiter important">?></span></span>
+ASP
+<span class="token comment">&lt;!--#include file="上传的txt文件路径" --></span>
+JSP
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">jsp:</span>inclde</span> <span class="token attr-name">page</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>上传的txt文件路径<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+or
+&lt;%@include file="上传的txt文件路径"%><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div>
+
+</li>
+</ol>
+<h3 id="例2"><a href="#例2" class="headerlink" title="例2:"></a>例2:</h3><p>已测:<br>上传文件:shell.php</p>
+<div class="code-wrapper"><pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+<span class="token keyword">include</span> <span class="token single-quoted-string string">'phar://test.rar/test.txt'</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div>
+
+<p>上传文件:test.txt<br><code>&lt;?php phpinfo(); ?&gt;</code><br>将test.txt添加成压缩文件test.rar<br>访问shell.php就可以执行php代码<br>修改压缩文件后缀为zip,phar,rar.都可以(已测)</p>
+<h3 id="例3"><a href="#例3" class="headerlink" title="例3:"></a>例3:</h3><p>如果文件内容检测设置的比较严格，那么上传攻击将变得非常困难。以最常见的图片类型内容检测举例。<br>文件幻数检测:<br>JPG ： FF D8 FF E0 00 10 4A 46 49 46<br>GIF ： 47 49 46 38 39 61 (GIF89a)<br>PNG： 89 50 4E 47<br>绕过方法:<br>在文件幻数后面加上自己的一句话木马就行了。<br>或者直接将代码插入到完整的图片中(一句话图片)</p>
+<h2 id="文件后缀名绕过"><a href="#文件后缀名绕过" class="headerlink" title="文件后缀名绕过"></a>文件后缀名绕过</h2><p>前提：黑名单校验（一般有个专门的 blacklist 文件，里面会包含常见的危险脚本文件）<br>绕过方法:<br>1.找黑名单扩展名的漏网之鱼 - 比如 asa 和 cer 之类<br>2.可能存在大小写绕过漏洞 - 比如 aSp 和 pHp 之类<br>能被解析的文件扩展名列表：<br>jsp jspx jspf<br>asp asa cer aspx<br>php phtml php3 php4 php5 pwml<br>exe exee</p>
+<h2 id="配合服务器解析漏洞"><a href="#配合服务器解析漏洞" class="headerlink" title="配合服务器解析漏洞"></a>配合服务器解析漏洞</h2><h3 id="配合操作系统文件命令规则"><a href="#配合操作系统文件命令规则" class="headerlink" title="配合操作系统文件命令规则"></a>配合操作系统文件命令规则</h3><p>1.上传不符合windows文件命名规则的文件名<br>test.asp.<br>test.asp._<br>test.asp(空格)<br>test.php:1.jpg<br>test.php::$DATA<br>shell.php::$DATA…….<br>会被windows系统自动去掉不符合规则符号后面的内容<br>需要注意此种方法仅对window有效，Unix/Linux系统没有这个特性</p>
+<p>2.linux下后缀名大小写<br>在linux下，如果上传php不被解析，可以试试上传pHp后缀的文件名</p>
+<h2 id="WAF绕过"><a href="#WAF绕过" class="headerlink" title="WAF绕过"></a>WAF绕过</h2><ol>
+<li><p>垃圾数据<br>有些主机WAF软件为了不影响web服务器的性能，会对校验的用户数据设置大小上限，比如1M。此种情况可以构造一个大文件，前面1M的内容为垃圾内容，后面才是真正的木马内容，便可以绕过WAF对文件内容的校验.<br><img src="images/bypass1.png" srcset="/img/loading.gif" alt=""><br>当然也可以将垃圾数据放在数据包最开头，这样便可以绕过对文件名的校验。<br><img src="images/bypass2.png" srcset="/img/loading.gif" alt=""><br>可以将垃圾数据加上Content-Disposition参数后面，参数内容过长，可能会导致waf检测出错</p>
+</li>
+<li><p>针对早期版本安全狗，可以多加一个filename<br><img src="images/bypass3.png" srcset="/img/loading.gif" alt=""><br>或者将filename换位置，在IIS6.0下如果我们换一种书写方式，把filename放在其他地方：<br><img src="images/bypass4.png" srcset="/img/loading.gif" alt=""></p>
+</li>
+<li><p>POST/GET<br>有些WAF的规则是：如果数据包为POST类型，则校验数据包内容。<br>此种情况可以上传一个POST型的数据包，抓包将POST改为GET。</p>
+</li>
+<li><p>利用waf本身缺陷<br>(1) 删除实体里面的content-Type字段<br>第一种是删除Content整行，第二种是删除C后面的字符。删除掉ontent-Type: image/jpeg只留下c，将.php加c后面即可，但是要注意额，双引号要跟着c.php</p>
+<div class="code-wrapper"><pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">正常包：Content-Disposition: form-data; name&#x3D;&quot;image&quot;; filename&#x3D;&quot;085733uykwusqcs8vw8wky.png&quot;Content-Type: image&#x2F;png
+构造包：Content-Disposition: form-data; name&#x3D;&quot;image&quot;; filename&#x3D;&quot;085733uykwusqcs8vw8wky.png
+C.php&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div>
+<p>(2) 删除content-Description字段里的空格(就是冒号后面的)<br>(3) 增加一个空格导致安全狗被绕过案列:<br>Content-Type: multipart/form-data; boundary=————————4714631421141173021852555099<br>尝试在boundary后面加个空格或者其他可被正常处理的字符：<br>boundary= —————————47146314211411730218525550<br>(4) 修改Content-Disposition字段值的大小写<br>(5) Boundary边界不一致<br>每次文件上传时的Boundary边界都是一致的<br><img src="images/bypass5.png" srcset="/img/loading.gif" alt=""><br>但如果容器在处理的过程中并没有严格要求一致的话可能会导致一个问题，两段Boundary不一致使得waf认为这段数据是无意义的，可是容器并没有那么严谨:<br>Win2k3 + IIS6.0 + ASP<br><img src="images/bypass6.png" srcset="/img/loading.gif" alt=""><br>(6) 文件名处回车<br><img src="images/bypass7.png" srcset="/img/loading.gif" alt=""><br>(7) 多个Content-Disposition<br>在IIS的环境下，上传文件时如果存在多个Content-Disposition的话，IIS会取第一个Content-Disposition中的值作为接收参数，而如果waf只是取最后一个的话便会被绕过，Win2k8 + IIS7.0 + PHP<br><img src="images/bypass8.png" srcset="/img/loading.gif" alt=""><br>(8) 文件重命名绕过<br>如果web程序会将filename除了扩展名的那段重命名的话，那么还可以构造更多的点、符号等等。<br><img src="images/bypass9.png" srcset="/img/loading.gif" alt=""><br>(9) 特殊的长文件名绕过<br>文件名使用非字母数字，比如中文等最大程度的拉长，不行的话再结合一下其他的特性进行测试：<br>shell.asp;王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王.jpg</p>
+</li>
+</ol>
+<h4 id="文件加载检测"><a href="#文件加载检测" class="headerlink" title="文件加载检测"></a>文件加载检测</h4><p>这个是最变态的检测了，一般是调用API 或函数去进行文件加载测试，常见的是图像渲染测试，再变态点的甚至是进行二次渲染(后面会提到)。对渲染/加载测试的攻击方式是代码注入绕过；对二次渲染的攻击方式是攻击文件加载器自身。</p>
+<p>文件校验的防御姿势:</p>
+<ol>
+<li>文件扩展名服务端白名单校验。</li>
+<li>文件内容服务端校验。</li>
+<li>上传文件重命名</li>
+<li>隐藏上传文件路径</li>
+</ol>
+<p>以上几点，可以防御绝大多数上传漏洞，但是需要跟服务器容器结合起来。如果解析漏洞依然存在，那么没有绝对的安全。</p>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><h3 id="00截断绕过"><a href="#00截断绕过" class="headerlink" title="%00截断绕过"></a>%00截断绕过</h3><div class="code-wrapper"><pre class="line-numbers language-php" data-language="php"><code class="language-php">Name <span class="token operator">=</span> <span class="token function">getname</span><span class="token punctuation">(</span>http requests<span class="token punctuation">)</span><span class="token comment">//假如这一步获取到的文件名是dama.asp .jpg</span>
+Type <span class="token operator">=</span> <span class="token function">gettype</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token comment">//而在该函数中，是从后往前扫描文件扩展名，所以判断为jpg文件</span>
+<span class="token keyword">If</span><span class="token punctuation">(</span>type <span class="token operator">==</span> jpg<span class="token punctuation">)</span>
+<span class="token function">SaveFileToPath</span><span class="token punctuation">(</span>UploadPath<span class="token punctuation">.</span>name <span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token comment">//但在这里却是以0x00作为文件名截断，最后以dama.asp存入路径里</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div>
+<p>操作方法：上传dama.jpg，Burp抓包，将文件名改为dama.php%00.jpg，选中%00，进行url-decode。</p>
+<h3 id="htaccess-绕过限制上传"><a href="#htaccess-绕过限制上传" class="headerlink" title=".htaccess 绕过限制上传"></a>.htaccess 绕过限制上传</h3><p>隐藏后门，上传这个文件</p>
+<div class="code-wrapper"><pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">&lt;FilesMatch &quot;_php.gif&quot;&gt;
+ SetHandler application&#x2F;x-httpd-php
+&lt;&#x2F;FilesMatch&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div>
+<p>这串代码，意思就是但是包含evil.gif字符串的文件名的文件，都将以application/x-httpd-php的（就是php格式）格式运行.<br>.htaccess的好处是:</p>
+<ol>
+<li>如果可以上传这个文件，上传之后就可以绕过限制上传后门。</li>
+<li>用于隐藏后门，不容易被发现。</li>
+</ol>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">文件上传</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/20180313.html">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">PHP mail()函数漏洞总结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/20171110.html">
+                        <span class="hidden-mobile">PHP反序列化分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments">
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.waitElementVisible('gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', function () {
+        var gitalk = new Gitalk({
+          clientID: 'e0d54f3fea956b581e05',
+          clientSecret: '1afd7215dc03a3fa856eb90ad3269d4e9b28a68e',
+          repo: 'myzxcg.github.io',
+          owner: 'myzxcg',
+          admin: ["myzxcg"],
+          id: '191ef5276e5e514ffd3a9006136b13bb',
+          language: 'zh-CN',
+          labels: ["Gitalk"],
+          perPage: 10,
+          pagerDirection: 'last',
+          createIssueManually: true,
+          distractionFreeMode: false
+        });
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- LeanCloud 统计PV -->
+        <span id="leancloud-site-pv-container" style="display: none">
+            总访问量 
+            <span id="leancloud-site-pv"></span>
+             次
+          </span>
+      
+      
+        <!-- LeanCloud 统计UV -->
+        <span id="leancloud-site-uv-container" style="display: none">
+            总访客数 
+            <span id="leancloud-site-uv"></span>
+             人
+          </span>
+      
+
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+    
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+    <!-- Google gtag.js -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RLPQJE3YTB"></script>
+    <script defer>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-RLPQJE3YTB');
+    </script>
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>
