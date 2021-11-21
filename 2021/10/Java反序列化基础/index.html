@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+    <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
+    <meta charset="UTF-8" />
+
+    <meta name="generator" content="Hugo 0.88.1" /><meta name="theme-color" content="#16171d" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <title>Java反序列化基础 | MYZXCG</title>
+
+    <link rel="stylesheet" href="/css/meme.min.ee7d92038178eda958210f69458541e2686ada11055b93762d6d324f2acc47c5.css"/>
+
+    
+    
+        <script src="/js/meme.min.4194bf2034241e3757fbbbf5fe4db43d0ff17c81f4496e6bc931504f0978cbd2.js"></script>
+
+    
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
+        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
+
+    <meta name="author" content="myzxcg" /><meta name="description" content="基本概念 序列化就是把对象转换成字节流，便于保存在内存、文件、数据库中，也便于进行网络……" />
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="MYZXCG" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="MYZXCG" />
+    <meta name="msapplication-starturl" content="../../../" />
+    <meta name="msapplication-TileColor" content="#603cba" />
+    <meta name="msapplication-TileImage" content="../../../icons/mstile-150x150.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+
+    
+    
+
+    
+    <link rel="canonical" href="https://myzxcg.com/2021/10/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9F%BA%E7%A1%80/" />
+    
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "datePublished": "2021-10-24T16:02:45+08:00",
+        "dateModified": "2021-11-20T14:55:47+08:00",
+        "url": "https://myzxcg.com/2021/10/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9F%BA%E7%A1%80/",
+        "headline": "Java反序列化基础",
+        "description": "基本概念 序列化就是把对象转换成字节流，便于保存在内存、文件、数据库中，也便于进行网络……",
+        "inLanguage" : "zh-CN",
+        "articleSection": "posts",
+        "wordCount":  4909 ,
+        "image": ["https://myzxcg.com/images/1635062981.png","https://myzxcg.com/images/1635063222.png","https://myzxcg.com/images/1635063270.png","https://myzxcg.com/images/1635063331.png","https://myzxcg.com/images/1635063661.png","https://myzxcg.com/images/1635063817.png","https://myzxcg.com/images/1635063859.png","https://myzxcg.com/images/1635063875.png"],
+        "author": {
+            "@type": "Person",
+            "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
+            "email": "myzx.xcg@gmail.com",
+            "image": "https://myzxcg.com/avatar.png",
+            "url": "https://myzxcg.com/",
+            "name": "myzxcg"
+        },
+        "license": "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)",
+        "publisher": {
+            "@type": "Organization",
+            "name": "MYZXCG",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://myzxcg.com/icons/favicon.ico"
+            },
+            "url": "https://myzxcg.com/"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebSite",
+            "@id": "https://myzxcg.com/"
+        }
+    }
+</script>
+
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+
+
+<meta name="twitter:site" content="@myzxcg" />
+<meta name="twitter:creator" content="@myzxcg" />
+
+    
+
+
+
+<meta property="og:title" content="Java反序列化基础" />
+<meta property="og:description" content="基本概念 序列化就是把对象转换成字节流，便于保存在内存、文件、数据库中，也便于进行网络……" />
+<meta property="og:url" content="https://myzxcg.com/2021/10/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9F%BA%E7%A1%80/" />
+<meta property="og:site_name" content="MYZXCG" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/1635062981.png" />
+<meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2021-10-24T16:02:45&#43;08:00" />
+    <meta property="article:modified_time" content="2021-11-20T14:55:47&#43;08:00" />
+    
+    <meta property="article:section" content="posts" />
+
+
+        <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
+
+        
+
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y0LZRMN44V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-Y0LZRMN44V');
+    </script>
+
+
+
+
+    
+    
+
+    
+</head>
+
+    <body>
+        <div class="container">
+            
+    <header class="header">
+        
+            <div class="header-wrapper">
+                <div class="header-inner single">
+                    
+    <div class="site-brand">
+        
+            <a href="/" class="brand">MYZXCG</a>
+        
+    </div>
+
+                    <nav class="nav">
+    <ul class="menu" id="menu">
+        
+            
+        
+        
+        
+        
+            
+                <li class="menu-item"><a href="/archives/"><span class="menu-item-name">文章</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/tags/"><span class="menu-item-name">标签</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/about/"><span class="menu-item-name">关于</span></a>
+                </li>
+            
+        
+            
+                
+                    
+                    
+                
+            
+        
+            
+                
+            
+        
+    </ul>
+</nav>
+
+                    
+                </div>
+            </div>
+            
+    <input type="checkbox" id="nav-toggle" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle"></label>
+    <label for="nav-toggle" class="nav-curtain"></label>
+
+
+        
+    </header>
+
+
+
+
+            
+            
+    <main class="main single" id="main">
+    <div class="main-inner">
+
+        
+
+        <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
+
+            <h1 class="post-title p-name">Java反序列化基础</h1>
+
+            
+
+            
+                
+            
+
+            
+                
+
+<div class="post-meta">
+    
+        
+        <time datetime="2021-10-24T16:02:45&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2021.10.24</time>
+    
+    
+    
+    
+        
+        
+        
+            
+        
+    
+    
+    
+        
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;10&nbsp;分钟</span>
+    
+
+   
+    
+
+    
+    
+</div>
+
+            
+
+            <nav class="contents">
+  <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
+    <li><a id="contents:基本概念" href="#基本概念">基本概念</a>
+      <ol>
+        <li><a id="contents:示例" href="#示例">示例</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:java-反射" href="#java-反射">Java 反射</a>
+      <ol>
+        <li><a id="contents:class对象" href="#class对象">Class<strong>对象</strong></a></li>
+        <li><a id="contents:反射调用" href="#反射调用">反射调用</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:java-动态代理" href="#java-动态代理">Java 动态代理</a>
+      <ol>
+        <li><a id="contents:静态代理" href="#静态代理">静态代理</a></li>
+        <li><a id="contents:动态代理" href="#动态代理">动态代理</a></li>
+        <li><a id="contents:动态代理生成的proxyx类分析" href="#动态代理生成的proxyx类分析">动态代理生成的$ProxyX类分析</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:参考" href="#参考">参考</a></li>
+  </ol>
+</nav><div class="post-body e-content">
+                <h2 id="基本概念"><a href="#基本概念" class="anchor-link">#</a><a href="#contents:基本概念" class="headings">基本概念</a></h2>
+<blockquote>
+<p>序列化就是把对象转换成字节流，便于保存在内存、文件、数据库中，也便于进行网络传输。同时可以在另一个程序中对字节流数据进行反序列化恢复对象，以此实现多平台之间的通信、对象持久化存储。</p>
+</blockquote>
+<ul>
+<li>
+<p><strong>序列化</strong></p>
+<p>把Java对象转换为字节序列的过程。ObjectOutputStream类的writeObject()方法可以实现序列化，它负责把一个Java对象写入一个字节流。</p>
+<ol>
+<li>
+<p>实现<code>java.io.Serializable</code>接口的类才可被序列化，且所有属性必须是可序列化的。（用transient或static关键字修饰的属性不能序列化）</p>
+</li>
+<li>
+<p>Serializable接口还有一个比较常见的子类Externalizable，它需要自己实现读写方法<code>readExternal()</code>和<code>writeExternal()</code>。</p>
+</li>
+</ol>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzI1NDg4MTIxMw==&amp;mid=2247484038&amp;idx=1&amp;sn=0c1509ed5878d0aea786348acce0e895" target="_blank" rel="noopener">序列化数据的分析（包含SUID计算）</a></p>
+</li>
+<li>
+<p><strong>反序列化</strong></p>
+<p>把字节序列恢复为Java对象的过程。ObjectInputStream类的readObject()方法用于反序列化。</p>
+<p><em><strong>Tips:</strong></em> 反序列化需要被反序列化的类必须存在且<code>serialVersionUID</code>值必须一致。序列化类的serialVersionUID静态变量用于标识Java类的序列化&quot;版本&quot;。如果序列化类未显式声明 serialVersionUID，则序列化运行时将基于该类的各个方面计算该类的默认serialVersionUID值。</p>
+<p>通过分析跟踪源码发现，在反序列化过程中只通过反射创建反序列化的类的对象以及对该对象属性进行赋值操作，不调用对象的任何方法（包括构造方法，重写的readObject()方法除外）。如果该对象的属性的值是一个类的话，要求这个类必须是可序列化的（实现了Serializable接口），因为它会在给这个属性赋值的时候再次对该类进行反序列化。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">ObjectInputStream</span><span class="o">.</span><span class="na">readObject</span>
+<span class="n">ObjectInputStream</span><span class="o">.</span><span class="na">readUnshared</span>
+<span class="n">XMLDecoder</span><span class="o">.</span><span class="na">readObject</span>
+<span class="n">Yaml</span><span class="o">.</span><span class="na">load</span>
+<span class="n">XStream</span><span class="o">.</span><span class="na">fromXML</span>
+<span class="n">ObjectMapper</span><span class="o">.</span><span class="na">readValue</span>
+<span class="n">JSON</span><span class="o">.</span><span class="na">parseObject</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>解释一下重点部分：</p>
+<ol>
+<li>readNonProxyDesc()中调用resolveClass()函数根据需要反序列化的类的名字获取它的Class对象。很多防御方法就是在resolveClass方法中实现对反序列化类的校验。</li>
+<li>在readOrdinaryObject()函数中，执行完readClassDesc()函数继续往下走，会调用readSerialDate()函数对对象属性进行赋值，并在此判断反序列化的类是否重写了readObject()函数，重写了便会通过反射调用该函数。否则调用defaultReadFields()对属性赋值，然后return。</li>
+</ol>
+</li>
+</ul>
+<h3 id="示例"><a href="#示例" class="anchor-link">#</a><a href="#contents:示例" class="headings">示例</a></h3>
+<ol>
+<li>
+<p>User类</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">test1</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.Serializable</span><span class="o">;</span>
+
+<span class="kd">class</span> <span class="nc">User</span> <span class="kd">implements</span> <span class="n">Serializable</span><span class="o">{</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">=</span><span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>序列化User类</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">test1</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">serialize</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">User</span> <span class="n">user</span><span class="o">=</span><span class="k">new</span> <span class="n">User</span><span class="o">();</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">&#34;gogo&#34;</span><span class="o">);</span>
+
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">serializeData</span><span class="o">=</span><span class="n">serialize</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+        <span class="n">FileOutputStream</span> <span class="n">fout</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="s">&#34;user.bin&#34;</span><span class="o">);</span>
+        <span class="n">fout</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">serializeData</span><span class="o">);</span>
+        <span class="n">fout</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="n">User</span> <span class="n">user2</span><span class="o">=(</span><span class="n">User</span><span class="o">)</span> <span class="n">unserialize</span><span class="o">(</span><span class="n">serializeData</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">user2</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="c1">//序列化
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">serialize</span><span class="o">(</span><span class="kd">final</span> <span class="n">Object</span> <span class="n">obj</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">ByteArrayOutputStream</span> <span class="n">btout</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ByteArrayOutputStream</span><span class="o">();</span>
+        <span class="n">ObjectOutputStream</span> <span class="n">objOut</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectOutputStream</span><span class="o">(</span><span class="n">btout</span><span class="o">);</span> <span class="c1">//把一个Java对象变为byte[]数组，需要使用ObjectOutputStream。它负责把一个Java对象写入一个字节流
+</span><span class="c1"></span>        <span class="n">objOut</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">obj</span><span class="o">);</span> <span class="c1">// 通过writeObject,将obj对象进行序列化到了btout里
+</span><span class="c1"></span>        <span class="k">return</span> <span class="n">btout</span><span class="o">.</span><span class="na">toByteArray</span><span class="o">();</span>
+    <span class="o">}</span>
+
+<span class="c1">//反序列化
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">unserialize</span><span class="o">(</span><span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">serialized</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">ByteArrayInputStream</span> <span class="n">btin</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ByteArrayInputStream</span><span class="o">(</span><span class="n">serialized</span><span class="o">);</span>
+        <span class="n">ObjectInputStream</span> <span class="n">objIn</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectInputStream</span><span class="o">(</span><span class="n">btin</span><span class="o">);</span> <span class="c1">// ObjectInputStream负责从一个字节流读取Java对象
+</span><span class="c1"></span>        <span class="k">return</span> <span class="n">objIn</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span><span class="c1">// 通过ObjectInputStream的readObject方法直接读取对象了
+</span><span class="c1"></span>    <span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>运行结果（Java序列化数据标志: aced 0005开头）</p>
+<p><img src="/images/1635062981.png" alt=""></p>
+<p>序列化数据信息是将对象信息按照一定规则组成的，根据这个规则也可以逆向推测出数据信息中的数据类型等信息。可使用该工具分析: <a href="https://github.com/NickstaDB/SerializationDumper" target="_blank" rel="noopener">SerializationDumper</a></p>
+</li>
+</ol>
+<h2 id="java-反射"><a href="#java-反射" class="anchor-link">#</a><a href="#contents:java-反射" class="headings">Java 反射</a></h2>
+<blockquote>
+<p><strong>反射定义：</strong> 对于任意一个类，都能够得到这个类的所有属性和方法。对于任意一个对象，都能够调用它的任意方法和属性。这种动态获取信息以及动态调用对象方法的功能称为Java反射机制。</p>
+</blockquote>
+<h3 id="class对象"><a href="#class对象" class="anchor-link">#</a><a href="#contents:class对象" class="headings">Class<strong>对象</strong></a></h3>
+<p>每个类被加载进入内存之后，系统就会为该类生成一个对应的<code>java.lang.Class</code>对象，通过该Class对象就可以访问到JVM中的这个类。这个对象包含了完整的类的结构、方法和属性等信息。</p>
+<ul>
+<li>Class对象表示正在运行的Java应用程序中的类和接口。</li>
+<li>Class对象没有公共构造方法，由Java虚拟机自动构造。</li>
+<li>Class对象用于提供类本身的信息，比如有几种构造方法、普通方法和有多少属性。</li>
+</ul>
+<p><strong>获取方法</strong></p>
+<ul>
+<li>
+<p>获取Runtime类的Class对象</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="c1">//通过class的完整类名使用forName获取
+</span><span class="c1"></span><span class="n">Class</span>  <span class="n">runtimeClass1</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;java.lang.Runtime&#34;</span><span class="o">);</span>
+<span class="c1">//通过静态变量class获取
+</span><span class="c1"></span><span class="n">Class</span>  <span class="n">runtimeClass2</span> <span class="o">=</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Runtime</span><span class="o">.</span><span class="na">class</span><span class="o">;</span>
+<span class="c1">//通过Classloader获取
+</span><span class="c1"></span><span class="n">Class</span>  <span class="n">runtimeClass3</span> <span class="o">=</span> <span class="n">ClassLoader</span><span class="o">.</span><span class="na">getSystemClassLoader</span><span class="o">().</span><span class="na">loadClass</span><span class="o">(</span><span class="s">&#34;java.lang.Runtime&#34;</span><span class="o">);</span>
+<span class="c1">//通过对象的getClass()获取
+</span><span class="c1"></span><span class="n">Class</span>  <span class="n">runtimeClass4</span> <span class="o">=</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">getClass</span><span class="o">();</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><ol>
+<li><code>Class.forName(&quot;类名字符串&quot;)</code>装入类并初始化被加载类的静态属性和方法，返回Class的对象。不希望初始化类可以使用<code>Class.forName(&quot;类名&quot;,是否初始化类,类加载器)</code></li>
+<li><code>类名.class</code>返回Class的对象。JVM将使用类装载器，将类装入内存(前提是类还没有装入内存)，不做类的初始化工作。</li>
+<li><code>实例对象.getClass()</code>返回运行时真正所指的对象所属类的Class的对象。 对类进行静态初始化、非静态初始化。</li>
+</ol>
+</li>
+<li>
+<p>获取数组类型的Class对象需要使用Java类型的描述符方式</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">doubleArray</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;[D&#34;</span><span class="o">);</span> <span class="c1">//相当于double[].class
+</span><span class="c1"></span><span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">cStringArray</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;[[Ljava.lang.String;&#34;</span><span class="o">);</span> <span class="c1">//相当于String[][].class
+</span></code></pre></td></tr></table></div>
+</div>
+</div></li>
+</ul>
+<h3 id="反射调用"><a href="#反射调用" class="anchor-link">#</a><a href="#contents:反射调用" class="headings">反射调用</a></h3>
+<ol>
+<li>
+<p><strong>调用构造函数</strong></p>
+<p>反射需要先拿到类对象，通过类对象获取构造器对象，再通过构造器对象创建一个实例。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">serialize</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+   <span class="n">Class</span> <span class="n">UserClass</span><span class="o">=</span><span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;test1.User&#34;</span><span class="o">);</span>
+   <span class="n">Constructor</span> <span class="n">constructor</span><span class="o">=</span><span class="n">UserClass</span><span class="o">.</span><span class="na">getConstructor</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+   <span class="n">User</span> <span class="n">user</span><span class="o">=(</span><span class="n">User</span><span class="o">)</span> <span class="n">constructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="s">&#34;gogo&#34;</span><span class="o">);</span>
+   <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><strong>Tips:</strong> 反射调用内部类的时候需要使用<code>$</code>来代替<code>.</code>。如com.anbai.Test类有一个叫做Hello的内部类，那么调用的时候就应该将类名写成: <code>com.anbai.Test$Hello</code></p>
+<p><img src="/images/1635063222.png" alt=""></p>
+</li>
+<li>
+<p><strong>调用方法</strong></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">serialize</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">Class</span> <span class="n">UserClass</span><span class="o">=</span><span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;test1.User&#34;</span><span class="o">);</span>
+        <span class="n">Constructor</span> <span class="n">constructor</span><span class="o">=</span><span class="n">UserClass</span><span class="o">.</span><span class="na">getConstructor</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">User</span> <span class="n">user</span><span class="o">=(</span><span class="n">User</span><span class="o">)</span> <span class="n">constructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="s">&#34;gogo&#34;</span><span class="o">);</span>
+        <span class="n">Method</span> <span class="n">method</span> <span class="o">=</span> <span class="n">UserClass</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;setName&#34;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="c1">//如果有私有方法，可以通过setAccessible来获取访问权限
+</span><span class="c1"></span>        <span class="n">method</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="s">&#34;ada&#34;</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><code>getMethod</code>和<code>getDeclaredMethod</code>区别：</p>
+<ol>
+<li>
+<p>getMethod只能获取到当前类和父类的所有有权限的方法 (public)。</p>
+</li>
+<li>
+<p>getDeclaredMethod能获取到当前类的所有成员方法 (不包含父类)。</p>
+</li>
+</ol>
+<p><img src="/images/1635063270.png" alt=""></p>
+<p><code>method.invoke()</code>第一个参数必须是类实例对象，如果调用的是static方法那么第一个参数值可以传null。因为在Java中调用静态方法可以直接<code>类名.方法名()</code>方式调用。</p>
+<p>它的第二个参数不是必须的，如果当前调用的方法没有参数，那么第二个参数可以不传，如果有参数那么就必须严格的依次传入对应的参数类型。（多个参数值用&quot;,&quot;隔开）</p>
+</li>
+<li>
+<p><strong>访问属性</strong></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">serialize</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">Class</span> <span class="n">UserClass</span><span class="o">=</span><span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;test1.User&#34;</span><span class="o">);</span>
+        <span class="n">Constructor</span> <span class="n">constructor</span><span class="o">=</span><span class="n">UserClass</span><span class="o">.</span><span class="na">getConstructor</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">User</span> <span class="n">user</span><span class="o">=(</span><span class="n">User</span><span class="o">)</span> <span class="n">constructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="s">&#34;gogo&#34;</span><span class="o">);</span>
+        <span class="n">Field</span> <span class="n">field</span><span class="o">=</span> <span class="n">UserClass</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;name&#34;</span><span class="o">);</span>
+        <span class="n">field</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span><span class="c1">// name是私有属性，需要先设置可访问
+</span><span class="c1"></span>             <span class="n">field</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">user</span><span class="o">);</span> <span class="c1">//通过反射获取属性
+</span><span class="c1"></span>        <span class="n">field</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="s">&#34;12131&#34;</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><img src="/images/1635063331.png" alt=""></p>
+<p>修改final关键字修饰的成员变量</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"> <span class="c1">// 反射获取Field类的modifiers（字段的修饰符）
+</span><span class="c1"></span> <span class="n">Field</span> <span class="n">modifiers</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;modifiers&#34;</span><span class="o">);</span>
+ <span class="c1">// 设置modifiers修改权限
+</span><span class="c1"></span> <span class="n">modifiers</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+ <span class="c1">// 修改成员变量的Field对象的modifiers值
+</span><span class="c1"></span> <span class="c1">//getModifiers() 返回字段的修饰符，它是一个int，不同的bit表示不同的含义。
+</span><span class="c1"></span> <span class="n">modifiers</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="n">field</span><span class="o">,</span> <span class="n">field</span><span class="o">.</span><span class="na">getModifiers</span><span class="o">()</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">Modifier</span><span class="o">.</span><span class="na">FINAL</span><span class="o">);</span>
+ <span class="c1">// 修改成员变量值
+</span><span class="c1"></span> <span class="n">field</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">类实例对象</span><span class="o">,</span> <span class="n">修改后的值</span><span class="o">);</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+</ol>
+<h2 id="java-动态代理"><a href="#java-动态代理" class="anchor-link">#</a><a href="#contents:java-动态代理" class="headings">Java 动态代理</a></h2>
+<p>介绍动态代理之前先来了解一下静态代理，帮助理解代理的作用。</p>
+<h3 id="静态代理"><a href="#静态代理" class="anchor-link">#</a><a href="#contents:静态代理" class="headings">静态代理</a></h3>
+<p>如果需要对类增强一些功能。直接在原始代码的基础上直接修改容易出错。这时可以写一个代理类，引入之前的类然后在代理类中添加需要的方法。</p>
+<p>UserServices 接口与实现类</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="c1">//用户接口
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">UserServices</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">getName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">);</span>
+<span class="o">}</span>
+<span class="c1">//一个实现类UserRealm
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserRealm</span> <span class="kd">implements</span> <span class="n">UserServices</span><span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">){</span>
+     <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>代理类实现</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="c1">//UserRealmProxy 实现UserServices接口
+</span><span class="c1"></span><span class="kd">class</span> <span class="nc">UserRealmProxy</span> <span class="kd">implements</span> <span class="n">UserServices</span><span class="o">{</span>
+  <span class="kd">private</span> <span class="n">UserServices</span> <span class="n">userservices</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="nf">UserRealmProxy</span><span class="o">(</span><span class="n">UserServices</span> <span class="n">userservices</span><span class="o">){</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">userservices</span> <span class="o">=</span> <span class="n">uservices</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="c1">//重写getName函数，在原本输出名字的基础上增加功能
+</span><span class="c1"></span>  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">){</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;UserRealmProxy Start....&#34;</span><span class="o">);</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">userservices</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;UserRealmProxy End....&#34;</span><span class="o">)</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>Main函数</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">class</span> <span class="nc">Main</span><span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//实现一个类实例userservices
+</span><span class="c1"></span>        <span class="n">UserServices</span> <span class="n">userServices</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UserRealm</span><span class="o">();</span>
+        <span class="n">UserRealmProxy</span> <span class="n">proxy</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UserRealmProxy</span><span class="o">(</span><span class="n">userServices</span><span class="o">);</span>
+        <span class="n">proxy</span><span class="o">.</span><span class="na">getName</span><span class="o">(</span><span class="s">&#34;xxxx&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>这样就能实现在不改动原先类的基础上，对功能方法进行扩展。但是静态代理只能为一个类服务，如果需要代理的类很多，那么就需要编写大量的代理类，比较繁琐。由此提出了动态代理的概念。</p>
+<h3 id="动态代理"><a href="#动态代理" class="anchor-link">#</a><a href="#contents:动态代理" class="headings">动态代理</a></h3>
+<p>动态代理就是利用反射机制在运行时创建代理类。</p>
+<p>创建动态代理类会使用到<code>java.lang.reflect.Proxy</code>类和<code>java.lang.reflect.InvocationHandler</code>接口。<code>java.lang.reflect.Proxy</code>用于生成动态代理类Class、创建代理类实例。（该类实现了java.io.Serializable接口)</p>
+<p><code>java.lang.reflect.InvocationHandler</code>接口用于调用Proxy类生成的代理类方法，动态代理类只有一个invoke方法。</p>
+<p><strong>动态代理的实现</strong></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">interface</span> <span class="nc">UserServices</span><span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">);</span>
+<span class="o">}</span>
+<span class="c1">//写一个类实现UserServices接口，后面对该方法进行扩展
+</span><span class="c1"></span><span class="kd">class</span> <span class="nc">UserReal</span> <span class="kd">implements</span> <span class="n">UserServices</span><span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">){</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">//对功能进行扩展的类（必须要实现InvocationHandler接口）
+</span><span class="c1"></span><span class="kd">class</span> <span class="nc">Delegate</span> <span class="kd">implements</span> <span class="n">InvocationHandler</span><span class="o">{</span>
+    <span class="kd">private</span> <span class="n">Object</span> <span class="n">object</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">Delegate</span><span class="o">(</span><span class="n">Object</span> <span class="n">object</span><span class="o">){</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">object</span> <span class="o">=</span> <span class="n">object</span><span class="o">;</span>
+    <span class="o">}</span>
+   <span class="c1">//重写InvocationHandler接口中的方法
+</span><span class="c1"></span>    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">invoke</span><span class="o">(</span><span class="n">Object</span> <span class="n">proxy</span><span class="o">,</span> <span class="n">Method</span> <span class="n">method</span><span class="o">,</span> <span class="n">Object</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Throwable</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Delegate Start.....&#34;</span><span class="o">);</span>
+        <span class="n">Object</span> <span class="n">res</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">object</span><span class="o">,</span><span class="n">args</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Delegate End.....&#34;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><strong>Main函数执行</strong></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DynamicTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">UserReal</span> <span class="n">user</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UserReal</span><span class="o">();</span>
+        <span class="n">Delegate</span> <span class="n">delegate</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Delegate</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+				<span class="c1">//指定动态代理类的类加载器，即生成完成后的代理对象的类加载器
+</span><span class="c1"></span>				<span class="c1">//定义动态代理生成的类实现的接口，需要被增强的接口列表（数据）
+</span><span class="c1"></span>				<span class="c1">//动态代理的处理类，增强逻辑
+</span><span class="c1"></span>        <span class="n">UserServices</span> <span class="n">userService1</span> <span class="o">=</span> <span class="o">(</span><span class="n">UserServices</span><span class="o">)</span> <span class="n">Proxy</span><span class="o">.</span><span class="na">newProxyInstance</span><span class="o">(</span><span class="n">UserServices</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">(),</span> <span class="k">new</span> <span class="n">Class</span><span class="o">[]</span> <span class="o">{</span><span class="n">UserServices</span><span class="o">.</span><span class="na">class</span><span class="o">},</span> <span class="n">delegate</span><span class="o">);</span><span class="c1">//生成动态代理类
+</span><span class="c1"></span>				<span class="c1">//这样可以给UserReal类对UserServices接口的实现所有方法进行功能扩展
+</span><span class="c1"></span>        <span class="n">userService1</span><span class="o">.</span><span class="na">getName</span><span class="o">(</span><span class="s">&#34;xn&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>使用<code>Proxy.newProxyInstance</code>来创建动态代理类实例，或使用<code>Proxy.getProxyClass()</code>获取代理类对象再反射的方式来创建。</p>
+<ol>
+<li>动态代理的必须是接口类，通过生成UserServices接口的实现类来代理接口的方法调用。</li>
+<li>动态代理类会由<code>java.lang.reflect.Proxy.ProxyClassFactory</code>创建。ProxyClassFactory会调用<code>sun.misc.ProxyGenerator</code>类生成该类的字节码，并调用<code>java.lang.reflect.Proxy.defineClass0()</code>方法将该类注册到JVM。</li>
+</ol>
+<p><img src="/images/1635063661.png" alt=""></p>
+<h3 id="动态代理生成的proxyx类分析"><a href="#动态代理生成的proxyx类分析" class="anchor-link">#</a><a href="#contents:动态代理生成的proxyx类分析" class="headings">动态代理生成的$ProxyX类分析</a></h3>
+<p><code>java.lang.reflect.Proxy</code>类是通过创建一个新的Java类(类名为<code>com.sun.proxy.$ProxyX</code>) 的方式来实现类方法代理功能的。</p>
+<p><strong>动态代理生成出来的</strong><code>com.sun.proxy.$ProxyX</code><strong>类有如下技术细节和特性:</strong></p>
+<ol>
+<li>
+<p>该类继承于<code>java.lang.reflect.Proxy</code>并实现了被代理的接口类（UserServices），并通过ProxyGenerator动态生成接口类的所有方法。通过调用动态代理处理类 (Delegate) 的invoke方法获取执行结果。因为java.lang.reflect.Proxy类实现了java.io.Serializable接口，所以该类支持序列化。</p>
+</li>
+<li>
+<p>该类重写了java.lang.Object类的toString、hashCode、equals方法。</p>
+</li>
+<li>
+<p>如果生成了多个动态代理类，新生成的类名中的0会自增: <code>com.sun.proxy.$Proxy0/$Proxy1/$Proxy2</code></p>
+<p><img src="/images/1635063817.png" alt=""></p>
+</li>
+<li>
+<p>动态代理类符合Java对象序列化条件，它生成的类在反序列化/反序列化时不会序列化该类的成员变量，并且serialVersionUID为0L，也将是说将该类的Class对象传递给java.io.ObjectStreamClass的静态lookup方法时，返回的ObjectStreamClass实例将具有以下特性:</p>
+<ol>
+<li>调用其 getSerialVersionUID 方法将返回0L。</li>
+<li>调用其 getFields 方法将返回长度为零的数组。</li>
+<li>调用其 getField 方法将返回null。</li>
+</ol>
+<p>示例:</p>
+<p><img src="/images/1635063859.png" alt=""></p>
+<p><img src="/images/1635063875.png" alt=""></p>
+</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
+<ol>
+<li><a href="https://www.notion.so/Java-251d6a293ce3499bb90cf2fc40bee67f#d93fbed13bc740d6b29af25883861084" target="_blank" rel="noopener"> Java 动态代理</a></li>
+<li><a href="https://www.wangan.com/docs/99" target="_blank" rel="noopener"> Java 序列化/反序列化_「Java Web安全」</a></li>
+<li><a href="https://blog.51cto.com/xingej/1959729" target="_blank" rel="noopener"> 序列化之Java默认序列化技术ObjectOutputStream与ObjectInputStream</a></li>
+</ol>
+
+            </div>
+
+            
+    
+    
+        <ul class="post-copyright">
+            <li class="copyright-item author"><span class="copyright-item-text">作者</span>：<a href="https://myzxcg.com/" class="p-author h-card" target="_blank" rel="noopener">myzxcg</a></li>
+            
+                
+                
+                
+                
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2021/10/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9F%BA%E7%A1%80/" target="_blank" rel="noopener">https://myzxcg.com/2021/10/Java反序列化基础/</a></li>
+            
+            <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
+            
+        </ul>
+    
+
+
+
+        </article>
+
+        
+
+        
+
+
+        
+
+
+        
+
+
+        
+    
+    
+        <div class="related-posts">
+            <h2 class="related-title">相关文章：<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon related-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"/></svg></h2>
+            <ul class="related-list">
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Spring-%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" class="related-link">Spring 内存马实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Weblogic-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/" class="related-link">Weblogic 内存马分析与实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Shiro-%E5%9B%9E%E6%98%BE%E4%B8%8E%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" class="related-link">Shiro 回显与内存马实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/10/Tomcat-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E5%8F%8A%E6%A3%80%E6%B5%8B/" class="related-link">Tomcat 内存马分析及检测</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/10/Tomcat-%E6%9E%B6%E6%9E%84%E4%B8%8EContext%E5%88%86%E6%9E%90/" class="related-link">Tomcat 架构与Context分析</a>
+                    </li>
+                
+            </ul>
+        </div>
+    
+
+
+
+        
+
+
+        
+    <footer class="minimal-footer">
+        
+            <div class="post-tag"><a href="/tags/Java%E5%AE%89%E5%85%A8/" rel="tag" class="post-tag-link">#java安全</a></div>
+        
+        
+        
+            
+        
+    </footer>
+
+
+
+        
+
+
+        
+    
+        
+        
+    
+    
+    
+    
+        <ul class="post-nav">
+            
+                <li class="post-nav-prev">
+                    <a href="/2021/10/Java-RMI%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" rel="prev">&lt; Java RMI分析与利用</a>
+                </li>
+            
+            
+                <li class="post-nav-next">
+                    <a href="/2021/10/%E5%9F%9F%E5%A7%94%E6%B4%BE%E5%88%A9%E7%94%A8/" rel="next">域委派利用 &gt;</a>
+                </li>
+            
+        </ul>
+    
+
+
+
+        
+    
+
+        
+            <div class="load-comments">
+                <div id="load-comments">加载评论</div>
+            </div>
+        
+
+        
+
+        
+            <div id="vcomments"></div>
+        
+
+        
+
+        
+    
+
+
+
+    </div>
+</main>
+
+
+            
+    <div id="back-to-top" class="back-to-top">
+        <a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon arrow-up"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"/></svg></a>
+    </div>
+
+
+            
+    <footer id="footer" class="footer">
+        <div class="footer-inner">
+            
+
+            
+    
+        <ul class="socials"><li class="socials-item">
+                    <a href="https://github.com/myzxcg" target="_blank" rel="external noopener" title="GitHub"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="https://twitter.com/myzxcg" target="_blank" rel="external noopener" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="mailto:myz.xcg@gmail.com" target="_blank" rel="external noopener" title="Email"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="/rss.xml" target="_blank" rel="external noopener" title="RSS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M19.199 24C19.199 13.467 10.533 4.8 0 4.8V0c13.165 0 24 10.835 24 24h-4.801zM3.291 17.415c1.814 0 3.293 1.479 3.293 3.295 0 1.813-1.485 3.29-3.301 3.29C1.47 24 0 22.526 0 20.71s1.475-3.294 3.291-3.295zM15.909 24h-4.665c0-6.169-5.075-11.245-11.244-11.245V8.09c8.727 0 15.909 7.184 15.909 15.91z"/></svg></a>
+                </li></ul>
+    
+
+
+            <div class="site-info">©&nbsp;2021&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
+              </div>
+
+            
+        </div>
+    </footer>
+
+
+        </div>
+        
+
+        
+
+
+
+
+
+
+    
+
+        
+
+        
+            <script>
+    function loadComments() {
+        if (typeof Valine === 'undefined') {
+            var getScript = (options) => {
+                var script = document.createElement('script');
+                script.defer = true;
+                script.crossOrigin = 'anonymous';
+                Object.keys(options).forEach((key) => {
+                    script[key] = options[key];
+                });
+                document.body.appendChild(script);
+            };
+            getScript({
+                src: '//unpkg.com/valine@latest/dist/Valine.min.js',
+                onload: () => {
+                    newValine();
+                }
+            });
+        } else {
+            newValine();
+        }
+    }
+    function newValine() {
+        new Valine({
+            el: '#vcomments',
+            appId: '6Fu9AJHglaqmAVjpYMdOOBEi-MdYXbMMI',
+            appKey: '0GcKEskKSnNfqn5dbNITfO4H',
+            placeholder: '有问题欢迎交流',
+            path: location.pathname,
+            avatar: 'mp',
+            meta: ["nick","mail","link"],
+            pageSize:  10 ,
+            lang: 'zh-cn',
+            visitor:  false ,
+            highlight:  true ,
+            avatarForce:  false ,
+            recordIP:  true ,
+            serverURLs: '',
+            emojiCDN: '',
+            emojiMaps: {},
+            enableQQ:  false ,
+            requiredFields: []
+        });
+    }
+</script>
+
+        
+
+        
+
+        
+
+    
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/medium-zoom@latest/dist/medium-zoom.min.js"></script>
+
+<script>
+    let imgNodes = document.querySelectorAll('div.post-body img');
+    imgNodes = Array.from(imgNodes).filter(node => node.parentNode.tagName !== "A");
+
+    mediumZoom(imgNodes, {
+        background: 'hsla(var(--color-bg-h), var(--color-bg-s), var(--color-bg-l), 0.95)'
+    })
+</script>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/instant.page@5.1.0/instantpage.min.js" type="module" defer></script>
+
+
+
+
+
+
+
+    </body>
+</html>

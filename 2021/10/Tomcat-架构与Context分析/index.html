@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+    <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
+    <meta charset="UTF-8" />
+
+    <meta name="generator" content="Hugo 0.88.1" /><meta name="theme-color" content="#16171d" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <title>Tomcat 架构与Context分析 | MYZXCG</title>
+
+    <link rel="stylesheet" href="/css/meme.min.ee7d92038178eda958210f69458541e2686ada11055b93762d6d324f2acc47c5.css"/>
+
+    
+    
+        <script src="/js/meme.min.4194bf2034241e3757fbbbf5fe4db43d0ff17c81f4496e6bc931504f0978cbd2.js"></script>
+
+    
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
+        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
+
+    <meta name="author" content="myzxcg" /><meta name="description" content="Tomcat 架构原理 Tomcat需要实现的2个核心功能： 处理socket连接，负责网络字节流与……" />
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="MYZXCG" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="MYZXCG" />
+    <meta name="msapplication-starturl" content="../../../" />
+    <meta name="msapplication-TileColor" content="#603cba" />
+    <meta name="msapplication-TileImage" content="../../../icons/mstile-150x150.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+
+    
+    
+
+    
+    <link rel="canonical" href="https://myzxcg.com/2021/10/Tomcat-%E6%9E%B6%E6%9E%84%E4%B8%8EContext%E5%88%86%E6%9E%90/" />
+    
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "datePublished": "2021-10-29T00:00:09+08:00",
+        "dateModified": "2021-11-20T13:02:22+08:00",
+        "url": "https://myzxcg.com/2021/10/Tomcat-%E6%9E%B6%E6%9E%84%E4%B8%8EContext%E5%88%86%E6%9E%90/",
+        "headline": "Tomcat 架构与Context分析",
+        "description": "Tomcat 架构原理 Tomcat需要实现的2个核心功能： 处理socket连接，负责网络字节流与……",
+        "inLanguage" : "zh-CN",
+        "articleSection": "posts",
+        "wordCount":  5122 ,
+        "image": ["https://myzxcg.com/images/1635431357.png","https://myzxcg.com/images/1635431437.png","https://myzxcg.com/images/1635431472.png","https://myzxcg.com/images/1635431547.png","https://myzxcg.com/images/1635431579.png","https://myzxcg.com/images/1635431605.png","https://myzxcg.com/images/1635431655.png","https://myzxcg.com/images/1635431717.png"],
+        "author": {
+            "@type": "Person",
+            "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
+            "email": "myzx.xcg@gmail.com",
+            "image": "https://myzxcg.com/avatar.png",
+            "url": "https://myzxcg.com/",
+            "name": "myzxcg"
+        },
+        "license": "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)",
+        "publisher": {
+            "@type": "Organization",
+            "name": "MYZXCG",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://myzxcg.com/icons/favicon.ico"
+            },
+            "url": "https://myzxcg.com/"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebSite",
+            "@id": "https://myzxcg.com/"
+        }
+    }
+</script>
+
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+
+
+<meta name="twitter:site" content="@myzxcg" />
+<meta name="twitter:creator" content="@myzxcg" />
+
+    
+
+
+
+<meta property="og:title" content="Tomcat 架构与Context分析" />
+<meta property="og:description" content="Tomcat 架构原理 Tomcat需要实现的2个核心功能： 处理socket连接，负责网络字节流与……" />
+<meta property="og:url" content="https://myzxcg.com/2021/10/Tomcat-%E6%9E%B6%E6%9E%84%E4%B8%8EContext%E5%88%86%E6%9E%90/" />
+<meta property="og:site_name" content="MYZXCG" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/1635431357.png" />
+<meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2021-10-29T00:00:09&#43;08:00" />
+    <meta property="article:modified_time" content="2021-11-20T13:02:22&#43;08:00" />
+    
+    <meta property="article:section" content="posts" />
+
+
+        <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
+
+        
+
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y0LZRMN44V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-Y0LZRMN44V');
+    </script>
+
+
+
+
+    
+    
+
+    
+</head>
+
+    <body>
+        <div class="container">
+            
+    <header class="header">
+        
+            <div class="header-wrapper">
+                <div class="header-inner single">
+                    
+    <div class="site-brand">
+        
+            <a href="/" class="brand">MYZXCG</a>
+        
+    </div>
+
+                    <nav class="nav">
+    <ul class="menu" id="menu">
+        
+            
+        
+        
+        
+        
+            
+                <li class="menu-item"><a href="/archives/"><span class="menu-item-name">文章</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/tags/"><span class="menu-item-name">标签</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/about/"><span class="menu-item-name">关于</span></a>
+                </li>
+            
+        
+            
+                
+                    
+                    
+                
+            
+        
+            
+                
+            
+        
+    </ul>
+</nav>
+
+                    
+                </div>
+            </div>
+            
+    <input type="checkbox" id="nav-toggle" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle"></label>
+    <label for="nav-toggle" class="nav-curtain"></label>
+
+
+        
+    </header>
+
+
+
+
+            
+            
+    <main class="main single" id="main">
+    <div class="main-inner">
+
+        
+
+        <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
+
+            <h1 class="post-title p-name">Tomcat 架构与Context分析</h1>
+
+            
+
+            
+                
+            
+
+            
+                
+
+<div class="post-meta">
+    
+        
+        <time datetime="2021-10-29T00:00:09&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2021.10.29</time>
+    
+    
+    
+    
+        
+        
+        
+            
+        
+    
+    
+    
+        
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;11&nbsp;分钟</span>
+    
+
+   
+    
+
+    
+    
+</div>
+
+            
+
+            <nav class="contents">
+  <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
+    <li><a id="contents:tomcat-架构原理" href="#tomcat-架构原理">Tomcat 架构原理</a>
+      <ol>
+        <li><a id="contents:connecter连接器" href="#connecter连接器">Connecter(连接器)</a></li>
+        <li><a id="contents:container容器" href="#container容器">Container(容器)</a></li>
+        <li><a id="contents:从http请求到servlet" href="#从http请求到servlet">从HTTP请求到Servlet</a></li>
+        <li><a id="contents:tomcat-类加载机制" href="#tomcat-类加载机制">Tomcat 类加载机制</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:tomcat-context" href="#tomcat-context">Tomcat Context</a>
+      <ol>
+        <li><a id="contents:三种context的联系与区别" href="#三种context的联系与区别">三种Context的联系与区别</a></li>
+        <li><a id="contents:获取standardcontext" href="#获取standardcontext">获取StandardContext</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:参考" href="#参考">参考</a></li>
+  </ol>
+</nav><div class="post-body e-content">
+                <h2 id="tomcat-架构原理"><a href="#tomcat-架构原理" class="anchor-link">#</a><a href="#contents:tomcat-架构原理" class="headings">Tomcat 架构原理</a></h2>
+<p>Tomcat需要实现的2个核心功能：</p>
+<ul>
+<li>处理socket连接，负责网络字节流与Request和Response对象的转化</li>
+<li>加载并管理Servlet，以及处理具体的Request请求</li>
+</ul>
+<p>为此Tomcat设计了两个核心组件： 连接器（Connector）和容器（Container），连接器负责对外交流，容器负责内部处理；同时Tomcat为了实现支持多种IO模型和应用层协议，多个连接器对接一个容器。</p>
+<p><img src="/images/1635431357.png" alt=""></p>
+<ul>
+<li>Server 对应一个Tomcat实例；</li>
+<li>Service 默认只有一个，一个Tomcat实例默认一个Service；</li>
+<li>Connector 一个Service可能多个连接器，接收不同的连接协议；</li>
+<li>Container 多个连接器对应一个容器，顶层容器其实就是Engine；</li>
+</ul>
+<h3 id="connecter连接器"><a href="#connecter连接器" class="anchor-link">#</a><a href="#contents:connecter连接器" class="headings">Connecter(连接器)</a></h3>
+<p>连接器对Servlet容器屏蔽了网络协议和IO模型的区别，无论是HTTP还是AJP协议，在容器中获取到的都是一个标准的ServletRequest对象。</p>
+<p>其中Tomcat设计了三个组件，其负责功能如下：</p>
+<ul>
+<li>EndPoint：负责网络通信，将字节流传递给Processor；</li>
+<li>Processor：负责处理字节流生成Tomcat Request对象，将Tomcat Request对象传递给Adapter；</li>
+<li>Adapter：负责将Tomcat Request对象转成ServletRequest对象，传递给容器；</li>
+</ul>
+<p><strong>Adapter组件</strong></p>
+<p>由于协议的不同，Tomcat定义了自己的Request类来存放请求信息，但是这个不是标准的ServletRequest。于是需要使用Adapter将Tomcat Request对象转成ServletRequest对象，然后就能调用容器的service方法。</p>
+<p>简而言之，Endpoint接收到Socket连接后，生成一个SocketProcessor任务提交到线程池进行处理，SocketProcessor的run方法将调用Processor组件进行应用层协议的解析，Processor解析后生成Tomcat Request对象，然后会调用Adapter的Service方法，方法内部通过如下代码将Request请求传递到容器中。</p>
+<p><code>connector.getService().getContainer().getPipeline().getFirst().invoke(request, response);</code></p>
+<p><img src="/images/1635431437.png" alt=""></p>
+<h3 id="container容器"><a href="#container容器" class="anchor-link">#</a><a href="#contents:container容器" class="headings">Container(容器)</a></h3>
+<p>Connector连接器负责外部交流，Container容器负责内部处理。也就是说连接器处理Socket通信和应用层协议的解析，得到ServletRequest，而容器则负责处理ServletRequest 。</p>
+<p>Tomcat设计了4种容器: <code>Engine、Host、Context、Wrapper</code> ，这四种容器是父子关系。</p>
+<ol>
+<li>Engine: 最顶层容器组件，可以包含多个Host。实现类为<code>org.apache.catalina.core.StandardEngine</code></li>
+<li>Host:  代表一个虚拟主机，每个虚拟主机和某个域名Domain Name相匹配，可以包含多个Context。实现类为<code>org.apache.catalina.core.StandardHost</code></li>
+<li>Context:  一个Context对应于一个Web 应用，可以包含多个Wrapper。实现类为<code>org.apache.catalina.core.StandardContext</code></li>
+<li>Wrapper: 一个Wrapper对应一个Servlet。负责管理 Servlet ，包括Servlet的装载、初始化、执行以及资源回收。实现类为<code>org.apache.catalina.core.StandardWrapper</code></li>
+</ol>
+<p><img src="/images/1635431472.png" alt=""></p>
+<p>每一个Context都有唯一的path。这里的path不是指servlet绑定的WebServlet地址，而是指独立的一个Web应用地址。就好比Tomat默认的<code>/</code>地址和<code>/manager</code>地址就是两个不同的web应用，所以对应两个不同的Context。要添加Context需要在server.xml中配置docbase。</p>
+<p>如下图所示， 在一个web应用中创建了2个servlet服务，WebServlet地址分别是<code>/Demo1</code>和<code>/Demo2</code>。 因为它们属于同一个Web应用所以Context一样，但访问地址不一样所以Wrapper不一样。<code>/manager</code>访问的Web应用是Tomcat默认的管理页面，是另外一个独立的web应用， 所以Context与前两个不一样。</p>
+<p><img src="/images/1635431547.png" alt=""></p>
+<h3 id="从http请求到servlet"><a href="#从http请求到servlet" class="anchor-link">#</a><a href="#contents:从http请求到servlet" class="headings">从HTTP请求到Servlet</a></h3>
+<p>Tomcat使用Mapper组件来将用户请求的URL定位到某个Servlet。Mapper组件里保存了WEB应用的配置信息，也就是容器组件与访问路径的映射关系。比如Host容器里配置的域名、Context容器里的WEB应用路径以及Wrapper容器里Servlet映射的路径。</p>
+<p>Mapper组件通过解析请求URL里的域名和路径，再到自己保存的Map里去找，就能定位到一个Servlet。 最终一个请求URL只会定位到一个Wrapper容器，也就是一个Servlet 。</p>
+<p><strong>Pipeline-Valve</strong></p>
+<p>最先拿到请求的是Engine容器，Engine容器对请求做一些处理后，把请求传给子容器Host继续处理，以此类推，最终这个请求会传给Wrapper容器，Wrapper容器会调用Servlet来处理。 整个调用过程是通过Pipeline-Valve管道进行的。</p>
+<p>每层容器都有一个Pipeline对象，只要触发了这个Pipeline的第一个Valve，这个容器里的Pipeline中的Valve都会被调用到。Pipeline中的getBasic方法获取的Valve处于Valve链的末端，负责调用下层容器的Pipeline里的第一个Valve 。</p>
+<p>Pipeline中的addValve方法维护Valve链表，Valve可以通过该方法插入到Pipeline中，<strong>来对请求做某些处理</strong>。Valve通过自己的invoke方法处理请求后，调用getNext().invoke()来触发下一个Valve调用。</p>
+<p><img src="/images/1635431579.png" alt=""></p>
+<p>Wrapper容器的最后一个Valve会创建一个Filter链，并调用doFileter方法。</p>
+<p><img src="/images/1635431605.png" alt=""></p>
+<h3 id="tomcat-类加载机制"><a href="#tomcat-类加载机制" class="anchor-link">#</a><a href="#contents:tomcat-类加载机制" class="headings">Tomcat 类加载机制</a></h3>
+<p>由于Tomcat中有多个WebApp同时要确保之间相互隔离，所以Tomcat的类加载机制也不是传统的双亲委派机制</p>
+<p>Tomcat自定义的类加载器WebAppClassloader为了确保隔离多个WebApp之间相互隔离，所以打破了双亲委托机制。每个WebApp用一个独有的ClassLoader实例来优先处理加载。它首先尝试自己加载某个类，如果找不到再交给父类加载器，其目的是优先加载WEB应用自己定义的类。</p>
+<p>同时为了防止WEB应用自己的类覆盖JRE的核心类，在本地WEB应用目录下查找之前，先使用ExtClassLoader（使用双亲委托机制）去加载，这样既打破了双亲委托，同时也能安全加载类。</p>
+<h2 id="tomcat-context"><a href="#tomcat-context" class="anchor-link">#</a><a href="#contents:tomcat-context" class="headings">Tomcat Context</a></h2>
+<h3 id="三种context的联系与区别"><a href="#三种context的联系与区别" class="anchor-link">#</a><a href="#contents:三种context的联系与区别" class="headings">三种Context的联系与区别</a></h3>
+<p>Tomcat中有如下三种Context: <code>ServletContext、StandardContext、ApplicationContext</code>。下面这张图很好的展现了这三个Context的结构。</p>
+<p><img src="/images/1635431655.png" alt=""></p>
+<ul>
+<li>
+<p>ServerletContext（是一个接口）</p>
+<p>通过<code>request.getServletContext()</code> 获取到的是ApplicationContextFacade对象，它是对ServerletContext接口的实现类，该类提供了Web应用所有Servlet的视图，可以对某个Web应用的各种资源和功能进行访问。</p>
+<p>WEB容器在启动时，它会为每个Web应用程序都创建一个对应的ServletContext。<strong>它代表当前Web应用，并且它被所有客户端共享</strong>。</p>
+</li>
+<li>
+<p>ApplicationContext</p>
+<p>ApplicationContext也是对ServerletContext接口的实现类，由上图可知该类被包装在ApplicationContextFacade类中。</p>
+</li>
+<li>
+<p>StandardContext</p>
+<p>org.apache.catalina.Context接口的默认实现为StandardContext，而Context在Tomcat中代表一个web应用。ApplicationContext所实现的方法其实都是调用的StandardContext中的方法，StandardContext是Tomcat中真正起作用的Context。</p>
+</li>
+</ul>
+<h3 id="获取standardcontext"><a href="#获取standardcontext" class="anchor-link">#</a><a href="#contents:获取standardcontext" class="headings">获取StandardContext</a></h3>
+<p>向各种中间件和框架注入内存马的基础，就是要获得context，context实际上就是拥有当前中间件或框架处理请求、保存和控制servlet对象、保存和控制filter对象等功能的对象。</p>
+<ol>
+<li>
+<p><strong>在已有request对象的情况，可以直接获取。</strong></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">ServletContext</span> <span class="n">servletContext</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getSession</span><span class="o">().</span><span class="na">getServletContext</span><span class="o">();</span>
+<span class="n">Field</span> <span class="n">appctx</span> <span class="o">=</span> <span class="n">servletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+<span class="n">appctx</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="c1">//ApplicationContext为ServletContext的实现类
+</span><span class="c1"></span><span class="n">ApplicationContext</span> <span class="n">applicationContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">ApplicationContext</span><span class="o">)</span> <span class="n">appctx</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">servletContext</span><span class="o">);</span>
+
+<span class="n">Field</span> <span class="n">stdctx</span> <span class="o">=</span> <span class="n">applicationContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+<span class="n">stdctx</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="n">StandardContext</span> <span class="n">standardContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardContext</span><span class="o">)</span> <span class="n">stdctx</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">applicationContext</span><span class="o">);</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p><strong>适用于Tomcat 6、7、8、9的StandardContext获取方法</strong></p>
+<p>每个Tomcat版本下都会开一个Http-xio-端口-Acceptor的线程，Acceptor是用来接收请求的，这些请求会交给后面的Engine-&gt;Host-&gt;Context-&gt;servlet。</p>
+<p>通过遍历当前所有线程，从Acceptor线程中获取到请求的requset对象，这里的requset是<code>org.apache.coyote.Reuqest</code>类，它没有servletContext属性，所以不能直接通过它获取Context。但是可以通过它获取到请求路径和请求域名。同样在该线程中可以获得StandardContext。下图把StandardContext路径展示的非常明白。可以根据前面获取的请求路径和请求域名，来找到对应的StandardContext。</p>
+<p><img src="/images/1635431717.png" alt=""></p>
+<p><strong>实现代码</strong></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.demo</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServlet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Field</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Iterator</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.catalina.core.StandardContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.catalina.core.StandardEngine</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.catalina.core.StandardHost</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">goodServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">PrintWriter</span> <span class="n">out</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+            <span class="n">Tomcat6789</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Tomcat6789</span><span class="o">();</span>
+            <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">getSTC</span><span class="o">());</span>
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">class</span> <span class="nc">Tomcat6789</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">uri</span><span class="o">;</span>
+        <span class="n">String</span> <span class="n">serverName</span><span class="o">;</span>
+        <span class="n">StandardContext</span> <span class="n">standardContext</span><span class="o">;</span>
+
+        <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getField</span><span class="o">(</span><span class="n">Object</span> <span class="n">object</span><span class="o">,</span> <span class="n">String</span> <span class="n">fieldName</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Field</span> <span class="n">declaredField</span><span class="o">;</span>
+            <span class="n">Class</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">object</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
+            <span class="k">while</span> <span class="o">(</span><span class="n">clazz</span> <span class="o">!=</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">try</span> <span class="o">{</span>
+
+                    <span class="n">declaredField</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="n">fieldName</span><span class="o">);</span>
+                    <span class="n">declaredField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                    <span class="k">return</span> <span class="n">declaredField</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">object</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NoSuchFieldException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalAccessException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="o">}</span>
+                <span class="n">clazz</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getSuperclass</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="n">Object</span> <span class="nf">GetAcceptorThread</span><span class="o">()</span> <span class="o">{</span>
+            <span class="c1">//获取当前所有线程
+</span><span class="c1"></span>            <span class="n">Thread</span><span class="o">[]</span> <span class="n">threads</span> <span class="o">=</span> <span class="o">(</span><span class="n">Thread</span><span class="o">[])</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getThreadGroup</span><span class="o">(),</span> <span class="s">&#34;threads&#34;</span><span class="o">);</span>
+            <span class="c1">//从线程组中找到Acceptor所在的线程 在tomcat6中的格式为:Http-端口-Acceptor
+</span><span class="c1"></span>            <span class="k">for</span> <span class="o">(</span><span class="n">Thread</span> <span class="n">thread</span> <span class="o">:</span> <span class="n">threads</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">thread</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;exec&#34;</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="k">if</span> <span class="o">((</span><span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;Acceptor&#34;</span><span class="o">))</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;http&#34;</span><span class="o">)))</span> <span class="o">{</span>
+                    <span class="n">Object</span> <span class="n">target</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="s">&#34;target&#34;</span><span class="o">);</span>
+                    <span class="k">if</span> <span class="o">(!(</span><span class="n">target</span> <span class="k">instanceof</span> <span class="n">Runnable</span><span class="o">))</span> <span class="o">{</span>
+                        <span class="k">try</span> <span class="o">{</span>
+                            <span class="n">Object</span> <span class="n">target2</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="s">&#34;this$0&#34;</span><span class="o">);</span>
+                            <span class="n">target</span> <span class="o">=</span> <span class="n">thread</span><span class="o">;</span>
+                        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="k">continue</span><span class="o">;</span>
+                        <span class="o">}</span>
+                    <span class="o">}</span>
+                    <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="s">&#34;this$0&#34;</span><span class="o">);</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="k">try</span> <span class="o">{</span>
+                            <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="s">&#34;endpoint&#34;</span><span class="o">);</span>
+                        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="k">continue</span><span class="o">;</span>
+                        <span class="o">}</span>
+                    <span class="o">}</span>
+                    <span class="k">return</span> <span class="n">jioEndPoint</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="nf">Tomcat6789</span><span class="o">()</span> <span class="o">{</span>
+            <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">GetAcceptorThread</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="n">Object</span> <span class="n">object</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">jioEndPoint</span><span class="o">,</span> <span class="s">&#34;handler&#34;</span><span class="o">),</span> <span class="s">&#34;global&#34;</span><span class="o">);</span>
+            <span class="c1">//从找到的Acceptor线程中获取请求域名、请求的路径
+</span><span class="c1"></span>            <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span> <span class="n">processors</span> <span class="o">=</span> <span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">object</span><span class="o">,</span> <span class="s">&#34;processors&#34;</span><span class="o">);</span>
+            <span class="n">Iterator</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">processors</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span>
+            <span class="k">while</span> <span class="o">(</span><span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">Object</span> <span class="n">next</span> <span class="o">=</span> <span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+                <span class="n">Object</span> <span class="n">req</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">next</span><span class="o">,</span> <span class="s">&#34;req&#34;</span><span class="o">);</span>
+                <span class="n">Object</span> <span class="n">serverPort</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="s">&#34;serverPort&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">serverPort</span><span class="o">.</span><span class="na">equals</span><span class="o">(-</span><span class="n">1</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">buf</span><span class="o">.</span><span class="na">MessageBytes</span> <span class="n">serverNameMB</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">buf</span><span class="o">.</span><span class="na">MessageBytes</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="s">&#34;serverNameMB&#34;</span><span class="o">);</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">serverName</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">serverNameMB</span><span class="o">,</span> <span class="s">&#34;strValue&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">serverName</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">this</span><span class="o">.</span><span class="na">serverName</span> <span class="o">=</span> <span class="n">serverNameMB</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+                <span class="o">}</span>
+                <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">buf</span><span class="o">.</span><span class="na">MessageBytes</span> <span class="n">uriMB</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">buf</span><span class="o">.</span><span class="na">MessageBytes</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="s">&#34;uriMB&#34;</span><span class="o">);</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">uri</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">uriMB</span><span class="o">,</span> <span class="s">&#34;strValue&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">uri</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">this</span><span class="o">.</span><span class="na">uri</span> <span class="o">=</span> <span class="n">uriMB</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+                <span class="o">}</span>
+                <span class="c1">//根据获取到的服务器名、路径信息获取StandardContext
+</span><span class="c1"></span>                <span class="k">this</span><span class="o">.</span><span class="na">getStandardContext</span><span class="o">();</span>
+                <span class="k">return</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getStandardContext</span><span class="o">()</span> <span class="o">{</span>
+            <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">GetAcceptorThread</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="n">Object</span> <span class="n">service</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">jioEndPoint</span><span class="o">,</span> <span class="s">&#34;handler&#34;</span><span class="o">),</span> <span class="s">&#34;proto&#34;</span><span class="o">),</span> <span class="s">&#34;adapter&#34;</span><span class="o">),</span> <span class="s">&#34;connector&#34;</span><span class="o">),</span> <span class="s">&#34;service&#34;</span><span class="o">);</span>
+            <span class="n">StandardEngine</span> <span class="n">engine</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardEngine</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">service</span><span class="o">,</span> <span class="s">&#34;container&#34;</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">engine</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">engine</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardEngine</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">service</span><span class="o">,</span> <span class="s">&#34;engine&#34;</span><span class="o">);</span>
+            <span class="o">}</span>
+
+            <span class="n">HashMap</span> <span class="n">children</span> <span class="o">=</span> <span class="o">(</span><span class="n">HashMap</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">engine</span><span class="o">,</span> <span class="s">&#34;children&#34;</span><span class="o">);</span>
+            <span class="n">StandardHost</span> <span class="n">standardHost</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardHost</span><span class="o">)</span> <span class="n">children</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">serverName</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">standardHost</span><span class="o">==</span><span class="kc">null</span><span class="o">){</span>
+                <span class="n">standardHost</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardHost</span><span class="o">)</span> <span class="n">children</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;localhost&#34;</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">children</span> <span class="o">=</span> <span class="o">(</span><span class="n">HashMap</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">standardHost</span><span class="o">,</span> <span class="s">&#34;children&#34;</span><span class="o">);</span>
+            <span class="n">Iterator</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">children</span><span class="o">.</span><span class="na">keySet</span><span class="o">().</span><span class="na">iterator</span><span class="o">();</span>
+            <span class="k">while</span> <span class="o">(</span><span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">String</span> <span class="n">contextKey</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">contextKey</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">()||!(</span><span class="k">this</span><span class="o">.</span><span class="na">uri</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="n">contextKey</span><span class="o">)))</span> <span class="o">{</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="n">StandardContext</span> <span class="n">standardContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardContext</span><span class="o">)</span> <span class="n">children</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">contextKey</span><span class="o">);</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">standardContext</span> <span class="o">=</span> <span class="n">standardContext</span><span class="o">;</span>
+                <span class="k">return</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="kd">public</span> <span class="n">StandardContext</span> <span class="nf">getSTC</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">standardContext</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>另外，在Tomcat下还有一个Poller线程，它和Acceptor一起负责接收请求，在Poller线程中同样可用找到StandardContext，流程和Acceptor是一样的。（在<code>ContainerBackgroundProcessor</code>线程下也可以找到StandardContext）</p>
+</li>
+<li>
+<p><strong>从ContextClassLoader获取（只可用于Tomcat 8 9）</strong></p>
+<p>由于Tomcat处理请求的线程中，存在ContextLoader对象，而这个对象又保存了StandardContext对象，所以很方便就获取了。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">loader</span><span class="o">.</span><span class="na">WebappClassLoaderBase</span> <span class="n">webappClassLoaderBase</span> <span class="o">=(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">loader</span><span class="o">.</span><span class="na">WebappClassLoaderBase</span><span class="o">)</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getContextClassLoader</span><span class="o">();</span>
+<span class="n">StandardContext</span> <span class="n">standardContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardContext</span><span class="o">)</span><span class="n">webappClassLoaderBase</span><span class="o">.</span><span class="na">getResources</span><span class="o">().</span><span class="na">getContext</span><span class="o">();</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p><strong>从ThreadLocal获取request</strong></p>
+<p>这种方法可以兼容tomcat 789，但在Tomcat 6下无法使用。</p>
+<p><a href="https://xz.aliyun.com/t/7388" target="_blank" rel="noopener">基于tomcat的内存 Webshell 无文件攻击技术</a></p>
+</li>
+<li>
+<p><strong>从MBean中获取（兼容Tomcat789）</strong></p>
+<p>Tomcat 使用 JMX MBean 来实现自身的性能管理。而我们可以从jmxMBeanServer对象，在其field中一步一步找到StandardContext对象。但有个很大的局限性在于，必须猜中项目名和host，才能获取到对应的standardContext对象。</p>
+<p><a href="https://mp.weixin.qq.com/s/eI-50-_W89eN8tsKi-5j4g" target="_blank" rel="noopener">中间件内存马注入&amp;冰蝎连接(附更改部分代码)</a></p>
+</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
+<ol>
+<li><a href="https://mp.weixin.qq.com/s?__biz=MzIxMjEwNTc4NA==&amp;mid=2652991099&amp;idx=1&amp;sn=a6c34bb344f105eb98fc6943c7439331&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">JSP Webshell那些事 -- 攻击篇(下)</a></li>
+<li><a href="https://p1n93r.github.io/post/java/tomcat%E6%9E%B6%E6%9E%84%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">Tomcat架构原理</a></li>
+<li><a href="https://xz.aliyun.com/t/9914#toc-6" target="_blank" rel="noopener">Java内存马：一种Tomcat全版本获取StandardContext的新方法</a></li>
+</ol>
+
+            </div>
+
+            
+    
+    
+        <ul class="post-copyright">
+            <li class="copyright-item author"><span class="copyright-item-text">作者</span>：<a href="https://myzxcg.com/" class="p-author h-card" target="_blank" rel="noopener">myzxcg</a></li>
+            
+                
+                
+                
+                
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2021/10/Tomcat-%E6%9E%B6%E6%9E%84%E4%B8%8EContext%E5%88%86%E6%9E%90/" target="_blank" rel="noopener">https://myzxcg.com/2021/10/Tomcat-架构与Context分析/</a></li>
+            
+            <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
+            
+        </ul>
+    
+
+
+
+        </article>
+
+        
+
+        
+
+
+        
+
+
+        
+
+
+        
+    
+    
+        <div class="related-posts">
+            <h2 class="related-title">相关文章：<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon related-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"/></svg></h2>
+            <ul class="related-list">
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Spring-%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" class="related-link">Spring 内存马实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Weblogic-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/" class="related-link">Weblogic 内存马分析与实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Shiro-%E5%9B%9E%E6%98%BE%E4%B8%8E%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" class="related-link">Shiro 回显与内存马实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/10/Tomcat-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E5%8F%8A%E6%A3%80%E6%B5%8B/" class="related-link">Tomcat 内存马分析及检测</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/10/FastJson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%BB%95%E8%BF%87%E4%B8%8E%E5%88%A9%E7%94%A8/" class="related-link">FastJson 反序列化绕过与利用</a>
+                    </li>
+                
+            </ul>
+        </div>
+    
+
+
+
+        
+
+
+        
+    <footer class="minimal-footer">
+        
+            <div class="post-tag"><a href="/tags/Java%E5%AE%89%E5%85%A8/" rel="tag" class="post-tag-link">#java安全</a></div>
+        
+        
+        
+            
+        
+    </footer>
+
+
+
+        
+
+
+        
+    
+        
+        
+    
+    
+    
+    
+        <ul class="post-nav">
+            
+                <li class="post-nav-prev">
+                    <a href="/2021/10/Tomcat-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E5%8F%8A%E6%A3%80%E6%B5%8B/" rel="prev">&lt; Tomcat 内存马分析及检测</a>
+                </li>
+            
+            
+                <li class="post-nav-next">
+                    <a href="/2021/10/FastJson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%BB%95%E8%BF%87%E4%B8%8E%E5%88%A9%E7%94%A8/" rel="next">FastJson 反序列化绕过与利用 &gt;</a>
+                </li>
+            
+        </ul>
+    
+
+
+
+        
+    
+
+        
+            <div class="load-comments">
+                <div id="load-comments">加载评论</div>
+            </div>
+        
+
+        
+
+        
+            <div id="vcomments"></div>
+        
+
+        
+
+        
+    
+
+
+
+    </div>
+</main>
+
+
+            
+    <div id="back-to-top" class="back-to-top">
+        <a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon arrow-up"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"/></svg></a>
+    </div>
+
+
+            
+    <footer id="footer" class="footer">
+        <div class="footer-inner">
+            
+
+            
+    
+        <ul class="socials"><li class="socials-item">
+                    <a href="https://github.com/myzxcg" target="_blank" rel="external noopener" title="GitHub"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="https://twitter.com/myzxcg" target="_blank" rel="external noopener" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="mailto:myz.xcg@gmail.com" target="_blank" rel="external noopener" title="Email"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="/rss.xml" target="_blank" rel="external noopener" title="RSS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M19.199 24C19.199 13.467 10.533 4.8 0 4.8V0c13.165 0 24 10.835 24 24h-4.801zM3.291 17.415c1.814 0 3.293 1.479 3.293 3.295 0 1.813-1.485 3.29-3.301 3.29C1.47 24 0 22.526 0 20.71s1.475-3.294 3.291-3.295zM15.909 24h-4.665c0-6.169-5.075-11.245-11.244-11.245V8.09c8.727 0 15.909 7.184 15.909 15.91z"/></svg></a>
+                </li></ul>
+    
+
+
+            <div class="site-info">©&nbsp;2021&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
+              </div>
+
+            
+        </div>
+    </footer>
+
+
+        </div>
+        
+
+        
+
+
+
+
+
+
+    
+
+        
+
+        
+            <script>
+    function loadComments() {
+        if (typeof Valine === 'undefined') {
+            var getScript = (options) => {
+                var script = document.createElement('script');
+                script.defer = true;
+                script.crossOrigin = 'anonymous';
+                Object.keys(options).forEach((key) => {
+                    script[key] = options[key];
+                });
+                document.body.appendChild(script);
+            };
+            getScript({
+                src: '//unpkg.com/valine@latest/dist/Valine.min.js',
+                onload: () => {
+                    newValine();
+                }
+            });
+        } else {
+            newValine();
+        }
+    }
+    function newValine() {
+        new Valine({
+            el: '#vcomments',
+            appId: '6Fu9AJHglaqmAVjpYMdOOBEi-MdYXbMMI',
+            appKey: '0GcKEskKSnNfqn5dbNITfO4H',
+            placeholder: '有问题欢迎交流',
+            path: location.pathname,
+            avatar: 'mp',
+            meta: ["nick","mail","link"],
+            pageSize:  10 ,
+            lang: 'zh-cn',
+            visitor:  false ,
+            highlight:  true ,
+            avatarForce:  false ,
+            recordIP:  true ,
+            serverURLs: '',
+            emojiCDN: '',
+            emojiMaps: {},
+            enableQQ:  false ,
+            requiredFields: []
+        });
+    }
+</script>
+
+        
+
+        
+
+        
+
+    
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/medium-zoom@latest/dist/medium-zoom.min.js"></script>
+
+<script>
+    let imgNodes = document.querySelectorAll('div.post-body img');
+    imgNodes = Array.from(imgNodes).filter(node => node.parentNode.tagName !== "A");
+
+    mediumZoom(imgNodes, {
+        background: 'hsla(var(--color-bg-h), var(--color-bg-s), var(--color-bg-l), 0.95)'
+    })
+</script>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/instant.page@5.1.0/instantpage.min.js" type="module" defer></script>
+
+
+
+
+
+
+
+    </body>
+</html>

