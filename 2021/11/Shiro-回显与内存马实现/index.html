@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.88.1" /><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.91.0" /><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -782,37 +782,37 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="k">try</span> <span class="o">{</span>
-     <span class="n">Field</span> <span class="n">wrap_same_object</span> <span class="o">=</span><span class="kc">null</span><span class="o">;</span>
-     <span class="k">try</span><span class="o">{</span>
-         <span class="n">wrap_same_object</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.catalina.core.ApplicationDispatcher&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;WRAP_SAME_OBJECT&#34;</span><span class="o">);</span>
-     <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
-         <span class="c1">//tomcat6 修改STRICT_SERVLET_COMPLIANCE变量
-</span><span class="c1"></span>         <span class="n">wrap_same_object</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.catalina.Globals&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;STRICT_SERVLET_COMPLIANCE&#34;</span><span class="o">);</span>
-     <span class="o">}</span>
-     <span class="n">Field</span> <span class="n">lastServicedRequest</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.catalina.core.ApplicationFilterChain&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;lastServicedRequest&#34;</span><span class="o">);</span>
-     <span class="n">Field</span> <span class="n">lastServicedResponse</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.catalina.core.ApplicationFilterChain&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;lastServicedResponse&#34;</span><span class="o">);</span>
-     <span class="n">lastServicedRequest</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-     <span class="n">lastServicedResponse</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-     <span class="n">wrap_same_object</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-     <span class="c1">//修改final
-</span><span class="c1"></span>     <span class="n">Field</span> <span class="n">modifiersField</span> <span class="o">=</span> <span class="n">Field</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;modifiers&#34;</span><span class="o">);</span>
-     <span class="n">modifiersField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-     <span class="n">modifiersField</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="n">wrap_same_object</span><span class="o">,</span> <span class="n">wrap_same_object</span><span class="o">.</span><span class="na">getModifiers</span><span class="o">()</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">Modifier</span><span class="o">.</span><span class="na">FINAL</span><span class="o">);</span>
-     <span class="n">modifiersField</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="n">lastServicedRequest</span><span class="o">,</span> <span class="n">lastServicedRequest</span><span class="o">.</span><span class="na">getModifiers</span><span class="o">()</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">Modifier</span><span class="o">.</span><span class="na">FINAL</span><span class="o">);</span>
-     <span class="n">modifiersField</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="n">lastServicedResponse</span><span class="o">,</span> <span class="n">lastServicedResponse</span><span class="o">.</span><span class="na">getModifiers</span><span class="o">()</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">Modifier</span><span class="o">.</span><span class="na">FINAL</span><span class="o">);</span>
-     <span class="kt">boolean</span> <span class="n">wrap_same_object1</span> <span class="o">=</span> <span class="n">wrap_same_object</span><span class="o">.</span><span class="na">getBoolean</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
-     <span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">ServletRequest</span><span class="o">&gt;</span> <span class="n">requestThreadLocal</span> <span class="o">=</span> <span class="o">(</span><span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">ServletRequest</span><span class="o">&gt;)</span><span class="n">lastServicedRequest</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
-     <span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">ServletResponse</span><span class="o">&gt;</span> <span class="n">responseThreadLocal</span> <span class="o">=</span> <span class="o">(</span><span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">ServletResponse</span><span class="o">&gt;)</span><span class="n">lastServicedResponse</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
-     <span class="k">if</span> <span class="o">(!</span><span class="n">wrap_same_object1</span> <span class="o">&amp;&amp;</span> <span class="n">requestThreadLocal</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">responseThreadLocal</span> <span class="o">==</span> <span class="kc">null</span><span class="o">){</span>
-         <span class="n">wrap_same_object</span><span class="o">.</span><span class="na">setBoolean</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span><span class="kc">true</span><span class="o">);</span>
-         <span class="n">lastServicedRequest</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span><span class="k">new</span> <span class="n">ThreadLocal</span><span class="o">&lt;&gt;());</span>
-         <span class="n">lastServicedResponse</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span><span class="k">new</span> <span class="n">ThreadLocal</span><span class="o">&lt;&gt;());</span>
-     <span class="o">}</span><span class="k">else</span><span class="o">{</span>
-         <span class="n">ServletResponse</span> <span class="n">servletResponse</span> <span class="o">=</span> <span class="n">responseThreadLocal</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
-         <span class="n">servletResponse</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">write</span><span class="o">(</span><span class="s">&#34;111&#34;</span><span class="o">);</span>
-     <span class="o">}</span>
+ 	<span class="n">Field</span> <span class="n">wrap_same_object</span> <span class="o">=</span><span class="kc">null</span><span class="o">;</span>
+ 	<span class="k">try</span><span class="o">{</span>
+ 		<span class="n">wrap_same_object</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.catalina.core.ApplicationDispatcher&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;WRAP_SAME_OBJECT&#34;</span><span class="o">);</span>
+ 	<span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+ 		<span class="c1">//tomcat6 修改STRICT_SERVLET_COMPLIANCE变量
+</span><span class="c1"></span> 		<span class="n">wrap_same_object</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.catalina.Globals&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;STRICT_SERVLET_COMPLIANCE&#34;</span><span class="o">);</span>
+ 	<span class="o">}</span>
+ 	<span class="n">Field</span> <span class="n">lastServicedRequest</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.catalina.core.ApplicationFilterChain&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;lastServicedRequest&#34;</span><span class="o">);</span>
+ 	<span class="n">Field</span> <span class="n">lastServicedResponse</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.apache.catalina.core.ApplicationFilterChain&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;lastServicedResponse&#34;</span><span class="o">);</span>
+ 	<span class="n">lastServicedRequest</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+ 	<span class="n">lastServicedResponse</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+ 	<span class="n">wrap_same_object</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+ 	<span class="c1">//修改final
+</span><span class="c1"></span> 	<span class="n">Field</span> <span class="n">modifiersField</span> <span class="o">=</span> <span class="n">Field</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;modifiers&#34;</span><span class="o">);</span>
+ 	<span class="n">modifiersField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+ 	<span class="n">modifiersField</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="n">wrap_same_object</span><span class="o">,</span> <span class="n">wrap_same_object</span><span class="o">.</span><span class="na">getModifiers</span><span class="o">()</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">Modifier</span><span class="o">.</span><span class="na">FINAL</span><span class="o">);</span>
+ 	<span class="n">modifiersField</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="n">lastServicedRequest</span><span class="o">,</span> <span class="n">lastServicedRequest</span><span class="o">.</span><span class="na">getModifiers</span><span class="o">()</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">Modifier</span><span class="o">.</span><span class="na">FINAL</span><span class="o">);</span>
+ 	<span class="n">modifiersField</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="n">lastServicedResponse</span><span class="o">,</span> <span class="n">lastServicedResponse</span><span class="o">.</span><span class="na">getModifiers</span><span class="o">()</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">Modifier</span><span class="o">.</span><span class="na">FINAL</span><span class="o">);</span>
+ 	<span class="kt">boolean</span> <span class="n">wrap_same_object1</span> <span class="o">=</span> <span class="n">wrap_same_object</span><span class="o">.</span><span class="na">getBoolean</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+ 	<span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">ServletRequest</span><span class="o">&gt;</span> <span class="n">requestThreadLocal</span> <span class="o">=</span> <span class="o">(</span><span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">ServletRequest</span><span class="o">&gt;)</span><span class="n">lastServicedRequest</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+ 	<span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">ServletResponse</span><span class="o">&gt;</span> <span class="n">responseThreadLocal</span> <span class="o">=</span> <span class="o">(</span><span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">ServletResponse</span><span class="o">&gt;)</span><span class="n">lastServicedResponse</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+ 	<span class="k">if</span> <span class="o">(!</span><span class="n">wrap_same_object1</span> <span class="o">&amp;&amp;</span> <span class="n">requestThreadLocal</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">responseThreadLocal</span> <span class="o">==</span> <span class="kc">null</span><span class="o">){</span>
+ 		<span class="n">wrap_same_object</span><span class="o">.</span><span class="na">setBoolean</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span><span class="kc">true</span><span class="o">);</span>
+ 		<span class="n">lastServicedRequest</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span><span class="k">new</span> <span class="n">ThreadLocal</span><span class="o">&lt;&gt;());</span>
+ 		<span class="n">lastServicedResponse</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span><span class="k">new</span> <span class="n">ThreadLocal</span><span class="o">&lt;&gt;());</span>
+ 	<span class="o">}</span><span class="k">else</span><span class="o">{</span>
+ 		<span class="n">ServletResponse</span> <span class="n">servletResponse</span> <span class="o">=</span> <span class="n">responseThreadLocal</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+ 		<span class="n">servletResponse</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">write</span><span class="o">(</span><span class="s">&#34;111&#34;</span><span class="o">);</span>
+ 	<span class="o">}</span>
  <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-     <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+ 	<span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
  <span class="o">}</span>
 </code></pre></td></tr></table></div>
 </div>
@@ -912,7 +912,7 @@
 
  <span class="o">}</span>
  <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-     <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+ 	<span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
  <span class="o">}</span>
 </code></pre></td></tr></table></div>
 </div>
@@ -2128,7 +2128,7 @@
     
 
 
-            <div class="site-info">©&nbsp;2021&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
+            <div class="site-info">©&nbsp;2022&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
               </div>
 
             
