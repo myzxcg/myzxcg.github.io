@@ -4,7 +4,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-CN">
     <title type="text">MYZXCG</title>
     <subtitle type="html">专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～</subtitle>
-    <updated>2022-01-17T23:11:02&#43;08:00</updated>
+    <updated>2022-02-07T19:42:50&#43;08:00</updated>
     <id>https://myzxcg.com/</id>
     <link rel="alternate" type="text/html" href="https://myzxcg.com/" />
     <link rel="self" type="application/atom&#43;xml" href="https://myzxcg.com/atom.xml" />
@@ -14683,291 +14683,20 @@ Powermad利用ms-DS-MachineAccountQuota属性设置无需将实际系统附加�
         </entry>
     
         <entry>
-            <title type="text">Windows访问控制模型--ACL分析</title>
-            <link rel="alternate" type="text/html" href="https://myzxcg.com/2021/08/Windows%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B-ACL%E5%88%86%E6%9E%90/" />
-            <id>https://myzxcg.com/2021/08/Windows%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B-ACL%E5%88%86%E6%9E%90/</id>
-            <updated>2021-11-20T13:24:21&#43;08:00</updated>
-            <published>2021-08-28T20:08:06&#43;08:00</published>
+            <title type="text">Windows 访问控制模型（二）</title>
+            <link rel="alternate" type="text/html" href="https://myzxcg.com/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%BA%8C/" />
+            <id>https://myzxcg.com/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%BA%8C/</id>
+            <updated>2022-02-07T19:37:11&#43;08:00</updated>
+            <published>2021-08-29T20:08:06&#43;08:00</published>
             <author>
                     <name>myzxcg</name>
                     <uri>https://myzxcg.com/</uri>
                     <email>myzx.xcg@gmail.com</email>
                     </author>
-            <rights>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</rights><summary type="html">概念 Windows访问控制模型由两部分组成： 访问令牌（Access Token）包含用……</summary>
+            <rights>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</rights><summary type="html">ACL 编辑 文件与目录 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 #icacls #查看指定文件或目录的ACL icacls……</summary>
             
-                <content type="html">&lt;h2 id=&#34;概念&#34;&gt;概念&lt;/h2&gt;
-&lt;p&gt;Windows访问控制模型由两部分组成：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;访问令牌（Access Token）包含用户的标识（User SID，Group SIDS）以及特权列表。&lt;/li&gt;
-&lt;li&gt;安全描述符（ACL），被访问的安全对象的相关安全信息。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;这里的安全对象包括：NTFS卷上的文件和目录、注册表项、网络共享、服务、进程、Active Directory对象（AD 树上的每个条目）等等。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/image-20210827200344549.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;大致认证过程&lt;/strong&gt;&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;A访问B&lt;/p&gt;
-&lt;p&gt;A向B出示自己的Access Token（包含自己的用户sid，所在的组的sid以及特权列表）。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;B检查A&lt;/p&gt;
-&lt;p&gt;B首先判断是否需要特权才能访问。如果需要，则查看A的Access Token有没有指定特权。&lt;/p&gt;
-&lt;p&gt;B通过A的Access Token，把A的用户sid以及组sid跟自己的ACL做比对。来判断是否让A访问。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;acl&#34;&gt;ACL&lt;/h2&gt;
-&lt;p&gt;Windows中的ACL(Access Control List)是用来表示用户（组）权限的列表。域里面用户的身份用sid来表示，而不是用户名（objectsid属性标识它的sid）。&lt;/p&gt;
-&lt;p&gt;ACL包含&lt;strong&gt;DACL（权限访问控制）&lt;strong&gt;和&lt;/strong&gt;SACL（日志记录功能）&lt;/strong&gt;。&lt;/p&gt;
-&lt;h3 id=&#34;dacl&#34;&gt;DACL&lt;/h3&gt;
-&lt;p&gt;DACL起到的作用是权限访问控制，也就是判断一个用户能不能访问安全对象。DACL由若干条ACE构成。如下图所示，权限项目里面每一条都是ACE。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/image-20210827200442571.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;判断用户访问权限的方法&lt;/strong&gt;
-对某个文件进行访问，判断顺序是&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;1. 如果没有DACL，系统将允许访问
-2. 如果存在DACL，但没有ACE，系统将拒绝所有访问
-3. 如果存在DACL，也存在ACE，那么会按照每个ACE指定允许或拒绝
-4. 如果每条ACE都没匹配上，则拒绝访问。
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;SRM（安全引用监视器，负责执行对象的安全访问检查等）对ACL的解析顺序是（上面第3步的解析过程）&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;明确定义的DENY ACE&lt;/li&gt;
-&lt;li&gt;明确定义的ALLOW ACE&lt;/li&gt;
-&lt;li&gt;继承的DENY ACE&lt;/li&gt;
-&lt;li&gt;继承的ALLOW ACE&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h3 id=&#34;sacl&#34;&gt;SACL&lt;/h3&gt;
-&lt;p&gt;SACL的作用是记录访问成功与否，SACL也是由一条一条的ACE构成，每条ACE的内容是某个用户访问成功/失败某个权限。当访问跟满足这条ACE的时候就会被记录下来。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/image-20210827200541026.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;域内对象的ACL&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;nTSecurityDescriptor属性存储该对象的ACL信息，存储格式是SDDL(Security Descriptor Definition Language)
-查看某个对象的ACL（普通域用户查不了这个属性）&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;AdFind.exe -b &amp;quot;CN=micle,OU=研发二组,DC=rootkit,DC=org&amp;quot; NTSecurityDescriptor -rawsddl
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;下面截取部分ACL的信息&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/image-20210827200606780.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;O:DA     表示owner，这条ACL的所有者（Domain Admins）
-G:DA     表示primary group，Windows 通常忽略此参数（这是为了 POSIX 兼容性，但它现在已经退化了)
-D:       表示DACL，里面就是ACE
-(A;CIID;GW;;;S-1-5-21-1812960810-2335050734-3517558805-1103)
-(OA;;WP;bf967950-0de6-11d0-a285-00aa003049e2;bf967a86-0de6-11d0-a285-00aa003049e2;S-1-5-21-1812960810-2335050734-3517558805-1133)
-AI:      SDDL_AUTO_INHERITED（允许DACL被继承，PAI 阻止DACL被继承）
-S:       表示SACL，里面就是ACE
-(OU;CIIOIDSA;WP;f30e3bbe-9ff0-11d1-b603-0000f80367c1;bf967aa5-0de6-11d0-a285-00aa003049e2;WD)
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;ace&#34;&gt;ACE&lt;/h3&gt;
-&lt;p&gt;每个ACE中有6个字段，由分号分隔符分隔&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;ACE类型&lt;/strong&gt;（允许/拒绝/审核）&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;ACE标志&lt;/strong&gt;（继承和审计设置）&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;权限&lt;/strong&gt;（增量权限列表）&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;对象类型&lt;/strong&gt;(GUID)&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;继承的对象类型&lt;/strong&gt;(GUID)&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;受托人&lt;/strong&gt;(SID)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;(A;CIID;GW;;;S-1-5-21-1812960810-2335050734-3517558805-1103)
-A;  允许
-CI; 容器继承
-GW; 通用写权限
-; 对象类型
-; 继承的对象类型
-S-1-5-21-1812960810-2335050734-3517558805-1103 受托人SID  CO:Creator Owner 许多SID都有速记符号
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;允许sid为S-1-5-21-1812960810-2335050734-3517558805-1103的用户访问，有GW权限，并且权限可以被继承（CI）&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;ACE类型&lt;/strong&gt;&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;Value&lt;/th&gt;
-&lt;th&gt;Description&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;A&lt;/td&gt;
-&lt;td&gt;允许访问&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;D&lt;/td&gt;
-&lt;td&gt;拒绝访问&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;OA&lt;/td&gt;
-&lt;td&gt;允许对象访问: 仅适用于对象的一个子集。&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;OD&lt;/td&gt;
-&lt;td&gt;对象访问被拒绝: 仅适用于对象的一个子集。&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;AU&lt;/td&gt;
-&lt;td&gt;系统审计（SACL）&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;AL&lt;/td&gt;
-&lt;td&gt;系统报警（SACL）&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;OU&lt;/td&gt;
-&lt;td&gt;对象系统审计（SACL）&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;OL&lt;/td&gt;
-&lt;td&gt;对象系统警报（SACL）&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;继承类型&lt;/strong&gt;&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;Value&lt;/th&gt;
-&lt;th&gt;Description&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;CI&lt;/td&gt;
-&lt;td&gt;容器继承: 容器的子对象（如目录）将ACE作为显式ACE继承&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;OI&lt;/td&gt;
-&lt;td&gt;对象继承: 不是容器的子对象将ACE作为显式ACE继承&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;IO&lt;/td&gt;
-&lt;td&gt;仅继承: ACE不会应用于当前对象，仅通过继承影响子对象&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;NP&lt;/td&gt;
-&lt;td&gt;没有传播的继承: 只有直接的下级子对象继承这个ACE（子对象的子对象是不继承的）&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;ID&lt;/td&gt;
-&lt;td&gt;ACE是继承的&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;SA&lt;/td&gt;
-&lt;td&gt;成功的访问审核（SACL）&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;FA&lt;/td&gt;
-&lt;td&gt;失败的问审核（SACL）&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;权限列表&lt;/strong&gt;&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;通用权限（就是对这个条目的通用权限，通用读，通用写等）&lt;/li&gt;
-&lt;li&gt;域内的ACL支持某个属性的权限（一个条目包含若干个属性，通用权限是对整个条目的权限）&lt;/li&gt;
-&lt;li&gt;扩展权限（比如强制更改密码）&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;&lt;strong&gt;通用权限&lt;/strong&gt;&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;Value&lt;/th&gt;
-&lt;th&gt;Description&lt;/th&gt;
-&lt;th&gt;Hex&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;GA&lt;/td&gt;
-&lt;td&gt;所有通用权限&lt;/td&gt;
-&lt;td&gt;0x10000000&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;GR&lt;/td&gt;
-&lt;td&gt;通用读取权限&lt;/td&gt;
-&lt;td&gt;0x80000000&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;GW&lt;/td&gt;
-&lt;td&gt;通用写入权限&lt;/td&gt;
-&lt;td&gt;0x40000000&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;GX&lt;/td&gt;
-&lt;td&gt;通用执行权限&lt;/td&gt;
-&lt;td&gt;0x20000000&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;更多权限标志可参考：&lt;a href=&#34;https://clan8blog.wordpress.com/2016/08/08/sddl-explained&#34;&gt;sddl-explained&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;扩展权限与对某个属性权限的ACE&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;相较于通用权限，扩展权限与对某个属性的权限多了&lt;code&gt;GUID(00299570-246d-11d0-a768-00aa006e0529)&lt;/code&gt;（强制更改密码）这个对象类型。&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;(
-OA; 对象允许
-;
-CR; 扩展权限
-00299570-246d-11d0-a768-00aa006e0529; 对象类型（GUID）
-; 继承的对象类型（GUID）
-S-1-5-21-1812960810-2335050734-3517558805-1178 受托人SID
-)
-&lt;/code&gt;&lt;/pre&gt;&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;根据GUID查扩展权限名字，扩展权限都存储在&lt;code&gt;CN=Extended-Rights,CN=Configuration,DC=test,DC=local&lt;/code&gt;rightsGuid属性下。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;n&#34;&gt;adfind&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Extended-Rights,CN=Configuration,DC=test,DC=local&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-f&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;rightsGuid=00299570-246d-11d0-a768-00aa006e0529&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;根据GUID查具体属性的名字，所有属性的都存储在结构分区里面。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;n&#34;&gt;adfind&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-schema&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-f&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;schemaIDGUID={{GUID:BF9679C0-0DE6-11D0-A285-00AA003049E2}}&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-binenc&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;acl查询与修改&#34;&gt;ACL查询与修改&lt;/h2&gt;
-&lt;h3 id=&#34;文件与目录的acl&#34;&gt;文件与目录的ACL&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查看指定文件或目录的ACL&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt;
-
-&lt;span class=&#34;c&#34;&gt;#备份指定文件(包括当前目录及其子目录中的文件)的ACL，备份结果格式是D:(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;S-1-5-21-649686750-1085018105-1475906644-1000)&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;save&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Aclfile&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;
-
-&lt;span class=&#34;c&#34;&gt;#还原指定文件(包括当前目录及其子目录中的文件)的ACL，还原时，路径需要设置为上级目录。&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;restore&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;AclFile&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;
-
-&lt;span class=&#34;c&#34;&gt;#添加用户test1对指定文件(包括当前目录及其子目录中的文件)的完全访问权限&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;grant&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;test1&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;OI&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CI&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;F&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;
-
-&lt;span class=&#34;c&#34;&gt;#移除用户test1对指定文件(包括当前目录及其子目录中的文件)的完全访问权限&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;remove&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;test1&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;
-
-&lt;span class=&#34;c&#34;&gt;#powershell也可以查看和编辑&lt;/span&gt;
-&lt;span class=&#34;nb&#34;&gt;Get-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;C:\Users\hanhan3\Desktop\1.txt&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Format-Table&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-wrap&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;(OI)代表对象继承 (CI)代表容器继承 (F)代表完全访问，查看&lt;code&gt;icacls /?&lt;/code&gt;&lt;/p&gt;
-&lt;h3 id=&#34;注册表中的acl&#34;&gt;注册表中的ACL&lt;/h3&gt;
+                <content type="html">&lt;h2 id=&#34;acl-编辑&#34;&gt;ACL 编辑&lt;/h2&gt;
+&lt;h3 id=&#34;文件与目录&#34;&gt;文件与目录&lt;/h3&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
@@ -14988,18 +14717,49 @@ S-1-5-21-1812960810-2335050734-3517558805-1178 受托人SID
 &lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
 &lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
 &lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;c&#34;&gt;#icacls&lt;/span&gt;
+&lt;span class=&#34;c&#34;&gt;#查看指定文件或目录的ACL&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;#添加用户test1对指定目录(包括当前目录及其子目录中的文件)的完全访问权限&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;grant&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;test1&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;OI&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CI&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;F&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;#移除用户test1对指定文件的访问权限&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;remove&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;test1&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;#备份指定文件(包括当前目录及其子目录中的文件)的ACL，备份结果格式是D:(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;S-1-5-21-649686750-1085018105-1475906644-1000)&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;save&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Aclfile&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;#还原指定文件(包括当前目录及其子目录中的文件)的ACL，还原时，路径需要设置为上级目录。&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;restore&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;AclFile&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;#powershell&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;Get-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;C:\Users\Administrator\Desktop\1.txt&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Format-Table&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-wrap&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;注册表&#34;&gt;注册表&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查看指定路径的ACL&lt;/span&gt;
@@ -15009,33 +14769,61 @@ S-1-5-21-1812960810-2335050734-3517558805-1178 受托人SID
 &lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;HKLM:\SAM&amp;#39;&lt;/span&gt;
 &lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Access&lt;/span&gt;
 
-&lt;span class=&#34;c&#34;&gt;#添加用户test1对指定路径(包括当前注册表项及其子健)的完全访问权限&lt;/span&gt;
+&lt;span class=&#34;c&#34;&gt;#添加用户test对指定路径(包括当前注册表项及其子健)的完全访问权限&lt;/span&gt;
 &lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HKLM&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SAM&lt;/span&gt;
-&lt;span class=&#34;nv&#34;&gt;$person&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;no&#34;&gt;[System.Security.Principal.NTAccount]&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;test1&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;nv&#34;&gt;$access&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;no&#34;&gt;[System.Security.AccessControl.RegistryRights]&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;FullControl&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;nv&#34;&gt;$inheritance&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;no&#34;&gt;[System.Security.AccessControl.InheritanceFlags]&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;ObjectInherit,ContainerInherit&amp;#34;&lt;/span&gt; &lt;span class=&#34;c&#34;&gt;#表示其子健继承当前注册表项的权限&lt;/span&gt;
-&lt;span class=&#34;nv&#34;&gt;$propagation&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;no&#34;&gt;[System.Security.AccessControl.PropagationFlags]&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;None&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;nv&#34;&gt;$type&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;no&#34;&gt;[System.Security.AccessControl.AccessControlType]&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Allow&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;nv&#34;&gt;$rule&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;New-Object&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Security&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;AccessControl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RegistryAccessRule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;`&lt;/span&gt;
-&lt;span class=&#34;nv&#34;&gt;$person&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$access&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$inheritance&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$propagation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$type&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;$rule&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;New-Object&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Security&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;AccessControl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RegistryAccessRule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;test&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;FullControl&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;ObjectInherit,ContainerInherit&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;None&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Allow&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;AddAccessRule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$rule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;nb&#34;&gt;Set-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HKLM&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SAM&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt;
 
-&lt;span class=&#34;c&#34;&gt;#移除用户test1对指定路径(包括当前注册表项及其子健)的完全访问权限&lt;/span&gt;
+&lt;span class=&#34;c&#34;&gt;#移除用户test对指定路径(包括当前注册表项及其子健)的完全访问权限&lt;/span&gt;
 &lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HKLM&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SAM&lt;/span&gt;
-&lt;span class=&#34;nv&#34;&gt;$person&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;no&#34;&gt;[System.Security.Principal.NTAccount]&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;test1&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;nv&#34;&gt;$access&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;no&#34;&gt;[System.Security.AccessControl.RegistryRights]&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;FullControl&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;nv&#34;&gt;$inheritance&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;no&#34;&gt;[System.Security.AccessControl.InheritanceFlags]&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;ObjectInherit,ContainerInherit&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;nv&#34;&gt;$propagation&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;no&#34;&gt;[System.Security.AccessControl.PropagationFlags]&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;None&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;nv&#34;&gt;$type&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;no&#34;&gt;[System.Security.AccessControl.AccessControlType]&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Allow&amp;#34;&lt;/span&gt;
-&lt;span class=&#34;nv&#34;&gt;$rule&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;New-Object&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Security&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;AccessControl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RegistryAccessRule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;`&lt;/span&gt;
-&lt;span class=&#34;nv&#34;&gt;$person&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$access&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$inheritance&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$propagation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$type&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;nv&#34;&gt;$rule&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;New-Object&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Security&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;AccessControl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RegistryAccessRule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;test&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;FullControl&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;ObjectInherit,ContainerInherit&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;None&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Allow&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RemoveAccessRule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$rule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;nb&#34;&gt;Set-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HKLM&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SAM&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h3 id=&#34;域环境中的acl&#34;&gt;域环境中的ACL&lt;/h3&gt;
-&lt;p&gt;&lt;strong&gt;PowerView&lt;/strong&gt;&lt;/p&gt;
+&lt;/div&gt;&lt;h2 id=&#34;域内-acl-编辑&#34;&gt;域内 ACL 编辑&lt;/h2&gt;
+&lt;p&gt;域内每个对象的&lt;code&gt;nTSecurityDescriptor&lt;/code&gt;属性存储该对象的ACL信息，存储格式是SDDL（Security Descriptor Definition Language)）。如果在创建对象的时候没指定ACL，就用此对象类的&lt;code&gt;defaultSecurityDescriptor&lt;/code&gt;属性值作为该对象的ACL。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;查看域内对象的ACL（普通域用户没有权限查询&lt;code&gt;nTSecurityDescriptor&lt;/code&gt;属性）&lt;a href=&#34;https://www.joeware.net/freetools/tools/adfind/usage.htm&#34;&gt;AdFind Usage&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查看原始SDDL格式&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Administrator,CN=Users,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-rawsddl&lt;/span&gt;
+&lt;span class=&#34;c&#34;&gt;#SDDL格式不方便查看，-sddl+++ 最高三个+&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Administrator,CN=Users,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt;
+&lt;span class=&#34;c&#34;&gt;#查看指定用户对该对象的权限&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Administrator,CN=Users,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddlfilter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;;;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Administrator&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-recmute&lt;/span&gt;
+&lt;span class=&#34;c&#34;&gt;#查找指定用户在域内的所有ACL权限&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddlfilter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;;;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;jerry&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-recmute&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;#查看域内对象的扩展权限&lt;/span&gt;
+&lt;span class=&#34;c&#34;&gt;#根据GUID查扩展权限&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;adfind&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Extended-Rights,CN=Configuration,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-f&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;rightsGuid=00299570-246d-11d0-a768-00aa006e0529&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;
+&lt;span class=&#34;c&#34;&gt;#查找有dcync权限的用户&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddlfilter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Replicating&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Directory&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Changes&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-recmute&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;修改域内对象的ACL &lt;a href=&#34;http://www.joeware.net/freetools/tools/admod/usage.htm&#34;&gt;AdMod Usage&lt;/a&gt;&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
@@ -15050,44 +14838,24 @@ S-1-5-21-1812960810-2335050734-3517558805-1178 受托人SID
 &lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;c&#34;&gt;#获得当前域内所有对象&lt;/span&gt;
-&lt;span class=&#34;nb&#34;&gt;Get-DomainObject&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Domain&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;com&lt;/span&gt;
-&lt;span class=&#34;c&#34;&gt;#获得当前域内所有对象的ACL&lt;/span&gt;
-&lt;span class=&#34;nb&#34;&gt;Get-DomainObjectAcl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Domain&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;com&lt;/span&gt;
-&lt;span class=&#34;c&#34;&gt;#获得指定用户的ACL&lt;/span&gt;
-&lt;span class=&#34;nb&#34;&gt;Get-DomainUser&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;test1&lt;/span&gt;
-&lt;span class=&#34;c&#34;&gt;#添加用户test1对指定对象(guid)的完全访问权限&lt;/span&gt;
-&lt;span class=&#34;nb&#34;&gt;Add-DomainObjectAcl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-TargetIdentity&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;483e9973-2d45-4e2f-b034-f272a26950e0&amp;#39;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-PrincipalIdentity&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;test1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Rights&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;All&lt;/span&gt;
-&lt;span class=&#34;c&#34;&gt;#移除用户test1对指定对象(guid)的完全访问权限&lt;/span&gt;
-&lt;span class=&#34;nb&#34;&gt;Remove-DomainObjectAcl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-TargetIdentity&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;483e9973-2d45-4e2f-b034-f272a26950e0&amp;#39;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-PrincipalIdentity&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;test1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Rights&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;All&lt;/span&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;c&#34;&gt;#添加jerry对Domain Admins组的member属性有读写权限&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;admod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Domain Admins,CN=Users,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SD&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;##ntsecuritydescriptor::{GETSD}{+D=(OA;;RPWP;member;;jerry)}&lt;/span&gt;
+&lt;span class=&#34;c&#34;&gt;#使用jerry用户添加test用户到Domain Admins组&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;adfind&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-users&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-rb&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-dsq&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;admod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-users&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-rb&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Domain Admins&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-stdinadd&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;member&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;#添加jerry对administrator用户有User-Force-Change-Password扩展权限&lt;/span&gt;
+&lt;span class=&#34;c&#34;&gt;#使用-sd 替代SD##ntsecuritydescriptor::{GETSD}&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;admod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Administrator,CN=Users,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sd&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;D&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;OA&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;00299570&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;246d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;11d0-a768&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;00aa006e0529&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;jerry&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)}&lt;/span&gt;
+&lt;span class=&#34;c&#34;&gt;#使用jerry用户修改Administrator 密码&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;admod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Administrator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Users&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DC&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DC&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;unicodepwd&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;qweasd&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;123&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-optenc&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Adfind&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;SDDL的可阅读性太差，&lt;code&gt;-sddl+++&lt;/code&gt;参数可以更方便阅读。(最高三个+)&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;AdFind.exe -b &amp;quot;CN=PC-JACK-0DAY,CN=Computers,DC=0day,DC=org&amp;quot; nTSecurityDescriptor -sddl+++
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;如果用-rawsddl ，最后一个参数就要用sid的形式。如果用-sddl+++，最后一个参数就要用账号名的形式。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查找某个对象在域内的所有ACL权限&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddlfilter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;;;;;&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;ROOTKIT\jerry&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-recmute&lt;/span&gt;
-&lt;span class=&#34;c&#34;&gt;#查找有dcync权限的用户&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddlfilter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Replicating&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Directory&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Changes&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-recmute&lt;/span&gt;
-&lt;span class=&#34;c&#34;&gt;#查找具有dcsync权限的用户(数据量很大，不要用)。（这里没有用三个+，那么过滤条件就要和输出的格式保持一致）&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-s&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;subtree&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-rawsddl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddlfilter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;;;&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;1131f6ad-9c07-11d1-f79f-00c04fc2dcd2&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-recmute&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-resolvesids&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;h2 id=&#34;useraccountcontrol属性&#34;&gt;UserAccountControl属性&lt;/h2&gt;
-&lt;p&gt;&lt;a href=&#34;http://woshub.com/decoding-ad-useraccountcontrol-value/&#34;&gt;Converting AD UserAccountControl Attribute Values&lt;/a&gt;
-UserAccountControl是Active Directory 中用户和计算机帐户的最重要属性之一。该属性决定了帐户在 AD 域中的状态：帐户是活动的还是被锁定的，是否启用下次登录时更改密码的选项，用户是否可以更改自己的密码，禁止被委派，不需要Kerberos预身份验证等等。&lt;/p&gt;
-&lt;p&gt;例如有一个常规帐户的密码更改要求被禁用。userAccountControl值计算如下:&lt;/p&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;useraccountcontrol-属性&#34;&gt;&lt;strong&gt;UserAccountControl 属性&lt;/strong&gt;&lt;/h3&gt;
+&lt;p&gt;UserAccountControl 属性是 Active Directory 中&lt;code&gt;用户&lt;/code&gt;和&lt;code&gt;计算机帐户&lt;/code&gt;的最重要属性之一。该属性决定了帐户在 AD 域中的状态：帐户是活动的还是被锁定的、是否启用下次登录时更改密码的选项、用户是否可以更改自己的密码、禁止被委派、不需要 Kerberos 预身份验证等等。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://woshub.com/decoding-ad-useraccountcontrol-value/&#34;&gt;Converting AD UserAccountControl Attribute Values&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;例如设置常规帐户的密码不过期。userAccountControl 值计算方法:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;NORMAL_ACCOUNT (512) + DONT_EXPIRE_PASSWORD (65536) = 66048&lt;/code&gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
@@ -15210,52 +14978,6 @@ UserAccountControl是Active Directory 中用户和计算机帐户的最重要属
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h2 id=&#34;有利用价值的acl&#34;&gt;有利用价值的ACL&lt;/h2&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;c1&#34;&gt;#通用权限&lt;/span&gt;
-GenericAll 授予对目标对象的完全控制权，包括WriteDacl和WriteOwner特权
-GenericWrite 可以修改所有参数，因此包括对某些属性的WriteProperty，比如member
-WriteOwner 修改所有者
-WriteDACL 将新ACE写入目标对象的DACL的功能。例如，攻击者可以向目标对象DACL写入新的ACE，从而使攻击者可以“完全控制”目标对象。
-Full Control 这个权限就具备以上所有的权限，随便挑一个特殊权限的攻击方式进行攻击就行了。
-
-&lt;span class=&#34;c1&#34;&gt;#扩展权限 AllExtendedRights&lt;/span&gt;
-&lt;span class=&#34;c1&#34;&gt;#将任意用户、组或计算机添加到目标组&lt;/span&gt;
-AddMembers
-&lt;span class=&#34;c1&#34;&gt;#可以更改目标用户的密码&lt;/span&gt;
-User-Force-Change-Password&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;0299570-246d-11d0-a768-00aa006e0529&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; 
-&lt;span class=&#34;c1&#34;&gt;#具有这两个扩展权限的用户具备dcsync权限&lt;/span&gt;
-DS-Replication-Get-Changes&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;1131f6aa-9c07-11d1-f79f-00c04fc2dcd2&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-和DS-Replication-Get-Changes-All&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;1131f6ad-9c07-11d1-f79f-00c04fc2dcd2&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; 
-&lt;span class=&#34;c1&#34;&gt;#如果对一个对象有写入spn的权限，那么就可以对这个对象进行kerberosting&lt;/span&gt;
-servicePrincipalName
-&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;h2 id=&#34;参考&#34;&gt;参考&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.anquanke.com/post/id/197113&#34;&gt;Windows内网协议学习LDAP篇之域权限上&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.anquanke.com/post/id/197329&#34;&gt;Windows内网协议学习LDAP篇之域权限下&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
 </content>
             
             

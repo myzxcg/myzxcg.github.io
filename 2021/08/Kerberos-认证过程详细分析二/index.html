@@ -12,7 +12,7 @@
     
     <meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>Tags | MYZXCG</title>
+    <title>Kerberos 认证过程详细分析（二） | MYZXCG</title>
 
     <link rel="stylesheet" href="/css/meme.min.248ffc922f6c9975e8625f71e7ebc1a9e2180e744b9528665612bf7c124dea69.css"/>
 
@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
         <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
 
-    <meta name="author" content="myzxcg" /><meta name="description" content="专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～" />
+    <meta name="author" content="myzxcg" /><meta name="description" content="此文于2022年1月28日更新。 被设置委派的账户必须拥有SPN 非约束委派 基本概念 Microsoft 在……" />
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
@@ -37,9 +37,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="application-name" content="MYZXCG" />
-    <meta name="msapplication-starturl" content="../" />
+    <meta name="msapplication-starturl" content="../../../" />
     <meta name="msapplication-TileColor" content="#603cba" />
-    <meta name="msapplication-TileImage" content="../icons/mstile-150x150.png" />
+    <meta name="msapplication-TileImage" content="../../../icons/mstile-150x150.png" />
     <link rel="manifest" href="/manifest.json" />
 
 
@@ -47,19 +47,30 @@
     
 
     
-    <link rel="canonical" href="https://myzxcg.com/tags/" />
+    <link rel="canonical" href="https://myzxcg.com/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%BA%8C/" />
     
 
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "WebPage",
-        "datePublished": "2018-01-01T20:17:43+00:00",
-        "dateModified": "2022-02-07T19:37:11+08:00",
-        "url": "https://myzxcg.com/tags/",
-        "name": "Tags",
-        "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
-        "image": "https://myzxcg.com/icons/favicon.ico",
+        "@type": "BlogPosting",
+        "datePublished": "2021-08-27T00:43:06+08:00",
+        "dateModified": "2022-01-28T11:58:17+08:00",
+        "url": "https://myzxcg.com/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%BA%8C/",
+        "headline": "Kerberos 认证过程详细分析（二）",
+        "description": "此文于2022年1月28日更新。 被设置委派的账户必须拥有SPN 非约束委派 基本概念 Microsoft 在……",
+        "inLanguage" : "zh-CN",
+        "articleSection": "posts",
+        "wordCount":  3671 ,
+        "image": ["https://myzxcg.com/images/16433416814832.jpg","https://myzxcg.com/images/16433417092043.jpg","https://myzxcg.com/images/16433417215480.jpg","https://myzxcg.com/images/16433417485615.jpg","https://myzxcg.com/images/16433417625849.jpg","https://myzxcg.com/images/16433417759445.jpg","https://myzxcg.com/images/16433418298777.jpg","https://myzxcg.com/images/16433418420797.jpg","https://myzxcg.com/images/16433418570158.jpg","https://myzxcg.com/images/16433418695425.jpg","https://myzxcg.com/images/16433419119284.jpg","https://myzxcg.com/images/16433419334099.jpg","https://myzxcg.com/images/16433419473980.jpg","https://myzxcg.com/images/16433419648853.jpg","https://myzxcg.com/images/16433419928105.jpg","https://myzxcg.com/images/16433420056658.jpg"],
+        "author": {
+            "@type": "Person",
+            "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
+            "email": "myzx.xcg@gmail.com",
+            "image": "https://myzxcg.com/avatar.png",
+            "url": "https://myzxcg.com/",
+            "name": "myzxcg"
+        },
         "license": "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)",
         "publisher": {
             "@type": "Organization",
@@ -79,7 +90,8 @@
 
     
 
-<meta name="twitter:card" content="summary" />
+<meta name="twitter:card" content="summary_large_image" />
+
 
 <meta name="twitter:site" content="@myzxcg" />
 <meta name="twitter:creator" content="@myzxcg" />
@@ -88,12 +100,17 @@
 
 
 
-<meta property="og:title" content="Tags" />
-<meta property="og:description" content="专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～" />
-<meta property="og:url" content="https://myzxcg.com/tags/" />
+<meta property="og:title" content="Kerberos 认证过程详细分析（二）" />
+<meta property="og:description" content="此文于2022年1月28日更新。 被设置委派的账户必须拥有SPN 非约束委派 基本概念 Microsoft 在……" />
+<meta property="og:url" content="https://myzxcg.com/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%BA%8C/" />
 <meta property="og:site_name" content="MYZXCG" />
-<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/icons/favicon.ico" />
-    <meta property="og:type" content="website" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/16433416814832.jpg" />
+<meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2021-08-27T00:43:06&#43;08:00" />
+    <meta property="article:modified_time" content="2022-01-28T11:58:17&#43;08:00" />
+    
+    <meta property="article:section" content="posts" />
+
 
         <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
 
@@ -125,7 +142,7 @@
     <header class="header">
         
             <div class="header-wrapper">
-                <div class="header-inner list">
+                <div class="header-inner single">
                     
     <div class="site-brand">
         
@@ -187,74 +204,377 @@
 
             
             
+    <main class="main single" id="main">
+    <div class="main-inner">
+
+        
+
+        <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
+
+            <h1 class="post-title p-name">Kerberos 认证过程详细分析（二）</h1>
+
+            
+
+            
+                
+            
+
+            
+                
+
+<div class="post-meta">
     
         
-<main class="main list" id="main">
-    <div class="main-inner">
-        <div class="content tag-cloud">
+        <time datetime="2021-08-27T00:43:06&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2021.8.27</time>
+    
+    
+    
+    
+        
+        
+        
             
-                <h1 class="list-title">Tags</h1>
+        
+    
+    
+    
+        
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;8&nbsp;分钟</span>
+    
+
+   
+    
+
+    
+    
+</div>
+
             
+
+            <nav class="contents">
+  <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
+    <li><a id="contents:非约束委派" href="#非约束委派">非约束委派</a>
+      <ol>
+        <li><a id="contents:基本概念" href="#基本概念">基本概念</a></li>
+        <li><a id="contents:请求流程分析" href="#请求流程分析">请求流程分析</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:约束委派" href="#约束委派">约束委派</a>
+      <ol>
+        <li><a id="contents:基本概念-1" href="#基本概念-1">基本概念</a></li>
+        <li><a id="contents:s4u2self" href="#s4u2self">S4U2SELF</a></li>
+        <li><a id="contents:s4u2proxy" href="#s4u2proxy">S4U2PROXY</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:基于资源的约束委派" href="#基于资源的约束委派">基于资源的约束委派</a></li>
+  </ol>
+</nav><div class="post-body e-content">
+                <p><strong>此文于2022年1月28日更新。</strong></p>
+<blockquote>
+<p>被设置委派的<strong>账户必须拥有SPN</strong></p>
+</blockquote>
+<h2 id="非约束委派"><a href="#非约束委派" class="anchor-link">#</a><a href="#contents:非约束委派" class="headings">非约束委派</a></h2>
+<h3 id="基本概念"><a href="#基本概念" class="anchor-link">#</a><a href="#contents:基本概念" class="headings">基本概念</a></h3>
+<p>Microsoft 在Windows 2000中实现了Kerberos 不受约束的委派。</p>
+<p>服务1被配置了非约束委派，那么服务1可以接受任何用户的委派去请求其他任意服务。</p>
+<p>例如：某个用户委托服务1访问某个服务，那么这个用户会将 TGT（可转发的）发送到服务1并缓存到服务1的LSASS中。 然后服务1利用此TGT 代表用户去请求服务。</p>
+<p>分析非约束委派的请求前，解决上篇文章留的问题：<strong>为什么请求域控的CIFS 服务，会发两次TGS 请求？</strong></p>
+<p>因为域控机器账户默认情况下就已经被配置了非约束委派，所以用户请求配置了非约束委派的主机就会多请求一次forwarded TGT。</p>
+<p>下图为请求域控CIFS 服务后，缓存的票据。</p>
+<p><img src="/images/16433416814832.jpg" alt=""></p>
+<h3 id="请求流程分析"><a href="#请求流程分析" class="anchor-link">#</a><a href="#contents:请求流程分析" class="headings">请求流程分析</a></h3>
+<p>从上图的缓存票据就可以看到：<code>#0</code> 是forwarded TGT 票据，<code>#1</code> 是TGT票据，<code>#2</code> 就是服务票据。所以和正常的Kerberos 请求相比，就多出来一个请求已转发的TGT 票据。</p>
+<ol>
+<li>用户通过<code>AS_REQ</code>请求TGT，认证成功后KDC 返回TGT。</li>
+<li>用户带着TGT 请求服务票据（ST），KDC 返回服务票据。</li>
+</ol>
+<hr>
+<p>到目前为止，1、2步骤和与请求未配置非约束委派的服务发送的内容都是相同的。（请求配置或未配置非约束委派的服务）它的<code>AS_REQ</code> 和<code>TGS_REQ</code>中 <code>kdc-options</code>字段的forwardable都为true）</p>
+<ol>
+<li>
+<p>用户带着步骤1请求的TGT，设置<code>kdc-options</code> 中Forwarded 字段为True并向KDC 发送TGS 请求。</p>
+<p><img src="/images/16433417092043.jpg" alt=""></p>
+<p>响应包中返回 forwarded TGT。</p>
+<p><img src="/images/16433417215480.jpg" alt=""></p>
+</li>
+<li>
+<p>用户带着ST、forwarded TGT 请求域控的SMB 服务。</p>
+<p>在之前的SMB 请求的分析中，忽略了authenticator中的cksum字段。而forwarded TGT 就放在cksum字段下的krb-cred中。</p>
+<p><img src="/images/16433417485615.jpg" alt=""></p>
+<p>下图为Ticket 字段中的forwared TGT。</p>
+<p><img src="/images/16433417625849.jpg" alt=""></p>
+<p>除此之外，在enc-part 部分还有forwarded TGT 的一些基本信息。</p>
+<p><img src="/images/16433417759445.jpg" alt=""></p>
+</li>
+<li>
+<p>这样域控上就会缓存这个forwarded TGT。</p>
+<p>如果这里不是域控，而是一个配置了非约束委派的普通账户，它就可以利用forwarded TGT 代表该TGT 中的用户去请求任意服务。（域控对服务账户非约束委派配置的检查应该在此账户带着forwared TGT 去请求服务的过程中）</p>
+</li>
+</ol>
+<h2 id="约束委派"><a href="#约束委派" class="anchor-link">#</a><a href="#contents:约束委派" class="headings">约束委派</a></h2>
+<p>微软在Windows 2003上发布了约束委派。 其中包括一组 Kerberos 协议扩展（S4U2Self 和 S4U2Proxy）。需要SeEnableDelegation特权才能配置约束和非约束委派。</p>
+<h3 id="基本概念-1"><a href="#基本概念-1" class="anchor-link">#</a><a href="#contents:基本概念-1" class="headings">基本概念</a></h3>
+<p>约束委派会用到两个扩展 S4U2Self 和 S4U2Proxy。约束委派在配置的时候需要指定允许委派到某个服务。</p>
+<p>例如: 服务1 只配置了到某个服务的约束委派，那么服务1可以模拟任何用户去请求该服务且仅能请求该服务。</p>
+<p>收到用户的请求后，首先代表用户获得针对服务自身的可转发的kerberos服务票据(S4U2SELF)。拿着这个票据向KDC请求访问特定服务的可转发的TGS(S4U2PROXY)并代表用户访问特定服务。</p>
+<p><strong>整体流程</strong></p>
+<ol>
+<li>服务1以服务1账号hash加密时间戳并设置可转发的字段，再向KDC申请可转发的TGT。（不仅是约束委派，正常的TGT 申请都会带上可转发字段，并且返回的TGT 也是可转发的）</li>
+<li>服务1携带可转发的TGT并使用S4U2self 扩展名代表用户（例如：Administrator）获得针对服务1本身的ST 票据（获得可转发的服务票据）。                        <em>S4U2Self</em>  (此阶段服务1不需要administrator的凭据)</li>
+<li>服务1携带步骤1申请到的TGT和步骤2获取的可转发的ST 票据发送给KDC。请求代表用户访问服务2的ST 票据。                                                                                        <em>S4U2Proxy</em></li>
+<li>服务1拿着步骤3获取的ST 票据代表用户administrator向服务2发起请求。</li>
+</ol>
+<p>首先创建域用户test，设置SPN:<code>setspn -A HOST/test test</code> ，并配置test 到<code>OWA2013.rootkit.org</code>的CIFS服务的约束委派。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">s4u</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">test</span> <span class="p">/</span><span class="n">rc4</span><span class="err">:</span><span class="n">754234c8f5bf1f736099b0beed55b052</span> <span class="p">/</span><span class="n">impersonateuser</span><span class="err">:</span><span class="n">administrator</span> <span class="p">/</span><span class="n">msdsspn</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="n">OWA2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">ptt</span>
+<span class="nb">dir </span><span class="p">\\</span><span class="n">OWA2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span><span class="p">\</span><span class="n">c</span><span class="p">$</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>Wireshark 抓包</p>
+<p><img src="/images/16433418298777.jpg" alt=""></p>
+<h3 id="s4u2self"><a href="#s4u2self" class="anchor-link">#</a><a href="#contents:s4u2self" class="headings">S4U2SELF</a></h3>
+<p>S4U2SELF 的作用其实是<strong>协议转换</strong>。例如任意用户通过其他协议（NTLM 或Web表单的身份验证等情况下）进行认证时，服务1来模拟（代表）用户对服务2完成身份验证。并且服务1是不需要模拟用户的账号密码等信息的。</p>
+<p>上图中<code>AS-REQ</code> 与 <code>AS-REQ</code> 就是以test用户凭据去申请TGT，和之前的内容一样就不细说了。</p>
+<p>第一个 TGS 请求就是利用S4U2SELF 协议，代表administrator 用户获取test服务的ST 票据。</p>
+<p><strong>TGS-REQ</strong></p>
+<ul>
+<li>
+<p><strong>整体请求内容</strong></p>
+<p><img src="/images/16433418420797.jpg" alt=""></p>
+<p>整体结构还是老样子</p>
+</li>
+<li>
+<p><strong>padata</strong></p>
+<p><img src="/images/16433418570158.jpg" alt=""></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="nb">PA-DATA</span> <span class="nb">pA-TGS</span><span class="n">-REQ</span><span class="err">:</span> <span class="n">这部分包含了test用户的TGT</span><span class="err">，</span><span class="n">和Login</span> <span class="n">Session</span> <span class="n">Key加密的时间戳等信息</span>
+<span class="nb">PA-DATA</span> <span class="nb">pA-FOR</span><span class="n">-USER</span><span class="err">:</span> <span class="n">此结构标识模拟的用户</span><span class="err">（</span><span class="n">administrator</span><span class="err">）</span><span class="n">以及域名</span><span class="err">。</span>
+</code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p><strong>req-body</strong></p>
+<p><img src="/images/16433418695425.jpg" alt=""></p>
+<p>可以看到发起请求的用户名是test，请求的服务也是test。</p>
+</li>
+</ul>
+<p><strong>TGS-REP</strong></p>
+<p><strong>任意服务账户都可以发起S4U2SELF请求</strong>。KDC 检查test 账户User-Account-Control属性的<code>TrustedToAuthForDelegation</code> 位，如果存在，则返回可转发（forwardable）的ST。如果不存在，也会返回ST ，只是没有可转发（forwardable）标志。</p>
+<ul>
+<li>
+<p><strong>整体响应内容</strong></p>
+<p><img src="/images/16433419119284.jpg" alt=""></p>
+<p>可以看到cname 已经变成了administrator。ticket 则是test 服务的ST 票据。enc-part 不多说了，里面是Login Session Key 加密的Server Session Key。</p>
+</li>
+</ul>
+<p>如果administrator 被配置了敏感账户不能被委派，那么返回的ST 票据是不可转发的。导致后面的S4U2PROXY 会失败，并返回<code>KDC_ERR_BADOPTION</code> 错误。</p>
+<h3 id="s4u2proxy"><a href="#s4u2proxy" class="anchor-link">#</a><a href="#contents:s4u2proxy" class="headings">S4U2PROXY</a></h3>
+<blockquote>
+<p>只要用户被配置了敏感账户不能被委派，那么以此账户请求所有的TGT 和 ST 票据都是不可转发的。如果没有被配置此选项，那么默认在设置了<code>kdc-option</code> forwardable字段为true的情况下，返回的所有票据都是可转发的（forwardable）。约束委派中 S4U2PROXY 阶段需要的ST票据必须是可转发的。（基于资源的约束委派中S4U2PROXY 阶段需要的ST票据可转发或不可转发）</p>
+</blockquote>
+<p>这一步代表administrator 用户（并使用test用户的TGT）去申请访问域控 CIFS 服务的ST 票据。S4U2SELF 阶段获取的test服务的ST 票据将作为此阶段的AddtionTicket，一起发送给KDC。</p>
+<ul>
+<li>
+<p><strong>整体请求内容</strong></p>
+<p><img src="/images/16433419334099.jpg" alt=""></p>
+</li>
+<li>
+<p><strong>padata</strong></p>
+<p><img src="/images/16433419473980.jpg" alt=""></p>
+<p>这块这之前一样，没什么多的东西。只是要注意这里的ticket是test用户的TGT。</p>
+</li>
+<li>
+<p><strong>req-body</strong></p>
+<p><img src="/images/16433419648853.jpg" alt=""></p>
+<p>可以看到多出来了一个<code>additional-tickets</code>字段。这个字段的ticket就是S4U2SELF获取到的ST票据（必须是有可转发字段的）。并且<code>kdc-option</code>字段中要设置<code>constrained-delegation: True</code> 。</p>
+</li>
+</ul>
+<p>在S4U2PROXY阶段，KDC 会检查test 服务<code>msDS-AllowedToDelegateTo</code>属性，检查域控<code>OWA2013.rootkit.org</code>是否在该属性中。验证成功，则返回域控的服务票据。</p>
+<h2 id="基于资源的约束委派"><a href="#基于资源的约束委派" class="anchor-link">#</a><a href="#contents:基于资源的约束委派" class="headings">基于资源的约束委派</a></h2>
+<p>基于资源的约束委派只能在运行Windows Server 2012 R2和Windows Server 2012的域控制器上配置，但可以在混合模式林中使用。约束委派不能跨域进行委派，基于资源的约束委派可以跨域和林。约束与非约束委派需要域管理员才能设置，而基于资源的约束委派则不需要域管理员权限，把设置属性的权限赋给了机器自身。</p>
+<p>基于资源的约束委派与传统约束委派配置相反。服务1到服务2的约束委派在服务1账户的<code>msDS-AllowedToDelegateTo</code>属性中配置，定义从服务1到服务2的传出信任。基于资源的约束委派是在服务2的<code>msDS-AllowedToActOnBehalfOfOtherIdentity</code>属性中配置，定义从服务1到服务2的传入信任。只要拥有服务2的权限就可以配置服务2的基于资源的约束委派。</p>
+<p>DC 上配置<code>PC-MICLE-KIT$</code>账号到<code>Srv-Web-Kit$</code>机器账号的基于资源的约束委派。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="nb">Set-ADComputer</span> <span class="nb">Srv-Web</span><span class="n">-Kit</span> <span class="n">-PrincipalsAllowedToDelegateToAccount</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span><span class="p">$</span>
+<span class="nb">Get-ADComputer</span> <span class="nb">Srv-Web</span><span class="n">-Kit</span> <span class="n">-Properties</span> <span class="n">PrincipalsAllowedToDelegateToAccount</span>
+<span class="c">#以test账号模拟administrator用户的约束委派请求</span>
+<span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">s4u</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="nb">PC-MICLE</span><span class="n">-KIT</span><span class="p">$</span> <span class="p">/</span><span class="n">rc4</span><span class="err">:</span><span class="n">a15bc42b9f1f1daa812a0b75a4c775c4</span> <span class="p">/</span><span class="n">impersonateuser</span><span class="err">:</span><span class="n">administrator</span> <span class="p">/</span><span class="n">msdsspn</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="nb">Srv-Web</span><span class="n">-Kit</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">ptt</span>
+</code></pre></td></tr></table></div>
+</div>
+</div><p>基于资源的约束委派还是用的是<code>S4U2SELF</code>和<code>S4U2PROXY</code> 协议。只是变成了从服务1账号属性配置允许哪些服务账号能对服务1进行约束委派。</p>
+<p>归根结底还是约束委派：首先以<code>PC-MICLE-KIT$</code>账号申请TGT，再模拟administrator 用户申请访问<code>PC-MICLE-KIT$</code>的ST票据。并带着此ST 票据向KDC 申请访问<code>Srv-Web-Kit.rootkit.org</code> 服务的ST 票据。</p>
+<p><strong>说一下不同点:</strong></p>
+<ol>
+<li>
+<p>S4U2SELF 阶段</p>
+<ul>
+<li>KDC 会检查Srv-Web-Kit服务的<code>msDS-AllowedToActOnBehalfOfOtherIdentity</code>属性是否配置了<code>PC-MICLE-KIT$</code> 账号的sid。</li>
+<li>和常规约束委派不通的是，此阶段返回的ST 票据是不可转发的。</li>
+</ul>
+<p><img src="/images/16433419928105.jpg" alt=""></p>
+</li>
+<li>
+<p>S4U2PROXY 阶段（此阶段发的内容和传统约束委派基本是一样的）</p>
+<ul>
+<li>指定<code>resource-based-constrained-delegation: True</code> 。</li>
+<li>和传统约束委派一样，在<code>additional-tickets</code> 字段中添加上一步获取的不可转发的ST票据。</li>
+</ul>
+<p><img src="/images/16433420056658.jpg" alt=""></p>
+</li>
+</ol>
+
+            </div>
+
+            
+    
+    
+        <ul class="post-copyright">
+            <li class="copyright-item author"><span class="copyright-item-text">作者</span>：<a href="https://myzxcg.com/" class="p-author h-card" target="_blank" rel="noopener">myzxcg</a></li>
             
                 
                 
                 
                 
-                
-                
-                
-                
-                
-                    
-                    
-                    
-                    
-                    
-                    
-                        <a href="/tags/Java%E5%AE%89%E5%85%A8/" class="tag-cloud-item" style="font-size: 1.971987236785075em">Java安全</a>
-                    
-                
-                    
-                    
-                    
-                    
-                    
-                    
-                        <a href="/tags/Windows/" class="tag-cloud-item" style="font-size: 1.971987236785075em">Windows</a>
-                    
-                
-                    
-                    
-                    
-                    
-                    
-                    
-                        <a href="/tags/%E5%85%8D%E6%9D%80/" class="tag-cloud-item" style="font-size: 1.5536912869581923em">免杀</a>
-                    
-                
-                    
-                    
-                    
-                    
-                    
-                    
-                        <a href="/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/" class="tag-cloud-item" style="font-size: 1.8694630695627115em">域相关</a>
-                    
-                
-                    
-                    
-                    
-                    
-                    
-                    
-                        <a href="/tags/%E5%B7%A5%E5%85%B7/" class="tag-cloud-item" style="font-size: 1.2em">工具</a>
-                    
-                
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%BA%8C/" target="_blank" rel="noopener">https://myzxcg.com/2021/08/Kerberos-认证过程详细分析二/</a></li>
             
+            <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
+            
+        </ul>
+    
+
+
+
+        </article>
+
+        
+
+        
+
+
+        
+
+
+        
+
+
+        
+    
+    
+        <div class="related-posts">
+            <h2 class="related-title">相关文章：<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon related-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"/></svg></h2>
+            <ul class="related-list">
+                
+                    <li class="related-item">
+                        <a href="/2021/10/%E5%9F%9F%E5%A7%94%E6%B4%BE%E5%88%A9%E7%94%A8/" class="related-link">域委派利用</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/09/%E5%9F%9F%E7%94%A8%E6%88%B7%E5%8F%A3%E4%BB%A4%E7%AD%96%E7%95%A5%E4%B8%8E%E6%9A%B4%E7%A0%B4/" class="related-link">域用户口令策略与暴破</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/09/%E7%BB%84%E7%AD%96%E7%95%A5%E5%88%A9%E7%94%A8%E4%B8%8E%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/" class="related-link">组策略利用与横向移动</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/08/%E5%9F%9F%E7%94%A8%E6%88%B7%E4%B8%8E%E5%9F%9F%E6%88%90%E5%91%98%E6%9C%BA%E5%99%A8%E5%85%B3%E7%B3%BB%E5%8F%8A%E5%88%A9%E7%94%A8/" class="related-link">域用户与域成员机器关系及利用</a>
+                    </li>
+                
+                    <li class="related-item">
+                        <a href="/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%BA%8C/" class="related-link">Windows 访问控制模型（二）</a>
+                    </li>
+                
+            </ul>
         </div>
+    
+
+
+
+        
+
+
+        
+    <footer class="minimal-footer">
+        
+            <div class="post-tag"><a href="/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/" rel="tag" class="post-tag-link">#域相关</a></div>
+        
+        
+        
+            
+        
+    </footer>
+
+
+
+        
+
+
+        
+    
+        
+        
+    
+    
+    
+    
+        <ul class="post-nav">
+            
+                <li class="post-nav-prev">
+                    <a href="/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%B8%80/" rel="prev">&lt; Windows 访问控制模型（一）</a>
+                </li>
+            
+            
+                <li class="post-nav-next">
+                    <a href="/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%B8%80/" rel="next">Kerberos 认证过程详细分析（一） &gt;</a>
+                </li>
+            
+        </ul>
+    
+
+
+
+        
+    
+
+        
+            <div class="load-comments">
+                <div id="load-comments">加载评论</div>
+            </div>
+        
+
+        
+
+        
+
+        
+            <div id="utterances"></div>
+        
+
+        
+    
+
+
+
     </div>
 </main>
-    
+
 
             
     <div id="back-to-top" class="back-to-top">
@@ -298,6 +618,38 @@
 
 
 
+
+    
+
+        
+
+        
+
+        
+            <script>
+    function loadComments() {
+        (function() {
+            var utterances = document.getElementById("utterances");
+            var script = document.createElement('script');
+            script.src = 'https://utteranc.es/client.js';
+            script.async = true;
+            script.crossOrigin = 'anonymous';
+            script.setAttribute('repo', 'myzxcg\/myzxcg.github.io');
+            script.setAttribute('issue-term', 'title');
+            const isDark = getCurrentTheme() === 'dark';
+        if (isDark) {
+            script.setAttribute('theme', 'photon-dark');
+        } else {
+            script.setAttribute('theme', 'github-light');
+        }
+            
+            utterances.appendChild(script);
+        })();
+    }
+</script>
+        
+
+        
 
     
 
