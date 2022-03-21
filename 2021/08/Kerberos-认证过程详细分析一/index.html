@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.92.0" /><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.94.2" /><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -18,7 +18,7 @@
 
     
     
-        <script src="/js/meme.min.883a355335df5c9f19d469cd25bb68215497fd354fb3a8699eaf851799c161a8.js"></script>
+        <script src="/js/meme.min.aa6eafedce46ed74b4ce8a5ccd665b53678dd707d3ba5339679e4b4dda556062.js"></script>
 
     
 
@@ -296,19 +296,19 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="c1">#域控导出ntds.dit和system.hive</span>
-vssadmin create shadow /for<span class="o">=</span>C:
-copy <span class="se">\\</span>?<span class="se">\G</span>LOBALROOT<span class="se">\D</span>evice<span class="se">\H</span>arddiskVolumeShadowCopy1<span class="se">\W</span>indows<span class="se">\N</span>TDS<span class="se">\N</span>TDS.dit C:<span class="se">\n</span>tds.dit
-copy <span class="se">\\</span>?<span class="se">\G</span>LOBALROOT<span class="se">\D</span>evice<span class="se">\H</span>arddiskVolumeShadowCopy1<span class="se">\W</span>indows<span class="se">\S</span>ystem32<span class="se">\c</span>onfig<span class="se">\S</span>YSTEM C:<span class="se">\s</span>ystem.hive
-vssadmin delete shadows /all
-git clone https://github.com/csababarta/ntdsxtract.git
-<span class="nb">cd</span> ntdsxtract/ <span class="o">&amp;&amp;</span> python -m pip install pycryptodome
-<span class="c1">#kali esedbexport ,ntds.dit和system.hive 同目录</span>
-esedbexport ntds.dit
-python dskeytab.py ntds.dit.export/datatable.4 ntds.dit.export/link_table.6 system.hive ./ 1.keytab
-<span class="c1">#获取到1.keytab后，把该文件导入到Wireshark的KRB5协议下，并勾选&#34;Try to decrypt Kerberos blobs&#34;</span>
-<span class="c1">#加载完keytab文件后，wireshark会自动对当前的数据包进行解密尝试，如果解密成功，就会是显示蓝色，不成功就是黄色。</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1">#域控导出ntds.dit和system.hive</span>
+</span></span><span class="line"><span class="cl">vssadmin create shadow /for<span class="o">=</span>C:
+</span></span><span class="line"><span class="cl">copy <span class="se">\\</span>?<span class="se">\G</span>LOBALROOT<span class="se">\D</span>evice<span class="se">\H</span>arddiskVolumeShadowCopy1<span class="se">\W</span>indows<span class="se">\N</span>TDS<span class="se">\N</span>TDS.dit C:<span class="se">\n</span>tds.dit
+</span></span><span class="line"><span class="cl">copy <span class="se">\\</span>?<span class="se">\G</span>LOBALROOT<span class="se">\D</span>evice<span class="se">\H</span>arddiskVolumeShadowCopy1<span class="se">\W</span>indows<span class="se">\S</span>ystem32<span class="se">\c</span>onfig<span class="se">\S</span>YSTEM C:<span class="se">\s</span>ystem.hive
+</span></span><span class="line"><span class="cl">vssadmin delete shadows /all
+</span></span><span class="line"><span class="cl">git clone https://github.com/csababarta/ntdsxtract.git
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> ntdsxtract/ <span class="o">&amp;&amp;</span> python -m pip install pycryptodome
+</span></span><span class="line"><span class="cl"><span class="c1">#kali esedbexport ,ntds.dit和system.hive 同目录</span>
+</span></span><span class="line"><span class="cl">esedbexport ntds.dit
+</span></span><span class="line"><span class="cl">python dskeytab.py ntds.dit.export/datatable.4 ntds.dit.export/link_table.6 system.hive ./ 1.keytab
+</span></span><span class="line"><span class="cl"><span class="c1">#获取到1.keytab后，把该文件导入到Wireshark的KRB5协议下，并勾选&#34;Try to decrypt Kerberos blobs&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#加载完keytab文件后，wireshark会自动对当前的数据包进行解密尝试，如果解密成功，就会是显示蓝色，不成功就是黄色。</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h2 id="简介"><a href="#简介" class="anchor-link">#</a><a href="#contents:简介" class="headings">简介</a></h2>
 <p>Kerberos 是由麻省理工学院提出的一种网络身份验证协议。它旨在通过使用密钥加密技术为客户端/服务器应用程序提供强身份验证。Kerberos 协议有两个基础认证模块：<code>AS_REQ &amp; AS_REP</code> 和 <code>TGS_REQ &amp; TGS_REP</code> 。微软扩展了两个认证模块S4U 和 PAC 。</p>
@@ -324,13 +324,13 @@ python dskeytab.py ntds.dit.export/datatable.4 ntds.dit.export/link_table.6 syst
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#请求TGT</span>
-<span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">asktgt</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="s2">&#34;administrator&#34;</span> <span class="p">/</span><span class="n">password</span><span class="err">:</span><span class="s2">&#34;admin!@#45&#34;</span> <span class="p">/</span><span class="n">domain</span><span class="err">:</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">dc</span><span class="err">:</span><span class="s2">&#34;OWA2013.rootkit.org&#34;</span> <span class="p">/</span><span class="n">nowrap</span>
-<span class="c">#请求ST</span>
-<span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">asktgs</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="s2">&#34;cifs/owa2013.rootkit.org&#34;</span> <span class="p">/</span><span class="n">dc</span><span class="err">:</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">ptt</span> <span class="p">/</span><span class="n">ticket</span><span class="err">:</span><span class="n">前面的TGT票据</span>
-<span class="c">#访问服务</span>
-<span class="nb">dir </span><span class="p">\\</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span><span class="p">\</span><span class="n">c</span><span class="p">$</span> 
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#请求TGT</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">asktgt</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="s2">&#34;administrator&#34;</span> <span class="p">/</span><span class="n">password</span><span class="err">:</span><span class="s2">&#34;admin!@#45&#34;</span> <span class="p">/</span><span class="n">domain</span><span class="err">:</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">dc</span><span class="err">:</span><span class="s2">&#34;OWA2013.rootkit.org&#34;</span> <span class="p">/</span><span class="n">nowrap</span>
+</span></span><span class="line"><span class="cl"><span class="c">#请求ST</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">asktgs</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="s2">&#34;cifs/owa2013.rootkit.org&#34;</span> <span class="p">/</span><span class="n">dc</span><span class="err">:</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">ptt</span> <span class="p">/</span><span class="n">ticket</span><span class="err">:</span><span class="n">前面的TGT票据</span>
+</span></span><span class="line"><span class="cl"><span class="c">#访问服务</span>
+</span></span><span class="line"><span class="cl"><span class="nb">dir </span><span class="p">\\</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span><span class="p">\</span><span class="n">c</span><span class="p">$</span> 
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>所有数据包如下:
 <img src="/images/16433394938312.jpg" alt=""></p>
@@ -350,11 +350,11 @@ python dskeytab.py ntds.dit.export/datatable.4 ntds.dit.export/link_table.6 syst
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">1</span><span class="p">.</span><span class="n">pvno</span> <span class="n">kerberos的版本号</span>
-<span class="n">2</span><span class="p">.</span><span class="nb">msg-type</span> <span class="n">消息类型</span><span class="err">，</span><span class="n">这里就是KRB_AS_REQ</span><span class="p">(</span><span class="n">0x0a</span><span class="p">)</span>
-<span class="n">3</span><span class="p">.</span><span class="n">PA_DATA</span> <span class="nb">Pre-authentication</span> <span class="n">Data</span><span class="err">，</span><span class="n">预身份认证</span><span class="err">，</span><span class="n">每个认证消息有type和value</span><span class="err">。</span>
-<span class="n">4</span><span class="p">.</span><span class="nb">req-body</span> <span class="n">请求体</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">1</span><span class="p">.</span><span class="n">pvno</span> <span class="n">kerberos的版本号</span>
+</span></span><span class="line"><span class="cl"><span class="n">2</span><span class="p">.</span><span class="nb">msg-type</span> <span class="n">消息类型</span><span class="err">，</span><span class="n">这里就是KRB_AS_REQ</span><span class="p">(</span><span class="n">0x0a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">3</span><span class="p">.</span><span class="n">PA_DATA</span> <span class="nb">Pre-authentication</span> <span class="n">Data</span><span class="err">，</span><span class="n">预身份认证</span><span class="err">，</span><span class="n">每个认证消息有type和value</span><span class="err">。</span>
+</span></span><span class="line"><span class="cl"><span class="n">4</span><span class="p">.</span><span class="nb">req-body</span> <span class="n">请求体</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -373,16 +373,16 @@ python dskeytab.py ntds.dit.export/datatable.4 ntds.dit.export/link_table.6 syst
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="nb">PA-DATA</span> <span class="nb">PA-ENC</span><span class="n">-TIMESTAMP</span> <span class="n">用户HASH加密后的时间戳</span>
-	<span class="nb">padata-type</span><span class="err">:</span> <span class="n">padata类型</span>
-		<span class="nb">padata-vaule</span><span class="err">:</span> <span class="n">padata的值</span>
-			<span class="n">etype</span><span class="err">:</span>  <span class="n">加密类型</span>
-			<span class="n">cipher</span><span class="err">:</span> <span class="n">加密后的值</span>
-<span class="nb">PA-DATA</span> <span class="nb">PA-PAC</span><span class="n">-REQUEST</span><span class="err">：</span><span class="n">PAC扩展</span>
-	<span class="nb">padata-type</span><span class="err">:</span> <span class="n">padata类型</span>
-		<span class="nb">padata-vaule</span><span class="err">:</span> <span class="n">padata的值</span>
-		<span class="nb">include-pac</span><span class="err">:</span> <span class="n">是否包含PAC</span><span class="err">，</span><span class="n">如果包含那么在响应包中就会返回PAC</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">PA-DATA</span> <span class="nb">PA-ENC</span><span class="n">-TIMESTAMP</span> <span class="n">用户HASH加密后的时间戳</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">padata-type</span><span class="err">:</span> <span class="n">padata类型</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">padata-vaule</span><span class="err">:</span> <span class="n">padata的值</span>
+</span></span><span class="line"><span class="cl">			<span class="n">etype</span><span class="err">:</span>  <span class="n">加密类型</span>
+</span></span><span class="line"><span class="cl">			<span class="n">cipher</span><span class="err">:</span> <span class="n">加密后的值</span>
+</span></span><span class="line"><span class="cl"><span class="nb">PA-DATA</span> <span class="nb">PA-PAC</span><span class="n">-REQUEST</span><span class="err">：</span><span class="n">PAC扩展</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">padata-type</span><span class="err">:</span> <span class="n">padata类型</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">padata-vaule</span><span class="err">:</span> <span class="n">padata的值</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">include-pac</span><span class="err">:</span> <span class="n">是否包含PAC</span><span class="err">，</span><span class="n">如果包含那么在响应包中就会返回PAC</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -400,15 +400,15 @@ python dskeytab.py ntds.dit.export/datatable.4 ntds.dit.export/link_table.6 syst
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">padding</span><span class="err">:</span><span class="n">填充</span>
-<span class="nb">kdc-options</span><span class="err">:</span><span class="n">用于与KDC约定一些选项设置</span>
-<span class="n">cname</span><span class="err">:</span> <span class="n">客户端用户名</span>
-<span class="n">realm</span><span class="err">:</span> <span class="n">域名</span> 
-<span class="n">sname</span><span class="err">:</span> <span class="n">服务端用户名</span><span class="err">，</span><span class="n">在AS_REQ</span> <span class="n">中sname是krbtgt</span><span class="err">，</span><span class="n">类型是KRB_NT_SRV_INST</span>
-<span class="n">till</span><span class="err">:</span> <span class="n">到期时间</span><span class="err">，</span><span class="n">rubeus和kekeo都是20370913024805Z</span><span class="err">，</span><span class="n">可以作为特征检测</span>
-<span class="n">nonce</span><span class="err">：</span><span class="n">随机生成的一个数</span><span class="err">，</span><span class="n">用于检测重放攻击</span>
-<span class="n">etype</span><span class="err">:</span> <span class="n">协商加密类型</span><span class="err">，</span><span class="n">KDC按照etype类型选择用户hash对应的加密方式</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">padding</span><span class="err">:</span><span class="n">填充</span>
+</span></span><span class="line"><span class="cl"><span class="nb">kdc-options</span><span class="err">:</span><span class="n">用于与KDC约定一些选项设置</span>
+</span></span><span class="line"><span class="cl"><span class="n">cname</span><span class="err">:</span> <span class="n">客户端用户名</span>
+</span></span><span class="line"><span class="cl"><span class="n">realm</span><span class="err">:</span> <span class="n">域名</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sname</span><span class="err">:</span> <span class="n">服务端用户名</span><span class="err">，</span><span class="n">在AS_REQ</span> <span class="n">中sname是krbtgt</span><span class="err">，</span><span class="n">类型是KRB_NT_SRV_INST</span>
+</span></span><span class="line"><span class="cl"><span class="n">till</span><span class="err">:</span> <span class="n">到期时间</span><span class="err">，</span><span class="n">rubeus和kekeo都是20370913024805Z</span><span class="err">，</span><span class="n">可以作为特征检测</span>
+</span></span><span class="line"><span class="cl"><span class="n">nonce</span><span class="err">：</span><span class="n">随机生成的一个数</span><span class="err">，</span><span class="n">用于检测重放攻击</span>
+</span></span><span class="line"><span class="cl"><span class="n">etype</span><span class="err">:</span> <span class="n">协商加密类型</span><span class="err">，</span><span class="n">KDC按照etype类型选择用户hash对应的加密方式</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>kdc-options 字段</p>
 <p><img src="/images/16433396082150.jpg" alt=""></p>
@@ -432,13 +432,13 @@ python dskeytab.py ntds.dit.export/datatable.4 ntds.dit.export/link_table.6 syst
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">pvno</span><span class="err">:</span> <span class="n">kerberos的版本号</span>
-<span class="nb">msg-type</span><span class="err">:</span> <span class="n">消息类型KRB</span><span class="o">-AS</span><span class="n">-REP</span>
-<span class="n">crealm</span><span class="err">:</span> <span class="n">域名</span>
-<span class="n">cname</span><span class="err">:</span> <span class="n">客户端用户名</span>
-<span class="n">ticket</span><span class="err">:</span> <span class="n">即TGT票据</span>
-<span class="n">enc_part</span><span class="err">:</span> <span class="n">这部分是用用户密码Hash加密的</span><span class="err">，</span><span class="n">里面包含Login</span> <span class="n">session</span> <span class="n">key</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">pvno</span><span class="err">:</span> <span class="n">kerberos的版本号</span>
+</span></span><span class="line"><span class="cl"><span class="nb">msg-type</span><span class="err">:</span> <span class="n">消息类型KRB</span><span class="o">-AS</span><span class="n">-REP</span>
+</span></span><span class="line"><span class="cl"><span class="n">crealm</span><span class="err">:</span> <span class="n">域名</span>
+</span></span><span class="line"><span class="cl"><span class="n">cname</span><span class="err">:</span> <span class="n">客户端用户名</span>
+</span></span><span class="line"><span class="cl"><span class="n">ticket</span><span class="err">:</span> <span class="n">即TGT票据</span>
+</span></span><span class="line"><span class="cl"><span class="n">enc_part</span><span class="err">:</span> <span class="n">这部分是用用户密码Hash加密的</span><span class="err">，</span><span class="n">里面包含Login</span> <span class="n">session</span> <span class="n">key</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -452,11 +452,11 @@ python dskeytab.py ntds.dit.export/datatable.4 ntds.dit.export/link_table.6 syst
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="nb">tkt-vno</span><span class="err">:</span> <span class="n">TGT</span> <span class="n">版本号</span>
-<span class="n">realm</span><span class="err">:</span> <span class="n">域名</span>
-<span class="n">sname</span><span class="err">:</span> <span class="n">请求的服务名称</span> <span class="n">krbtgt</span>
-<span class="nb">enc-part</span><span class="err">:</span> <span class="n">这部份是用krbtgt的密码Hash加密的</span><span class="err">，</span><span class="n">其中包含了请求用户的PAC信息</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">tkt-vno</span><span class="err">:</span> <span class="n">TGT</span> <span class="n">版本号</span>
+</span></span><span class="line"><span class="cl"><span class="n">realm</span><span class="err">:</span> <span class="n">域名</span>
+</span></span><span class="line"><span class="cl"><span class="n">sname</span><span class="err">:</span> <span class="n">请求的服务名称</span> <span class="n">krbtgt</span>
+</span></span><span class="line"><span class="cl"><span class="nb">enc-part</span><span class="err">:</span> <span class="n">这部份是用krbtgt的密码Hash加密的</span><span class="err">，</span><span class="n">其中包含了请求用户的PAC信息</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>解密enc-part部分，其中<code>e8e1f426</code> 开头的值就是Login session key。</p>
 <p><img src="/images/16433398108951.jpg" alt=""></p>
@@ -466,9 +466,9 @@ python dskeytab.py ntds.dit.export/datatable.4 ntds.dit.export/link_table.6 syst
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">key</span><span class="err">:</span> <span class="n">就是Login</span> <span class="n">session</span> <span class="n">key</span>
-<span class="nb">authorization-data</span><span class="err">:</span> <span class="n">里面是PAC的内容</span><span class="err">，</span><span class="n">此处不细说PAC</span> <span class="err">，</span><span class="n">后文分析</span><span class="err">。</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">key</span><span class="err">:</span> <span class="n">就是Login</span> <span class="n">session</span> <span class="n">key</span>
+</span></span><span class="line"><span class="cl"><span class="nb">authorization-data</span><span class="err">:</span> <span class="n">里面是PAC的内容</span><span class="err">，</span><span class="n">此处不细说PAC</span> <span class="err">，</span><span class="n">后文分析</span><span class="err">。</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -492,11 +492,11 @@ python dskeytab.py ntds.dit.export/datatable.4 ntds.dit.export/link_table.6 syst
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">pvno</span><span class="err">:</span> <span class="n">kerberos的版本号</span>
-<span class="nb">msg-type</span><span class="err">:</span> <span class="n">消息类型</span>
-<span class="n">padata</span><span class="err">:</span> <span class="n">这个部分包含之前的TGT票据</span><span class="err">，</span><span class="n">以及Login</span> <span class="n">session</span> <span class="n">key</span> <span class="n">加密的内容</span>
-<span class="nb">req-body</span><span class="err">:</span> <span class="n">请求体</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">pvno</span><span class="err">:</span> <span class="n">kerberos的版本号</span>
+</span></span><span class="line"><span class="cl"><span class="nb">msg-type</span><span class="err">:</span> <span class="n">消息类型</span>
+</span></span><span class="line"><span class="cl"><span class="n">padata</span><span class="err">:</span> <span class="n">这个部分包含之前的TGT票据</span><span class="err">，</span><span class="n">以及Login</span> <span class="n">session</span> <span class="n">key</span> <span class="n">加密的内容</span>
+</span></span><span class="line"><span class="cl"><span class="nb">req-body</span><span class="err">:</span> <span class="n">请求体</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -510,11 +510,11 @@ python dskeytab.py ntds.dit.export/datatable.4 ntds.dit.export/link_table.6 syst
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">AP_REQ</span><span class="err">:</span> <span class="n">这部分会携带AS_REP里面获取到的TGT票据</span><span class="err">、</span><span class="n">客户端的认证信息</span>
-	<span class="p">...</span> <span class="n">省略一些前面说过的字段</span>
-	<span class="n">ticket</span><span class="err">:</span> <span class="n">可以看到这部分就是TGT票据</span>
-	<span class="n">authenticator</span><span class="err">:</span> <span class="n">如下图</span><span class="err">，</span><span class="n">这部分就是Login</span> <span class="n">session</span> <span class="n">key加密的客户端信息</span><span class="err">:</span> <span class="n">请求的用户名</span><span class="err">、</span><span class="n">时间戳</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">AP_REQ</span><span class="err">:</span> <span class="n">这部分会携带AS_REP里面获取到的TGT票据</span><span class="err">、</span><span class="n">客户端的认证信息</span>
+</span></span><span class="line"><span class="cl">	<span class="p">...</span> <span class="n">省略一些前面说过的字段</span>
+</span></span><span class="line"><span class="cl">	<span class="n">ticket</span><span class="err">:</span> <span class="n">可以看到这部分就是TGT票据</span>
+</span></span><span class="line"><span class="cl">	<span class="n">authenticator</span><span class="err">:</span> <span class="n">如下图</span><span class="err">，</span><span class="n">这部分就是Login</span> <span class="n">session</span> <span class="n">key加密的客户端信息</span><span class="err">:</span> <span class="n">请求的用户名</span><span class="err">、</span><span class="n">时间戳</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p><img src="/images/16433399763549.jpg" alt=""></p>
 <p>可以看到是由Login session key（<code>e8e1f426</code> 开头的值）解密出来的。</p>
@@ -530,11 +530,11 @@ python dskeytab.py ntds.dit.export/datatable.4 ntds.dit.export/link_table.6 syst
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="p">...</span><span class="n">省略介绍过的内容</span>
-<span class="n">cname</span><span class="err">:</span> <span class="n">请求的用户名</span>
-<span class="n">sname</span><span class="err">:</span> <span class="n">请求的指定服务</span>
-<span class="n">etype</span><span class="err">:</span> <span class="n">支持的加密类型</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="p">...</span><span class="n">省略介绍过的内容</span>
+</span></span><span class="line"><span class="cl"><span class="n">cname</span><span class="err">:</span> <span class="n">请求的用户名</span>
+</span></span><span class="line"><span class="cl"><span class="n">sname</span><span class="err">:</span> <span class="n">请求的指定服务</span>
+</span></span><span class="line"><span class="cl"><span class="n">etype</span><span class="err">:</span> <span class="n">支持的加密类型</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 </ul>
@@ -553,10 +553,10 @@ python dskeytab.py ntds.dit.export/datatable.4 ntds.dit.export/link_table.6 syst
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="p">...</span><span class="n">省略介绍过的内容</span>
-<span class="n">ticket</span><span class="err">:</span> <span class="n">这个是服务票据ST</span><span class="err">，</span><span class="n">它由服务账号的Hash加密</span>
-<span class="nb">enc-part</span><span class="err">:</span> <span class="n">Login</span> <span class="n">session</span> <span class="n">key加密的Server</span> <span class="n">Session</span> <span class="n">key等信息</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="p">...</span><span class="n">省略介绍过的内容</span>
+</span></span><span class="line"><span class="cl"><span class="n">ticket</span><span class="err">:</span> <span class="n">这个是服务票据ST</span><span class="err">，</span><span class="n">它由服务账号的Hash加密</span>
+</span></span><span class="line"><span class="cl"><span class="nb">enc-part</span><span class="err">:</span> <span class="n">Login</span> <span class="n">session</span> <span class="n">key加密的Server</span> <span class="n">Session</span> <span class="n">key等信息</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -570,9 +570,9 @@ python dskeytab.py ntds.dit.export/datatable.4 ntds.dit.export/link_table.6 syst
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">key</span><span class="err">:</span> <span class="n">这里b808087f开头的key就是Server</span> <span class="n">Session</span> <span class="n">key</span>
-<span class="nb">authorization-data</span><span class="err">:</span> <span class="n">是用户的PAC</span><span class="err">，</span><span class="n">后文细讲</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">key</span><span class="err">:</span> <span class="n">这里b808087f开头的key就是Server</span> <span class="n">Session</span> <span class="n">key</span>
+</span></span><span class="line"><span class="cl"><span class="nb">authorization-data</span><span class="err">:</span> <span class="n">是用户的PAC</span><span class="err">，</span><span class="n">后文细讲</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -599,9 +599,9 @@ python dskeytab.py ntds.dit.export/datatable.4 ntds.dit.export/link_table.6 syst
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">ticket</span><span class="err">:</span> <span class="n">这里的ticket字段就是ST票据的内容</span>
-<span class="n">authenticator</span><span class="err">:</span> <span class="n">就是Server</span> <span class="n">Session</span> <span class="n">Key加密的客户端信息</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">ticket</span><span class="err">:</span> <span class="n">这里的ticket字段就是ST票据的内容</span>
+</span></span><span class="line"><span class="cl"><span class="n">authenticator</span><span class="err">:</span> <span class="n">就是Server</span> <span class="n">Session</span> <span class="n">Key加密的客户端信息</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>解密ticket，可看到和之前的ST 票据一样。</p>
 <p><img src="/images/16433401928335.jpg" alt=""></p>

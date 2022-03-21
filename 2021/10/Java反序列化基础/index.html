@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.92.0" /><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.94.2" /><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -18,7 +18,7 @@
 
     
     
-        <script src="/js/meme.min.883a355335df5c9f19d469cd25bb68215497fd354fb3a8699eaf851799c161a8.js"></script>
+        <script src="/js/meme.min.aa6eafedce46ed74b4ce8a5ccd665b53678dd707d3ba5339679e4b4dda556062.js"></script>
 
     
 
@@ -308,14 +308,14 @@
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">ObjectInputStream</span><span class="o">.</span><span class="na">readObject</span>
-<span class="n">ObjectInputStream</span><span class="o">.</span><span class="na">readUnshared</span>
-<span class="n">XMLDecoder</span><span class="o">.</span><span class="na">readObject</span>
-<span class="n">Yaml</span><span class="o">.</span><span class="na">load</span>
-<span class="n">XStream</span><span class="o">.</span><span class="na">fromXML</span>
-<span class="n">ObjectMapper</span><span class="o">.</span><span class="na">readValue</span>
-<span class="n">JSON</span><span class="o">.</span><span class="na">parseObject</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">ObjectInputStream</span><span class="o">.</span><span class="na">readObject</span>
+</span></span><span class="line"><span class="cl"><span class="n">ObjectInputStream</span><span class="o">.</span><span class="na">readUnshared</span>
+</span></span><span class="line"><span class="cl"><span class="n">XMLDecoder</span><span class="o">.</span><span class="na">readObject</span>
+</span></span><span class="line"><span class="cl"><span class="n">Yaml</span><span class="o">.</span><span class="na">load</span>
+</span></span><span class="line"><span class="cl"><span class="n">XStream</span><span class="o">.</span><span class="na">fromXML</span>
+</span></span><span class="line"><span class="cl"><span class="n">ObjectMapper</span><span class="o">.</span><span class="na">readValue</span>
+</span></span><span class="line"><span class="cl"><span class="n">JSON</span><span class="o">.</span><span class="na">parseObject</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>解释一下重点部分：</p>
 <ol>
@@ -345,20 +345,20 @@
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">test1</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">java.io.Serializable</span><span class="o">;</span>
-
-<span class="kd">class</span> <span class="nc">User</span> <span class="kd">implements</span> <span class="n">Serializable</span><span class="o">{</span>
-    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">=</span><span class="n">name</span><span class="o">;</span>
-    <span class="o">}</span>
-    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">test1</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.io.Serializable</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">User</span> <span class="kd">implements</span> <span class="n">Serializable</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">=</span><span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -398,38 +398,38 @@
 </span><span class="lnt">31
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">test1</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">serialize</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-        <span class="n">User</span> <span class="n">user</span><span class="o">=</span><span class="k">new</span> <span class="n">User</span><span class="o">();</span>
-        <span class="n">user</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">&#34;gogo&#34;</span><span class="o">);</span>
-
-        <span class="kt">byte</span><span class="o">[]</span> <span class="n">serializeData</span><span class="o">=</span><span class="n">serialize</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
-        <span class="n">FileOutputStream</span> <span class="n">fout</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="s">&#34;user.bin&#34;</span><span class="o">);</span>
-        <span class="n">fout</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">serializeData</span><span class="o">);</span>
-        <span class="n">fout</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
-        <span class="n">User</span> <span class="n">user2</span><span class="o">=(</span><span class="n">User</span><span class="o">)</span> <span class="n">unserialize</span><span class="o">(</span><span class="n">serializeData</span><span class="o">);</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">user2</span><span class="o">);</span>
-    <span class="o">}</span>
-
-<span class="c1">//序列化
-</span><span class="c1"></span>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">serialize</span><span class="o">(</span><span class="kd">final</span> <span class="n">Object</span> <span class="n">obj</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-        <span class="n">ByteArrayOutputStream</span> <span class="n">btout</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ByteArrayOutputStream</span><span class="o">();</span>
-        <span class="n">ObjectOutputStream</span> <span class="n">objOut</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectOutputStream</span><span class="o">(</span><span class="n">btout</span><span class="o">);</span> <span class="c1">//把一个Java对象变为byte[]数组，需要使用ObjectOutputStream。它负责把一个Java对象写入一个字节流
-</span><span class="c1"></span>        <span class="n">objOut</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">obj</span><span class="o">);</span> <span class="c1">// 通过writeObject,将obj对象进行序列化到了btout里
-</span><span class="c1"></span>        <span class="k">return</span> <span class="n">btout</span><span class="o">.</span><span class="na">toByteArray</span><span class="o">();</span>
-    <span class="o">}</span>
-
-<span class="c1">//反序列化
-</span><span class="c1"></span>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">unserialize</span><span class="o">(</span><span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">serialized</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-        <span class="n">ByteArrayInputStream</span> <span class="n">btin</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ByteArrayInputStream</span><span class="o">(</span><span class="n">serialized</span><span class="o">);</span>
-        <span class="n">ObjectInputStream</span> <span class="n">objIn</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectInputStream</span><span class="o">(</span><span class="n">btin</span><span class="o">);</span> <span class="c1">// ObjectInputStream负责从一个字节流读取Java对象
-</span><span class="c1"></span>        <span class="k">return</span> <span class="n">objIn</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span><span class="c1">// 通过ObjectInputStream的readObject方法直接读取对象了
-</span><span class="c1"></span>    <span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">test1</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">serialize</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">User</span> <span class="n">user</span><span class="o">=</span><span class="k">new</span> <span class="n">User</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">user</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">&#34;gogo&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kt">byte</span><span class="o">[]</span> <span class="n">serializeData</span><span class="o">=</span><span class="n">serialize</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">FileOutputStream</span> <span class="n">fout</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="s">&#34;user.bin&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">fout</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">serializeData</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">fout</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">User</span> <span class="n">user2</span><span class="o">=(</span><span class="n">User</span><span class="o">)</span> <span class="n">unserialize</span><span class="o">(</span><span class="n">serializeData</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">user2</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//序列化
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">serialize</span><span class="o">(</span><span class="kd">final</span> <span class="n">Object</span> <span class="n">obj</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ByteArrayOutputStream</span> <span class="n">btout</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ByteArrayOutputStream</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ObjectOutputStream</span> <span class="n">objOut</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectOutputStream</span><span class="o">(</span><span class="n">btout</span><span class="o">);</span> <span class="c1">//把一个Java对象变为byte[]数组，需要使用ObjectOutputStream。它负责把一个Java对象写入一个字节流
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">objOut</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">obj</span><span class="o">);</span> <span class="c1">// 通过writeObject,将obj对象进行序列化到了btout里
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">return</span> <span class="n">btout</span><span class="o">.</span><span class="na">toByteArray</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//反序列化
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">unserialize</span><span class="o">(</span><span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">serialized</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ByteArrayInputStream</span> <span class="n">btin</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ByteArrayInputStream</span><span class="o">(</span><span class="n">serialized</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ObjectInputStream</span> <span class="n">objIn</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectInputStream</span><span class="o">(</span><span class="n">btin</span><span class="o">);</span> <span class="c1">// ObjectInputStream负责从一个字节流读取Java对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">return</span> <span class="n">objIn</span><span class="o">.</span><span class="na">readObject</span><span class="o">();</span><span class="c1">// 通过ObjectInputStream的readObject方法直接读取对象了
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>运行结果（Java序列化数据标志: aced 0005开头）</p>
 <p><img src="/images/1635062981.png" alt=""></p>
@@ -463,15 +463,15 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="c1">//通过class的完整类名使用forName获取
-</span><span class="c1"></span><span class="n">Class</span>  <span class="n">runtimeClass1</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;java.lang.Runtime&#34;</span><span class="o">);</span>
-<span class="c1">//通过静态变量class获取
-</span><span class="c1"></span><span class="n">Class</span>  <span class="n">runtimeClass2</span> <span class="o">=</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Runtime</span><span class="o">.</span><span class="na">class</span><span class="o">;</span>
-<span class="c1">//通过Classloader获取
-</span><span class="c1"></span><span class="n">Class</span>  <span class="n">runtimeClass3</span> <span class="o">=</span> <span class="n">ClassLoader</span><span class="o">.</span><span class="na">getSystemClassLoader</span><span class="o">().</span><span class="na">loadClass</span><span class="o">(</span><span class="s">&#34;java.lang.Runtime&#34;</span><span class="o">);</span>
-<span class="c1">//通过对象的getClass()获取
-</span><span class="c1"></span><span class="n">Class</span>  <span class="n">runtimeClass4</span> <span class="o">=</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">getClass</span><span class="o">();</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//通过class的完整类名使用forName获取
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">Class</span>  <span class="n">runtimeClass1</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;java.lang.Runtime&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//通过静态变量class获取
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">Class</span>  <span class="n">runtimeClass2</span> <span class="o">=</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Runtime</span><span class="o">.</span><span class="na">class</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//通过Classloader获取
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">Class</span>  <span class="n">runtimeClass3</span> <span class="o">=</span> <span class="n">ClassLoader</span><span class="o">.</span><span class="na">getSystemClassLoader</span><span class="o">().</span><span class="na">loadClass</span><span class="o">(</span><span class="s">&#34;java.lang.Runtime&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//通过对象的getClass()获取
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">Class</span>  <span class="n">runtimeClass4</span> <span class="o">=</span> <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">getClass</span><span class="o">();</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><ol>
 <li><code>Class.forName(&quot;类名字符串&quot;)</code>装入类并初始化被加载类的静态属性和方法，返回Class的对象。不希望初始化类可以使用<code>Class.forName(&quot;类名&quot;,是否初始化类,类加载器)</code></li>
@@ -487,9 +487,9 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">doubleArray</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;[D&#34;</span><span class="o">);</span> <span class="c1">//相当于double[].class
-</span><span class="c1"></span><span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">cStringArray</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;[[Ljava.lang.String;&#34;</span><span class="o">);</span> <span class="c1">//相当于String[][].class
-</span></code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">doubleArray</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;[D&#34;</span><span class="o">);</span> <span class="c1">//相当于double[].class
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">cStringArray</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;[[Ljava.lang.String;&#34;</span><span class="o">);</span> <span class="c1">//相当于String[][].class
+</span></span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 </ul>
@@ -509,14 +509,14 @@
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">serialize</span> <span class="o">{</span>
-<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-   <span class="n">Class</span> <span class="n">UserClass</span><span class="o">=</span><span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;test1.User&#34;</span><span class="o">);</span>
-   <span class="n">Constructor</span> <span class="n">constructor</span><span class="o">=</span><span class="n">UserClass</span><span class="o">.</span><span class="na">getConstructor</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-   <span class="n">User</span> <span class="n">user</span><span class="o">=(</span><span class="n">User</span><span class="o">)</span> <span class="n">constructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="s">&#34;gogo&#34;</span><span class="o">);</span>
-   <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">serialize</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">   <span class="n">Class</span> <span class="n">UserClass</span><span class="o">=</span><span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;test1.User&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">   <span class="n">Constructor</span> <span class="n">constructor</span><span class="o">=</span><span class="n">UserClass</span><span class="o">.</span><span class="na">getConstructor</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">   <span class="n">User</span> <span class="n">user</span><span class="o">=(</span><span class="n">User</span><span class="o">)</span> <span class="n">constructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="s">&#34;gogo&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">   <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p><strong>Tips:</strong> 反射调用内部类的时候需要使用<code>$</code>来代替<code>.</code>。如com.anbai.Test类有一个叫做Hello的内部类，那么调用的时候就应该将类名写成: <code>com.anbai.Test$Hello</code></p>
 <p><img src="/images/1635063222.png" alt=""></p>
@@ -539,19 +539,19 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">serialize</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-        <span class="n">Class</span> <span class="n">UserClass</span><span class="o">=</span><span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;test1.User&#34;</span><span class="o">);</span>
-        <span class="n">Constructor</span> <span class="n">constructor</span><span class="o">=</span><span class="n">UserClass</span><span class="o">.</span><span class="na">getConstructor</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-        <span class="n">User</span> <span class="n">user</span><span class="o">=(</span><span class="n">User</span><span class="o">)</span> <span class="n">constructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="s">&#34;gogo&#34;</span><span class="o">);</span>
-        <span class="n">Method</span> <span class="n">method</span> <span class="o">=</span> <span class="n">UserClass</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;setName&#34;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-        <span class="c1">//如果有私有方法，可以通过setAccessible来获取访问权限
-</span><span class="c1"></span>        <span class="n">method</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-        <span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="s">&#34;ada&#34;</span><span class="o">);</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">serialize</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Class</span> <span class="n">UserClass</span><span class="o">=</span><span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;test1.User&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Constructor</span> <span class="n">constructor</span><span class="o">=</span><span class="n">UserClass</span><span class="o">.</span><span class="na">getConstructor</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">User</span> <span class="n">user</span><span class="o">=(</span><span class="n">User</span><span class="o">)</span> <span class="n">constructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="s">&#34;gogo&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Method</span> <span class="n">method</span> <span class="o">=</span> <span class="n">UserClass</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;setName&#34;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//如果有私有方法，可以通过setAccessible来获取访问权限
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">method</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="s">&#34;ada&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p><code>getMethod</code>和<code>getDeclaredMethod</code>区别：</p>
 <ol>
@@ -583,18 +583,18 @@
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">serialize</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-        <span class="n">Class</span> <span class="n">UserClass</span><span class="o">=</span><span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;test1.User&#34;</span><span class="o">);</span>
-        <span class="n">Constructor</span> <span class="n">constructor</span><span class="o">=</span><span class="n">UserClass</span><span class="o">.</span><span class="na">getConstructor</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-        <span class="n">User</span> <span class="n">user</span><span class="o">=(</span><span class="n">User</span><span class="o">)</span> <span class="n">constructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="s">&#34;gogo&#34;</span><span class="o">);</span>
-        <span class="n">Field</span> <span class="n">field</span><span class="o">=</span> <span class="n">UserClass</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;name&#34;</span><span class="o">);</span>
-        <span class="n">field</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span><span class="c1">// name是私有属性，需要先设置可访问
-</span><span class="c1"></span>				<span class="n">field</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">user</span><span class="o">);</span> <span class="c1">//通过反射获取属性
-</span><span class="c1"></span>        <span class="n">field</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="s">&#34;12131&#34;</span><span class="o">);</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">serialize</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Class</span> <span class="n">UserClass</span><span class="o">=</span><span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;test1.User&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Constructor</span> <span class="n">constructor</span><span class="o">=</span><span class="n">UserClass</span><span class="o">.</span><span class="na">getConstructor</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">User</span> <span class="n">user</span><span class="o">=(</span><span class="n">User</span><span class="o">)</span> <span class="n">constructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="s">&#34;gogo&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Field</span> <span class="n">field</span><span class="o">=</span> <span class="n">UserClass</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;name&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">field</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span><span class="c1">// name是私有属性，需要先设置可访问
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="n">field</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">user</span><span class="o">);</span> <span class="c1">//通过反射获取属性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">field</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="s">&#34;12131&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">user</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p><img src="/images/1635063331.png" alt=""></p>
 <p>修改final关键字修饰的成员变量</p>
@@ -611,16 +611,16 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"> <span class="c1">// 反射获取Field类的modifiers（字段的修饰符）
-</span><span class="c1"></span> <span class="n">Field</span> <span class="n">modifiers</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;modifiers&#34;</span><span class="o">);</span>
- <span class="c1">// 设置modifiers修改权限
-</span><span class="c1"></span> <span class="n">modifiers</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
- <span class="c1">// 修改成员变量的Field对象的modifiers值
-</span><span class="c1"></span> <span class="c1">//getModifiers() 返回字段的修饰符，它是一个int，不同的bit表示不同的含义。
-</span><span class="c1"></span> <span class="n">modifiers</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="n">field</span><span class="o">,</span> <span class="n">field</span><span class="o">.</span><span class="na">getModifiers</span><span class="o">()</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">Modifier</span><span class="o">.</span><span class="na">FINAL</span><span class="o">);</span>
- <span class="c1">// 修改成员变量值
-</span><span class="c1"></span> <span class="n">field</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">类实例对象</span><span class="o">,</span> <span class="n">修改后的值</span><span class="o">);</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"> <span class="c1">// 反射获取Field类的modifiers（字段的修饰符）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="n">Field</span> <span class="n">modifiers</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;modifiers&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> <span class="c1">// 设置modifiers修改权限
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="n">modifiers</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> <span class="c1">// 修改成员变量的Field对象的modifiers值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="c1">//getModifiers() 返回字段的修饰符，它是一个int，不同的bit表示不同的含义。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="n">modifiers</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="n">field</span><span class="o">,</span> <span class="n">field</span><span class="o">.</span><span class="na">getModifiers</span><span class="o">()</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">Modifier</span><span class="o">.</span><span class="na">FINAL</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> <span class="c1">// 修改成员变量值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> <span class="n">field</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">类实例对象</span><span class="o">,</span> <span class="n">修改后的值</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 </ol>
@@ -643,17 +643,17 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="c1">//用户接口
-</span><span class="c1"></span><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">UserServices</span> <span class="o">{</span>
-    <span class="kt">void</span> <span class="nf">getName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">);</span>
-<span class="o">}</span>
-<span class="c1">//一个实现类UserRealm
-</span><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserRealm</span> <span class="kd">implements</span> <span class="n">UserServices</span><span class="o">{</span>
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">){</span>
-     <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//用户接口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">UserServices</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="nf">getName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//一个实现类UserRealm
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserRealm</span> <span class="kd">implements</span> <span class="n">UserServices</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">     <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>代理类实现</p>
 <div class="highlight"><div class="chroma">
@@ -675,22 +675,22 @@
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="c1">//UserRealmProxy 实现UserServices接口
-</span><span class="c1"></span><span class="kd">class</span> <span class="nc">UserRealmProxy</span> <span class="kd">implements</span> <span class="n">UserServices</span><span class="o">{</span>
-  <span class="kd">private</span> <span class="n">UserServices</span> <span class="n">userservices</span><span class="o">;</span>
-
-  <span class="kd">public</span> <span class="nf">UserRealmProxy</span><span class="o">(</span><span class="n">UserServices</span> <span class="n">userservices</span><span class="o">){</span>
-    <span class="k">this</span><span class="o">.</span><span class="na">userservices</span> <span class="o">=</span> <span class="n">uservices</span><span class="o">;</span>
-  <span class="o">}</span>
-<span class="c1">//重写getName函数，在原本输出名字的基础上增加功能
-</span><span class="c1"></span>  <span class="nd">@Override</span>
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">){</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;UserRealmProxy Start....&#34;</span><span class="o">);</span>
-    <span class="k">this</span><span class="o">.</span><span class="na">userservices</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;UserRealmProxy End....&#34;</span><span class="o">)</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//UserRealmProxy 实现UserServices接口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">class</span> <span class="nc">UserRealmProxy</span> <span class="kd">implements</span> <span class="n">UserServices</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">private</span> <span class="n">UserServices</span> <span class="n">userservices</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="nf">UserRealmProxy</span><span class="o">(</span><span class="n">UserServices</span> <span class="n">userservices</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">    <span class="k">this</span><span class="o">.</span><span class="na">userservices</span> <span class="o">=</span> <span class="n">uservices</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//重写getName函数，在原本输出名字的基础上增加功能
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;UserRealmProxy Start....&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">this</span><span class="o">.</span><span class="na">userservices</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;UserRealmProxy End....&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>Main函数</p>
 <div class="highlight"><div class="chroma">
@@ -704,14 +704,14 @@
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">class</span> <span class="nc">Main</span><span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="c1">//实现一个类实例userservices
-</span><span class="c1"></span>        <span class="n">UserServices</span> <span class="n">userServices</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UserRealm</span><span class="o">();</span>
-        <span class="n">UserRealmProxy</span> <span class="n">proxy</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UserRealmProxy</span><span class="o">(</span><span class="n">userServices</span><span class="o">);</span>
-        <span class="n">proxy</span><span class="o">.</span><span class="na">getName</span><span class="o">(</span><span class="s">&#34;xxxx&#34;</span><span class="o">);</span>
-    <span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">Main</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//实现一个类实例userservices
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">UserServices</span> <span class="n">userServices</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UserRealm</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">UserRealmProxy</span> <span class="n">proxy</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UserRealmProxy</span><span class="o">(</span><span class="n">userServices</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">proxy</span><span class="o">.</span><span class="na">getName</span><span class="o">(</span><span class="s">&#34;xxxx&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>这样就能实现在不改动原先类的基础上，对功能方法进行扩展。但是静态代理只能为一个类服务，如果需要代理的类很多，那么就需要编写大量的代理类，比较繁琐。由此提出了动态代理的概念。</p>
 <h3 id="动态代理"><a href="#动态代理" class="anchor-link">#</a><a href="#contents:动态代理" class="headings">动态代理</a></h3>
@@ -749,33 +749,33 @@
 </span><span class="lnt">26
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">interface</span> <span class="nc">UserServices</span><span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">);</span>
-<span class="o">}</span>
-<span class="c1">//写一个类实现UserServices接口，后面对该方法进行扩展
-</span><span class="c1"></span><span class="kd">class</span> <span class="nc">UserReal</span> <span class="kd">implements</span> <span class="n">UserServices</span><span class="o">{</span>
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">){</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-
-<span class="c1">//对功能进行扩展的类（必须要实现InvocationHandler接口）
-</span><span class="c1"></span><span class="kd">class</span> <span class="nc">Delegate</span> <span class="kd">implements</span> <span class="n">InvocationHandler</span><span class="o">{</span>
-    <span class="kd">private</span> <span class="n">Object</span> <span class="n">object</span><span class="o">;</span>
-    <span class="kd">public</span> <span class="nf">Delegate</span><span class="o">(</span><span class="n">Object</span> <span class="n">object</span><span class="o">){</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">object</span> <span class="o">=</span> <span class="n">object</span><span class="o">;</span>
-    <span class="o">}</span>
-   <span class="c1">//重写InvocationHandler接口中的方法
-</span><span class="c1"></span>    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">invoke</span><span class="o">(</span><span class="n">Object</span> <span class="n">proxy</span><span class="o">,</span> <span class="n">Method</span> <span class="n">method</span><span class="o">,</span> <span class="n">Object</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Throwable</span> <span class="o">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Delegate Start.....&#34;</span><span class="o">);</span>
-        <span class="n">Object</span> <span class="n">res</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">object</span><span class="o">,</span><span class="n">args</span><span class="o">);</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Delegate End.....&#34;</span><span class="o">);</span>
-        <span class="k">return</span> <span class="n">res</span><span class="o">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">interface</span> <span class="nc">UserServices</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//写一个类实现UserServices接口，后面对该方法进行扩展
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">class</span> <span class="nc">UserReal</span> <span class="kd">implements</span> <span class="n">UserServices</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//对功能进行扩展的类（必须要实现InvocationHandler接口）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">class</span> <span class="nc">Delegate</span> <span class="kd">implements</span> <span class="n">InvocationHandler</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Object</span> <span class="n">object</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">Delegate</span><span class="o">(</span><span class="n">Object</span> <span class="n">object</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">object</span> <span class="o">=</span> <span class="n">object</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">//重写InvocationHandler接口中的方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">invoke</span><span class="o">(</span><span class="n">Object</span> <span class="n">proxy</span><span class="o">,</span> <span class="n">Method</span> <span class="n">method</span><span class="o">,</span> <span class="n">Object</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Throwable</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Delegate Start.....&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Object</span> <span class="n">res</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">object</span><span class="o">,</span><span class="n">args</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Delegate End.....&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">res</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p><strong>Main函数执行</strong></p>
 <div class="highlight"><div class="chroma">
@@ -794,19 +794,19 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DynamicTest</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">UserReal</span> <span class="n">user</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UserReal</span><span class="o">();</span>
-        <span class="n">Delegate</span> <span class="n">delegate</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Delegate</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
-				<span class="c1">//指定动态代理类的类加载器，即生成完成后的代理对象的类加载器
-</span><span class="c1"></span>				<span class="c1">//定义动态代理生成的类实现的接口，需要被增强的接口列表（数据）
-</span><span class="c1"></span>				<span class="c1">//动态代理的处理类，增强逻辑
-</span><span class="c1"></span>        <span class="n">UserServices</span> <span class="n">userService1</span> <span class="o">=</span> <span class="o">(</span><span class="n">UserServices</span><span class="o">)</span> <span class="n">Proxy</span><span class="o">.</span><span class="na">newProxyInstance</span><span class="o">(</span><span class="n">UserServices</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">(),</span> <span class="k">new</span> <span class="n">Class</span><span class="o">[]</span> <span class="o">{</span><span class="n">UserServices</span><span class="o">.</span><span class="na">class</span><span class="o">},</span> <span class="n">delegate</span><span class="o">);</span><span class="c1">//生成动态代理类
-</span><span class="c1"></span>				<span class="c1">//这样可以给UserReal类对UserServices接口的实现所有方法进行功能扩展
-</span><span class="c1"></span>        <span class="n">userService1</span><span class="o">.</span><span class="na">getName</span><span class="o">(</span><span class="s">&#34;xn&#34;</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DynamicTest</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">UserReal</span> <span class="n">user</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UserReal</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Delegate</span> <span class="n">delegate</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Delegate</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">				<span class="c1">//指定动态代理类的类加载器，即生成完成后的代理对象的类加载器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="c1">//定义动态代理生成的类实现的接口，需要被增强的接口列表（数据）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="c1">//动态代理的处理类，增强逻辑
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">UserServices</span> <span class="n">userService1</span> <span class="o">=</span> <span class="o">(</span><span class="n">UserServices</span><span class="o">)</span> <span class="n">Proxy</span><span class="o">.</span><span class="na">newProxyInstance</span><span class="o">(</span><span class="n">UserServices</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">(),</span> <span class="k">new</span> <span class="n">Class</span><span class="o">[]</span> <span class="o">{</span><span class="n">UserServices</span><span class="o">.</span><span class="na">class</span><span class="o">},</span> <span class="n">delegate</span><span class="o">);</span><span class="c1">//生成动态代理类
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="c1">//这样可以给UserReal类对UserServices接口的实现所有方法进行功能扩展
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">userService1</span><span class="o">.</span><span class="na">getName</span><span class="o">(</span><span class="s">&#34;xn&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>使用<code>Proxy.newProxyInstance</code>来创建动态代理类实例，或使用<code>Proxy.getProxyClass()</code>获取代理类对象再反射的方式来创建。</p>
 <ol>

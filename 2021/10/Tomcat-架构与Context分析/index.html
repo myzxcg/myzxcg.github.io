@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.92.0" /><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.94.2" /><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -18,7 +18,7 @@
 
     
     
-        <script src="/js/meme.min.883a355335df5c9f19d469cd25bb68215497fd354fb3a8699eaf851799c161a8.js"></script>
+        <script src="/js/meme.min.aa6eafedce46ed74b4ce8a5ccd665b53678dd707d3ba5339679e4b4dda556062.js"></script>
 
     
 
@@ -361,16 +361,16 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">ServletContext</span> <span class="n">servletContext</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getSession</span><span class="o">().</span><span class="na">getServletContext</span><span class="o">();</span>
-<span class="n">Field</span> <span class="n">appctx</span> <span class="o">=</span> <span class="n">servletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
-<span class="n">appctx</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-<span class="c1">//ApplicationContext为ServletContext的实现类
-</span><span class="c1"></span><span class="n">ApplicationContext</span> <span class="n">applicationContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">ApplicationContext</span><span class="o">)</span> <span class="n">appctx</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">servletContext</span><span class="o">);</span>
-
-<span class="n">Field</span> <span class="n">stdctx</span> <span class="o">=</span> <span class="n">applicationContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
-<span class="n">stdctx</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-<span class="n">StandardContext</span> <span class="n">standardContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardContext</span><span class="o">)</span> <span class="n">stdctx</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">applicationContext</span><span class="o">);</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">ServletContext</span> <span class="n">servletContext</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getSession</span><span class="o">().</span><span class="na">getServletContext</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="n">Field</span> <span class="n">appctx</span> <span class="o">=</span> <span class="n">servletContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">appctx</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//ApplicationContext为ServletContext的实现类
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">ApplicationContext</span> <span class="n">applicationContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">ApplicationContext</span><span class="o">)</span> <span class="n">appctx</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">servletContext</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">Field</span> <span class="n">stdctx</span> <span class="o">=</span> <span class="n">applicationContext</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;context&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">stdctx</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">StandardContext</span> <span class="n">standardContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardContext</span><span class="o">)</span> <span class="n">stdctx</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">applicationContext</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -537,161 +537,161 @@
 </span><span class="lnt">154
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.demo</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServlet</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.lang.reflect.Field</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.util.Iterator</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">org.apache.catalina.core.StandardContext</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.apache.catalina.core.StandardEngine</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.apache.catalina.core.StandardHost</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">goodServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
-    <span class="o">}</span>
-
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
-
-        <span class="k">try</span> <span class="o">{</span>
-            <span class="n">PrintWriter</span> <span class="n">out</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
-            <span class="n">Tomcat6789</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Tomcat6789</span><span class="o">();</span>
-            <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">getSTC</span><span class="o">());</span>
-
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span>
-
-    <span class="o">}</span>
-
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span> <span class="o">{</span>
-    <span class="o">}</span>
-
-    <span class="kd">class</span> <span class="nc">Tomcat6789</span> <span class="o">{</span>
-        <span class="n">String</span> <span class="n">uri</span><span class="o">;</span>
-        <span class="n">String</span> <span class="n">serverName</span><span class="o">;</span>
-        <span class="n">StandardContext</span> <span class="n">standardContext</span><span class="o">;</span>
-
-        <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getField</span><span class="o">(</span><span class="n">Object</span> <span class="n">object</span><span class="o">,</span> <span class="n">String</span> <span class="n">fieldName</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">Field</span> <span class="n">declaredField</span><span class="o">;</span>
-            <span class="n">Class</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">object</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
-            <span class="k">while</span> <span class="o">(</span><span class="n">clazz</span> <span class="o">!=</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
-                <span class="k">try</span> <span class="o">{</span>
-
-                    <span class="n">declaredField</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="n">fieldName</span><span class="o">);</span>
-                    <span class="n">declaredField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-                    <span class="k">return</span> <span class="n">declaredField</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">object</span><span class="o">);</span>
-                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NoSuchFieldException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalAccessException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-                <span class="o">}</span>
-                <span class="n">clazz</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getSuperclass</span><span class="o">();</span>
-            <span class="o">}</span>
-            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
-        <span class="o">}</span>
-
-        <span class="kd">public</span> <span class="n">Object</span> <span class="nf">GetAcceptorThread</span><span class="o">()</span> <span class="o">{</span>
-            <span class="c1">//获取当前所有线程
-</span><span class="c1"></span>            <span class="n">Thread</span><span class="o">[]</span> <span class="n">threads</span> <span class="o">=</span> <span class="o">(</span><span class="n">Thread</span><span class="o">[])</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getThreadGroup</span><span class="o">(),</span> <span class="s">&#34;threads&#34;</span><span class="o">);</span>
-            <span class="c1">//从线程组中找到Acceptor所在的线程 在tomcat6中的格式为:Http-端口-Acceptor
-</span><span class="c1"></span>            <span class="k">for</span> <span class="o">(</span><span class="n">Thread</span> <span class="n">thread</span> <span class="o">:</span> <span class="n">threads</span><span class="o">)</span> <span class="o">{</span>
-                <span class="k">if</span> <span class="o">(</span><span class="n">thread</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;exec&#34;</span><span class="o">))</span> <span class="o">{</span>
-                    <span class="k">continue</span><span class="o">;</span>
-                <span class="o">}</span>
-                <span class="k">if</span> <span class="o">((</span><span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;Acceptor&#34;</span><span class="o">))</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;http&#34;</span><span class="o">)))</span> <span class="o">{</span>
-                    <span class="n">Object</span> <span class="n">target</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="s">&#34;target&#34;</span><span class="o">);</span>
-                    <span class="k">if</span> <span class="o">(!(</span><span class="n">target</span> <span class="k">instanceof</span> <span class="n">Runnable</span><span class="o">))</span> <span class="o">{</span>
-                        <span class="k">try</span> <span class="o">{</span>
-                            <span class="n">Object</span> <span class="n">target2</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="s">&#34;this$0&#34;</span><span class="o">);</span>
-                            <span class="n">target</span> <span class="o">=</span> <span class="n">thread</span><span class="o">;</span>
-                        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-                            <span class="k">continue</span><span class="o">;</span>
-                        <span class="o">}</span>
-                    <span class="o">}</span>
-                    <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="s">&#34;this$0&#34;</span><span class="o">);</span>
-                    <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-                        <span class="k">try</span> <span class="o">{</span>
-                            <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="s">&#34;endpoint&#34;</span><span class="o">);</span>
-                        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-                            <span class="k">continue</span><span class="o">;</span>
-                        <span class="o">}</span>
-                    <span class="o">}</span>
-                    <span class="k">return</span> <span class="n">jioEndPoint</span><span class="o">;</span>
-                <span class="o">}</span>
-            <span class="o">}</span>
-            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
-        <span class="o">}</span>
-
-        <span class="kd">public</span> <span class="nf">Tomcat6789</span><span class="o">()</span> <span class="o">{</span>
-            <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">GetAcceptorThread</span><span class="o">();</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-                <span class="k">return</span><span class="o">;</span>
-            <span class="o">}</span>
-            <span class="n">Object</span> <span class="n">object</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">jioEndPoint</span><span class="o">,</span> <span class="s">&#34;handler&#34;</span><span class="o">),</span> <span class="s">&#34;global&#34;</span><span class="o">);</span>
-            <span class="c1">//从找到的Acceptor线程中获取请求域名、请求的路径
-</span><span class="c1"></span>            <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span> <span class="n">processors</span> <span class="o">=</span> <span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">object</span><span class="o">,</span> <span class="s">&#34;processors&#34;</span><span class="o">);</span>
-            <span class="n">Iterator</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">processors</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span>
-            <span class="k">while</span> <span class="o">(</span><span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
-                <span class="n">Object</span> <span class="n">next</span> <span class="o">=</span> <span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
-                <span class="n">Object</span> <span class="n">req</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">next</span><span class="o">,</span> <span class="s">&#34;req&#34;</span><span class="o">);</span>
-                <span class="n">Object</span> <span class="n">serverPort</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="s">&#34;serverPort&#34;</span><span class="o">);</span>
-                <span class="k">if</span> <span class="o">(</span><span class="n">serverPort</span><span class="o">.</span><span class="na">equals</span><span class="o">(-</span><span class="n">1</span><span class="o">))</span> <span class="o">{</span>
-                    <span class="k">continue</span><span class="o">;</span>
-                <span class="o">}</span>
-                <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">buf</span><span class="o">.</span><span class="na">MessageBytes</span> <span class="n">serverNameMB</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">buf</span><span class="o">.</span><span class="na">MessageBytes</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="s">&#34;serverNameMB&#34;</span><span class="o">);</span>
-                <span class="k">this</span><span class="o">.</span><span class="na">serverName</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">serverNameMB</span><span class="o">,</span> <span class="s">&#34;strValue&#34;</span><span class="o">);</span>
-                <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">serverName</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-                    <span class="k">this</span><span class="o">.</span><span class="na">serverName</span> <span class="o">=</span> <span class="n">serverNameMB</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
-                <span class="o">}</span>
-                <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">buf</span><span class="o">.</span><span class="na">MessageBytes</span> <span class="n">uriMB</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">buf</span><span class="o">.</span><span class="na">MessageBytes</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="s">&#34;uriMB&#34;</span><span class="o">);</span>
-                <span class="k">this</span><span class="o">.</span><span class="na">uri</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">uriMB</span><span class="o">,</span> <span class="s">&#34;strValue&#34;</span><span class="o">);</span>
-                <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">uri</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-                    <span class="k">this</span><span class="o">.</span><span class="na">uri</span> <span class="o">=</span> <span class="n">uriMB</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
-                <span class="o">}</span>
-                <span class="c1">//根据获取到的服务器名、路径信息获取StandardContext
-</span><span class="c1"></span>                <span class="k">this</span><span class="o">.</span><span class="na">getStandardContext</span><span class="o">();</span>
-                <span class="k">return</span><span class="o">;</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-
-        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getStandardContext</span><span class="o">()</span> <span class="o">{</span>
-            <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">GetAcceptorThread</span><span class="o">();</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-                <span class="k">return</span><span class="o">;</span>
-            <span class="o">}</span>
-            <span class="n">Object</span> <span class="n">service</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">jioEndPoint</span><span class="o">,</span> <span class="s">&#34;handler&#34;</span><span class="o">),</span> <span class="s">&#34;proto&#34;</span><span class="o">),</span> <span class="s">&#34;adapter&#34;</span><span class="o">),</span> <span class="s">&#34;connector&#34;</span><span class="o">),</span> <span class="s">&#34;service&#34;</span><span class="o">);</span>
-            <span class="n">StandardEngine</span> <span class="n">engine</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardEngine</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">service</span><span class="o">,</span> <span class="s">&#34;container&#34;</span><span class="o">);</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">engine</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-                <span class="n">engine</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardEngine</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">service</span><span class="o">,</span> <span class="s">&#34;engine&#34;</span><span class="o">);</span>
-            <span class="o">}</span>
-
-            <span class="n">HashMap</span> <span class="n">children</span> <span class="o">=</span> <span class="o">(</span><span class="n">HashMap</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">engine</span><span class="o">,</span> <span class="s">&#34;children&#34;</span><span class="o">);</span>
-            <span class="n">StandardHost</span> <span class="n">standardHost</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardHost</span><span class="o">)</span> <span class="n">children</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">serverName</span><span class="o">);</span>
-            <span class="k">if</span><span class="o">(</span><span class="n">standardHost</span><span class="o">==</span><span class="kc">null</span><span class="o">){</span>
-                <span class="n">standardHost</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardHost</span><span class="o">)</span> <span class="n">children</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;localhost&#34;</span><span class="o">);</span>
-            <span class="o">}</span>
-            <span class="n">children</span> <span class="o">=</span> <span class="o">(</span><span class="n">HashMap</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">standardHost</span><span class="o">,</span> <span class="s">&#34;children&#34;</span><span class="o">);</span>
-            <span class="n">Iterator</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">children</span><span class="o">.</span><span class="na">keySet</span><span class="o">().</span><span class="na">iterator</span><span class="o">();</span>
-            <span class="k">while</span> <span class="o">(</span><span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
-                <span class="n">String</span> <span class="n">contextKey</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
-                <span class="k">if</span> <span class="o">(</span><span class="n">contextKey</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">()||!(</span><span class="k">this</span><span class="o">.</span><span class="na">uri</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="n">contextKey</span><span class="o">)))</span> <span class="o">{</span>
-                    <span class="k">continue</span><span class="o">;</span>
-                <span class="o">}</span>
-                <span class="n">StandardContext</span> <span class="n">standardContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardContext</span><span class="o">)</span> <span class="n">children</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">contextKey</span><span class="o">);</span>
-                <span class="k">this</span><span class="o">.</span><span class="na">standardContext</span> <span class="o">=</span> <span class="n">standardContext</span><span class="o">;</span>
-                <span class="k">return</span><span class="o">;</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-        <span class="kd">public</span> <span class="n">StandardContext</span> <span class="nf">getSTC</span><span class="o">()</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">standardContext</span><span class="o">;</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">com.example.demo</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServlet</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.lang.reflect.Field</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.Iterator</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.catalina.core.StandardContext</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.catalina.core.StandardEngine</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.catalina.core.StandardHost</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">goodServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">PrintWriter</span> <span class="n">out</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Tomcat6789</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Tomcat6789</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">getSTC</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">class</span> <span class="nc">Tomcat6789</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">uri</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">serverName</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">StandardContext</span> <span class="n">standardContext</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kd">public</span> <span class="n">Object</span> <span class="nf">getField</span><span class="o">(</span><span class="n">Object</span> <span class="n">object</span><span class="o">,</span> <span class="n">String</span> <span class="n">fieldName</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Field</span> <span class="n">declaredField</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Class</span> <span class="n">clazz</span> <span class="o">=</span> <span class="n">object</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="k">while</span> <span class="o">(</span><span class="n">clazz</span> <span class="o">!=</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                    <span class="n">declaredField</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="n">fieldName</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">declaredField</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">return</span> <span class="n">declaredField</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">object</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NoSuchFieldException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalAccessException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="n">clazz</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getSuperclass</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kd">public</span> <span class="n">Object</span> <span class="nf">GetAcceptorThread</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//获取当前所有线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">Thread</span><span class="o">[]</span> <span class="n">threads</span> <span class="o">=</span> <span class="o">(</span><span class="n">Thread</span><span class="o">[])</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getThreadGroup</span><span class="o">(),</span> <span class="s">&#34;threads&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//从线程组中找到Acceptor所在的线程 在tomcat6中的格式为:Http-端口-Acceptor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">for</span> <span class="o">(</span><span class="n">Thread</span> <span class="n">thread</span> <span class="o">:</span> <span class="n">threads</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="n">thread</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;exec&#34;</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">continue</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">((</span><span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;Acceptor&#34;</span><span class="o">))</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">thread</span><span class="o">.</span><span class="na">getName</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;http&#34;</span><span class="o">)))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">Object</span> <span class="n">target</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="s">&#34;target&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="o">(!(</span><span class="n">target</span> <span class="k">instanceof</span> <span class="n">Runnable</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">Object</span> <span class="n">target2</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getField</span><span class="o">(</span><span class="n">thread</span><span class="o">,</span> <span class="s">&#34;this$0&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">target</span> <span class="o">=</span> <span class="n">thread</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                            <span class="k">continue</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="s">&#34;this$0&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">target</span><span class="o">,</span> <span class="s">&#34;endpoint&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                            <span class="k">continue</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">return</span> <span class="n">jioEndPoint</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kd">public</span> <span class="nf">Tomcat6789</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">GetAcceptorThread</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Object</span> <span class="n">object</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">jioEndPoint</span><span class="o">,</span> <span class="s">&#34;handler&#34;</span><span class="o">),</span> <span class="s">&#34;global&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//从找到的Acceptor线程中获取请求域名、请求的路径
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span> <span class="n">processors</span> <span class="o">=</span> <span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">object</span><span class="o">,</span> <span class="s">&#34;processors&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Iterator</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">processors</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="k">while</span> <span class="o">(</span><span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">Object</span> <span class="n">next</span> <span class="o">=</span> <span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="n">Object</span> <span class="n">req</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">next</span><span class="o">,</span> <span class="s">&#34;req&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="n">Object</span> <span class="n">serverPort</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="s">&#34;serverPort&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="n">serverPort</span><span class="o">.</span><span class="na">equals</span><span class="o">(-</span><span class="n">1</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">continue</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">buf</span><span class="o">.</span><span class="na">MessageBytes</span> <span class="n">serverNameMB</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">buf</span><span class="o">.</span><span class="na">MessageBytes</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="s">&#34;serverNameMB&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">this</span><span class="o">.</span><span class="na">serverName</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">serverNameMB</span><span class="o">,</span> <span class="s">&#34;strValue&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">serverName</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">this</span><span class="o">.</span><span class="na">serverName</span> <span class="o">=</span> <span class="n">serverNameMB</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">buf</span><span class="o">.</span><span class="na">MessageBytes</span> <span class="n">uriMB</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tomcat</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">buf</span><span class="o">.</span><span class="na">MessageBytes</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="s">&#34;uriMB&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">this</span><span class="o">.</span><span class="na">uri</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">uriMB</span><span class="o">,</span> <span class="s">&#34;strValue&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">uri</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">this</span><span class="o">.</span><span class="na">uri</span> <span class="o">=</span> <span class="n">uriMB</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">//根据获取到的服务器名、路径信息获取StandardContext
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="k">this</span><span class="o">.</span><span class="na">getStandardContext</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getStandardContext</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Object</span> <span class="n">jioEndPoint</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">GetAcceptorThread</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">jioEndPoint</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Object</span> <span class="n">service</span> <span class="o">=</span> <span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">getField</span><span class="o">(</span><span class="n">jioEndPoint</span><span class="o">,</span> <span class="s">&#34;handler&#34;</span><span class="o">),</span> <span class="s">&#34;proto&#34;</span><span class="o">),</span> <span class="s">&#34;adapter&#34;</span><span class="o">),</span> <span class="s">&#34;connector&#34;</span><span class="o">),</span> <span class="s">&#34;service&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">StandardEngine</span> <span class="n">engine</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardEngine</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">service</span><span class="o">,</span> <span class="s">&#34;container&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">engine</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">engine</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardEngine</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">service</span><span class="o">,</span> <span class="s">&#34;engine&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">HashMap</span> <span class="n">children</span> <span class="o">=</span> <span class="o">(</span><span class="n">HashMap</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">engine</span><span class="o">,</span> <span class="s">&#34;children&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">StandardHost</span> <span class="n">standardHost</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardHost</span><span class="o">)</span> <span class="n">children</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">serverName</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span><span class="o">(</span><span class="n">standardHost</span><span class="o">==</span><span class="kc">null</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">                <span class="n">standardHost</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardHost</span><span class="o">)</span> <span class="n">children</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;localhost&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="n">children</span> <span class="o">=</span> <span class="o">(</span><span class="n">HashMap</span><span class="o">)</span> <span class="n">getField</span><span class="o">(</span><span class="n">standardHost</span><span class="o">,</span> <span class="s">&#34;children&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Iterator</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">children</span><span class="o">.</span><span class="na">keySet</span><span class="o">().</span><span class="na">iterator</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="k">while</span> <span class="o">(</span><span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">String</span> <span class="n">contextKey</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="n">contextKey</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">()||!(</span><span class="k">this</span><span class="o">.</span><span class="na">uri</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="n">contextKey</span><span class="o">)))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">continue</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="n">StandardContext</span> <span class="n">standardContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardContext</span><span class="o">)</span> <span class="n">children</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">contextKey</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">this</span><span class="o">.</span><span class="na">standardContext</span> <span class="o">=</span> <span class="n">standardContext</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">public</span> <span class="n">StandardContext</span> <span class="nf">getSTC</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">standardContext</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>另外，在Tomcat下还有一个Poller线程，它和Acceptor一起负责接收请求，在Poller线程中同样可用找到StandardContext，流程和Acceptor是一样的。（在<code>ContainerBackgroundProcessor</code>线程下也可以找到StandardContext）</p>
 </li>
@@ -704,9 +704,9 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">loader</span><span class="o">.</span><span class="na">WebappClassLoaderBase</span> <span class="n">webappClassLoaderBase</span> <span class="o">=(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">loader</span><span class="o">.</span><span class="na">WebappClassLoaderBase</span><span class="o">)</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getContextClassLoader</span><span class="o">();</span>
-<span class="n">StandardContext</span> <span class="n">standardContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardContext</span><span class="o">)</span><span class="n">webappClassLoaderBase</span><span class="o">.</span><span class="na">getResources</span><span class="o">().</span><span class="na">getContext</span><span class="o">();</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">loader</span><span class="o">.</span><span class="na">WebappClassLoaderBase</span> <span class="n">webappClassLoaderBase</span> <span class="o">=(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">catalina</span><span class="o">.</span><span class="na">loader</span><span class="o">.</span><span class="na">WebappClassLoaderBase</span><span class="o">)</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getContextClassLoader</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="n">StandardContext</span> <span class="n">standardContext</span> <span class="o">=</span> <span class="o">(</span><span class="n">StandardContext</span><span class="o">)</span><span class="n">webappClassLoaderBase</span><span class="o">.</span><span class="na">getResources</span><span class="o">().</span><span class="na">getContext</span><span class="o">();</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>

