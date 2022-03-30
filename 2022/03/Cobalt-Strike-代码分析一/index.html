@@ -12,7 +12,7 @@
     
     <meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>Posts | MYZXCG</title>
+    <title>Cobalt Strike 代码分析(一) | MYZXCG</title>
 
     <link rel="stylesheet" href="/css/meme.min.248ffc922f6c9975e8625f71e7ebc1a9e2180e744b9528665612bf7c124dea69.css"/>
 
@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
         <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
 
-    <meta name="author" content="myzxcg" /><meta name="description" content="专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～" />
+    <meta name="author" content="myzxcg" /><meta name="description" content="环境配置 原版Jar包: https://github.com/trewisscotch/CobaltStr4.4 Cobalt Strike 各版本sha256 1 2 3 4 5 6 #mac shasum -a 256 cobaltstrike.jar #windows certutil -hashfile cobaltstrike.jar sha256 #客户……" />
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
@@ -37,9 +37,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="application-name" content="MYZXCG" />
-    <meta name="msapplication-starturl" content="../" />
+    <meta name="msapplication-starturl" content="../../../" />
     <meta name="msapplication-TileColor" content="#603cba" />
-    <meta name="msapplication-TileImage" content="../icons/mstile-150x150.png" />
+    <meta name="msapplication-TileImage" content="../../../icons/mstile-150x150.png" />
     <link rel="manifest" href="/manifest.json" />
 
 
@@ -47,19 +47,30 @@
     
 
     
-    <link rel="canonical" href="https://myzxcg.com/posts/" />
+    <link rel="canonical" href="https://myzxcg.com/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/" />
     
 
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "WebPage",
-        "datePublished": "2018-01-01T20:17:43+00:00",
+        "@type": "BlogPosting",
+        "datePublished": "2022-03-30T22:31:02+08:00",
         "dateModified": "2022-03-30T22:59:07+08:00",
-        "url": "https://myzxcg.com/posts/",
-        "name": "Posts",
-        "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
-        "image": "https://myzxcg.com/icons/favicon.ico",
+        "url": "https://myzxcg.com/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/",
+        "headline": "Cobalt Strike 代码分析(一)",
+        "description": "环境配置 原版Jar包: https://github.com/trewisscotch/CobaltStr4.4 Cobalt Strike 各版本sha256 1 2 3 4 5 6 #mac shasum -a 256 cobaltstrike.jar #windows certutil -hashfile cobaltstrike.jar sha256 #客户……",
+        "inLanguage" : "zh-CN",
+        "articleSection": "posts",
+        "wordCount":  4225 ,
+        "image": ["https://myzxcg.com/images/16486507443732.jpg","https://myzxcg.com/images/16486508491910.jpg","https://myzxcg.com/images/16486509333974.jpg","https://myzxcg.com/images/16486509481037.jpg","https://myzxcg.com/images/16486509694584.jpg","https://myzxcg.com/images/16486509857461.jpg","https://myzxcg.com/images/16486510478525.jpg","https://myzxcg.com/images/16486510649848.jpg","https://myzxcg.com/images/16486510808752.jpg","https://myzxcg.com/images/16486511048960.jpg","https://myzxcg.com/images/16486511256104.jpg","https://myzxcg.com/images/16486511398118.jpg","https://myzxcg.com/images/16486511526512.jpg","https://myzxcg.com/images/16486511950767.jpg","https://myzxcg.com/images/16486512123612.jpg","https://myzxcg.com/images/16486512275565.jpg","https://myzxcg.com/images/16486512512742.jpg","https://myzxcg.com/images/16486512721885.jpg","https://myzxcg.com/images/16486513500228.jpg","https://myzxcg.com/images/16486514222919.jpg","https://myzxcg.com/images/16486514468028.jpg","https://myzxcg.com/images/16486514617375.jpg","https://myzxcg.com/images/16486514817340.jpg","https://myzxcg.com/images/16486514985960.jpg","https://myzxcg.com/images/16486515237515.jpg","https://myzxcg.com/images/16486515529734.jpg","https://myzxcg.com/images/16486515667711.jpg","https://myzxcg.com/images/16486515798365.jpg"],
+        "author": {
+            "@type": "Person",
+            "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
+            "email": "myzx.xcg@gmail.com",
+            "image": "https://myzxcg.com/avatar.png",
+            "url": "https://myzxcg.com/",
+            "name": "myzxcg"
+        },
         "license": "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)",
         "publisher": {
             "@type": "Organization",
@@ -79,7 +90,8 @@
 
     
 
-<meta name="twitter:card" content="summary" />
+<meta name="twitter:card" content="summary_large_image" />
+
 
 <meta name="twitter:site" content="@myzxcg" />
 <meta name="twitter:creator" content="@myzxcg" />
@@ -88,12 +100,17 @@
 
 
 
-<meta property="og:title" content="Posts" />
-<meta property="og:description" content="专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～" />
-<meta property="og:url" content="https://myzxcg.com/posts/" />
+<meta property="og:title" content="Cobalt Strike 代码分析(一)" />
+<meta property="og:description" content="环境配置 原版Jar包: https://github.com/trewisscotch/CobaltStr4.4 Cobalt Strike 各版本sha256 1 2 3 4 5 6 #mac shasum -a 256 cobaltstrike.jar #windows certutil -hashfile cobaltstrike.jar sha256 #客户……" />
+<meta property="og:url" content="https://myzxcg.com/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/" />
 <meta property="og:site_name" content="MYZXCG" />
-<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/icons/favicon.ico" />
-    <meta property="og:type" content="website" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/16486507443732.jpg" />
+<meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2022-03-30T22:31:02&#43;08:00" />
+    <meta property="article:modified_time" content="2022-03-30T22:59:07&#43;08:00" />
+    
+    <meta property="article:section" content="posts" />
+
 
         <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
 
@@ -125,7 +142,7 @@
     <header class="header">
         
             <div class="header-wrapper">
-                <div class="header-inner list">
+                <div class="header-inner single">
                     
     <div class="site-brand">
         
@@ -187,337 +204,378 @@
 
             
             
+    <main class="main single" id="main">
+    <div class="main-inner">
+
+        
+
+        <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
+
+            <h1 class="post-title p-name">Cobalt Strike 代码分析(一)</h1>
+
+            
+
+            
+                
+            
+
+            
+                
+
+<div class="post-meta">
     
-        <main class="main list" id="main">
-            <div class="main-inner">
-                <div class="content list-group">
-                    
-                        
-                            <h1 class="list-title">Posts</h1>
-                        
-                        
-                    
+        
+        <time datetime="2022-03-30T22:31:02&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2022.3.30</time>
+    
+    
+    
+    
+        
+        
+        
+            
+        
+    
+    
+    
+        
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;9&nbsp;分钟</span>
+    
 
-                    
+   
+    
 
-                    
-                    
-                        
-                        
-                            
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                                
-                                    
-                                
-                            
-                        
-                    
+    
+    
+</div>
 
-                    
+            
 
-                    
-                    
+            <nav class="contents">
+  <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
+    <li><a id="contents:环境配置" href="#环境配置">环境配置</a>
+      <ol>
+        <li><a id="contents:反编译与打包" href="#反编译与打包">反编译与打包</a></li>
+        <li><a id="contents:调试" href="#调试">调试</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:stageless-beacon" href="#stageless-beacon">Stageless Beacon</a>
+      <ol>
+        <li><a id="contents:beacon-生成分析" href="#beacon-生成分析">Beacon 生成分析</a></li>
+        <li><a id="contents:beacon-通信分析" href="#beacon-通信分析">Beacon 通信分析</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:参考" href="#参考">参考</a></li>
+  </ol>
+</nav><div class="post-body e-content">
+                <h2 id="环境配置"><a href="#环境配置" class="anchor-link">#</a><a href="#contents:环境配置" class="headings">环境配置</a></h2>
+<p>原版Jar包:   <a href="https://github.com/trewisscotch/CobaltStr4.4" target="_blank" rel="noopener">https://github.com/trewisscotch/CobaltStr4.4</a></p>
+<p><a href="https://verify.cobaltstrike.com" target="_blank" rel="noopener">Cobalt Strike 各版本sha256</a></p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1">#mac</span>
+</span></span><span class="line"><span class="cl">shasum -a <span class="m">256</span> cobaltstrike.jar
+</span></span><span class="line"><span class="cl"><span class="c1">#windows</span>
+</span></span><span class="line"><span class="cl">certutil -hashfile cobaltstrike.jar sha256
+</span></span><span class="line"><span class="cl"><span class="c1">#客户端和服务端启动添加</span>
+</span></span><span class="line"><span class="cl">-javaagent:CSAgent.jar<span class="o">=</span>5e98194a01c6b48fa582a6a9fcbb92d6
+</span></span></code></pre></td></tr></table></div>
+</div>
+</div><h3 id="反编译与打包"><a href="#反编译与打包" class="anchor-link">#</a><a href="#contents:反编译与打包" class="headings">反编译与打包</a></h3>
+<ul>
+<li>
+<p>反编译：把class 反编译成.java的源代码，方便进行查找。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//反编译后会自动打成Jar包，解压后里面是.java格式的源文件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">java</span> <span class="o">-</span><span class="n">cp</span> <span class="o">/</span><span class="n">Applications</span><span class="o">/</span><span class="s">&#34;IntelliJ IDEA.app&#34;</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">java</span><span class="o">-</span><span class="n">decompiler</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">java</span><span class="o">-</span><span class="n">decompiler</span><span class="o">.</span><span class="na">jar</span> <span class="n">org</span><span class="o">.</span><span class="na">jetbrains</span><span class="o">.</span><span class="na">java</span><span class="o">.</span><span class="na">decompiler</span><span class="o">.</span><span class="na">main</span><span class="o">.</span><span class="na">decompiler</span><span class="o">.</span><span class="na">ConsoleDecompiler</span> <span class="o">-</span><span class="n">dgs</span><span class="o">=</span><span class="kc">true</span> <span class="n">cobaltstrike</span><span class="o">.</span><span class="na">jar</span> <span class="n">cs</span><span class="o">/</span>
+</span></span></code></pre></td></tr></table></div>
+</div>
+</div></li>
+<li>
+<p>打包：对功能进行增加再重新打包</p>
+<p>Idea 新创建一个项目，编辑项目结构→模块→依赖→添加Jar或目录..→添加原版cs的jar包。</p>
+<p>为了后面能重新打包成Jar: 选择工件→添加Jar→来自具有依赖的模块→主类中设置<code>myEntry.run</code>  →然后创建此文件。（先不要设置为<code>aggressor.Aggressor</code>，4.4 版本会对重要类文件完整性做校验，所以不能定义成和它同名的类，后面介绍如何解决校验问题）</p>
+<p>生成Jar包时选择构建→构建工件即可。</p>
+<p><img src="/images/16486507443732.jpg" alt=""></p>
+<p>结构如上图，另外还需要配置VM参数：<code>-XX:ParallelGCThreads=4 -XX:+AggressiveHeap -XX:+UseParallelGC</code> ，然后启动即可。</p>
+</li>
+<li>
+<p>破解： 可直接用此Agent <a href="https://github.com/Twi1ight/CSAgent" target="_blank" rel="noopener">https://github.com/Twi1ight/CSAgent</a> ，比较方便。</p>
+<p>如果不用Agent，想直接对Jar包进行修改，就需要注意类文件完整性校验问题。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//如下代码是cs对common/Authorization.class文件进行计算的逻辑
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="k">new</span> <span class="n">ZipFile</span><span class="o">(</span><span class="s">&#34;/C:/Users/xxx/Desktop/mycs/lib/cobaltstrike4.4.jar&#34;</span><span class="o">).</span><span class="na">getEntry</span><span class="o">(</span><span class="s">&#34;common/Authorization.class&#34;</span><span class="o">).</span><span class="na">getCrc</span><span class="o">());</span>
+</span></span></code></pre></td></tr></table></div>
+</div>
+</div><p>其实不用管它怎么算的，直接把common包下的<code>starter2</code>与<code>starter</code>类中A函数与<code>Helper.startHelper</code>函数的返回值都改为True，然后按照Agent中的方法修改<code>Authorization</code>类的逻辑后重新编译，把所有class复制到原版Jar包里即可。（建议这样做，因为涉及到后面调试）</p>
+</li>
+<li>
+<p>暗桩：将<code>beacon/BeaconData</code>的<code>this.shouldPad</code> 值固定为<code>false</code>。</p>
+<p><img src="/images/16486508491910.jpg" alt=""></p>
+</li>
+</ul>
+<h3 id="调试"><a href="#调试" class="anchor-link">#</a><a href="#contents:调试" class="headings">调试</a></h3>
+<p>CS 的class 做了混淆导致无法直接调试。可以利用上面反编译获取到的.java源文件，把源文件放到项目的src目录下，删除所有报错的类和第三方包（想要调试的类报错的话可以尝试修改，现在其实不用管，先运行起来，后面想要调试对应的类再加进来），直到能够正常编译运行。</p>
+<p>Tips: 如果登录进去后Eventlog 页面不显示内容，则需要把console包给删了，改用Jar包中的。</p>
+<p>结构如下图</p>
+<p><img src="/images/16486509333974.jpg" alt=""></p>
+<p>然后配置teamserver 启动</p>
+<p><img src="/images/16486509481037.jpg" alt=""></p>
+<h2 id="stageless-beacon"><a href="#stageless-beacon" class="anchor-link">#</a><a href="#contents:stageless-beacon" class="headings">Stageless Beacon</a></h2>
+<p>Teamserver 和Client 的登录认证过程就不细说了，主要分析Beacon 生成以及与Teamserver 的通信过程，了解特征可能出现在那些地方，以此研究如何修改这些特征。</p>
+<h3 id="beacon-生成分析"><a href="#beacon-生成分析" class="anchor-link">#</a><a href="#contents:beacon-生成分析" class="headings">Beacon 生成分析</a></h3>
+<p>生成Stageless beacon的入口点是<code>WindowsExecutableStageDialog</code>类的<code>dialogAction</code>方法。简单说一下流程: 首先根据指定的Listener 名称获取ScListener 对象，然后调用该对象的export 方法来获取beacon的字节数组，然后再根据输出的文件格式保存到文件。其中，export 方法中会根据架构、Listener 、CS Profile 信息来生成beacon。下面以生成64位HTTP 请求的Beacon 为例:</p>
+<p>首先定位关键点<code>BeaconPayload</code>的<code>exportBeaconStageHTTP</code> 方法，从<code>dialogAction()</code> 到该函数的调用链如下（略过了一些传参判断）:
+<img src="/images/16486509694584.jpg" alt="">
+exportBeaconStageHTTP() 中最重要的就是exportBeaconStage() 与this.pe.process() 方法，下面着重对这两个方法进行分析。
+<img src="/images/16486509857461.jpg" alt=""></p>
+<ul>
+<li>
+<p><strong>exportBeaconStage()</strong></p>
+<p>首先从sleeve目录中读取并解密DLL模版 <code>beacon.x64.dll</code>，获得其字节数组（这步需要先破解CS才能解密成功）。然后根据Listener、CS Profile 中设定的值按照一定格式生成一个新字节数组。再定位beacon.x64.dll 字节数组中<code>AAAABBBBCCCCDDDDEEEEFFFF</code> 字符串所在索引，并将新字节数组拷贝到此索引开始的位置。然后返回拷贝后的字节数组。下面来分析一下这个过程:</p>
+<p>函数的前半段主要是从配置文件读取数据，并赋值给变量，后面半段再对变量进行利用。</p>
+<p><code>SleevedResource.readResource(var5)</code> 根据文件名读取并解密资源文件存储到var8中。然后从CS Profile 中读取http-get 请求的uri，Listener 中设置的Host，构成一个链表存储到var11中。再就是根据Listener的Strategy设置变量，如果用的默认的值就不用管这步。</p>
+<p><img src="/images/16486510478525.jpg" alt=""></p>
+<p>函数的后半段就是根据从CS Profile 中获取值，将其按照一定格式添加到Settings对象中，然后添加到资源文件的指定位置中。（为了节省篇幅，每个值的意义写在注释里了，如下图）</p>
+<p><img src="/images/16486510649848.jpg" alt=""></p>
+<p><img src="/images/16486510808752.jpg" alt=""></p>
+<p><strong>补充说明:</strong></p>
+<p>上面说到数据是按照一定格式被添加成字节数组的，那么要分析它是什么格式就得看看<code>addShort、addInt、addData、addString</code> 方法是如何实现的。下图是这些方法的定义：</p>
+<p><img src="/images/16486511048960.jpg" alt=""></p>
+<p>以<code>addShort()</code>为例：var1是后面beacon.exe 解析Profile时的索引（这里暂时不用管），var2 就是要写入的内容。而在添加var2之前还添加了1和2。结合Settings 定义的<code>TYPE_SHORT、TYPE_INT</code> 等属性，可以猜测添加的1代表Short类型的数据，接着添加2代表数据的长度（2字节）。在函数中可以看到，其实真正调用的是Packer对象的<code>addShort()</code> 方法。</p>
+<p><img src="/images/16486511256104.jpg" alt=""></p>
+<p><img src="/images/16486511398118.jpg" alt=""></p>
+<p><img src="/images/16486511526512.jpg" alt=""></p>
+<p><code>this.data.write(var1, var2, var3);</code> 就是将var1数组从var2偏移开始把var3长度的数据写到输出流中。所以所有的数据是存在Packer 对象的out属性中的。</p>
+</li>
+<li>
+<p><strong>MalleablePE.process()</strong></p>
+<p>分析此部分需要先了解PE 文件结构。前面对资源文件<code>beacon.x64.dll</code> 写入了网络请求等相关的Profile，这一步就是写根据Profile 中有关PE的配置（<code>stage{...}</code>中的内容）对DLL进行修改，然后为DLL 设置反射加载的loader。</p>
+<p>process函数中调用了<code>pre_process()</code>和<code>post_process()</code>，下面跟一下这两个函数。</p>
+<p><img src="/images/16486511950767.jpg" alt=""></p>
+<p><code>pre_process()</code> 的前半段主要是获取Profile中配置的stage值，然后创建了一个PEEditor对象。接着调用了此对象的<code>CheckAssertions()</code> ，在这个函数中解析了var1的PE 文件结构。</p>
+<p><img src="/images/16486512123612.jpg" alt=""></p>
+<p>在<code>CheckAssertions()</code>中调用了<code>PEEditor.getInfo()</code>，此函数会创建PEParser 对象，并存储在PEEditor的info属性中。</p>
+<p><img src="/images/16486512275565.jpg" alt=""></p>
+<p>在PEParser的构造函数中又会调用它的parse()函数，用来解析var1的PE结构。var1字节数组存储在<code>this.content</code> 属性中，解析的结果存储在<code>this.values</code> 。受篇幅影响，注释中解释了各行代码含义，如下图。</p>
+<p><img src="/images/16486512512742.jpg" alt=""></p>
+<p>接着<code>post_process()</code> 函数主要是为DLL 添加ReflectiveLoader。首先获取DLL 中已经写好的ReflectiveLoader函数地址，然后在PE 文件的DOS 头位置添加指令，调用该函数。相当于DLL 之后能像Shellcode 一样加载。</p>
+<p>建议先去学习一下反射DLL 相关知识（可参考之前写的文章），不然这里理解不了在做什么。</p>
+<p><img src="/images/16486512721885.jpg" alt=""></p>
+<p>设置好Reflective DLL之后，如果配置文件中进行了如下配置，那么会替换PE 中的相关字符串。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">transform</span><span class="o">-</span><span class="n">x64</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">prepend</span> <span class="s">&#34;\x90\x90\x90\x90\x90\x90\x90\x90\x90&#34;</span><span class="o">;</span><span class="c1">//在PE文件前添加
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">strrep</span> <span class="s">&#34;ReflectiveLoader&#34;</span> <span class="s">&#34;execute&#34;</span><span class="o">;</span> <span class="c1">//替换ReflectiveLoader为execute
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">strrep</span> <span class="s">&#34;beacon.x64.dll&#34;</span> <span class="s">&#34;&#34;</span><span class="o">;</span> <span class="c1">//替换beacon.x64.dll为空
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
+</div>
+</div><p>如果选择输出Raw格式，那么就直接将<code>var6.peProcessedDLL</code> 内容输出到文件了。如果是exe等格式那么还会调用<code>patchArtifact()</code> 添加一个loader。</p>
+</li>
+</ul>
+<p><img src="/images/16486513500228.jpg" alt=""></p>
+<p>分析CS 对PE 的处理过程，可以尝试把修改后的字节数组输出，然后用010editor之类的工具进行分析。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">File</span> <span class="n">file</span>  <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&#34;C:\\Users\\xxx\\Desktop\\xxx.dll&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span><span class="o">(</span><span class="n">file</span><span class="o">.</span><span class="na">exists</span><span class="o">())</span><span class="n">file</span><span class="o">.</span><span class="na">delete</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">   <span class="n">FileOutputStream</span> <span class="n">fos</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="n">file</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">   <span class="n">fos</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">var6</span><span class="o">.</span><span class="na">peProcessedDLL</span><span class="o">,</span><span class="n">0</span><span class="o">,</span><span class="n">var6</span><span class="o">.</span><span class="na">peProcessedDLL</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">   <span class="n">fos</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">   <span class="n">fos</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">   <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table></div>
+</div>
+</div><h3 id="beacon-通信分析"><a href="#beacon-通信分析" class="anchor-link">#</a><a href="#contents:beacon-通信分析" class="headings">Beacon 通信分析</a></h3>
+<p>下面以Stageless、走HTTP 协议的Beacon来分析。（用的这个 <a href="https://github.com/threatexpress/malleable-c2/blob/master/jquery-c2.4.4.profile" target="_blank" rel="noopener">Profile</a> ）</p>
+<ul>
+<li>
+<p><strong>Beacon 向 TeamServer 发送Get请求</strong></p>
+<p>Beacon 在每次Sleep 后都会像TeamServer 发送如下请求获取要执行的指令（每次请求内容始终相同）</p>
+<p><img src="/images/16486514222919.jpg" alt=""></p>
+<p>下面来跟一下TeamServer 处理该请求的过程。（根据配置文件，Cookie头的__cfduid字段的值就是发送给TeamServer的关键内容）</p>
+<p>直接定位到关键点<code>cloudstrike.WebServer</code> 类的<code>_serve()</code> 方法处理HTTP请求，根据请求的类型、URI的不同，判断是否是代理、stager 或是stageless的请求。这里用的是stageless，所以直接进入第二个判断。</p>
+<p><img src="/images/16486514468028.jpg" alt=""></p>
+<p>接着调用MalleableHook 类的<code>serve()</code>方法。（后面都会把关键内容写在注释里，节省篇幅）</p>
+<p><img src="/images/16486514617375.jpg" alt=""></p>
+<p>下面进入关键的方法<code>this.hook.serve()</code> ，根据GET、POST 两种不通的请求类型，对应的serve()方法也不相同。这里是GET 请求，那么调用的是<code>BeaconHTTP._A.serve()</code>方法。</p>
+<p><img src="/images/16486514817340.jpg" alt=""></p>
+<p>其中<code>BeaconHTTP.this.controller.dump</code> 方法会从对应的Beacon ID中获取用户指令，加密后输出在响应中。而<code>process_beacon_metadata</code>方法，这个函数会解密并解析数据，通过这个函数也能看到客户端传输数据的格式。</p>
+<p><img src="/images/16486514985960.jpg" alt=""></p>
+<p>其中会创建一个<code>BeaconEntry</code> 对象，这个对象中保存了解密后的内容中有关客户端机器的信息，并与对应的Beacon ID 绑定。最后返回该对象。通过分析该函数以及<code>BeaconEntry</code>的构造函数，可以得出客户端数据的排列方式为：</p>
+<p><img src="/images/16486515237515.jpg" alt=""></p>
+</li>
+<li>
+<p><strong>Beacon 向 TeamServer 发送Post请求</strong></p>
+<p><img src="/images/16486515529734.jpg" alt=""></p>
+<p>调用的函数前面还是不变，POST 方法调用的是<code>BeaconHTTP._B.serve()</code>方法。</p>
+<p><img src="/images/16486515667711.jpg" alt=""></p>
+<p>这里<code>__cfduid</code>参数的解密过程为: base64解密-&gt;异或加密密钥（4字节）+ 异或加密数据。而POST数据的结构为：</p>
+<p><img src="/images/16486515798365.jpg" alt=""></p>
+</li>
+</ul>
+<p>根据上面的分析，其实只要按照指定的格式排列数据并加密，就能上线CS。因此可以自己写CS 客户端，这也是绕过CS的内存查杀的一种方法。其次，如果配置好profile中的内容，完全可以自定义流量。只是每次beacon回连获取指令的数据包始终相同，这也算是一种特征。至于HTTPS 协议的特征，常用的检测是JA3或者JA3S ，分别检测客户端握手时的特征与服务端返回时的特征。这种其实用cloudflare的worker就可以绕过了（先前写过 <a href="https://myzxcg.com/2020/12/Cobalt-Strike%E5%8E%BB%E7%89%B9%E5%BE%81%E9%85%8D%E7%BD%AENginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86CDN%E4%B8%8ECloudflare-Worker/" target="_blank" rel="noopener">文章</a>），因为可以直接上cloudflare的证书。</p>
+<h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
+<p><a href="https://mp.weixin.qq.com/s/cRlHoilJa8HPX9L2ZNE77A" target="_blank" rel="noopener">CobaltStrike二次开发环境初探</a></p>
+<p><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkxMTMxMjI2OQ==&amp;action=getalbum&amp;album_id=2174670809724747778&amp;scene=173&amp;from_msgid=2247483983&amp;from_itemidx=1&amp;count=3&amp;nolastread=1#wechat_redirect" target="_blank" rel="noopener">CobaltStrike逆向学习系列</a></p>
 
-                    
-                    
-                    
-                        
-                        
-                        
-                        
-                        
-                            
-                        
-                        
-                        <h2 class="list-year">2022</h2>
-                        
-                            <ul class="list-part">
-        
-            <li class="list-item">
-                <a href="/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/" class="list-item-title">Cobalt Strike 代码分析(一)</a>
-                <time datetime="2022-03-30T22:31:02&#43;08:00" class="list-item-time">3 月 30 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2022/01/Log4j2-%E5%88%A9%E7%94%A8%E9%93%BE%E4%B8%8EWaf%E7%BB%95%E8%BF%87%E5%88%86%E6%9E%90/" class="list-item-title">Log4j2 利用链与Waf绕过分析</a>
-                <time datetime="2022-01-15T20:34:25&#43;08:00" class="list-item-time">1 月 15 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2022/01/Windows-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%88%86%E6%9E%90%E4%B8%8E%E5%85%8D%E6%9D%80%E5%AE%9E%E7%8E%B0/" class="list-item-title">Windows 系统调用分析与免杀实现</a>
-                <time datetime="2022-01-13T21:12:48&#43;08:00" class="list-item-time">1 月 13 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2022/01/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8A%A0%E5%AF%86%E4%B8%8EShellcode-%E9%9A%90%E8%97%8F/" class="list-item-title">字符串加密与Shellcode 隐藏</a>
-                <time datetime="2022-01-12T23:21:25&#43;08:00" class="list-item-time">1 月 12 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2022/01/Windows-Shellcode-%E6%B3%A8%E5%85%A5%E5%A7%BF%E5%8A%BF/" class="list-item-title">Windows Shellcode 注入姿势</a>
-                <time datetime="2022-01-11T23:25:59&#43;08:00" class="list-item-time">1 月 11 日</time>
-            </li>
-        
-        
-    </ul>
-
-
-                        
-                    
-                        
-                        
-                        
-                        
-                        
-                            
-                        
-                        
-                        <h2 class="list-year">2021</h2>
-                        
-                            <ul class="list-part">
-        
-            <li class="list-item">
-                <a href="/2021/11/%E5%88%A9%E7%94%A8.NET-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%81%9A%E6%9D%83%E9%99%90%E7%BB%B4%E6%8C%81/" class="list-item-title">利用.NET 反序列化做权限维持</a>
-                <time datetime="2021-11-21T16:14:05&#43;08:00" class="list-item-time">11 月 21 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/11/Spring-%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" class="list-item-title">Spring 内存马实现</a>
-                <time datetime="2021-11-13T20:59:58&#43;08:00" class="list-item-time">11 月 13 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/11/Weblogic-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/" class="list-item-title">Weblogic 内存马分析与实现</a>
-                <time datetime="2021-11-06T22:02:36&#43;08:00" class="list-item-time">11 月 6 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/11/Shiro-%E5%9B%9E%E6%98%BE%E4%B8%8E%E5%86%85%E5%AD%98%E9%A9%AC%E5%AE%9E%E7%8E%B0/" class="list-item-title">Shiro 回显与内存马实现</a>
-                <time datetime="2021-11-01T00:45:08&#43;08:00" class="list-item-time">11 月 1 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/10/Tomcat-%E5%86%85%E5%AD%98%E9%A9%AC%E5%88%86%E6%9E%90%E5%8F%8A%E6%A3%80%E6%B5%8B/" class="list-item-title">Tomcat 内存马分析及检测</a>
-                <time datetime="2021-10-29T00:00:10&#43;08:00" class="list-item-time">10 月 29 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/10/Tomcat-%E6%9E%B6%E6%9E%84%E4%B8%8EContext%E5%88%86%E6%9E%90/" class="list-item-title">Tomcat 架构与Context分析</a>
-                <time datetime="2021-10-29T00:00:09&#43;08:00" class="list-item-time">10 月 29 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/10/FastJson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%BB%95%E8%BF%87%E4%B8%8E%E5%88%A9%E7%94%A8/" class="list-item-title">FastJson 反序列化绕过与利用</a>
-                <time datetime="2021-10-28T00:00:20&#43;08:00" class="list-item-time">10 月 28 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/10/Ysoserial-%E5%88%A9%E7%94%A8%E9%93%BE%E5%88%86%E6%9E%90/" class="list-item-title">Ysoserial 利用链分析</a>
-                <time datetime="2021-10-27T00:00:20&#43;08:00" class="list-item-time">10 月 27 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/10/Java-JNDI%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" class="list-item-title">Java JNDI分析与利用</a>
-                <time datetime="2021-10-26T00:00:20&#43;08:00" class="list-item-time">10 月 26 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/10/Java-RMI%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" class="list-item-title">Java RMI分析与利用</a>
-                <time datetime="2021-10-25T00:00:45&#43;08:00" class="list-item-time">10 月 25 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/10/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9F%BA%E7%A1%80/" class="list-item-title">Java反序列化基础</a>
-                <time datetime="2021-10-24T16:02:45&#43;08:00" class="list-item-time">10 月 24 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/10/%E5%9F%9F%E5%A7%94%E6%B4%BE%E5%88%A9%E7%94%A8/" class="list-item-title">域委派利用</a>
-                <time datetime="2021-10-19T00:05:45&#43;08:00" class="list-item-time">10 月 19 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/09/%E5%9F%9F%E7%94%A8%E6%88%B7%E5%8F%A3%E4%BB%A4%E7%AD%96%E7%95%A5%E4%B8%8E%E6%9A%B4%E7%A0%B4/" class="list-item-title">域用户口令策略与暴破</a>
-                <time datetime="2021-09-11T00:01:45&#43;08:00" class="list-item-time">9 月 11 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/09/%E7%BB%84%E7%AD%96%E7%95%A5%E5%88%A9%E7%94%A8%E4%B8%8E%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/" class="list-item-title">组策略利用与横向移动</a>
-                <time datetime="2021-09-05T09:09:39&#43;08:00" class="list-item-time">9 月 5 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/08/%E5%9F%9F%E7%94%A8%E6%88%B7%E4%B8%8E%E5%9F%9F%E6%88%90%E5%91%98%E6%9C%BA%E5%99%A8%E5%85%B3%E7%B3%BB%E5%8F%8A%E5%88%A9%E7%94%A8/" class="list-item-title">域用户与域成员机器关系及利用</a>
-                <time datetime="2021-08-30T00:01:45&#43;08:00" class="list-item-time">8 月 30 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%BA%8C/" class="list-item-title">Windows 访问控制模型（二）</a>
-                <time datetime="2021-08-29T20:08:06&#43;08:00" class="list-item-time">8 月 29 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%B8%80/" class="list-item-title">Windows 访问控制模型（一）</a>
-                <time datetime="2021-08-28T20:08:06&#43;08:00" class="list-item-time">8 月 28 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%BA%8C/" class="list-item-title">Kerberos 认证过程详细分析（二）</a>
-                <time datetime="2021-08-27T00:43:06&#43;08:00" class="list-item-time">8 月 27 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%B8%80/" class="list-item-title">Kerberos 认证过程详细分析（一）</a>
-                <time datetime="2021-08-26T00:43:06&#43;08:00" class="list-item-time">8 月 26 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2021/01/AutoIt-SendKey%E7%BB%95%E8%BF%87%E5%A0%A1%E5%9E%92%E6%9C%BA%E4%B8%A4%E6%AD%A5%E9%AA%8C%E8%AF%81/" class="list-item-title">AutoIt SendKey绕过堡垒机两步验证</a>
-                <time datetime="2021-01-16T17:15:39&#43;08:00" class="list-item-time">1 月 16 日</time>
-            </li>
-        
-        
-    </ul>
-
-
-                        
-                    
-                        
-                        
-                        
-                        
-                        
-                            
-                        
-                        
-                        <h2 class="list-year">2020</h2>
-                        
-                            <ul class="list-part">
-        
-            <li class="list-item">
-                <a href="/2020/12/Windows-Https%E6%B5%81%E9%87%8F%E6%8A%93%E5%8F%96%E4%B8%8E%E8%A7%A3%E5%AF%86/" class="list-item-title">Windows Https流量抓取与解密</a>
-                <time datetime="2020-12-15T22:03:09&#43;08:00" class="list-item-time">12 月 15 日</time>
-            </li>
-        
-            <li class="list-item">
-                <a href="/2020/12/Cobalt-Strike%E5%8E%BB%E7%89%B9%E5%BE%81%E9%85%8D%E7%BD%AENginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86CDN%E4%B8%8ECloudflare-Worker/" class="list-item-title">Cobalt Strike去特征：配置Nginx反向代理、CDN与Cloudflare Worker</a>
-                <time datetime="2020-12-13T19:49:42&#43;08:00" class="list-item-time">12 月 13 日</time>
-            </li>
-        
-        
-    </ul>
-
-
-                        
-                    
-                </div>
             </div>
-        </main>
+
+            
     
+    
+        <ul class="post-copyright">
+            <li class="copyright-item author"><span class="copyright-item-text">作者</span>：<a href="https://myzxcg.com/" class="p-author h-card" target="_blank" rel="noopener">myzxcg</a></li>
+            
+                
+                
+                
+                
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/" target="_blank" rel="noopener">https://myzxcg.com/2022/03/Cobalt-Strike-代码分析一/</a></li>
+            
+            <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
+            
+        </ul>
+    
+
+
+
+        </article>
+
+        
+
+        
+
+
+        
+
+
+        
+
+
+        
+    
+    
+        <div class="related-posts">
+            <h2 class="related-title">相关文章：<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon related-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"/></svg></h2>
+            <ul class="related-list">
+                
+                    <li class="related-item">
+                        <a href="/2020/12/Cobalt-Strike%E5%8E%BB%E7%89%B9%E5%BE%81%E9%85%8D%E7%BD%AENginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86CDN%E4%B8%8ECloudflare-Worker/" class="related-link">Cobalt Strike去特征：配置Nginx反向代理、CDN与Cloudflare Worker</a>
+                    </li>
+                
+            </ul>
+        </div>
+    
+
+
+
+        
+
+
+        
+    <footer class="minimal-footer">
+        
+            <div class="post-tag"><a href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag" class="post-tag-link">#工具</a></div>
+        
+        
+        
+            
+        
+    </footer>
+
+
+
+        
+
+
+        
+    
+        
+        
+    
+    
+    
+    
+        <ul class="post-nav">
+            
+            
+                <li class="post-nav-next">
+                    <a href="/2022/01/Log4j2-%E5%88%A9%E7%94%A8%E9%93%BE%E4%B8%8EWaf%E7%BB%95%E8%BF%87%E5%88%86%E6%9E%90/" rel="next">Log4j2 利用链与Waf绕过分析 &gt;</a>
+                </li>
+            
+        </ul>
+    
+
+
+
+        
+    
+
+        
+            <div class="load-comments">
+                <div id="load-comments">加载评论</div>
+            </div>
+        
+
+        
+
+        
+
+        
+            <div id="utterances"></div>
+        
+
+        
+    
+
+
+
+    </div>
+</main>
+
 
             
     <div id="back-to-top" class="back-to-top">

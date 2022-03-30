@@ -4,7 +4,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-CN">
     <title type="text">MYZXCG</title>
     <subtitle type="html">专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～</subtitle>
-    <updated>2022-03-27T20:36:40&#43;08:00</updated>
+    <updated>2022-03-30T22:59:34&#43;08:00</updated>
     <id>https://myzxcg.com/</id>
     <link rel="alternate" type="text/html" href="https://myzxcg.com/" />
     <link rel="self" type="application/atom&#43;xml" href="https://myzxcg.com/atom.xml" />
@@ -16,6 +16,233 @@
             </author>
     <rights>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</rights>
     <generator uri="https://gohugo.io/" version="0.94.2">Hugo</generator>
+        <entry>
+            <title type="text">Cobalt Strike 代码分析(一)</title>
+            <link rel="alternate" type="text/html" href="https://myzxcg.com/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/" />
+            <id>https://myzxcg.com/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/</id>
+            <updated>2022-03-30T22:59:07&#43;08:00</updated>
+            <published>2022-03-30T22:31:02&#43;08:00</published>
+            <author>
+                    <name>myzxcg</name>
+                    <uri>https://myzxcg.com/</uri>
+                    <email>myzx.xcg@gmail.com</email>
+                    </author>
+            <rights>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</rights><summary type="html">环境配置 原版Jar包: https://github.com/trewisscotch/CobaltStr4.4 Cobalt Strike 各版本sha256 1 2 3 4 5 6 #mac shasum -a 256 cobaltstrike.jar #windows certutil -hashfile cobaltstrike.jar sha256 #客户……</summary>
+            
+                <content type="html">&lt;h2 id=&#34;环境配置&#34;&gt;环境配置&lt;/h2&gt;
+&lt;p&gt;原版Jar包:   &lt;a href=&#34;https://github.com/trewisscotch/CobaltStr4.4&#34;&gt;https://github.com/trewisscotch/CobaltStr4.4&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://verify.cobaltstrike.com&#34;&gt;Cobalt Strike 各版本sha256&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;#mac&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;shasum -a &lt;span class=&#34;m&#34;&gt;256&lt;/span&gt; cobaltstrike.jar
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;#windows&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;certutil -hashfile cobaltstrike.jar sha256
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;#客户端和服务端启动添加&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;-javaagent:CSAgent.jar&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;5e98194a01c6b48fa582a6a9fcbb92d6
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;反编译与打包&#34;&gt;反编译与打包&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;反编译：把class 反编译成.java的源代码，方便进行查找。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;//反编译后会自动打成Jar包，解压后里面是.java格式的源文件
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;java&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;cp&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Applications&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;IntelliJ IDEA.app&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Contents&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;plugins&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;java&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;decompiler&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;lib&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;java&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;decompiler&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;jar&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;org&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;jetbrains&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;java&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;decompiler&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;decompiler&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;ConsoleDecompiler&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dgs&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;cobaltstrike&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;jar&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;cs&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;打包：对功能进行增加再重新打包&lt;/p&gt;
+&lt;p&gt;Idea 新创建一个项目，编辑项目结构→模块→依赖→添加Jar或目录..→添加原版cs的jar包。&lt;/p&gt;
+&lt;p&gt;为了后面能重新打包成Jar: 选择工件→添加Jar→来自具有依赖的模块→主类中设置&lt;code&gt;myEntry.run&lt;/code&gt;  →然后创建此文件。（先不要设置为&lt;code&gt;aggressor.Aggressor&lt;/code&gt;，4.4 版本会对重要类文件完整性做校验，所以不能定义成和它同名的类，后面介绍如何解决校验问题）&lt;/p&gt;
+&lt;p&gt;生成Jar包时选择构建→构建工件即可。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486507443732.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;结构如上图，另外还需要配置VM参数：&lt;code&gt;-XX:ParallelGCThreads=4 -XX:+AggressiveHeap -XX:+UseParallelGC&lt;/code&gt; ，然后启动即可。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;破解： 可直接用此Agent &lt;a href=&#34;https://github.com/Twi1ight/CSAgent&#34;&gt;https://github.com/Twi1ight/CSAgent&lt;/a&gt; ，比较方便。&lt;/p&gt;
+&lt;p&gt;如果不用Agent，想直接对Jar包进行修改，就需要注意类文件完整性校验问题。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;//如下代码是cs对common/Authorization.class文件进行计算的逻辑
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;out&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;println&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ZipFile&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;/C:/Users/xxx/Desktop/mycs/lib/cobaltstrike4.4.jar&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;getEntry&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;common/Authorization.class&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;getCrc&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;());&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;其实不用管它怎么算的，直接把common包下的&lt;code&gt;starter2&lt;/code&gt;与&lt;code&gt;starter&lt;/code&gt;类中A函数与&lt;code&gt;Helper.startHelper&lt;/code&gt;函数的返回值都改为True，然后按照Agent中的方法修改&lt;code&gt;Authorization&lt;/code&gt;类的逻辑后重新编译，把所有class复制到原版Jar包里即可。（建议这样做，因为涉及到后面调试）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;暗桩：将&lt;code&gt;beacon/BeaconData&lt;/code&gt;的&lt;code&gt;this.shouldPad&lt;/code&gt; 值固定为&lt;code&gt;false&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486508491910.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;调试&#34;&gt;调试&lt;/h3&gt;
+&lt;p&gt;CS 的class 做了混淆导致无法直接调试。可以利用上面反编译获取到的.java源文件，把源文件放到项目的src目录下，删除所有报错的类和第三方包（想要调试的类报错的话可以尝试修改，现在其实不用管，先运行起来，后面想要调试对应的类再加进来），直到能够正常编译运行。&lt;/p&gt;
+&lt;p&gt;Tips: 如果登录进去后Eventlog 页面不显示内容，则需要把console包给删了，改用Jar包中的。&lt;/p&gt;
+&lt;p&gt;结构如下图&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486509333974.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;然后配置teamserver 启动&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486509481037.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;stageless-beacon&#34;&gt;Stageless Beacon&lt;/h2&gt;
+&lt;p&gt;Teamserver 和Client 的登录认证过程就不细说了，主要分析Beacon 生成以及与Teamserver 的通信过程，了解特征可能出现在那些地方，以此研究如何修改这些特征。&lt;/p&gt;
+&lt;h3 id=&#34;beacon-生成分析&#34;&gt;Beacon 生成分析&lt;/h3&gt;
+&lt;p&gt;生成Stageless beacon的入口点是&lt;code&gt;WindowsExecutableStageDialog&lt;/code&gt;类的&lt;code&gt;dialogAction&lt;/code&gt;方法。简单说一下流程: 首先根据指定的Listener 名称获取ScListener 对象，然后调用该对象的export 方法来获取beacon的字节数组，然后再根据输出的文件格式保存到文件。其中，export 方法中会根据架构、Listener 、CS Profile 信息来生成beacon。下面以生成64位HTTP 请求的Beacon 为例:&lt;/p&gt;
+&lt;p&gt;首先定位关键点&lt;code&gt;BeaconPayload&lt;/code&gt;的&lt;code&gt;exportBeaconStageHTTP&lt;/code&gt; 方法，从&lt;code&gt;dialogAction()&lt;/code&gt; 到该函数的调用链如下（略过了一些传参判断）:
+&lt;img src=&#34;https://myzxcg.com/images/16486509694584.jpg&#34; alt=&#34;&#34;&gt;
+exportBeaconStageHTTP() 中最重要的就是exportBeaconStage() 与this.pe.process() 方法，下面着重对这两个方法进行分析。
+&lt;img src=&#34;https://myzxcg.com/images/16486509857461.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;exportBeaconStage()&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;首先从sleeve目录中读取并解密DLL模版 &lt;code&gt;beacon.x64.dll&lt;/code&gt;，获得其字节数组（这步需要先破解CS才能解密成功）。然后根据Listener、CS Profile 中设定的值按照一定格式生成一个新字节数组。再定位beacon.x64.dll 字节数组中&lt;code&gt;AAAABBBBCCCCDDDDEEEEFFFF&lt;/code&gt; 字符串所在索引，并将新字节数组拷贝到此索引开始的位置。然后返回拷贝后的字节数组。下面来分析一下这个过程:&lt;/p&gt;
+&lt;p&gt;函数的前半段主要是从配置文件读取数据，并赋值给变量，后面半段再对变量进行利用。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;SleevedResource.readResource(var5)&lt;/code&gt; 根据文件名读取并解密资源文件存储到var8中。然后从CS Profile 中读取http-get 请求的uri，Listener 中设置的Host，构成一个链表存储到var11中。再就是根据Listener的Strategy设置变量，如果用的默认的值就不用管这步。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486510478525.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;函数的后半段就是根据从CS Profile 中获取值，将其按照一定格式添加到Settings对象中，然后添加到资源文件的指定位置中。（为了节省篇幅，每个值的意义写在注释里了，如下图）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486510649848.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486510808752.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;补充说明:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;上面说到数据是按照一定格式被添加成字节数组的，那么要分析它是什么格式就得看看&lt;code&gt;addShort、addInt、addData、addString&lt;/code&gt; 方法是如何实现的。下图是这些方法的定义：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486511048960.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;以&lt;code&gt;addShort()&lt;/code&gt;为例：var1是后面beacon.exe 解析Profile时的索引（这里暂时不用管），var2 就是要写入的内容。而在添加var2之前还添加了1和2。结合Settings 定义的&lt;code&gt;TYPE_SHORT、TYPE_INT&lt;/code&gt; 等属性，可以猜测添加的1代表Short类型的数据，接着添加2代表数据的长度（2字节）。在函数中可以看到，其实真正调用的是Packer对象的&lt;code&gt;addShort()&lt;/code&gt; 方法。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486511256104.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486511398118.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486511526512.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;this.data.write(var1, var2, var3);&lt;/code&gt; 就是将var1数组从var2偏移开始把var3长度的数据写到输出流中。所以所有的数据是存在Packer 对象的out属性中的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;MalleablePE.process()&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;分析此部分需要先了解PE 文件结构。前面对资源文件&lt;code&gt;beacon.x64.dll&lt;/code&gt; 写入了网络请求等相关的Profile，这一步就是写根据Profile 中有关PE的配置（&lt;code&gt;stage{...}&lt;/code&gt;中的内容）对DLL进行修改，然后为DLL 设置反射加载的loader。&lt;/p&gt;
+&lt;p&gt;process函数中调用了&lt;code&gt;pre_process()&lt;/code&gt;和&lt;code&gt;post_process()&lt;/code&gt;，下面跟一下这两个函数。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486511950767.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;pre_process()&lt;/code&gt; 的前半段主要是获取Profile中配置的stage值，然后创建了一个PEEditor对象。接着调用了此对象的&lt;code&gt;CheckAssertions()&lt;/code&gt; ，在这个函数中解析了var1的PE 文件结构。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486512123612.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在&lt;code&gt;CheckAssertions()&lt;/code&gt;中调用了&lt;code&gt;PEEditor.getInfo()&lt;/code&gt;，此函数会创建PEParser 对象，并存储在PEEditor的info属性中。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486512275565.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在PEParser的构造函数中又会调用它的parse()函数，用来解析var1的PE结构。var1字节数组存储在&lt;code&gt;this.content&lt;/code&gt; 属性中，解析的结果存储在&lt;code&gt;this.values&lt;/code&gt; 。受篇幅影响，注释中解释了各行代码含义，如下图。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486512512742.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接着&lt;code&gt;post_process()&lt;/code&gt; 函数主要是为DLL 添加ReflectiveLoader。首先获取DLL 中已经写好的ReflectiveLoader函数地址，然后在PE 文件的DOS 头位置添加指令，调用该函数。相当于DLL 之后能像Shellcode 一样加载。&lt;/p&gt;
+&lt;p&gt;建议先去学习一下反射DLL 相关知识（可参考之前写的文章），不然这里理解不了在做什么。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486512721885.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;设置好Reflective DLL之后，如果配置文件中进行了如下配置，那么会替换PE 中的相关字符串。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;transform&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x64&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;prepend&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;\x90\x90\x90\x90\x90\x90\x90\x90\x90&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//在PE文件前添加
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;n&#34;&gt;strrep&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;ReflectiveLoader&amp;#34;&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;execute&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//替换ReflectiveLoader为execute
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;n&#34;&gt;strrep&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;beacon.x64.dll&amp;#34;&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;//替换beacon.x64.dll为空
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果选择输出Raw格式，那么就直接将&lt;code&gt;var6.peProcessedDLL&lt;/code&gt; 内容输出到文件了。如果是exe等格式那么还会调用&lt;code&gt;patchArtifact()&lt;/code&gt; 添加一个loader。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486513500228.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;分析CS 对PE 的处理过程，可以尝试把修改后的字节数组输出，然后用010editor之类的工具进行分析。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;File&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;file&lt;/span&gt;  &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;File&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;C:\\Users\\xxx\\Desktop\\xxx.dll&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;file&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;exists&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;())&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;file&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;delete&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;try&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   &lt;span class=&#34;n&#34;&gt;FileOutputStream&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fos&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;FileOutputStream&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;file&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   &lt;span class=&#34;n&#34;&gt;fos&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;write&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;var6&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;peProcessedDLL&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;var6&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;peProcessedDLL&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;length&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   &lt;span class=&#34;n&#34;&gt;fos&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;flush&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   &lt;span class=&#34;n&#34;&gt;fos&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;close&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;catch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Exception&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;e&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   &lt;span class=&#34;n&#34;&gt;e&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;printStackTrace&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;beacon-通信分析&#34;&gt;Beacon 通信分析&lt;/h3&gt;
+&lt;p&gt;下面以Stageless、走HTTP 协议的Beacon来分析。（用的这个 &lt;a href=&#34;https://github.com/threatexpress/malleable-c2/blob/master/jquery-c2.4.4.profile&#34;&gt;Profile&lt;/a&gt; ）&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Beacon 向 TeamServer 发送Get请求&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Beacon 在每次Sleep 后都会像TeamServer 发送如下请求获取要执行的指令（每次请求内容始终相同）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486514222919.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;下面来跟一下TeamServer 处理该请求的过程。（根据配置文件，Cookie头的__cfduid字段的值就是发送给TeamServer的关键内容）&lt;/p&gt;
+&lt;p&gt;直接定位到关键点&lt;code&gt;cloudstrike.WebServer&lt;/code&gt; 类的&lt;code&gt;_serve()&lt;/code&gt; 方法处理HTTP请求，根据请求的类型、URI的不同，判断是否是代理、stager 或是stageless的请求。这里用的是stageless，所以直接进入第二个判断。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486514468028.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接着调用MalleableHook 类的&lt;code&gt;serve()&lt;/code&gt;方法。（后面都会把关键内容写在注释里，节省篇幅）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486514617375.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;下面进入关键的方法&lt;code&gt;this.hook.serve()&lt;/code&gt; ，根据GET、POST 两种不通的请求类型，对应的serve()方法也不相同。这里是GET 请求，那么调用的是&lt;code&gt;BeaconHTTP._A.serve()&lt;/code&gt;方法。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486514817340.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;其中&lt;code&gt;BeaconHTTP.this.controller.dump&lt;/code&gt; 方法会从对应的Beacon ID中获取用户指令，加密后输出在响应中。而&lt;code&gt;process_beacon_metadata&lt;/code&gt;方法，这个函数会解密并解析数据，通过这个函数也能看到客户端传输数据的格式。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486514985960.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;其中会创建一个&lt;code&gt;BeaconEntry&lt;/code&gt; 对象，这个对象中保存了解密后的内容中有关客户端机器的信息，并与对应的Beacon ID 绑定。最后返回该对象。通过分析该函数以及&lt;code&gt;BeaconEntry&lt;/code&gt;的构造函数，可以得出客户端数据的排列方式为：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486515237515.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Beacon 向 TeamServer 发送Post请求&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486515529734.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;调用的函数前面还是不变，POST 方法调用的是&lt;code&gt;BeaconHTTP._B.serve()&lt;/code&gt;方法。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486515667711.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;这里&lt;code&gt;__cfduid&lt;/code&gt;参数的解密过程为: base64解密-&amp;gt;异或加密密钥（4字节）+ 异或加密数据。而POST数据的结构为：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486515798365.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;根据上面的分析，其实只要按照指定的格式排列数据并加密，就能上线CS。因此可以自己写CS 客户端，这也是绕过CS的内存查杀的一种方法。其次，如果配置好profile中的内容，完全可以自定义流量。只是每次beacon回连获取指令的数据包始终相同，这也算是一种特征。至于HTTPS 协议的特征，常用的检测是JA3或者JA3S ，分别检测客户端握手时的特征与服务端返回时的特征。这种其实用cloudflare的worker就可以绕过了（先前写过 &lt;a href=&#34;https://myzxcg.com/2020/12/Cobalt-Strike%E5%8E%BB%E7%89%B9%E5%BE%81%E9%85%8D%E7%BD%AENginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86CDN%E4%B8%8ECloudflare-Worker/&#34;&gt;文章&lt;/a&gt;），因为可以直接上cloudflare的证书。&lt;/p&gt;
+&lt;h2 id=&#34;参考&#34;&gt;参考&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://mp.weixin.qq.com/s/cRlHoilJa8HPX9L2ZNE77A&#34;&gt;CobaltStrike二次开发环境初探&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkxMTMxMjI2OQ==&amp;amp;action=getalbum&amp;amp;album_id=2174670809724747778&amp;amp;scene=173&amp;amp;from_msgid=2247483983&amp;amp;from_itemidx=1&amp;amp;count=3&amp;amp;nolastread=1#wechat_redirect&#34;&gt;CobaltStrike逆向学习系列&lt;/a&gt;&lt;/p&gt;
+</content>
+            
+            
+            
+            
+            
+                
+                    
+                
+                    
+                        
+                            
+                            
+                            
+                                <category scheme="https://myzxcg.com/tags/%E5%B7%A5%E5%85%B7/" term="工具" label="工具" />
+                            
+                        
+                    
+                
+            
+        </entry>
+    
         <entry>
             <title type="text">Log4j2 利用链与Waf绕过分析</title>
             <link rel="alternate" type="text/html" href="https://myzxcg.com/2022/01/Log4j2-%E5%88%A9%E7%94%A8%E9%93%BE%E4%B8%8EWaf%E7%BB%95%E8%BF%87%E5%88%86%E6%9E%90/" />
@@ -14913,330 +15140,6 @@ Powermad利用ms-DS-MachineAccountQuota属性设置无需将实际系统附加�
                             
                             
                                 <category scheme="https://myzxcg.com/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/" term="域相关" label="域相关" />
-                            
-                        
-                    
-                
-            
-        </entry>
-    
-        <entry>
-            <title type="text">Windows 访问控制模型（二）</title>
-            <link rel="alternate" type="text/html" href="https://myzxcg.com/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%BA%8C/" />
-            <id>https://myzxcg.com/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%BA%8C/</id>
-            <updated>2022-03-21T21:44:28&#43;08:00</updated>
-            <published>2021-08-29T20:08:06&#43;08:00</published>
-            <author>
-                    <name>myzxcg</name>
-                    <uri>https://myzxcg.com/</uri>
-                    <email>myzx.xcg@gmail.com</email>
-                    </author>
-            <rights>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</rights><summary type="html">ACL 编辑 文件与目录 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 #icacls #查看指定文件或目录的ACL icacls……</summary>
-            
-                <content type="html">&lt;h2 id=&#34;acl-编辑&#34;&gt;ACL 编辑&lt;/h2&gt;
-&lt;h3 id=&#34;文件与目录&#34;&gt;文件与目录&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#icacls&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查看指定文件或目录的ACL&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#添加用户test1对指定目录(包括当前目录及其子目录中的文件)的完全访问权限&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;grant&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;test1&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;OI&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CI&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;F&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#移除用户test1对指定文件的访问权限&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;remove&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;test1&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#备份指定文件(包括当前目录及其子目录中的文件)的ACL，备份结果格式是D:(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;S-1-5-21-649686750-1085018105-1475906644-1000)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;save&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Aclfile&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#还原指定文件(包括当前目录及其子目录中的文件)的ACL，还原时，路径需要设置为上级目录。&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;restore&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;AclFile&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#powershell&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Get-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;C:\Users\Administrator\Desktop\1.txt&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Format-Table&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-wrap&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;h3 id=&#34;注册表&#34;&gt;注册表&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查看指定路径的ACL&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Get-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;HKLM:\SAM&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Format-Table&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-wrap&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#获得Access项的具体内容&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;HKLM:\SAM&amp;#39;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Access&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#添加用户test对指定路径(包括当前注册表项及其子健)的完全访问权限&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HKLM&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SAM&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$rule&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;New-Object&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Security&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;AccessControl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RegistryAccessRule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;test&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;FullControl&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;ObjectInherit,ContainerInherit&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;None&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Allow&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;AddAccessRule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$rule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Set-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HKLM&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SAM&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#移除用户test对指定路径(包括当前注册表项及其子健)的完全访问权限&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HKLM&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SAM&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$rule&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;New-Object&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Security&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;AccessControl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RegistryAccessRule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;test&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;FullControl&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;ObjectInherit,ContainerInherit&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;None&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Allow&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RemoveAccessRule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$rule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Set-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HKLM&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SAM&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;h2 id=&#34;域内-acl-编辑&#34;&gt;域内 ACL 编辑&lt;/h2&gt;
-&lt;p&gt;域内每个对象的&lt;code&gt;nTSecurityDescriptor&lt;/code&gt;属性存储该对象的ACL信息，存储格式是SDDL（Security Descriptor Definition Language)）。如果在创建对象的时候没指定ACL，就用此对象类的&lt;code&gt;defaultSecurityDescriptor&lt;/code&gt;属性值作为该对象的ACL。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;查看域内对象的ACL（普通域用户用AdFind.exe查询&lt;code&gt;nTSecurityDescriptor&lt;/code&gt;结果为空，但LDAP 是能查到的）&lt;a href=&#34;https://www.joeware.net/freetools/tools/adfind/usage.htm&#34;&gt;AdFind Usage&lt;/a&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查看原始SDDL格式&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Administrator,CN=Users,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-rawsddl&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#SDDL格式不方便查看，-sddl+++ 最高三个+&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Administrator,CN=Users,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查看指定用户对该对象的权限&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Administrator,CN=Users,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddlfilter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;;;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Administrator&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-recmute&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查找指定用户在域内的所有ACL权限&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddlfilter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;;;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;jerry&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-recmute&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查看域内对象的扩展权限&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#根据GUID查扩展权限&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;adfind&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Extended-Rights,CN=Configuration,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-f&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;rightsGuid=00299570-246d-11d0-a768-00aa006e0529&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查找有dcync权限的用户&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddlfilter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Replicating&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Directory&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Changes&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-recmute&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;修改域内对象的ACL &lt;a href=&#34;http://www.joeware.net/freetools/tools/admod/usage.htm&#34;&gt;AdMod Usage&lt;/a&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#添加jerry对Domain Admins组的member属性有读写权限&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;admod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Domain Admins,CN=Users,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SD&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;##ntsecuritydescriptor::{GETSD}{+D=(OA;;RPWP;member;;jerry)}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#使用jerry用户添加test用户到Domain Admins组&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;adfind&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-users&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-rb&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-dsq&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;admod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-users&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-rb&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Domain Admins&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-stdinadd&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;member&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#添加jerry对administrator用户有User-Force-Change-Password扩展权限&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#使用-sd 替代SD##ntsecuritydescriptor::{GETSD}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;admod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Administrator,CN=Users,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sd&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;D&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;OA&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;00299570&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;246d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;11d0-a768&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;00aa006e0529&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;jerry&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#使用jerry用户修改Administrator 密码&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;admod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Administrator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Users&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DC&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DC&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;unicodepwd&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;qweasd&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;123&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-optenc&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&#34;useraccountcontrol-属性&#34;&gt;&lt;strong&gt;UserAccountControl 属性&lt;/strong&gt;&lt;/h3&gt;
-&lt;p&gt;UserAccountControl 属性是 Active Directory 中&lt;code&gt;用户&lt;/code&gt;和&lt;code&gt;计算机帐户&lt;/code&gt;的最重要属性之一。该属性决定了帐户在 AD 域中的状态：帐户是活动的还是被锁定的、是否启用下次登录时更改密码的选项、用户是否可以更改自己的密码、禁止被委派、不需要 Kerberos 预身份验证等等。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;http://woshub.com/decoding-ad-useraccountcontrol-value/&#34;&gt;Converting AD UserAccountControl Attribute Values&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;例如设置常规帐户的密码不过期。userAccountControl 值计算方法:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;NORMAL_ACCOUNT (512) + DONT_EXPIRE_PASSWORD (65536) = 66048&lt;/code&gt;&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;UserAccountControl 标志&lt;/th&gt;
-&lt;th&gt;十六进制值&lt;/th&gt;
-&lt;th&gt;十进制值&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;SCRIPT（运行登录脚本）&lt;/td&gt;
-&lt;td&gt;0x0001&lt;/td&gt;
-&lt;td&gt;1&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;ACCOUNTDISABLE（账户被禁用）&lt;/td&gt;
-&lt;td&gt;0x0002&lt;/td&gt;
-&lt;td&gt;2&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;HOMEDIR_REQUIRED（主文件夹是必需的）&lt;/td&gt;
-&lt;td&gt;0x0008&lt;/td&gt;
-&lt;td&gt;8&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;LOCKOUT（账户被锁定）&lt;/td&gt;
-&lt;td&gt;0x0010&lt;/td&gt;
-&lt;td&gt;16&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;PASSWD_NOTREQD（不需要密码）&lt;/td&gt;
-&lt;td&gt;0x0020&lt;/td&gt;
-&lt;td&gt;32&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;PASSWD_CANT_CHANGE（防止用户更改密码）&lt;/td&gt;
-&lt;td&gt;0x0040&lt;/td&gt;
-&lt;td&gt;64&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;ENCRYPTED_TEXT_PWD_ALLOWED（使用可逆加密存储密码）&lt;/td&gt;
-&lt;td&gt;0x0080&lt;/td&gt;
-&lt;td&gt;128&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;TEMP_DUPLICATE_ACCOUNT（用户的帐户，其主帐户在另一个域中）&lt;/td&gt;
-&lt;td&gt;0x0100&lt;/td&gt;
-&lt;td&gt;256&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;NORMAL_ACCOUNT（默认账户，典型的活跃账户）&lt;/td&gt;
-&lt;td&gt;0x0200&lt;/td&gt;
-&lt;td&gt;512&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;INTERDOMAIN_TRUST_ACCOUNT&lt;/td&gt;
-&lt;td&gt;0x0800&lt;/td&gt;
-&lt;td&gt;2048&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;WORKSTATION_TRUST_ACCOUNT&lt;/td&gt;
-&lt;td&gt;0x1000&lt;/td&gt;
-&lt;td&gt;4096&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;SERVER_TRUST_ACCOUNT&lt;/td&gt;
-&lt;td&gt;0x2000&lt;/td&gt;
-&lt;td&gt;8192&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;DONT_EXPIRE_PASSWORD（密码不会过期的用户帐户）&lt;/td&gt;
-&lt;td&gt;0x10000&lt;/td&gt;
-&lt;td&gt;65536&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;MNS_LOGON_ACCOUNT&lt;/td&gt;
-&lt;td&gt;0x20000&lt;/td&gt;
-&lt;td&gt;131072&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;SMARTCARD_REQUIRED（要登录网络，用户需要智能卡）&lt;/td&gt;
-&lt;td&gt;0x40000&lt;/td&gt;
-&lt;td&gt;262144&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;TRUSTED_FOR_DELEGATION&lt;/td&gt;
-&lt;td&gt;0x80000&lt;/td&gt;
-&lt;td&gt;524288&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;NOT_DELEGATED&lt;/td&gt;
-&lt;td&gt;0x100000&lt;/td&gt;
-&lt;td&gt;1048576&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;USE_DES_KEY_ONLY&lt;/td&gt;
-&lt;td&gt;0x200000&lt;/td&gt;
-&lt;td&gt;2097152&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;DONT_REQ_PREAUTH（不需要 Kerberos 预身份验证）&lt;/td&gt;
-&lt;td&gt;0x400000&lt;/td&gt;
-&lt;td&gt;4194304&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;PASSWORD_EXPIRED（用户密码已过期）&lt;/td&gt;
-&lt;td&gt;0x800000&lt;/td&gt;
-&lt;td&gt;8388608&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;TRUSTED_TO_AUTH_FOR_DELEGATION&lt;/td&gt;
-&lt;td&gt;0x1000000&lt;/td&gt;
-&lt;td&gt;16777216&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;PARTIAL_SECRETS_ACCOUNT&lt;/td&gt;
-&lt;td&gt;0x04000000&lt;/td&gt;
-&lt;td&gt;67108864&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-</content>
-            
-            
-            
-            
-            
-                
-                    
-                
-                    
-                        
-                            
-                            
-                            
-                                <category scheme="https://myzxcg.com/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/" term="域相关" label="域相关" />
-                            
-                        
-                            
-                            
-                            
-                                <category scheme="https://myzxcg.com/tags/Windows/" term="Windows" label="Windows" />
                             
                         
                     
