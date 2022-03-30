@@ -4,7 +4,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-CN">
     <title type="text">MYZXCG</title>
     <subtitle type="html">专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～</subtitle>
-    <updated>2022-03-30T22:59:34&#43;08:00</updated>
+    <updated>2022-03-30T23:07:47&#43;08:00</updated>
     <id>https://myzxcg.com/</id>
     <link rel="alternate" type="text/html" href="https://myzxcg.com/" />
     <link rel="self" type="application/atom&#43;xml" href="https://myzxcg.com/atom.xml" />
@@ -20,14 +20,14 @@
             <title type="text">Cobalt Strike 代码分析(一)</title>
             <link rel="alternate" type="text/html" href="https://myzxcg.com/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/" />
             <id>https://myzxcg.com/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/</id>
-            <updated>2022-03-30T22:59:07&#43;08:00</updated>
+            <updated>2022-03-30T23:07:11&#43;08:00</updated>
             <published>2022-03-30T22:31:02&#43;08:00</published>
             <author>
                     <name>myzxcg</name>
                     <uri>https://myzxcg.com/</uri>
                     <email>myzx.xcg@gmail.com</email>
                     </author>
-            <rights>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</rights><summary type="html">环境配置 原版Jar包: https://github.com/trewisscotch/CobaltStr4.4 Cobalt Strike 各版本sha256 1 2 3 4 5 6 #mac shasum -a 256 cobaltstrike.jar #windows certutil -hashfile cobaltstrike.jar sha256 #客户……</summary>
+            <rights>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</rights><summary type="html">环境配置 原版Jar包: https://github.com/trewisscotch/CobaltStr4.4 Cobalt Strike 各版本sha256 1 2 3 4 #mac shasum -a 256 cobaltstrike.jar #windows certutil -hashfile cobaltstrike.jar sha256 反编译与打……</summary>
             
                 <content type="html">&lt;h2 id=&#34;环境配置&#34;&gt;环境配置&lt;/h2&gt;
 &lt;p&gt;原版Jar包:   &lt;a href=&#34;https://github.com/trewisscotch/CobaltStr4.4&#34;&gt;https://github.com/trewisscotch/CobaltStr4.4&lt;/a&gt;&lt;/p&gt;
@@ -38,16 +38,12 @@
 &lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
 &lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
 &lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;#mac&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;shasum -a &lt;span class=&#34;m&#34;&gt;256&lt;/span&gt; cobaltstrike.jar
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;#windows&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;certutil -hashfile cobaltstrike.jar sha256
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;#客户端和服务端启动添加&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;-javaagent:CSAgent.jar&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;5e98194a01c6b48fa582a6a9fcbb92d6
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h3 id=&#34;反编译与打包&#34;&gt;反编译与打包&lt;/h3&gt;
@@ -69,7 +65,7 @@
 &lt;p&gt;打包：对功能进行增加再重新打包&lt;/p&gt;
 &lt;p&gt;Idea 新创建一个项目，编辑项目结构→模块→依赖→添加Jar或目录..→添加原版cs的jar包。&lt;/p&gt;
 &lt;p&gt;为了后面能重新打包成Jar: 选择工件→添加Jar→来自具有依赖的模块→主类中设置&lt;code&gt;myEntry.run&lt;/code&gt;  →然后创建此文件。（先不要设置为&lt;code&gt;aggressor.Aggressor&lt;/code&gt;，4.4 版本会对重要类文件完整性做校验，所以不能定义成和它同名的类，后面介绍如何解决校验问题）&lt;/p&gt;
-&lt;p&gt;生成Jar包时选择构建→构建工件即可。&lt;/p&gt;
+&lt;p&gt;生成Jar包时选择构建→构建工件。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486507443732.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;结构如上图，另外还需要配置VM参数：&lt;code&gt;-XX:ParallelGCThreads=4 -XX:+AggressiveHeap -XX:+UseParallelGC&lt;/code&gt; ，然后启动即可。&lt;/p&gt;
 &lt;/li&gt;
@@ -129,7 +125,7 @@ exportBeaconStageHTTP() 中最重要的就是exportBeaconStage() 与this.pe.proc
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;MalleablePE.process()&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;分析此部分需要先了解PE 文件结构。前面对资源文件&lt;code&gt;beacon.x64.dll&lt;/code&gt; 写入了网络请求等相关的Profile，这一步就是写根据Profile 中有关PE的配置（&lt;code&gt;stage{...}&lt;/code&gt;中的内容）对DLL进行修改，然后为DLL 设置反射加载的loader。&lt;/p&gt;
+&lt;p&gt;分析此部分需要对PE 文件结构有所了解。前面对资源文件&lt;code&gt;beacon.x64.dll&lt;/code&gt; 写入了网络请求等相关的Profile，这一步就是写根据Profile 中有关PE的配置（&lt;code&gt;stage{...}&lt;/code&gt;中的内容）对DLL进行修改，然后为DLL 设置反射加载的loader。&lt;/p&gt;
 &lt;p&gt;process函数中调用了&lt;code&gt;pre_process()&lt;/code&gt;和&lt;code&gt;post_process()&lt;/code&gt;，下面跟一下这两个函数。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486511950767.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;pre_process()&lt;/code&gt; 的前半段主要是获取Profile中配置的stage值，然后创建了一个PEEditor对象。接着调用了此对象的&lt;code&gt;CheckAssertions()&lt;/code&gt; ，在这个函数中解析了var1的PE 文件结构。&lt;/p&gt;
@@ -158,9 +154,9 @@ exportBeaconStageHTTP() 中最重要的就是exportBeaconStage() 与this.pe.proc
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;如果选择输出Raw格式，那么就直接将&lt;code&gt;var6.peProcessedDLL&lt;/code&gt; 内容输出到文件了。如果是exe等格式那么还会调用&lt;code&gt;patchArtifact()&lt;/code&gt; 添加一个loader。&lt;/p&gt;
-&lt;/li&gt;
+&lt;/div&gt;&lt;/li&gt;
 &lt;/ul&gt;
+&lt;p&gt;如果选择输出Raw格式，那么就直接将&lt;code&gt;var6.peProcessedDLL&lt;/code&gt; 内容输出到文件了。如果是exe等格式那么还会调用&lt;code&gt;patchArtifact()&lt;/code&gt; 添加一个loader。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16486513500228.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;分析CS 对PE 的处理过程，可以尝试把修改后的字节数组输出，然后用010editor之类的工具进行分析。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;

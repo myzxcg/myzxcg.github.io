@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
         <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
 
-    <meta name="author" content="myzxcg" /><meta name="description" content="环境配置 原版Jar包: https://github.com/trewisscotch/CobaltStr4.4 Cobalt Strike 各版本sha256 1 2 3 4 5 6 #mac shasum -a 256 cobaltstrike.jar #windows certutil -hashfile cobaltstrike.jar sha256 #客户……" />
+    <meta name="author" content="myzxcg" /><meta name="description" content="环境配置 原版Jar包: https://github.com/trewisscotch/CobaltStr4.4 Cobalt Strike 各版本sha256 1 2 3 4 #mac shasum -a 256 cobaltstrike.jar #windows certutil -hashfile cobaltstrike.jar sha256 反编译与打……" />
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
@@ -55,13 +55,13 @@
         "@context": "https://schema.org",
         "@type": "BlogPosting",
         "datePublished": "2022-03-30T22:31:02+08:00",
-        "dateModified": "2022-03-30T22:59:07+08:00",
+        "dateModified": "2022-03-30T23:07:11+08:00",
         "url": "https://myzxcg.com/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/",
         "headline": "Cobalt Strike 代码分析(一)",
-        "description": "环境配置 原版Jar包: https://github.com/trewisscotch/CobaltStr4.4 Cobalt Strike 各版本sha256 1 2 3 4 5 6 #mac shasum -a 256 cobaltstrike.jar #windows certutil -hashfile cobaltstrike.jar sha256 #客户……",
+        "description": "环境配置 原版Jar包: https://github.com/trewisscotch/CobaltStr4.4 Cobalt Strike 各版本sha256 1 2 3 4 #mac shasum -a 256 cobaltstrike.jar #windows certutil -hashfile cobaltstrike.jar sha256 反编译与打……",
         "inLanguage" : "zh-CN",
         "articleSection": "posts",
-        "wordCount":  4225 ,
+        "wordCount":  4210 ,
         "image": ["https://myzxcg.com/images/16486507443732.jpg","https://myzxcg.com/images/16486508491910.jpg","https://myzxcg.com/images/16486509333974.jpg","https://myzxcg.com/images/16486509481037.jpg","https://myzxcg.com/images/16486509694584.jpg","https://myzxcg.com/images/16486509857461.jpg","https://myzxcg.com/images/16486510478525.jpg","https://myzxcg.com/images/16486510649848.jpg","https://myzxcg.com/images/16486510808752.jpg","https://myzxcg.com/images/16486511048960.jpg","https://myzxcg.com/images/16486511256104.jpg","https://myzxcg.com/images/16486511398118.jpg","https://myzxcg.com/images/16486511526512.jpg","https://myzxcg.com/images/16486511950767.jpg","https://myzxcg.com/images/16486512123612.jpg","https://myzxcg.com/images/16486512275565.jpg","https://myzxcg.com/images/16486512512742.jpg","https://myzxcg.com/images/16486512721885.jpg","https://myzxcg.com/images/16486513500228.jpg","https://myzxcg.com/images/16486514222919.jpg","https://myzxcg.com/images/16486514468028.jpg","https://myzxcg.com/images/16486514617375.jpg","https://myzxcg.com/images/16486514817340.jpg","https://myzxcg.com/images/16486514985960.jpg","https://myzxcg.com/images/16486515237515.jpg","https://myzxcg.com/images/16486515529734.jpg","https://myzxcg.com/images/16486515667711.jpg","https://myzxcg.com/images/16486515798365.jpg"],
         "author": {
             "@type": "Person",
@@ -101,13 +101,13 @@
 
 
 <meta property="og:title" content="Cobalt Strike 代码分析(一)" />
-<meta property="og:description" content="环境配置 原版Jar包: https://github.com/trewisscotch/CobaltStr4.4 Cobalt Strike 各版本sha256 1 2 3 4 5 6 #mac shasum -a 256 cobaltstrike.jar #windows certutil -hashfile cobaltstrike.jar sha256 #客户……" />
+<meta property="og:description" content="环境配置 原版Jar包: https://github.com/trewisscotch/CobaltStr4.4 Cobalt Strike 各版本sha256 1 2 3 4 #mac shasum -a 256 cobaltstrike.jar #windows certutil -hashfile cobaltstrike.jar sha256 反编译与打……" />
 <meta property="og:url" content="https://myzxcg.com/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/" />
 <meta property="og:site_name" content="MYZXCG" />
 <meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/16486507443732.jpg" />
 <meta property="og:type" content="article" />
     <meta property="article:published_time" content="2022-03-30T22:31:02&#43;08:00" />
-    <meta property="article:modified_time" content="2022-03-30T22:59:07&#43;08:00" />
+    <meta property="article:modified_time" content="2022-03-30T23:07:11&#43;08:00" />
     
     <meta property="article:section" content="posts" />
 
@@ -277,16 +277,12 @@
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1">#mac</span>
 </span></span><span class="line"><span class="cl">shasum -a <span class="m">256</span> cobaltstrike.jar
 </span></span><span class="line"><span class="cl"><span class="c1">#windows</span>
 </span></span><span class="line"><span class="cl">certutil -hashfile cobaltstrike.jar sha256
-</span></span><span class="line"><span class="cl"><span class="c1">#客户端和服务端启动添加</span>
-</span></span><span class="line"><span class="cl">-javaagent:CSAgent.jar<span class="o">=</span>5e98194a01c6b48fa582a6a9fcbb92d6
 </span></span></code></pre></td></tr></table></div>
 </div>
 </div><h3 id="反编译与打包"><a href="#反编译与打包" class="anchor-link">#</a><a href="#contents:反编译与打包" class="headings">反编译与打包</a></h3>
@@ -308,7 +304,7 @@
 <p>打包：对功能进行增加再重新打包</p>
 <p>Idea 新创建一个项目，编辑项目结构→模块→依赖→添加Jar或目录..→添加原版cs的jar包。</p>
 <p>为了后面能重新打包成Jar: 选择工件→添加Jar→来自具有依赖的模块→主类中设置<code>myEntry.run</code>  →然后创建此文件。（先不要设置为<code>aggressor.Aggressor</code>，4.4 版本会对重要类文件完整性做校验，所以不能定义成和它同名的类，后面介绍如何解决校验问题）</p>
-<p>生成Jar包时选择构建→构建工件即可。</p>
+<p>生成Jar包时选择构建→构建工件。</p>
 <p><img src="/images/16486507443732.jpg" alt=""></p>
 <p>结构如上图，另外还需要配置VM参数：<code>-XX:ParallelGCThreads=4 -XX:+AggressiveHeap -XX:+UseParallelGC</code> ，然后启动即可。</p>
 </li>
@@ -368,7 +364,7 @@ exportBeaconStageHTTP() 中最重要的就是exportBeaconStage() 与this.pe.proc
 </li>
 <li>
 <p><strong>MalleablePE.process()</strong></p>
-<p>分析此部分需要先了解PE 文件结构。前面对资源文件<code>beacon.x64.dll</code> 写入了网络请求等相关的Profile，这一步就是写根据Profile 中有关PE的配置（<code>stage{...}</code>中的内容）对DLL进行修改，然后为DLL 设置反射加载的loader。</p>
+<p>分析此部分需要对PE 文件结构有所了解。前面对资源文件<code>beacon.x64.dll</code> 写入了网络请求等相关的Profile，这一步就是写根据Profile 中有关PE的配置（<code>stage{...}</code>中的内容）对DLL进行修改，然后为DLL 设置反射加载的loader。</p>
 <p>process函数中调用了<code>pre_process()</code>和<code>post_process()</code>，下面跟一下这两个函数。</p>
 <p><img src="/images/16486511950767.jpg" alt=""></p>
 <p><code>pre_process()</code> 的前半段主要是获取Profile中配置的stage值，然后创建了一个PEEditor对象。接着调用了此对象的<code>CheckAssertions()</code> ，在这个函数中解析了var1的PE 文件结构。</p>
@@ -397,9 +393,9 @@ exportBeaconStageHTTP() 中最重要的就是exportBeaconStage() 与this.pe.proc
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
-</div><p>如果选择输出Raw格式，那么就直接将<code>var6.peProcessedDLL</code> 内容输出到文件了。如果是exe等格式那么还会调用<code>patchArtifact()</code> 添加一个loader。</p>
-</li>
+</div></li>
 </ul>
+<p>如果选择输出Raw格式，那么就直接将<code>var6.peProcessedDLL</code> 内容输出到文件了。如果是exe等格式那么还会调用<code>patchArtifact()</code> 添加一个loader。</p>
 <p><img src="/images/16486513500228.jpg" alt=""></p>
 <p>分析CS 对PE 的处理过程，可以尝试把修改后的字节数组输出，然后用010editor之类的工具进行分析。</p>
 <div class="highlight"><div class="chroma">
