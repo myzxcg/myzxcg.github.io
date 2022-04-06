@@ -4,7 +4,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-CN">
     <title type="text">MYZXCG</title>
     <subtitle type="html">专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～</subtitle>
-    <updated>2022-03-31T23:46:30&#43;08:00</updated>
+    <updated>2022-04-06T23:17:58&#43;08:00</updated>
     <id>https://myzxcg.com/</id>
     <link rel="alternate" type="text/html" href="https://myzxcg.com/" />
     <link rel="self" type="application/atom&#43;xml" href="https://myzxcg.com/atom.xml" />
@@ -15,7 +15,7 @@
                 <email>myzx.xcg@gmail.com</email>
             </author>
     <rights>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</rights>
-    <generator uri="https://gohugo.io/" version="0.94.2">Hugo</generator>
+    <generator uri="https://gohugo.io/" version="0.96.0">Hugo</generator>
         <entry>
             <title type="text">Cobalt Strike 代码分析(一)</title>
             <link rel="alternate" type="text/html" href="https://myzxcg.com/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/" />
@@ -13982,259 +13982,6 @@ windows命令&lt;/p&gt;
         </entry>
     
         <entry>
-            <title type="text">域用户口令策略与暴破</title>
-            <link rel="alternate" type="text/html" href="https://myzxcg.com/2021/09/%E5%9F%9F%E7%94%A8%E6%88%B7%E5%8F%A3%E4%BB%A4%E7%AD%96%E7%95%A5%E4%B8%8E%E6%9A%B4%E7%A0%B4/" />
-            <id>https://myzxcg.com/2021/09/%E5%9F%9F%E7%94%A8%E6%88%B7%E5%8F%A3%E4%BB%A4%E7%AD%96%E7%95%A5%E4%B8%8E%E6%9A%B4%E7%A0%B4/</id>
-            <updated>2021-11-24T18:46:33&#43;08:00</updated>
-            <published>2021-09-11T00:01:45&#43;08:00</published>
-            <author>
-                    <name>myzxcg</name>
-                    <uri>https://myzxcg.com/</uri>
-                    <email>myzx.xcg@gmail.com</email>
-                    </author>
-            <rights>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</rights><summary type="html">域用户口令策略 相关口令策略: 1 2 3 4 5 Maximum password age #表示密码过期的时间，默认为42 Minimum password length #……</summary>
-            
-                <content type="html">&lt;h2 id=&#34;域用户口令策略&#34;&gt;域用户口令策略&lt;/h2&gt;
-&lt;p&gt;相关口令策略:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Maximum&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;password&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;age&lt;/span&gt; &lt;span class=&#34;c&#34;&gt;#表示密码过期的时间，默认为42&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Minimum&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;password&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;length&lt;/span&gt; &lt;span class=&#34;c&#34;&gt;#表示密码的最小长度，默认为7&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Account&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lockout&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;duration&lt;/span&gt; &lt;span class=&#34;c&#34;&gt;#表示被锁定的帐户在自动解锁前保持锁定的分钟数，默认为30&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Account&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lockout&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;threshold&lt;/span&gt; &lt;span class=&#34;c&#34;&gt;#表示导致用户帐户被锁定的失败登录尝试次数，默认为5&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Reset&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;account&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lockout&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;counter&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;after&lt;/span&gt; &lt;span class=&#34;c&#34;&gt;#表示失败登录尝试计数器重置为0次错误登录尝试之前，失败登录尝试后必须经过的分钟数，默认为30&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;h3 id=&#34;域外查询&#34;&gt;域外查询&lt;/h3&gt;
-&lt;p&gt;前提：获得了域内一个普通用户的口令。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;Kali ldapsearch&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;ldapsearch -x -H ldap://192.168.1.1:389 -D &amp;quot;CN=testa,CN=Users,DC=test,DC=com&amp;quot; -w DomainUser123! -b &amp;quot;DC=test,DC=com&amp;quot; | grep replUpToDateVector -A 13&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;参数说明: -x 进行简单认证 -H 服务器地址 -D 用来绑定服务器的DN -w 绑定DN的密码 -b 指定要查询的根节点&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/1631288057.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;换算成以秒为单位要除以10000000。如：&lt;code&gt;maxPwdAge: -36288000000000，36288000000000/10000000=3628800s，3628800/86400=42d，maxPwdAge=42d&lt;/code&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Windows powershell的Active Directory模块&lt;/p&gt;
-&lt;p&gt;不用安装powershell模块Active Directory模块，可以直接导入&lt;a href=&#34;https://github.com/3gstudent/test/blob/master/Microsoft.ActiveDirectory.Management.dll&#34;&gt;Microsoft.ActiveDirectory.Management.dll&lt;/a&gt;。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$uname&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;testa&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$pwd&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;ConvertTo-SecureString&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;DomainUser123!&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-AsPlainText&lt;/span&gt; &lt;span class=&#34;err&#34;&gt;–&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Force&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$cred&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;New-Object&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Management&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Automation&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;PSCredential&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$uname&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$pwd&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;import-module&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;./&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Microsoft&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ActiveDirectory&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Management&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dll&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Get-ADDefaultDomainPasswordPolicy&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Server&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;192&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;168&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Credential&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$cred&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Verbose&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/1631288125.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;通过域共享文件获取&lt;/p&gt;
-&lt;p&gt;通用位置为：&lt;code&gt;\\&amp;lt;DOMAIN Controller IP&amp;gt;\SYSVOL\&amp;lt;DOMAIN&amp;gt;\Policies\{31B2F340-016D-11D2-945F-00C04FB984F9}\MACHINE\Microsoft\Windows NT\SecEdit\GptTmpl.inf&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/1631288203.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h3 id=&#34;域内查询&#34;&gt;域内查询&lt;/h3&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;Active Directory模块&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;import-module&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;./&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Microsoft&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ActiveDirectory&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Management&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dll&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Get-ADDefaultDomainPasswordPolicy&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code&gt;net accounts /domain&lt;/code&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;password-spraying&#34;&gt;Password Spraying&lt;/h2&gt;
-&lt;h3 id=&#34;域用户暴破原理&#34;&gt;域用户暴破原理&lt;/h3&gt;
-&lt;p&gt;在TGT请求中，不同情况下KDC返回的参数。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;用户名不存在的返回包&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/1631287653.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;用户名存在，密码错误的返回包&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/1631287706.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;用户名密码都正确的返回包&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/1631287974.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;域用户多次口令输入错误会导致用户帐户被锁定，默认设置的错误次数为5。被锁定后默认需要等待30分钟才能恢复使用，锁定后即使输入正确的口令，也会提示口令错误。且最后一次口令输入错误的时间会被记录，无法通过修改LDAP数据进行清除。&lt;strong&gt;而密码喷洒是用固定的密码去跑域用户名&lt;/strong&gt;  ，可以有效防止账户被锁。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;识别被禁用的用户，userAccountControl属性标识用户是否被禁用。值为2：表示未被禁用；值为2+：表示禁用。&lt;/p&gt;
-&lt;p&gt;查询指定用户的useraccountcontrol属性&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;Get-NetUser jerry| select useraccountcontrol | ConvertFrom-UACValue -ShowAll&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/1631288317.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;识别被锁定的用户&lt;/p&gt;
-&lt;p&gt;通过读取用户的badPwdCount属性和lockoutTime属性进行判断。用户testa处于被锁定的状态。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;Get-NetUser | select name,badPwdCount,lockoutTime&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/1631288350.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h3 id=&#34;域内暴破&#34;&gt;域内暴破&lt;/h3&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/dafthack/DomainPasswordSpray&#34;&gt;DomainPasswordSpray&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;PowerShell编写，用于对域用户执行密码喷洒攻击。默认情况下，它将利用，然后扣掉被锁定的用户，再用固定密码进行密码喷洒。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#获得所有用户的列表，排除被禁用和被锁定的用户（可能不准确）&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Get-DomainUserList&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-RemoveDisabled&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-RemovePotentialLockouts&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Out-File&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Encoding&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ascii&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;userlist&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;txt&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#利用LDAP自动从域中导出用户列表（去除禁用和锁定用户），再进行密码喷洒暴破&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Invoke-DomainPasswordSpray&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Password&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Spring2017&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#指定UserList进行密码喷洒暴破&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Invoke-DomainPasswordSpray&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-UserList&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;.\\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;users&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;txt&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Password&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;DomainUser123&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;!&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Verbose&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/ropnop/kerbrute&#34;&gt;Kerbrute&lt;/a&gt; （可域外暴破）&lt;/p&gt;
-&lt;p&gt;Go编写，暴破不会产生日志4625登陆失败 ，但是会产生日志4768 (TGT请求) 和4771(Kerberos预认证失败)&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#通过Kerberos枚举用户名&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;kerbrute_linux_amd64&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;userenum&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-d&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lab&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ropnop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;com&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-dc&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;172&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;16&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;105&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;usernames&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;txt&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#密码喷洒&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;kerbrute_linux_amd64&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;passwordspray&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-d&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lab&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ropnop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;com&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;domain_users&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;txt&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Password123&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#传统密码暴破（会被锁账户）&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;kerbrute_linux_amd64&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;bruteuser&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-d&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;lab&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ropnop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;com&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;passwords&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;lst&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;test1&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/ShutdownRepo/smartbrute&#34;&gt;smartbrute&lt;/a&gt;（可域外暴破）&lt;/p&gt;
-&lt;p&gt;Python编写，支持NT哈希爆破(-bh、-bH)&lt;/p&gt;
-&lt;p&gt;smart模式: 确保在暴力破解时不锁定任何帐户，它会自动获取启用的用户，每个用户的错误密码计数，获取锁定策略。（需要提供一个普通域用户凭据，支持密码、Hash、cache票据、aes-key）&lt;/p&gt;
-&lt;p&gt;Brute模式: 不需要提供域用户凭据，该模式会导致账户锁定。找到有效帐户后会停止暴破。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;#smart模式&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;python3&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;smartbrute&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;py&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;smart&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bP&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;passwords&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;txt&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;kerberos&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;day&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;u&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;jack&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;Admin12345&amp;#39;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;kerberos&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;#Brute模式&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;python3&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;smartbrute&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;py&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;brute&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bu&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;jack&amp;#39;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bP&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;passwords&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;txt&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;kerberos&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;day&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Tips:&lt;/strong&gt; 如果报错 &lt;code&gt;Kerberos SessionError: KRB_AP_ERR_SKEW(Clock skew too great)&lt;/code&gt;，那是因为本地时间和dc时间不同步。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;nmap的&lt;code&gt;krb5-enum-users&lt;/code&gt;可以枚举域用户名。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h3 id=&#34;域外暴破&#34;&gt;域外暴破&lt;/h3&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;kali 通过ldapsearch爆破&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;$(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;cat &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;user&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;txt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;do&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;echo &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-e&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;\n$i&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ldapsearch&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-x&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-H&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ldap&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;//&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;192&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;168&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;389&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-D&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;$i&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-w&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;DomainUser123&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;!&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;DC=test,DC=com&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;grep&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;# numEntrie&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;done&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;口令正确输出查询结果的个数，口令错误返回验证错误：&lt;code&gt;ldap_bind: Invalid credentials (49)&lt;/code&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Windows 通过&lt;a href=&#34;https://github.com/3gstudent/Homework-of-Powershell/blob/master/Invoke-DomainPasswordSprayOutsideTheDomain.ps1&#34;&gt;Invoke-DomainPasswordSprayOutsideTheDomain&lt;/a&gt;爆破&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Invoke-DomainPasswordSprayOutsideTheDomain&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Domain&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;192.168.1.1/DC=test,DC=com&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-UserList&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;.\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;user&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;txt&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Password&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;DomainUser123&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;!&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Verbose&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;检测方法&#34;&gt;检测方法&lt;/h2&gt;
-&lt;p&gt;域用户属性中的&lt;code&gt;lastbadpasswordattempt&lt;/code&gt;能够记录上次口令输入错误的登陆时间，可以作为识别暴力破解攻击的依据。&lt;code&gt;badPwdCount&lt;/code&gt;属性会记录用户口令错误的次数，在用户输入正确的口令后，这个属性会被清零。&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;ldapsearch -x -H ldap://192.168.1.1:389 -D &amp;#34;CN=testa,CN=Users,DC=test,DC=com&amp;#34; -w DomainUser123! -b &amp;#34;DC=test,DC=com&amp;#34; -b &amp;#34;DC=test,DC=com&amp;#34; &amp;#34;(&amp;amp;(objectClass=user)(objectCategory=person))&amp;#34;|grep -E &amp;#34;cn:|badPwdCount|badPasswordTime&amp;#34;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;日志(4625 - An account failed to log on)能够记录登录失败的事件。&lt;/p&gt;
-&lt;h2 id=&#34;参考&#34;&gt;参考&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;a href=&#34;https://3gstudent.github.io/%E6%B8%97%E9%80%8F%E5%9F%BA%E7%A1%80-%E9%80%9A%E8%BF%87LDAP%E5%8D%8F%E8%AE%AE%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3%E5%9F%9F%E7%94%A8%E6%88%B7%E7%9A%84%E5%8F%A3%E4%BB%A4&#34;&gt;渗透基础-通过LDAP协议暴力破解域用户的口令&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://3gstudent.github.io/%E6%B8%97%E9%80%8F%E5%9F%BA%E7%A1%80-%E5%9F%9F%E5%86%85%E7%94%A8%E6%88%B7%E5%8F%A3%E4%BB%A4%E7%AD%96%E7%95%A5%E7%9A%84%E8%8E%B7%E5%8F%96&#34;&gt;渗透基础-域内用户口令策略的获取&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-</content>
-            
-            
-            
-            
-            
-                
-                    
-                
-                    
-                        
-                            
-                            
-                            
-                                <category scheme="https://myzxcg.com/tags/Windows/" term="Windows" label="Windows" />
-                            
-                        
-                            
-                            
-                            
-                                <category scheme="https://myzxcg.com/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/" term="域相关" label="域相关" />
-                            
-                        
-                    
-                
-            
-        </entry>
-    
-        <entry>
             <title type="text">组策略利用与横向移动</title>
             <link rel="alternate" type="text/html" href="https://myzxcg.com/2021/09/%E7%BB%84%E7%AD%96%E7%95%A5%E5%88%A9%E7%94%A8%E4%B8%8E%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/" />
             <id>https://myzxcg.com/2021/09/%E7%BB%84%E7%AD%96%E7%95%A5%E5%88%A9%E7%94%A8%E4%B8%8E%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/</id>
@@ -15136,6 +14883,330 @@ Powermad利用ms-DS-MachineAccountQuota属性设置无需将实际系统附加�
                             
                             
                                 <category scheme="https://myzxcg.com/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/" term="域相关" label="域相关" />
+                            
+                        
+                    
+                
+            
+        </entry>
+    
+        <entry>
+            <title type="text">Windows 访问控制模型（二）</title>
+            <link rel="alternate" type="text/html" href="https://myzxcg.com/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%BA%8C/" />
+            <id>https://myzxcg.com/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%BA%8C/</id>
+            <updated>2022-03-21T21:44:28&#43;08:00</updated>
+            <published>2021-08-29T20:08:06&#43;08:00</published>
+            <author>
+                    <name>myzxcg</name>
+                    <uri>https://myzxcg.com/</uri>
+                    <email>myzx.xcg@gmail.com</email>
+                    </author>
+            <rights>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</rights><summary type="html">ACL 编辑 文件与目录 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 #icacls #查看指定文件或目录的ACL icacls……</summary>
+            
+                <content type="html">&lt;h2 id=&#34;acl-编辑&#34;&gt;ACL 编辑&lt;/h2&gt;
+&lt;h3 id=&#34;文件与目录&#34;&gt;文件与目录&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#icacls&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查看指定文件或目录的ACL&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#添加用户test1对指定目录(包括当前目录及其子目录中的文件)的完全访问权限&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;grant&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;test1&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;OI&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CI&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;F&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#移除用户test1对指定文件的访问权限&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;remove&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;test1&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#备份指定文件(包括当前目录及其子目录中的文件)的ACL，备份结果格式是D:(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;S-1-5-21-649686750-1085018105-1475906644-1000)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;save&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Aclfile&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#还原指定文件(包括当前目录及其子目录中的文件)的ACL，还原时，路径需要设置为上级目录。&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;icacls&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;C:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Windows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SYSVOL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sysvol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;restore&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;AclFile&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;t&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#powershell&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Get-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;C:\Users\Administrator\Desktop\1.txt&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Format-Table&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-wrap&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;注册表&#34;&gt;注册表&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查看指定路径的ACL&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Get-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;HKLM:\SAM&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Format-Table&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-wrap&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#获得Access项的具体内容&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Path&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;HKLM:\SAM&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Access&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#添加用户test对指定路径(包括当前注册表项及其子健)的完全访问权限&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HKLM&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SAM&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$rule&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;New-Object&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Security&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;AccessControl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RegistryAccessRule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;test&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;FullControl&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;ObjectInherit,ContainerInherit&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;None&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Allow&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;AddAccessRule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$rule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Set-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HKLM&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SAM&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#移除用户test对指定路径(包括当前注册表项及其子健)的完全访问权限&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Get-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HKLM&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SAM&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$rule&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;New-Object&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Security&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;AccessControl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RegistryAccessRule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;test&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;FullControl&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;ObjectInherit,ContainerInherit&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;None&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Allow&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RemoveAccessRule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$rule&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;Set-Acl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HKLM&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;\&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SAM&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$acl&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;域内-acl-编辑&#34;&gt;域内 ACL 编辑&lt;/h2&gt;
+&lt;p&gt;域内每个对象的&lt;code&gt;nTSecurityDescriptor&lt;/code&gt;属性存储该对象的ACL信息，存储格式是SDDL（Security Descriptor Definition Language)）。如果在创建对象的时候没指定ACL，就用此对象类的&lt;code&gt;defaultSecurityDescriptor&lt;/code&gt;属性值作为该对象的ACL。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;查看域内对象的ACL（普通域用户用AdFind.exe查询&lt;code&gt;nTSecurityDescriptor&lt;/code&gt;结果为空，但LDAP 是能查到的）&lt;a href=&#34;https://www.joeware.net/freetools/tools/adfind/usage.htm&#34;&gt;AdFind Usage&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查看原始SDDL格式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Administrator,CN=Users,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-rawsddl&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#SDDL格式不方便查看，-sddl+++ 最高三个+&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Administrator,CN=Users,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查看指定用户对该对象的权限&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Administrator,CN=Users,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddlfilter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;;;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Administrator&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-recmute&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查找指定用户在域内的所有ACL权限&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddlfilter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;;;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;jerry&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-recmute&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查看域内对象的扩展权限&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#根据GUID查扩展权限&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;adfind&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Extended-Rights,CN=Configuration,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-f&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;rightsGuid=00299570-246d-11d0-a768-00aa006e0529&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#查找有dcync权限的用户&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;AdFind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;exe&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;NTSecurityDescriptor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;+++&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sddlfilter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Replicating&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Directory&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Changes&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-recmute&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;修改域内对象的ACL &lt;a href=&#34;http://www.joeware.net/freetools/tools/admod/usage.htm&#34;&gt;AdMod Usage&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#添加jerry对Domain Admins组的member属性有读写权限&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;admod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Domain Admins,CN=Users,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SD&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;##ntsecuritydescriptor::{GETSD}{+D=(OA;;RPWP;member;;jerry)}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#使用jerry用户添加test用户到Domain Admins组&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;adfind&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-users&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-rb&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;test&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-dsq&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;|&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;admod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-users&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-rb&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Domain Admins&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-stdinadd&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;member&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#添加jerry对administrator用户有User-Force-Change-Password扩展权限&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#使用-sd 替代SD##ntsecuritydescriptor::{GETSD}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;admod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;CN=Administrator,CN=Users,DC=rootkit,DC=org&amp;#34;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-sd&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;D&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;OA&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;00299570&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;246d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;11d0-a768&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;00aa006e0529&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;jerry&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c&#34;&gt;#使用jerry用户修改Administrator 密码&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;admod&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-b&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Administrator&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;CN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Users&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DC&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rootkit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DC&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;org&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;unicodepwd&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;qweasd&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;123&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-optenc&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;useraccountcontrol-属性&#34;&gt;&lt;strong&gt;UserAccountControl 属性&lt;/strong&gt;&lt;/h3&gt;
+&lt;p&gt;UserAccountControl 属性是 Active Directory 中&lt;code&gt;用户&lt;/code&gt;和&lt;code&gt;计算机帐户&lt;/code&gt;的最重要属性之一。该属性决定了帐户在 AD 域中的状态：帐户是活动的还是被锁定的、是否启用下次登录时更改密码的选项、用户是否可以更改自己的密码、禁止被委派、不需要 Kerberos 预身份验证等等。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://woshub.com/decoding-ad-useraccountcontrol-value/&#34;&gt;Converting AD UserAccountControl Attribute Values&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;例如设置常规帐户的密码不过期。userAccountControl 值计算方法:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;NORMAL_ACCOUNT (512) + DONT_EXPIRE_PASSWORD (65536) = 66048&lt;/code&gt;&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;UserAccountControl 标志&lt;/th&gt;
+&lt;th&gt;十六进制值&lt;/th&gt;
+&lt;th&gt;十进制值&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;SCRIPT（运行登录脚本）&lt;/td&gt;
+&lt;td&gt;0x0001&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ACCOUNTDISABLE（账户被禁用）&lt;/td&gt;
+&lt;td&gt;0x0002&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;HOMEDIR_REQUIRED（主文件夹是必需的）&lt;/td&gt;
+&lt;td&gt;0x0008&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;LOCKOUT（账户被锁定）&lt;/td&gt;
+&lt;td&gt;0x0010&lt;/td&gt;
+&lt;td&gt;16&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;PASSWD_NOTREQD（不需要密码）&lt;/td&gt;
+&lt;td&gt;0x0020&lt;/td&gt;
+&lt;td&gt;32&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;PASSWD_CANT_CHANGE（防止用户更改密码）&lt;/td&gt;
+&lt;td&gt;0x0040&lt;/td&gt;
+&lt;td&gt;64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ENCRYPTED_TEXT_PWD_ALLOWED（使用可逆加密存储密码）&lt;/td&gt;
+&lt;td&gt;0x0080&lt;/td&gt;
+&lt;td&gt;128&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;TEMP_DUPLICATE_ACCOUNT（用户的帐户，其主帐户在另一个域中）&lt;/td&gt;
+&lt;td&gt;0x0100&lt;/td&gt;
+&lt;td&gt;256&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NORMAL_ACCOUNT（默认账户，典型的活跃账户）&lt;/td&gt;
+&lt;td&gt;0x0200&lt;/td&gt;
+&lt;td&gt;512&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;INTERDOMAIN_TRUST_ACCOUNT&lt;/td&gt;
+&lt;td&gt;0x0800&lt;/td&gt;
+&lt;td&gt;2048&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;WORKSTATION_TRUST_ACCOUNT&lt;/td&gt;
+&lt;td&gt;0x1000&lt;/td&gt;
+&lt;td&gt;4096&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SERVER_TRUST_ACCOUNT&lt;/td&gt;
+&lt;td&gt;0x2000&lt;/td&gt;
+&lt;td&gt;8192&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DONT_EXPIRE_PASSWORD（密码不会过期的用户帐户）&lt;/td&gt;
+&lt;td&gt;0x10000&lt;/td&gt;
+&lt;td&gt;65536&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;MNS_LOGON_ACCOUNT&lt;/td&gt;
+&lt;td&gt;0x20000&lt;/td&gt;
+&lt;td&gt;131072&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SMARTCARD_REQUIRED（要登录网络，用户需要智能卡）&lt;/td&gt;
+&lt;td&gt;0x40000&lt;/td&gt;
+&lt;td&gt;262144&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;TRUSTED_FOR_DELEGATION&lt;/td&gt;
+&lt;td&gt;0x80000&lt;/td&gt;
+&lt;td&gt;524288&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NOT_DELEGATED&lt;/td&gt;
+&lt;td&gt;0x100000&lt;/td&gt;
+&lt;td&gt;1048576&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;USE_DES_KEY_ONLY&lt;/td&gt;
+&lt;td&gt;0x200000&lt;/td&gt;
+&lt;td&gt;2097152&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DONT_REQ_PREAUTH（不需要 Kerberos 预身份验证）&lt;/td&gt;
+&lt;td&gt;0x400000&lt;/td&gt;
+&lt;td&gt;4194304&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;PASSWORD_EXPIRED（用户密码已过期）&lt;/td&gt;
+&lt;td&gt;0x800000&lt;/td&gt;
+&lt;td&gt;8388608&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;TRUSTED_TO_AUTH_FOR_DELEGATION&lt;/td&gt;
+&lt;td&gt;0x1000000&lt;/td&gt;
+&lt;td&gt;16777216&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;PARTIAL_SECRETS_ACCOUNT&lt;/td&gt;
+&lt;td&gt;0x04000000&lt;/td&gt;
+&lt;td&gt;67108864&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</content>
+            
+            
+            
+            
+            
+                
+                    
+                
+                    
+                        
+                            
+                            
+                            
+                                <category scheme="https://myzxcg.com/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/" term="域相关" label="域相关" />
+                            
+                        
+                            
+                            
+                            
+                                <category scheme="https://myzxcg.com/tags/Windows/" term="Windows" label="Windows" />
                             
                         
                     
