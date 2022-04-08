@@ -23,7 +23,7 @@
         
             <copyright>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</copyright>
         
-        <lastBuildDate>Wed, 06 Apr 2022 23:45:43 &#43;0800</lastBuildDate>
+        <lastBuildDate>Fri, 08 Apr 2022 22:28:39 &#43;0800</lastBuildDate>
         
             <atom:link rel="self" type="application/rss&#43;xml" href="https://myzxcg.com/rss.xml" />
         
@@ -14382,7 +14382,7 @@ samr也不算是一种专门的协议，就是一个RPC接口。常用的&lt;cod
 &lt;/ol&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id=&#34;域用户密码永不过期属性&#34;&gt;域用户密码永不过期属性&lt;/h3&gt;
+&lt;h3 id=&#34;设置域用户密码不过期&#34;&gt;设置域用户密码不过期&lt;/h3&gt;
 &lt;p&gt;为了增强安全性，域组策略会设置所有域用户口令的最长有效时间，到达过期时间后强制用户更改口令。
 域用户的密码永不过期属性保存在域用户的userAccountControl属性中。将该属性值514再加上&lt;code&gt;65536&lt;/code&gt;，即设置为&lt;code&gt;66048&lt;/code&gt;代表密码不过期。&lt;/p&gt;
 &lt;ol&gt;
