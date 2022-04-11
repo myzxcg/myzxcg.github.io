@@ -55,13 +55,13 @@
         "@context": "https://schema.org",
         "@type": "BlogPosting",
         "datePublished": "2021-08-26T00:43:06+08:00",
-        "dateModified": "2022-01-28T11:47:14+08:00",
+        "dateModified": "2022-04-11T23:09:22+08:00",
         "url": "https://myzxcg.com/2021/08/Kerberos-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90%E4%B8%80/",
         "headline": "Kerberos 认证过程详细分析（一）",
         "description": "此文于2022年1月28日更新。 利用Wireshark 解密 Kerberos 的加密字段 参考 1 2 3 4 5……",
         "inLanguage" : "zh-CN",
         "articleSection": "posts",
-        "wordCount":  4355 ,
+        "wordCount":  4319 ,
         "image": ["https://myzxcg.com/images/16433394938312.jpg","https://myzxcg.com/images/16433395567774.jpg","https://myzxcg.com/images/16433395743668.jpg","https://myzxcg.com/images/16433395901605.jpg","https://myzxcg.com/images/16433396082150.jpg","https://myzxcg.com/images/16433397764375.jpg","https://myzxcg.com/images/16433397954929.jpg","https://myzxcg.com/images/16433398108951.jpg","https://myzxcg.com/images/16433398435167.jpg","https://myzxcg.com/images/16433399381159.jpg","https://myzxcg.com/images/16433399553851.jpg","https://myzxcg.com/images/16433399763549.jpg","https://myzxcg.com/images/16433399922282.jpg","https://myzxcg.com/images/16433400445338.jpg","https://myzxcg.com/images/16433400596785.jpg","https://myzxcg.com/images/16433400785655.jpg","https://myzxcg.com/images/16433400953721.jpg","https://myzxcg.com/images/16433401619561.jpg","https://myzxcg.com/images/16433401780867.jpg","https://myzxcg.com/images/16433401928335.jpg","https://myzxcg.com/images/16433402080116.jpg","https://myzxcg.com/images/16433402219694.jpg","https://myzxcg.com/images/16433402674743.jpg","https://myzxcg.com/images/16433402822227.jpg"],
         "author": {
             "@type": "Person",
@@ -107,7 +107,7 @@
 <meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/16433394938312.jpg" />
 <meta property="og:type" content="article" />
     <meta property="article:published_time" content="2021-08-26T00:43:06&#43;08:00" />
-    <meta property="article:modified_time" content="2022-01-28T11:47:14&#43;08:00" />
+    <meta property="article:modified_time" content="2022-04-11T23:09:22&#43;08:00" />
     
     <meta property="article:section" content="posts" />
 
@@ -610,7 +610,7 @@
 </li>
 </ul>
 <h3 id="ap_rep"><a href="#ap_rep" class="anchor-link">#</a><a href="#contents:ap_rep" class="headings">AP_REP</a></h3>
-<p>服务器会收到用户发来的ST 后，用自己的Hash 解密获得Server Session Key。再用该Key 解密被加密的客户端信息（请求的用户名、时间戳等），并进行校验以及与ST 中的客户端信息进行比对，相同则认证通过。有PAC的情况: 服务端还会向KDC 请求验证该用户的权限，有权限才能访问。</p>
+<p>服务器会收到用户发来的ST 后，用自己的Hash 解密获得Server Session Key。再用该Key 解密被加密的客户端信息（请求的用户名、时间戳等），并进行校验以及与ST 中的客户端信息进行比对，相同则认证通过。</p>
 <p>下图是服务器的SMB响应包</p>
 <p><img src="/images/16433402219694.jpg" alt=""></p>
 <h2 id="pac"><a href="#pac" class="anchor-link">#</a><a href="#contents:pac" class="headings">PAC</a></h2>
