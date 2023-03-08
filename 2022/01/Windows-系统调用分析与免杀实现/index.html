@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.105.0"><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.109.0"><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -316,9 +316,9 @@
 <pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;Windows.h&gt;</span><span class="cp">
 </span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">HANDLE</span> <span class="n">hProcess</span> <span class="o">=</span> <span class="n">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="mi">4980</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">HANDLE</span> <span class="n">hProcess</span> <span class="o">=</span> <span class="nf">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="mi">4980</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="n">DWORD</span> <span class="n">dwData</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">ReadProcessMemory</span><span class="p">(</span><span class="n">hProcess</span><span class="p">,</span> <span class="p">(</span><span class="n">PVOID</span><span class="p">)</span><span class="mh">0x400000</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dwData</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">ReadProcessMemory</span><span class="p">(</span><span class="n">hProcess</span><span class="p">,</span> <span class="p">(</span><span class="n">PVOID</span><span class="p">)</span><span class="mh">0x400000</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dwData</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
@@ -366,8 +366,8 @@
 </span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">num</span> <span class="o">=</span> <span class="mh">0x1234567</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;num地址: %x</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">num</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">getchar</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;num地址: %x</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">num</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">getchar</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table></div>
@@ -447,10 +447,10 @@
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">    
 </span></span><span class="line"><span class="cl">    <span class="n">DWORD</span> <span class="n">dwData</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">HANDLE</span> <span class="n">handle</span> <span class="o">=</span> <span class="n">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="mi">2900</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">MyReadProcessMemory</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="p">(</span><span class="n">LPVOID</span><span class="p">)</span><span class="mh">0x41fea8</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dwData</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;dwData=%x </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">dwData</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">getchar</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">HANDLE</span> <span class="n">handle</span> <span class="o">=</span> <span class="nf">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="mi">2900</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">MyReadProcessMemory</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="p">(</span><span class="n">LPVOID</span><span class="p">)</span><span class="mh">0x41fea8</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dwData</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;dwData=%x </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">dwData</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">getchar</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table></div>
@@ -548,7 +548,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">mov</span> <span class="n">edx</span><span class="p">,</span> <span class="n">esp</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">        <span class="c1">//sysenter对应硬编码
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">_emit</span> <span class="mh">0x0F</span><span class="p">;</span> <span class="n">_EMIT伪指令相当于MASM中的DB</span><span class="err">，一次只能定义一个字节。</span><span class="n">VC里没有DD及DW之类的内联汇编指令</span>
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">_emit</span> <span class="mh">0x0F</span><span class="p">;</span> <span class="n">_EMIT</span><span class="err">伪指令相当于</span><span class="n">MASM</span><span class="err">中的</span><span class="n">DB</span><span class="err">，一次只能定义一个字节。</span><span class="n">VC</span><span class="err">里没有</span><span class="n">DD</span><span class="err">及</span><span class="n">DW</span><span class="err">之类的内联汇编指令</span>
 </span></span><span class="line"><span class="cl">        <span class="n">_emit</span> <span class="mh">0x34</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="nl">RETADDR</span><span class="p">:</span>
@@ -563,10 +563,10 @@
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">    
 </span></span><span class="line"><span class="cl">    <span class="n">DWORD</span> <span class="n">dwData</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">HANDLE</span> <span class="n">handle</span> <span class="o">=</span> <span class="n">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="mi">2900</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">ReadProcessMemory</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="p">(</span><span class="n">LPVOID</span><span class="p">)</span><span class="mh">0x41fea8</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dwData</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;dwData=%x </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">dwData</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">getchar</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">HANDLE</span> <span class="n">handle</span> <span class="o">=</span> <span class="nf">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="mi">2900</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">ReadProcessMemory</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="p">(</span><span class="n">LPVOID</span><span class="p">)</span><span class="mh">0x41fea8</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dwData</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;dwData=%x </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">dwData</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">getchar</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table></div>
@@ -647,10 +647,10 @@
 </span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="n">DWORD</span> <span class="n">dwData</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">HANDLE</span> <span class="n">handle</span> <span class="o">=</span> <span class="n">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="mi">9204</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">HANDLE</span> <span class="n">handle</span> <span class="o">=</span> <span class="nf">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="mi">9204</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">//ReadProcessMemory
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">NtReadVirtualMemoryProc</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="p">(</span><span class="n">LPVOID</span><span class="p">)</span><span class="mh">0xf2f848</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dwData</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;dwData=%x </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">dwData</span><span class="p">);</span>
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">NtReadVirtualMemoryProc</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="p">(</span><span class="n">LPVOID</span><span class="p">)</span><span class="mh">0xf2f848</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dwData</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;dwData=%x </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">dwData</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table></div>
@@ -749,23 +749,23 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="n">VOID</span> <span class="nf">SetSysCall</span><span class="p">()</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="n">DWORD</span> <span class="n">SysCallid</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">HMODULE</span> <span class="n">hModule</span> <span class="o">=</span> <span class="n">GetModuleHandleA</span><span class="p">(</span><span class="s">&#34;ntdll.dll&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">HMODULE</span> <span class="n">hModule</span> <span class="o">=</span> <span class="nf">GetModuleHandleA</span><span class="p">(</span><span class="s">&#34;ntdll.dll&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">hModule</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">DWORD64</span> <span class="n">FuncAddr</span> <span class="o">=</span> <span class="p">(</span><span class="n">DWORD64</span><span class="p">)</span><span class="n">GetProcAddress</span><span class="p">(</span><span class="n">hModule</span><span class="p">,</span> <span class="s">&#34;NtReadVirtualMemory&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">DWORD64</span> <span class="n">FuncAddr</span> <span class="o">=</span> <span class="p">(</span><span class="n">DWORD64</span><span class="p">)</span><span class="nf">GetProcAddress</span><span class="p">(</span><span class="n">hModule</span><span class="p">,</span> <span class="s">&#34;NtReadVirtualMemory&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="n">LPVOID</span> <span class="n">CallAddr</span> <span class="o">=</span> <span class="p">(</span><span class="n">LPVOID</span><span class="p">)(</span><span class="n">FuncAddr</span> <span class="o">+</span> <span class="mi">4</span><span class="p">);</span> <span class="c1">//读取的基地址指向0xb8的地址
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">ReadProcessMemory</span><span class="p">(</span><span class="n">GetCurrentProcess</span><span class="p">(),</span> <span class="n">CallAddr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">SysCallid</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span> <span class="c1">//从0xb8开始读取一个字节
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">memcpy</span><span class="p">(</span><span class="n">FuncExample</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="p">(</span><span class="n">CHAR</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">SysCallid</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">//复制一个字节到数组
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">ReadProcessMemory</span><span class="p">(</span><span class="nf">GetCurrentProcess</span><span class="p">(),</span> <span class="n">CallAddr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">SysCallid</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span> <span class="c1">//从0xb8开始读取一个字节
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">memcpy</span><span class="p">(</span><span class="n">FuncExample</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="p">(</span><span class="n">CHAR</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">SysCallid</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">//复制一个字节到数组
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">SetSysCall</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">SetSysCall</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">    <span class="n">DWORD</span> <span class="n">dwData</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">HANDLE</span> <span class="n">handle</span> <span class="o">=</span> <span class="n">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="mi">7404</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">HANDLE</span> <span class="n">handle</span> <span class="o">=</span> <span class="nf">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="mi">7404</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="n">NtReadVirtualMemoryProc</span>  <span class="n">NtReadVirtualMemory</span> <span class="o">=</span> <span class="p">(</span><span class="n">NtReadVirtualMemoryProc</span><span class="p">)</span><span class="o">&amp;</span><span class="n">FuncExample</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">NtReadVirtualMemory</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="p">(</span><span class="n">LPVOID</span><span class="p">)</span><span class="mh">0x4ff800</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dwData</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;dwData=%x </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">dwData</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">NtReadVirtualMemory</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="p">(</span><span class="n">LPVOID</span><span class="p">)</span><span class="mh">0x4ff800</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dwData</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;dwData=%x </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">dwData</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table></div>
@@ -827,8 +827,8 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">HMODULE</span> <span class="n">hModule</span> <span class="o">=</span> <span class="n">LoadLibraryA</span><span class="p">(</span><span class="s">&#34;ntdll.dll&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">PUCHAR</span> <span class="n">pFunAddr</span> <span class="o">=</span> <span class="p">(</span><span class="n">PUCHAR</span><span class="p">)</span><span class="n">GetProcAddress</span><span class="p">(</span><span class="n">hModule</span><span class="p">,</span> <span class="s">&#34;NtReadVirtualMemory&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">HMODULE</span> <span class="n">hModule</span> <span class="o">=</span> <span class="nf">LoadLibraryA</span><span class="p">(</span><span class="s">&#34;ntdll.dll&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">PUCHAR</span> <span class="n">pFunAddr</span> <span class="o">=</span> <span class="p">(</span><span class="n">PUCHAR</span><span class="p">)</span><span class="nf">GetProcAddress</span><span class="p">(</span><span class="n">hModule</span><span class="p">,</span> <span class="s">&#34;NtReadVirtualMemory&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="c1">//获取ZwOpenProcess函数长度
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">ULONG</span> <span class="n">uSize</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
@@ -843,14 +843,14 @@
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="c1">//函数指针申请内存
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">NtReadVirtualMemoryProc</span> <span class="n">func</span> <span class="o">=</span> <span class="p">(</span><span class="n">NtReadVirtualMemoryProc</span><span class="p">)</span><span class="n">VirtualAlloc</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">MEM_COMMIT</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READWRITE</span><span class="p">);</span>
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">NtReadVirtualMemoryProc</span> <span class="n">func</span> <span class="o">=</span> <span class="p">(</span><span class="n">NtReadVirtualMemoryProc</span><span class="p">)</span><span class="nf">VirtualAlloc</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">MEM_COMMIT</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READWRITE</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">//拷贝默认函数数据
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">memcpy</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">pFunAddr</span><span class="p">,</span> <span class="n">uSize</span><span class="p">);</span>
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">memcpy</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">pFunAddr</span><span class="p">,</span> <span class="n">uSize</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="n">DWORD</span> <span class="n">dwData</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">HANDLE</span> <span class="n">handle</span> <span class="o">=</span> <span class="n">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="mi">2900</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">func</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="p">(</span><span class="n">LPVOID</span><span class="p">)</span><span class="mh">0x41fea8</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dwData</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;dwData=%x </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">dwData</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">HANDLE</span> <span class="n">handle</span> <span class="o">=</span> <span class="nf">OpenProcess</span><span class="p">(</span><span class="n">PROCESS_ALL_ACCESS</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">,</span> <span class="mi">2900</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">func</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="p">(</span><span class="n">LPVOID</span><span class="p">)</span><span class="mh">0x41fea8</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dwData</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;dwData=%x </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">dwData</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table></div>
@@ -1035,7 +1035,7 @@
     
 
 
-            <div class="site-info">©&nbsp;2022&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
+            <div class="site-info">©&nbsp;2023&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
               </div>
 
             

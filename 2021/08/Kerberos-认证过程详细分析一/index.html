@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.105.0"><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.109.0"><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -325,11 +325,11 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="c">#请求TGT</span>
-</span></span><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">asktgt</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="s2">&#34;administrator&#34;</span> <span class="p">/</span><span class="n">password</span><span class="err">:</span><span class="s2">&#34;admin!@#45&#34;</span> <span class="p">/</span><span class="n">domain</span><span class="err">:</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">dc</span><span class="err">:</span><span class="s2">&#34;OWA2013.rootkit.org&#34;</span> <span class="p">/</span><span class="n">nowrap</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="py">exe</span> <span class="n">asktgt</span> <span class="p">/</span><span class="n">user</span><span class="err">:</span><span class="s2">&#34;administrator&#34;</span> <span class="p">/</span><span class="n">password</span><span class="err">:</span><span class="s2">&#34;admin!@#45&#34;</span> <span class="p">/</span><span class="n">domain</span><span class="err">:</span><span class="n">rootkit</span><span class="p">.</span><span class="py">org</span> <span class="p">/</span><span class="n">dc</span><span class="err">:</span><span class="s2">&#34;OWA2013.rootkit.org&#34;</span> <span class="p">/</span><span class="n">nowrap</span>
 </span></span><span class="line"><span class="cl"><span class="c">#请求ST</span>
-</span></span><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="n">exe</span> <span class="n">asktgs</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="s2">&#34;cifs/owa2013.rootkit.org&#34;</span> <span class="p">/</span><span class="n">dc</span><span class="err">:</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span> <span class="p">/</span><span class="n">ptt</span> <span class="p">/</span><span class="n">ticket</span><span class="err">:</span><span class="n">前面的TGT票据</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rubeus</span><span class="p">.</span><span class="py">exe</span> <span class="n">asktgs</span> <span class="p">/</span><span class="n">service</span><span class="err">:</span><span class="s2">&#34;cifs/owa2013.rootkit.org&#34;</span> <span class="p">/</span><span class="n">dc</span><span class="err">:</span><span class="n">owa2013</span><span class="p">.</span><span class="py">rootkit</span><span class="p">.</span><span class="py">org</span> <span class="p">/</span><span class="n">ptt</span> <span class="p">/</span><span class="n">ticket</span><span class="err">:前面的</span><span class="n">TGT</span><span class="err">票据</span>
 </span></span><span class="line"><span class="cl"><span class="c">#访问服务</span>
-</span></span><span class="line"><span class="cl"><span class="nb">dir </span><span class="p">\\</span><span class="n">owa2013</span><span class="p">.</span><span class="n">rootkit</span><span class="p">.</span><span class="n">org</span><span class="p">\</span><span class="n">c</span><span class="p">$</span> 
+</span></span><span class="line"><span class="cl"><span class="nb">dir </span><span class="p">\\</span><span class="n">owa2013</span><span class="p">.</span><span class="py">rootkit</span><span class="p">.</span><span class="n">org</span><span class="p">\</span><span class="n">c</span><span class="p">$</span> 
 </span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>所有数据包如下:
@@ -350,10 +350,10 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">1</span><span class="p">.</span><span class="n">pvno</span> <span class="n">kerberos的版本号</span>
-</span></span><span class="line"><span class="cl"><span class="n">2</span><span class="p">.</span><span class="nb">msg-type</span> <span class="n">消息类型</span><span class="err">，</span><span class="n">这里就是KRB_AS_REQ</span><span class="p">(</span><span class="n">0x0a</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="n">3</span><span class="p">.</span><span class="n">PA_DATA</span> <span class="nb">Pre-authentication</span> <span class="n">Data</span><span class="err">，</span><span class="n">预身份认证</span><span class="err">，</span><span class="n">每个认证消息有type和value</span><span class="err">。</span>
-</span></span><span class="line"><span class="cl"><span class="n">4</span><span class="p">.</span><span class="nb">req-body</span> <span class="n">请求体</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="mf">1</span><span class="p">.</span><span class="n">pvno</span> <span class="n">kerberos</span><span class="err">的版本号</span>
+</span></span><span class="line"><span class="cl"><span class="mf">2</span><span class="p">.</span><span class="nb">msg-type</span> <span class="err">消息类型，这里就是</span><span class="n">KRB_AS_REQ</span><span class="p">(</span><span class="n">0x0a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="mf">3</span><span class="p">.</span><span class="n">PA_DATA</span> <span class="nb">Pre-authentication</span> <span class="n">Data</span><span class="err">，预身份认证，每个认证消息有</span><span class="n">type</span><span class="err">和</span><span class="n">value</span><span class="err">。</span>
+</span></span><span class="line"><span class="cl"><span class="mf">4</span><span class="p">.</span><span class="nb">req-body</span> <span class="err">请求体</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
@@ -373,15 +373,15 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">PA-DATA</span> <span class="nb">PA-ENC</span><span class="n">-TIMESTAMP</span> <span class="n">用户HASH加密后的时间戳</span>
-</span></span><span class="line"><span class="cl">	<span class="nb">padata-type</span><span class="err">:</span> <span class="n">padata类型</span>
-</span></span><span class="line"><span class="cl">		<span class="nb">padata-vaule</span><span class="err">:</span> <span class="n">padata的值</span>
-</span></span><span class="line"><span class="cl">			<span class="n">etype</span><span class="err">:</span>  <span class="n">加密类型</span>
-</span></span><span class="line"><span class="cl">			<span class="n">cipher</span><span class="err">:</span> <span class="n">加密后的值</span>
-</span></span><span class="line"><span class="cl"><span class="nb">PA-DATA</span> <span class="nb">PA-PAC</span><span class="n">-REQUEST</span><span class="err">：</span><span class="n">PAC扩展</span>
-</span></span><span class="line"><span class="cl">	<span class="nb">padata-type</span><span class="err">:</span> <span class="n">padata类型</span>
-</span></span><span class="line"><span class="cl">		<span class="nb">padata-vaule</span><span class="err">:</span> <span class="n">padata的值</span>
-</span></span><span class="line"><span class="cl">		<span class="nb">include-pac</span><span class="err">:</span> <span class="n">是否包含PAC</span><span class="err">，</span><span class="n">如果包含那么在响应包中就会返回PAC</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">PA-DATA</span> <span class="nb">PA-ENC</span><span class="n">-TIMESTAMP</span> <span class="err">用户</span><span class="n">HASH</span><span class="err">加密后的时间戳</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">padata-type</span><span class="err">:</span> <span class="n">padata</span><span class="err">类型</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">padata-vaule</span><span class="err">:</span> <span class="n">padata</span><span class="err">的值</span>
+</span></span><span class="line"><span class="cl">			<span class="n">etype</span><span class="err">:</span>  <span class="err">加密类型</span>
+</span></span><span class="line"><span class="cl">			<span class="n">cipher</span><span class="err">:</span> <span class="err">加密后的值</span>
+</span></span><span class="line"><span class="cl"><span class="nb">PA-DATA</span> <span class="nb">PA-PAC</span><span class="n">-REQUEST</span><span class="err">：</span><span class="n">PAC</span><span class="err">扩展</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">padata-type</span><span class="err">:</span> <span class="n">padata</span><span class="err">类型</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">padata-vaule</span><span class="err">:</span> <span class="n">padata</span><span class="err">的值</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">include-pac</span><span class="err">:</span> <span class="err">是否包含</span><span class="n">PAC</span><span class="err">，如果包含那么在响应包中就会返回</span><span class="n">PAC</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
@@ -400,14 +400,14 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">padding</span><span class="err">:</span><span class="n">填充</span>
-</span></span><span class="line"><span class="cl"><span class="nb">kdc-options</span><span class="err">:</span><span class="n">用于与KDC约定一些选项设置</span>
-</span></span><span class="line"><span class="cl"><span class="n">cname</span><span class="err">:</span> <span class="n">客户端用户名</span>
-</span></span><span class="line"><span class="cl"><span class="n">realm</span><span class="err">:</span> <span class="n">域名</span> 
-</span></span><span class="line"><span class="cl"><span class="n">sname</span><span class="err">:</span> <span class="n">服务端用户名</span><span class="err">，</span><span class="n">在AS_REQ</span> <span class="n">中sname是krbtgt</span><span class="err">，</span><span class="n">类型是KRB_NT_SRV_INST</span>
-</span></span><span class="line"><span class="cl"><span class="n">till</span><span class="err">:</span> <span class="n">到期时间</span><span class="err">，</span><span class="n">rubeus和kekeo都是20370913024805Z</span><span class="err">，</span><span class="n">可以作为特征检测</span>
-</span></span><span class="line"><span class="cl"><span class="n">nonce</span><span class="err">：</span><span class="n">随机生成的一个数</span><span class="err">，</span><span class="n">用于检测重放攻击</span>
-</span></span><span class="line"><span class="cl"><span class="n">etype</span><span class="err">:</span> <span class="n">协商加密类型</span><span class="err">，</span><span class="n">KDC按照etype类型选择用户hash对应的加密方式</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">padding</span><span class="err">:填充</span>
+</span></span><span class="line"><span class="cl"><span class="nb">kdc-options</span><span class="err">:用于与</span><span class="n">KDC</span><span class="err">约定一些选项设置</span>
+</span></span><span class="line"><span class="cl"><span class="n">cname</span><span class="err">:</span> <span class="err">客户端用户名</span>
+</span></span><span class="line"><span class="cl"><span class="n">realm</span><span class="err">:</span> <span class="err">域名</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sname</span><span class="err">:</span> <span class="err">服务端用户名，在</span><span class="n">AS_REQ</span> <span class="err">中</span><span class="n">sname</span><span class="err">是</span><span class="n">krbtgt</span><span class="err">，类型是</span><span class="n">KRB_NT_SRV_INST</span>
+</span></span><span class="line"><span class="cl"><span class="n">till</span><span class="err">:</span> <span class="err">到期时间，</span><span class="n">rubeus</span><span class="err">和</span><span class="n">kekeo</span><span class="err">都是</span><span class="n">20370913024805Z</span><span class="err">，可以作为特征检测</span>
+</span></span><span class="line"><span class="cl"><span class="n">nonce</span><span class="err">：随机生成的一个数，用于检测重放攻击</span>
+</span></span><span class="line"><span class="cl"><span class="n">etype</span><span class="err">:</span> <span class="err">协商加密类型，</span><span class="n">KDC</span><span class="err">按照</span><span class="n">etype</span><span class="err">类型选择用户</span><span class="n">hash</span><span class="err">对应的加密方式</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>kdc-options 字段</p>
@@ -432,12 +432,12 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">pvno</span><span class="err">:</span> <span class="n">kerberos的版本号</span>
-</span></span><span class="line"><span class="cl"><span class="nb">msg-type</span><span class="err">:</span> <span class="n">消息类型KRB</span><span class="o">-AS</span><span class="n">-REP</span>
-</span></span><span class="line"><span class="cl"><span class="n">crealm</span><span class="err">:</span> <span class="n">域名</span>
-</span></span><span class="line"><span class="cl"><span class="n">cname</span><span class="err">:</span> <span class="n">客户端用户名</span>
-</span></span><span class="line"><span class="cl"><span class="n">ticket</span><span class="err">:</span> <span class="n">即TGT票据</span>
-</span></span><span class="line"><span class="cl"><span class="n">enc_part</span><span class="err">:</span> <span class="n">这部分是用用户密码Hash加密的</span><span class="err">，</span><span class="n">里面包含Login</span> <span class="n">session</span> <span class="n">key</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">pvno</span><span class="err">:</span> <span class="n">kerberos</span><span class="err">的版本号</span>
+</span></span><span class="line"><span class="cl"><span class="nb">msg-type</span><span class="err">:</span> <span class="err">消息类型</span><span class="nb">KRB-AS</span><span class="n">-REP</span>
+</span></span><span class="line"><span class="cl"><span class="n">crealm</span><span class="err">:</span> <span class="err">域名</span>
+</span></span><span class="line"><span class="cl"><span class="n">cname</span><span class="err">:</span> <span class="err">客户端用户名</span>
+</span></span><span class="line"><span class="cl"><span class="n">ticket</span><span class="err">:</span> <span class="err">即</span><span class="n">TGT</span><span class="err">票据</span>
+</span></span><span class="line"><span class="cl"><span class="n">enc_part</span><span class="err">:</span> <span class="err">这部分是用用户密码</span><span class="n">Hash</span><span class="err">加密的，里面包含</span><span class="n">Login</span> <span class="n">session</span> <span class="n">key</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
@@ -452,10 +452,10 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">tkt-vno</span><span class="err">:</span> <span class="n">TGT</span> <span class="n">版本号</span>
-</span></span><span class="line"><span class="cl"><span class="n">realm</span><span class="err">:</span> <span class="n">域名</span>
-</span></span><span class="line"><span class="cl"><span class="n">sname</span><span class="err">:</span> <span class="n">请求的服务名称</span> <span class="n">krbtgt</span>
-</span></span><span class="line"><span class="cl"><span class="nb">enc-part</span><span class="err">:</span> <span class="n">这部份是用krbtgt的密码Hash加密的</span><span class="err">，</span><span class="n">其中包含了请求用户的PAC信息</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nb">tkt-vno</span><span class="err">:</span> <span class="n">TGT</span> <span class="err">版本号</span>
+</span></span><span class="line"><span class="cl"><span class="n">realm</span><span class="err">:</span> <span class="err">域名</span>
+</span></span><span class="line"><span class="cl"><span class="n">sname</span><span class="err">:</span> <span class="err">请求的服务名称</span> <span class="n">krbtgt</span>
+</span></span><span class="line"><span class="cl"><span class="nb">enc-part</span><span class="err">:</span> <span class="err">这部份是用</span><span class="n">krbtgt</span><span class="err">的密码</span><span class="n">Hash</span><span class="err">加密的，其中包含了请求用户的</span><span class="n">PAC</span><span class="err">信息</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>解密enc-part部分，其中<code>e8e1f426</code> 开头的值就是Login session key。</p>
@@ -466,8 +466,8 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">key</span><span class="err">:</span> <span class="n">就是Login</span> <span class="n">session</span> <span class="n">key</span>
-</span></span><span class="line"><span class="cl"><span class="nb">authorization-data</span><span class="err">:</span> <span class="n">里面是PAC的内容</span><span class="err">，</span><span class="n">此处不细说PAC</span> <span class="err">，</span><span class="n">后文分析</span><span class="err">。</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">key</span><span class="err">:</span> <span class="err">就是</span><span class="n">Login</span> <span class="n">session</span> <span class="n">key</span>
+</span></span><span class="line"><span class="cl"><span class="nb">authorization-data</span><span class="err">:</span> <span class="err">里面是</span><span class="n">PAC</span><span class="err">的内容，此处不细说</span><span class="n">PAC</span> <span class="err">，后文分析。</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
@@ -492,10 +492,10 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">pvno</span><span class="err">:</span> <span class="n">kerberos的版本号</span>
-</span></span><span class="line"><span class="cl"><span class="nb">msg-type</span><span class="err">:</span> <span class="n">消息类型</span>
-</span></span><span class="line"><span class="cl"><span class="n">padata</span><span class="err">:</span> <span class="n">这个部分包含之前的TGT票据</span><span class="err">，</span><span class="n">以及Login</span> <span class="n">session</span> <span class="n">key</span> <span class="n">加密的内容</span>
-</span></span><span class="line"><span class="cl"><span class="nb">req-body</span><span class="err">:</span> <span class="n">请求体</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">pvno</span><span class="err">:</span> <span class="n">kerberos</span><span class="err">的版本号</span>
+</span></span><span class="line"><span class="cl"><span class="nb">msg-type</span><span class="err">:</span> <span class="err">消息类型</span>
+</span></span><span class="line"><span class="cl"><span class="n">padata</span><span class="err">:</span> <span class="err">这个部分包含之前的</span><span class="n">TGT</span><span class="err">票据，以及</span><span class="n">Login</span> <span class="n">session</span> <span class="n">key</span> <span class="err">加密的内容</span>
+</span></span><span class="line"><span class="cl"><span class="nb">req-body</span><span class="err">:</span> <span class="err">请求体</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
@@ -510,10 +510,10 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">AP_REQ</span><span class="err">:</span> <span class="n">这部分会携带AS_REP里面获取到的TGT票据</span><span class="err">、</span><span class="n">客户端的认证信息</span>
-</span></span><span class="line"><span class="cl">	<span class="p">...</span> <span class="n">省略一些前面说过的字段</span>
-</span></span><span class="line"><span class="cl">	<span class="n">ticket</span><span class="err">:</span> <span class="n">可以看到这部分就是TGT票据</span>
-</span></span><span class="line"><span class="cl">	<span class="n">authenticator</span><span class="err">:</span> <span class="n">如下图</span><span class="err">，</span><span class="n">这部分就是Login</span> <span class="n">session</span> <span class="n">key加密的客户端信息</span><span class="err">:</span> <span class="n">请求的用户名</span><span class="err">、</span><span class="n">时间戳</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">AP_REQ</span><span class="err">:</span> <span class="err">这部分会携带</span><span class="n">AS_REP</span><span class="err">里面获取到的</span><span class="n">TGT</span><span class="err">票据、客户端的认证信息</span>
+</span></span><span class="line"><span class="cl">	<span class="p">...</span> <span class="err">省略一些前面说过的字段</span>
+</span></span><span class="line"><span class="cl">	<span class="n">ticket</span><span class="err">:</span> <span class="err">可以看到这部分就是</span><span class="n">TGT</span><span class="err">票据</span>
+</span></span><span class="line"><span class="cl">	<span class="n">authenticator</span><span class="err">:</span> <span class="err">如下图，这部分就是</span><span class="n">Login</span> <span class="n">session</span> <span class="n">key</span><span class="err">加密的客户端信息:</span> <span class="err">请求的用户名、时间戳</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
 </div><p><img src="/images/16433399763549.jpg" alt=""></p>
@@ -530,10 +530,10 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="p">...</span><span class="n">省略介绍过的内容</span>
-</span></span><span class="line"><span class="cl"><span class="n">cname</span><span class="err">:</span> <span class="n">请求的用户名</span>
-</span></span><span class="line"><span class="cl"><span class="n">sname</span><span class="err">:</span> <span class="n">请求的指定服务</span>
-</span></span><span class="line"><span class="cl"><span class="n">etype</span><span class="err">:</span> <span class="n">支持的加密类型</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="p">...</span><span class="err">省略介绍过的内容</span>
+</span></span><span class="line"><span class="cl"><span class="n">cname</span><span class="err">:</span> <span class="err">请求的用户名</span>
+</span></span><span class="line"><span class="cl"><span class="n">sname</span><span class="err">:</span> <span class="err">请求的指定服务</span>
+</span></span><span class="line"><span class="cl"><span class="n">etype</span><span class="err">:</span> <span class="err">支持的加密类型</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
@@ -553,9 +553,9 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="p">...</span><span class="n">省略介绍过的内容</span>
-</span></span><span class="line"><span class="cl"><span class="n">ticket</span><span class="err">:</span> <span class="n">这个是服务票据ST</span><span class="err">，</span><span class="n">它由服务账号的Hash加密</span>
-</span></span><span class="line"><span class="cl"><span class="nb">enc-part</span><span class="err">:</span> <span class="n">Login</span> <span class="n">session</span> <span class="n">key加密的Server</span> <span class="n">Session</span> <span class="n">key等信息</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="p">...</span><span class="err">省略介绍过的内容</span>
+</span></span><span class="line"><span class="cl"><span class="n">ticket</span><span class="err">:</span> <span class="err">这个是服务票据</span><span class="n">ST</span><span class="err">，它由服务账号的</span><span class="n">Hash</span><span class="err">加密</span>
+</span></span><span class="line"><span class="cl"><span class="nb">enc-part</span><span class="err">:</span> <span class="n">Login</span> <span class="n">session</span> <span class="n">key</span><span class="err">加密的</span><span class="n">Server</span> <span class="n">Session</span> <span class="n">key</span><span class="err">等信息</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
@@ -570,8 +570,8 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">key</span><span class="err">:</span> <span class="n">这里b808087f开头的key就是Server</span> <span class="n">Session</span> <span class="n">key</span>
-</span></span><span class="line"><span class="cl"><span class="nb">authorization-data</span><span class="err">:</span> <span class="n">是用户的PAC</span><span class="err">，</span><span class="n">后文细讲</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">key</span><span class="err">:</span> <span class="err">这里</span><span class="n">b808087f</span><span class="err">开头的</span><span class="n">key</span><span class="err">就是</span><span class="n">Server</span> <span class="n">Session</span> <span class="n">key</span>
+</span></span><span class="line"><span class="cl"><span class="nb">authorization-data</span><span class="err">:</span> <span class="err">是用户的</span><span class="n">PAC</span><span class="err">，后文细讲</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
 </div></li>
@@ -599,8 +599,8 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">ticket</span><span class="err">:</span> <span class="n">这里的ticket字段就是ST票据的内容</span>
-</span></span><span class="line"><span class="cl"><span class="n">authenticator</span><span class="err">:</span> <span class="n">就是Server</span> <span class="n">Session</span> <span class="n">Key加密的客户端信息</span>
+<pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">ticket</span><span class="err">:</span> <span class="err">这里的</span><span class="n">ticket</span><span class="err">字段就是</span><span class="n">ST</span><span class="err">票据的内容</span>
+</span></span><span class="line"><span class="cl"><span class="n">authenticator</span><span class="err">:</span> <span class="err">就是</span><span class="n">Server</span> <span class="n">Session</span> <span class="n">Key</span><span class="err">加密的客户端信息</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>解密ticket，可看到和之前的ST 票据一样。</p>
@@ -855,7 +855,7 @@
     
 
 
-            <div class="site-info">©&nbsp;2022&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
+            <div class="site-info">©&nbsp;2023&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
               </div>
 
             

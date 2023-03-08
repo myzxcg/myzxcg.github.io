@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.105.0"><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.109.0"><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -55,13 +55,13 @@
         "@context": "https://schema.org",
         "@type": "BlogPosting",
         "datePublished": "2022-03-30T22:31:02+08:00",
-        "dateModified": "2022-03-30T23:07:11+08:00",
+        "dateModified": "2023-03-08T15:42:55+08:00",
         "url": "https://myzxcg.com/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/",
         "headline": "Cobalt Strike 代码分析(一)",
         "description": "环境配置 原版Jar包: https://github.com/trewisscotch/CobaltStr4.4 Cobalt Strike 各版本sha256 1 2 3 4 #mac shasum -a 256 cobaltstrike.jar #windows certutil -hashfile cobaltstrike.jar sha256 反编译与打……",
         "inLanguage" : "zh-CN",
         "articleSection": "posts",
-        "wordCount":  4210 ,
+        "wordCount":  4099 ,
         "image": ["https://myzxcg.com/images/16486507443732.jpg","https://myzxcg.com/images/16486508491910.jpg","https://myzxcg.com/images/16486509333974.jpg","https://myzxcg.com/images/16486509481037.jpg","https://myzxcg.com/images/16486509694584.jpg","https://myzxcg.com/images/16486509857461.jpg","https://myzxcg.com/images/16486510478525.jpg","https://myzxcg.com/images/16486510649848.jpg","https://myzxcg.com/images/16486510808752.jpg","https://myzxcg.com/images/16486511048960.jpg","https://myzxcg.com/images/16486511256104.jpg","https://myzxcg.com/images/16486511398118.jpg","https://myzxcg.com/images/16486511526512.jpg","https://myzxcg.com/images/16486511950767.jpg","https://myzxcg.com/images/16486512123612.jpg","https://myzxcg.com/images/16486512275565.jpg","https://myzxcg.com/images/16486512512742.jpg","https://myzxcg.com/images/16486512721885.jpg","https://myzxcg.com/images/16486513500228.jpg","https://myzxcg.com/images/16486514222919.jpg","https://myzxcg.com/images/16486514468028.jpg","https://myzxcg.com/images/16486514617375.jpg","https://myzxcg.com/images/16486514817340.jpg","https://myzxcg.com/images/16486514985960.jpg","https://myzxcg.com/images/16486515237515.jpg","https://myzxcg.com/images/16486515529734.jpg","https://myzxcg.com/images/16486515667711.jpg","https://myzxcg.com/images/16486515798365.jpg"],
         "author": {
             "@type": "Person",
@@ -107,7 +107,7 @@
 <meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/16486507443732.jpg" />
 <meta property="og:type" content="article" />
     <meta property="article:published_time" content="2022-03-30T22:31:02&#43;08:00" />
-    <meta property="article:modified_time" content="2022-03-30T23:07:11&#43;08:00" />
+    <meta property="article:modified_time" content="2023-03-08T15:42:55&#43;08:00" />
     
     <meta property="article:section" content="posts" />
 
@@ -416,7 +416,7 @@ exportBeaconStageHTTP() 中最重要的就是exportBeaconStage() 与this.pe.proc
 </span></span><span class="line"><span class="cl"><span class="k">if</span><span class="o">(</span><span class="n">file</span><span class="o">.</span><span class="na">exists</span><span class="o">())</span><span class="n">file</span><span class="o">.</span><span class="na">delete</span><span class="o">();</span>
 </span></span><span class="line"><span class="cl"><span class="k">try</span> <span class="o">{</span>
 </span></span><span class="line"><span class="cl">   <span class="n">FileOutputStream</span> <span class="n">fos</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="n">file</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">   <span class="n">fos</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">var6</span><span class="o">.</span><span class="na">peProcessedDLL</span><span class="o">,</span><span class="n">0</span><span class="o">,</span><span class="n">var6</span><span class="o">.</span><span class="na">peProcessedDLL</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">   <span class="n">fos</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">var6</span><span class="o">.</span><span class="na">peProcessedDLL</span><span class="o">,</span><span class="mi">0</span><span class="o">,</span><span class="n">var6</span><span class="o">.</span><span class="na">peProcessedDLL</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
 </span></span><span class="line"><span class="cl">   <span class="n">fos</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
 </span></span><span class="line"><span class="cl">   <span class="n">fos</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
 </span></span><span class="line"><span class="cl"><span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
@@ -452,7 +452,7 @@ exportBeaconStageHTTP() 中最重要的就是exportBeaconStage() 与this.pe.proc
 <p><img src="/images/16486515798365.jpg" alt=""></p>
 </li>
 </ul>
-<p>根据上面的分析，其实只要按照指定的格式排列数据并加密，就能上线CS。因此可以自己写CS 客户端，这也是绕过CS的内存查杀的一种方法。其次，如果配置好profile中的内容，完全可以自定义流量。只是每次beacon回连获取指令的数据包始终相同，这也算是一种特征。至于HTTPS 协议的特征，常用的检测是JA3或者JA3S ，分别检测客户端握手时的特征与服务端返回时的特征。这种其实用cloudflare的worker就可以绕过了（先前写过 <a href="https://myzxcg.com/2020/12/Cobalt-Strike%E5%8E%BB%E7%89%B9%E5%BE%81%E9%85%8D%E7%BD%AENginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86CDN%E4%B8%8ECloudflare-Worker/" target="_blank" rel="noopener">文章</a>），因为可以直接上cloudflare的证书。</p>
+<p>根据上面的分析，其实只要按照指定的格式排列数据并加密，就能上线CS。因此可以自己写CS 客户端，这也是绕过CS的内存查杀的一种方法。其次，如果配置好profile中的内容，完全可以自定义流量。只是每次beacon回连获取指令的数据包始终相同，这也算是一种特征。</p>
 <h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
 <p><a href="https://mp.weixin.qq.com/s/cRlHoilJa8HPX9L2ZNE77A" target="_blank" rel="noopener">CobaltStrike二次开发环境初探</a></p>
 <p><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkxMTMxMjI2OQ==&amp;action=getalbum&amp;album_id=2174670809724747778&amp;scene=173&amp;from_msgid=2247483983&amp;from_itemidx=1&amp;count=3&amp;nolastread=1#wechat_redirect" target="_blank" rel="noopener">CobaltStrike逆向学习系列</a></p>
@@ -602,7 +602,7 @@ exportBeaconStageHTTP() 中最重要的就是exportBeaconStage() 与this.pe.proc
     
 
 
-            <div class="site-info">©&nbsp;2022&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
+            <div class="site-info">©&nbsp;2023&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
               </div>
 
             
