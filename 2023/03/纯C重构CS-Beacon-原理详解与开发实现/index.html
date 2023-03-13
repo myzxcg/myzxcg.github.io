@@ -12,7 +12,7 @@
     
     <meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>Cobalt Strike去特征：配置Nginx反向代理、CDN与Cloudflare Worker | MYZXCG</title>
+    <title>纯C重构CS Beacon - 原理详解与开发实现 | MYZXCG</title>
 
     <link rel="stylesheet" href="/css/meme.min.248ffc922f6c9975e8625f71e7ebc1a9e2180e744b9528665612bf7c124dea69.css"/>
 
@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
         <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
 
-    <meta name="author" content="myzxcg" /><meta name="description" content="前言 主要从Nginx反代、Cloudflare CDN和Cloudflare Worke……" />
+    <meta name="author" content="myzxcg" /><meta name="description" content="前言 去年上半年分析过CS 服务端代码，也发过相关的文章 ，之后就一直想根据TeamSer……" />
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
@@ -47,22 +47,22 @@
     
 
     
-    <link rel="canonical" href="https://myzxcg.com/2020/12/Cobalt-Strike%E5%8E%BB%E7%89%B9%E5%BE%81%E9%85%8D%E7%BD%AENginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86CDN%E4%B8%8ECloudflare-Worker/" />
+    <link rel="canonical" href="https://myzxcg.com/2023/03/%E7%BA%AFC%E9%87%8D%E6%9E%84CS-Beacon-%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3%E4%B8%8E%E5%BC%80%E5%8F%91%E5%AE%9E%E7%8E%B0/" />
     
 
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
-        "datePublished": "2020-12-13T19:49:42+08:00",
-        "dateModified": "2021-11-20T14:20:48+08:00",
-        "url": "https://myzxcg.com/2020/12/Cobalt-Strike%E5%8E%BB%E7%89%B9%E5%BE%81%E9%85%8D%E7%BD%AENginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86CDN%E4%B8%8ECloudflare-Worker/",
-        "headline": "Cobalt Strike去特征：配置Nginx反向代理、CDN与Cloudflare Worker",
-        "description": "前言 主要从Nginx反代、Cloudflare CDN和Cloudflare Worke……",
+        "datePublished": "2023-03-13T09:25:07+08:00",
+        "dateModified": "2023-03-13T09:45:03+08:00",
+        "url": "https://myzxcg.com/2023/03/%E7%BA%AFC%E9%87%8D%E6%9E%84CS-Beacon-%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3%E4%B8%8E%E5%BC%80%E5%8F%91%E5%AE%9E%E7%8E%B0/",
+        "headline": "纯C重构CS Beacon - 原理详解与开发实现",
+        "description": "前言 去年上半年分析过CS 服务端代码，也发过相关的文章 ，之后就一直想根据TeamSer……",
         "inLanguage" : "zh-CN",
         "articleSection": "posts",
-        "wordCount":  2560 ,
-        "image": ["https://myzxcg.com/images/image-20201213173117288.png","https://myzxcg.com/images/image-20201213172529346.png","https://myzxcg.com/images/image-20201213182507733.png","https://myzxcg.com/images/2020-12-13-18.44.29.png","https://myzxcg.com/images/image-20201213184858683.png","https://myzxcg.com/images/image-20201213191246826.png","https://myzxcg.com/images/image-20201213192923764.png","https://myzxcg.com/images/2020-12-14-10-16.png","https://myzxcg.com/images/image-20201213194022291.png"],
+        "wordCount":  3956 ,
+        "image": ["https://myzxcg.com/images/16786708353739.jpg","https://myzxcg.com/images/16786708539338.jpg","https://myzxcg.com/images/16786708752087.jpg","https://myzxcg.com/images/16786709490531.jpg","https://myzxcg.com/images/16786710053789.jpg","https://myzxcg.com/images/16786710229399.jpg","https://myzxcg.com/images/16786710365757.jpg","https://myzxcg.com/images/16786710690869.jpg","https://myzxcg.com/images/16786710897653.jpg","https://myzxcg.com/images/16786711482812.jpg","https://myzxcg.com/images/16786711589823.jpg","https://myzxcg.com/images/16786711756043.jpg","https://myzxcg.com/images/16786711951912.jpg","https://myzxcg.com/images/16786712104159.jpg","https://myzxcg.com/images/16786712322132.jpg","https://myzxcg.com/images/16786712476419.jpg"],
         "author": {
             "@type": "Person",
             "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
@@ -100,14 +100,14 @@
 
 
 
-<meta property="og:title" content="Cobalt Strike去特征：配置Nginx反向代理、CDN与Cloudflare Worker" />
-<meta property="og:description" content="前言 主要从Nginx反代、Cloudflare CDN和Cloudflare Worke……" />
-<meta property="og:url" content="https://myzxcg.com/2020/12/Cobalt-Strike%E5%8E%BB%E7%89%B9%E5%BE%81%E9%85%8D%E7%BD%AENginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86CDN%E4%B8%8ECloudflare-Worker/" />
+<meta property="og:title" content="纯C重构CS Beacon - 原理详解与开发实现" />
+<meta property="og:description" content="前言 去年上半年分析过CS 服务端代码，也发过相关的文章 ，之后就一直想根据TeamSer……" />
+<meta property="og:url" content="https://myzxcg.com/2023/03/%E7%BA%AFC%E9%87%8D%E6%9E%84CS-Beacon-%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3%E4%B8%8E%E5%BC%80%E5%8F%91%E5%AE%9E%E7%8E%B0/" />
 <meta property="og:site_name" content="MYZXCG" />
-<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/image-20201213173117288.png" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/16786708353739.jpg" />
 <meta property="og:type" content="article" />
-    <meta property="article:published_time" content="2020-12-13T19:49:42&#43;08:00" />
-    <meta property="article:modified_time" content="2021-11-20T14:20:48&#43;08:00" />
+    <meta property="article:published_time" content="2023-03-13T09:25:07&#43;08:00" />
+    <meta property="article:modified_time" content="2023-03-13T09:45:03&#43;08:00" />
     
     <meta property="article:section" content="posts" />
 
@@ -211,7 +211,7 @@
 
         <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
 
-            <h1 class="post-title p-name">Cobalt Strike去特征：配置Nginx反向代理、CDN与Cloudflare Worker</h1>
+            <h1 class="post-title p-name">纯C重构CS Beacon - 原理详解与开发实现</h1>
 
             
 
@@ -225,7 +225,7 @@
 <div class="post-meta">
     
         
-        <time datetime="2020-12-13T19:49:42&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2020.12.13</time>
+        <time datetime="2023-03-13T09:25:07&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2023.3.13</time>
     
     
     
@@ -239,7 +239,7 @@
     
     
         
-        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;6&nbsp;分钟</span>
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;8&nbsp;分钟</span>
     
 
    
@@ -254,45 +254,96 @@
             <nav class="contents">
   <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
     <li><a id="contents:前言" href="#前言">前言</a></li>
-    <li><a id="contents:部署nginx反向代理及https" href="#部署nginx反向代理及https">部署Nginx反向代理及https</a>
+    <li><a id="contents:实现的功能点" href="#实现的功能点">实现的功能点</a></li>
+    <li><a id="contents:cs-请求处理与数据封装" href="#cs-请求处理与数据封装">CS 请求处理与数据封装</a>
       <ol>
-        <li><a id="contents:配置nginxconf" href="#配置nginxconf">配置nginx.conf</a></li>
-        <li><a id="contents:申请免费https证书" href="#申请免费https证书">申请免费https证书</a></li>
-        <li><a id="contents:cobalt-strike-配置证书" href="#cobalt-strike-配置证书">Cobalt Strike 配置证书</a></li>
+        <li><a id="contents:心跳包获取指令" href="#心跳包获取指令">心跳包获取指令</a></li>
+        <li><a id="contents:beacon-回传数据" href="#beacon-回传数据">Beacon 回传数据</a></li>
       </ol>
     </li>
-    <li><a id="contents:cobalt-strike配置cdn" href="#cobalt-strike配置cdn">Cobalt Strike配置CDN</a>
+    <li><a id="contents:beacon-开发实现" href="#beacon-开发实现">Beacon 开发实现</a>
       <ol>
-        <li><a id="contents:cloudflare-缓存" href="#cloudflare-缓存">cloudflare 缓存</a></li>
-        <li><a id="contents:坑点" href="#坑点">坑点</a></li>
+        <li><a id="contents:profile-适配与字符串加密" href="#profile-适配与字符串加密">Profile 适配与字符串加密</a></li>
+        <li><a id="contents:动态url-实现" href="#动态url-实现">动态URL 实现</a></li>
+        <li><a id="contents:防封域名ip-策略与ssl-pinning-实现" href="#防封域名ip-策略与ssl-pinning-实现">防封域名/IP 策略与SSL Pinning 实现</a></li>
       </ol>
     </li>
-    <li><a id="contents:cloudflare-worker配置" href="#cloudflare-worker配置">Cloudflare Worker配置</a></li>
-    <li><a id="contents:参考" href="#参考">参考</a></li>
   </ol>
 </nav><div class="post-body e-content">
                 <h2 id="前言"><a href="#前言" class="anchor-link">#</a><a href="#contents:前言" class="headings">前言</a></h2>
-<p>主要从Nginx反代、Cloudflare CDN和Cloudflare Worker讨论如何隐藏Cobalt Strike Stage uri的特征以及隐藏C2域名和IP的方法。并记录一下部署过程中遇到的坑点。</p>
-<p>关于域前置可以参考:  <a href="https://paper.seebug.org/1349/#_2" target="_blank" rel="noopener">Cobalt Strike 绕过流量审计</a>。Cloudflare无法使用域前置，它会校验SNI。</p>
-<h2 id="部署nginx反向代理及https"><a href="#部署nginx反向代理及https" class="anchor-link">#</a><a href="#contents:部署nginx反向代理及https" class="headings">部署Nginx反向代理及https</a></h2>
-<p>如果在Cobalt Strike的C2 malleable配置文件中没有自定义http-stager的uri，那么通过访问默认的uri就能获取到cs的shellcode。加密shellcode的密钥是固定的(<code>3.x 0x69，4.x 0x2e</code>)，所以能解出c2域名等配置信息。下图是<a href="https://github.com/qigpig/bypass-beacon-config-scan/" target="_blank" rel="noopener">nmap扫描插件</a>的扫描结果。</p>
-<p><img src="/images/image-20201213173117288.png" alt=""></p>
-<p>该特征解决方法：</p>
-<ol>
+<p>去年上半年分析过CS 服务端代码，也发过相关的<a href="https://myzxcg.com/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/" target="_blank" rel="noopener">文章
+</a>，之后就一直想根据TeamServer逻辑来重写一个Beacon。</p>
+<p><strong>实现重构Beacon 的目的：</strong></p>
+<ul>
+<li>去除现有CS Beacon 行为上的、流量上的、内存上的特征，使其对被控端来说就像一个新的C2 一样，没有现有C2的特征，但又能集成CS TeamServer 优秀的协同功能。</li>
+<li>更方便做免杀，源码级的免杀处理，能够完全自定义Beacon 行为、流量、按需增强功能。</li>
+</ul>
+<p>在开发Beacon 之前，我对Beacon 最基本要求是：<strong>稳定、无特征、最低支持Win XP/2003、体积小</strong>。在此基础上，我决定采用C 语言编写Beacon，且开发过程中不导入任何第三方外部库，只依赖Win32 API，这样能使Beacon 静态编译仅160kb 左右，并且可在兼容到Win XP/2003。其次，为追求稳定和占用内存小，在编写代码的时候注重内存管理和对失败的逻辑处理。</p>
+<hr>
+<p>去年完成了重构 Beacon 的第一版开发，实现了HTTP/HTTPS 协议上线，进行命令执行、文件上传下载、目录浏览、Sleep 抖动等渗透常用的基础功能。后面紧接着实现了内存解析BOF 文件，适配了二十几种常用的CS BOF。后续经过几次实战项目的使用，也证明了重构Beacon 的稳定和动静态与内存免杀效果。在之后根据实战中遇到的各种问题，对重构的Beacon 增加新了的功能。目前在流量方面上已实现的功能有：<strong>动态URL、SSL Pinning、域名/IP 防封策略</strong>，这些会在后面文章中介绍。</p>
+<h2 id="实现的功能点"><a href="#实现的功能点" class="anchor-link">#</a><a href="#contents:实现的功能点" class="headings">实现的功能点</a></h2>
+<ul>
 <li>
-<p>修改源码修改加密的密钥（可参考：<a href="https://mp.weixin.qq.com/s/fhcTTWV4Ddz4h9KxHVRcnw" target="_blank" rel="noopener">Bypass cobaltstrike beacon config scan</a>）</p>
+<p>实现的命令：</p>
+<p><code>shell, execute, ls, rm、sleep（抖动）, cd, download, upload, pwd, mkdir, cp, exit, drives</code></p>
 </li>
 <li>
-<p>如果用的是stageless的shellcode（也就是200多k的shellcode），可以直接在malleable配置文件中配置<code>set host_stage &quot;false&quot;</code>，或在cs中将stager和stager64给删了。
-<img src="/images/image-20201213172529346.png" alt=""></p>
+<p>下面图片显示的所有功能点均已实现：</p>
+<p><img src="/images/16786708353739.jpg" alt=""></p>
 </li>
 <li>
-<p>设置iptables，只允许localhost访问CS listener监听的端口。将外部请求通过Nginx转发到localhost上的listener。还可以在Nginx上设置过滤规则来允许特定请求。</p>
+<p>内置集成的BOF：</p>
+<p><code>arp, cat, debug_privilege, env, get_clipboard, ipconfig, listdns, netstat, probe, quser, regsave, routeprint, scquery, screenshot_bof, self_delete, smbinfo, syscalls_dump, syscalls_inject, syscalls_shinject, tasklist, wdtoggle, whoami, wifidump, wifienum, windowlist, wmi_query, uptime</code></p>
 </li>
-</ol>
-<h3 id="配置nginxconf"><a href="#配置nginxconf" class="anchor-link">#</a><a href="#contents:配置nginxconf" class="headings">配置nginx.conf</a></h3>
-<p>根据CS配置文件进行配置，这里用的是<a href="https://github.com/threatexpress/malleable-c2/blob/master/jquery-c2.4.0.profile" target="_blank" rel="noopener">jquery-c2.4.0.profile</a>。（配置Nginx还可<a href="https://github.com/threatexpress/cs2modrewrite" target="_blank" rel="noopener">通过CS malleable配置文件生成nginx.conf</a>）</p>
-<p>在nginx.conf中可以添加对user-agent的校验，只有指定的user-agent才能访问到stage uri。</p>
+<li>
+<p>charset 命令或图形化设置Beacon控制台输出内容的编码，解决乱码问题。(如果charset参数为空，则恢复到原始编码)
+<img src="/images/16786708539338.jpg" alt="">
+或图形化设置
+<img src="/images/16786708752087.jpg" alt=""></p>
+</li>
+</ul>
+<h2 id="cs-请求处理与数据封装"><a href="#cs-请求处理与数据封装" class="anchor-link">#</a><a href="#contents:cs-请求处理与数据封装" class="headings">CS 请求处理与数据封装</a></h2>
+<p>首先介绍CS 的Team Server 是如何解析Beacon 发来的数据以及如何封装数据向Beacon 发送的（基于HTTP）。这也是后续开发Beacon 的基础依据。</p>
+<h3 id="心跳包获取指令"><a href="#心跳包获取指令" class="anchor-link">#</a><a href="#contents:心跳包获取指令" class="headings">心跳包获取指令</a></h3>
+<p>我们通过在CS 客户端下发指令（如执行命令、删除、上传文件等），TeamServer 会保存客户端发来的指令内容。心跳包就是Beacon 按照Sleep 设置的时间，定时向TeamServer 发起HTTP Get 请求，以获取客户端下发的指令，然后根据指令的内容执行对应的代码。</p>
+<p>首先来分析一下这个心跳包的组成结构：
+<img src="/images/16786709490531.jpg" alt="">
+如上图所示，Beacon 需要收集以上信息，然后使用公钥加密，根据Profile中的配置进行编码，然后在通过Get请求发送到TeamServer。由于这里需要使用公钥加密，所以在做马的时候就需要TeamServer 下的<code>.cobaltstrike.beacon_keys</code> ，这里面保存了TeamServer 启动后生成的公私钥信息。</p>
+<p>其次还需要根据Profile中的配置进行编码，下面是一个Profile Get请求配置的例子：
+<img src="/images/16786710053789.jpg" alt="">
+上图配置下的心跳请求包表现如下图：
+<img src="/images/16786710229399.jpg" alt="">
+TeamServer 在<code>beacon.BeaconC2.process_beacon_metadata()</code>方法中使用私钥对加密内容进行解密，获得机器的各种信息，然后在客户端就可以看到机器上线了。</p>
+<p>如果客户端输入了指令，例如<code>shell whoami</code> ，那么TeamServer 会使用心跳包里的密钥对此指令内容进行AES 加密，并按照Profile中的编码方式对加密的内容进行编码并返回，如上两张图。</p>
+<p>CS 默认的编码方式有：<code>Base64、Mask、Base64Url、NetBIOS、NetBIOSU</code>。后三种是CS 独有的特征，建议不要使用。这四种编码方式可以组合使用。</p>
+<p>Beacon 收到请求后，首先进行解码，然后利用密钥进行AES 解密，解密后的结构如下：</p>
+<p><code>[ 指令类型 + A内容长度 + A内容 ]+..+[ 6指令 + 随机数 ]</code>
+<img src="/images/16786710365757.jpg" alt="">
+以执行<code>shell whoami</code>为例：</p>
+<p>Beacon 会根据指令类型78，判断操作为执行命令，然后调用代码执行whoami 命令。</p>
+<h3 id="beacon-回传数据"><a href="#beacon-回传数据" class="anchor-link">#</a><a href="#contents:beacon-回传数据" class="headings">Beacon 回传数据</a></h3>
+<p>执行完命令后，Beacon 通过POST 请求将执行结果发送给TeamServer，TeamServer 在传给客户端进行展示。</p>
+<p>在发起POST 请求之前，首先会将执行结果进行AES 加密，然后根据Profile 中的配置的编码方式以及数据的放置位置等信息，对POST 请求包进行构造，构造完成后才会进行发送。TeamServer 再按照对应的方式进行解码解密。</p>
+<p>如下图，是一份POST 请求的Profile样例：
+<img src="/images/16786710690869.jpg" alt="">
+如下图，是Beacon 回传的POST 请求包的内容：
+<img src="/images/16786710897653.jpg" alt="">
+数据包组合结构为：<code>编码 {AES 加密[（请求次数）+（响应类型）+（执行结果）]}</code></p>
+<p>TeamServer会根据不同响应类型对执行结果进行不同的处理，对应的处理方法为：<code>beacon.BeaconC2.process_beacon_callback_decrypted()</code></p>
+<p>以上即为Beacon 与TeamServer 进行HTTP 双向通信的流程，不仅仅是命令执行，其他功能（文件操作等等）也都是这样的处理逻辑。</p>
+<h2 id="beacon-开发实现"><a href="#beacon-开发实现" class="anchor-link">#</a><a href="#contents:beacon-开发实现" class="headings">Beacon 开发实现</a></h2>
+<h3 id="profile-适配与字符串加密"><a href="#profile-适配与字符串加密" class="anchor-link">#</a><a href="#contents:profile-适配与字符串加密" class="headings">Profile 适配与字符串加密</a></h3>
+<p>上面分析中发现，Profile中配置了各种编码方式、自定义的请求头、对加密数据的前后字符串拼接等等，在实现Beacon 时需要考虑到这些内容，并且针对不同Profile 都能进行适配。</p>
+<p>如下图是部分请求头的处理逻辑。
+<img src="/images/16786711482812.jpg" alt="">
+<img src="/images/16786711589823.jpg" alt="">
+此外，域名，端口、以及Profile 配置中的各种请求头信息、公钥等敏感信息都是加密保存。加密效果如下图所示：
+<img src="/images/16786711756043.jpg" alt="">
+如果在不同的Profile下手动生成加密字符串，在一个一个替换太麻烦了。这里推荐一个python 库：<code>dissect.cobaltstrike.c2profile</code> ，它可以按照格式读取Profile 中的配置信息，然后写成键值对的形式，这样就可以用python脚本处理这些字符串了，简便了许多。</p>
+<h3 id="动态url-实现"><a href="#动态url-实现" class="anchor-link">#</a><a href="#contents:动态url-实现" class="headings">动态URL 实现</a></h3>
+<p>主要针对可能某些监控场景下会记录对同一个URL 请求的频次或是记录内容、大小始终相同的HTTP/HTTPS包（例如前面说的心跳包）。通过动态URL 能使心跳包每次都变得不同。</p>
+<p><strong>实现原理：</strong></p>
+<p>Beacon 端生成一个随机字符串，长度自定义，然后拼接到URL 中。并在Header 里指定这个随机字符串的长度，以便TeamServer 能够通过长度，截取该字符串，还原最原始的URL。</p>
 <div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -307,238 +358,58 @@
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-nginx" data-lang="nginx"><span class="line"><span class="cl"><span class="k">location</span> <span class="p">~</span> <span class="sr">^(/jquery-3.3.1.slim.min.js.*|/jquery-3.3.2.min.js.*|/jquery-3.3.1.min.js.*|/jquery-3.3.2.slim.min.js.*)$</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="kn">if</span> <span class="s">(</span><span class="nv">$http_user_agent</span> <span class="s">!=</span> <span class="s">&#34;Mozilla/5.0</span> <span class="s">(Windows</span> <span class="s">NT</span> <span class="mi">6</span><span class="s">.3</span><span class="p">;</span> <span class="kn">Trident/7.0</span><span class="p">;</span> <span class="kn">rv:11.0)</span> <span class="s">like</span> <span class="s">Gecko&#34;)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="kn">return</span> <span class="mi">302</span> <span class="nv">$REDIRECT_DOMAIN$request_uri</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="kn">proxy_pass</span>          <span class="nv">$C2_SERVER</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="c1"># If you want to pass the C2 server&#39;s &#34;Server&#34; header through then uncomment this line
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="c1"># proxy_pass_header Server;
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kn">expires</span>             <span class="no">off</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="kn">proxy_redirect</span>      <span class="no">off</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="kn">proxy_set_header</span>    <span class="s">Host</span>                <span class="nv">$host</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="kn">proxy_set_header</span>    <span class="s">X-Forwarded-For</span>     <span class="nv">$proxy_add_x_forwarded_for</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="kn">proxy_set_header</span>    <span class="s">X-Real-IP</span>           <span class="nv">$remote_addr</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">//Beacon生成随机字符串
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="n">IsDynamicUrl</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">DWORD</span> <span class="n">RandomLen</span> <span class="o">=</span> <span class="nf">RandInt</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span> <span class="c1">//随机字符串5-10位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">CHAR</span><span class="o">*</span> <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="n">CHAR</span><span class="o">*</span><span class="p">)</span><span class="nf">calloc</span><span class="p">(</span><span class="n">RandomLen</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="n">tmp</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">RandStr</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">RandomLen</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">RandomStr</span> <span class="o">=</span> <span class="p">(</span><span class="n">CHAR</span><span class="o">*</span><span class="p">)</span><span class="nf">calloc</span><span class="p">(</span><span class="n">RandomLen</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="n">RandomStr</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">memcpy</span><span class="p">(</span><span class="n">RandomStr</span><span class="p">,</span> <span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">memcpy</span><span class="p">(</span><span class="n">RandomStr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="nf">strlen</span><span class="p">(</span><span class="n">tmp</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">free</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
-</div><h3 id="申请免费https证书"><a href="#申请免费https证书" class="anchor-link">#</a><a href="#contents:申请免费https证书" class="headings">申请免费https证书</a></h3>
-<p>使用letsencrypt申请非常方便。使用官方推荐的工具<a href="https://certbot.eff.org/lets-encrypt/debianstretch-nginx" target="_blank" rel="noopener">Certbot - Debianstretch Nginx</a>，根据教程几行命令搞定。</p>
-<p><strong>注意：</strong> 提前在nginx.conf配置文件中设置好<code>server name img.xxx.com</code>。certbot会自动读取配置文件中的域名，并为它申请证书。生成的证书文件存储在：<code>/etc/letsencrypt/live/img.xxx.com/</code>目录下。</p>
-<p>在nginx配置文件中启用证书。</p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-nginx" data-lang="nginx"><span class="line"><span class="cl"><span class="c1">#####################
-</span></span></span><span class="line"><span class="cl"><span class="c1"># SSL Configuration
-</span></span></span><span class="line"><span class="cl"><span class="c1">#####################
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">listen</span> <span class="mi">443</span> <span class="s">ssl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">listen</span> <span class="s">[::]:443</span> <span class="s">ssl</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">ssl</span> <span class="no">on</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="k">ssl_certificate</span> <span class="s">/etc/letsencrypt/live/img.xxx.com/fullchain.pem</span><span class="p">;</span> <span class="c1"># managed by Certbot
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">ssl_certificate_key</span> <span class="s">/etc/letsencrypt/live/img.xxx.com/privkey.pem</span><span class="p">;</span> <span class="c1"># managed by Certbot
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">ssl_session_cache</span> <span class="s">shared:le_nginx_SSL:1m</span><span class="p">;</span> <span class="c1"># managed by Certbot
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">ssl_session_timeout</span> <span class="mi">1440m</span><span class="p">;</span> <span class="c1"># managed by Certbot
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">ssl_protocols</span> <span class="s">TLSv1</span> <span class="s">TLSv1.1</span> <span class="s">TLSv1.2</span><span class="p">;</span> <span class="c1"># managed by Certbot
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">ssl_prefer_server_ciphers</span> <span class="no">on</span><span class="p">;</span> <span class="c1"># managed by Certbot
-</span></span></span></code></pre></td></tr></table></div>
-</div>
-</div><h3 id="cobalt-strike-配置证书"><a href="#cobalt-strike-配置证书" class="anchor-link">#</a><a href="#contents:cobalt-strike-配置证书" class="headings">Cobalt Strike 配置证书</a></h3>
+</div><p>随后，需要修改TeamServer的<code>cloudstrike.NanoHTTPD.run()</code> 方法，获取对应的Header 头参数中的随机字符串长度，然后截取URL 中对应长度。
+<img src="/images/16786711951912.jpg" alt="">
+实现效果如下，每次心跳请求和POST 请求的URL 都不相同，避免心跳的数据报始终不变。
+<img src="/images/16786712104159.jpg" alt=""></p>
+<h3 id="防封域名ip-策略与ssl-pinning-实现"><a href="#防封域名ip-策略与ssl-pinning-实现" class="anchor-link">#</a><a href="#contents:防封域名ip-策略与ssl-pinning-实现" class="headings">防封域名/IP 策略与SSL Pinning 实现</a></h3>
+<p>实现效果：<strong>使防守方封锁域名无效，且通过一定的IP轮询策略减缓封锁IP带来的影响。</strong></p>
+<p>原理说明：</p>
+<p>这里利用的是CDN的特性，CDN 的转发HTTP/HTTPS 请求的策略是检测Host头里的域名，根据域名转发到CDN 后面的真实服务器。所以可以通过直接请求CDN 的IP，然后在Host里面指定配置的域名，一样可以转发到CDN 后面的C2上线。这样做的好处是，不会发起DNS请求，对抗一部分对域名的封锁。</p>
+<p>但是有的流量检测设备，也会检测HTTP 请求包里的Host 字段，根据Host 字段进行恶意域名的匹配。这样HTTP 的请求就会被检测到，所以进一步，需要通过HTTPS 上线，因为数据包都是加密的。</p>
+<p>在企业环境下，主机联网前都会安装企业的证书到本机的根证书区，就像我们通过BurpSuite 抓取HTTPS数据包的逻辑一样，这种环境下能够解密HTTPS 数据包。所以某些设备又能看到Host 头里的域名，进行封锁。但是可以通过SSL Pinning 来解决这个问题，通过固定CDN 的证书公钥指纹，以此判断是否有人尝试解密HTTPS 数据包，如果有就不往外发正常包，这样就避免被解密。</p>
+<p>CDN 的IP都是很多的，就腾讯云的来说，通过多地ping以及不同的DNS 服务器查询，获取到的有效CDN IP 就有60来个。</p>
+<p>以上的利用需要一定的策略来实现，如CDN IP池的轮询策略，需要根据不同的侧重点考虑情况。</p>
+<hr>
+<p>IP的轮询策略：</p>
+<p>首先，维护一个被Ban的IP池，将请求三次都失败的IP（被封锁）移到被Ban的IP池中，并将其字符串置为&quot;&quot;，这个函数就从CDN_IP 里读取那些不为&quot;&quot;的IP，如果所有的IP都进了被ban的IP池中，就重置CDN_IP，再一次进行轮询。
+<img src="/images/16786712322132.jpg" alt="">
+站在手动分析者视角（从流量分析角度，尽量避免暴露我们在使用很多个IP）</p>
 <ol>
-<li>
-<p>生成img.xxx.com.store文件</p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">openssl pkcs12 -export -in /etc/letsencrypt/live/img.xxx.com/fullchain.pem -inkey /etc/letsencrypt/live/jimg.xxx.com/privkey.pem -out img.xxx.com.p12 -name img.xxx.com -passout pass:123456
-</span></span></code></pre></td></tr></table></div>
-</div>
-</div><div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">keytool -importkeystore -deststorepass <span class="m">123456</span> -destkeypass <span class="m">123456</span> -destkeystore img.xxx.com.store -srckeystore img.xxx.com.p12 -srcstoretype PKCS12 -srcstorepass <span class="m">123456</span> -alias img.xxx.com
-</span></span></code></pre></td></tr></table></div>
-</div>
-</div></li>
-<li>
-<p>将生成的img.xxx.com.store放到cs目录下，修改teamserver文件最后一行,将cobaltstrike.store修改为img.xxx.com.store和store文件对应的密码。（有必要的话，把端口号也可以改了并设置iptables只允许特定ip访问）</p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">java -XX:ParallelGCThreads<span class="o">=</span><span class="m">4</span> -Dcobaltstrike.server_port<span class="o">=</span><span class="m">40120</span> -Djavax.net.ssl.keyStore<span class="o">=</span>./img.xxx.com.store -Djavax.net.ssl.keyStorePassword<span class="o">=</span><span class="m">123456</span> -server -XX:+AggressiveHeap -XX:+UseParallelGC -classpath ./cobaltstrike.jar server.TeamServer <span class="nv">$*</span>
-</span></span></code></pre></td></tr></table></div>
-</div>
-</div></li>
-<li>
-<p>将keystore加入Malleable C2 profile中</p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">https-certificate <span class="o">{</span>
-</span></span><span class="line"><span class="cl">     <span class="nb">set</span> keystore “img.xxx.com.store”<span class="p">;</span>
-</span></span><span class="line"><span class="cl">     <span class="nb">set</span> password “123456”<span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span></code></pre></td></tr></table></div>
-</div>
-</div></li>
+<li>默认情况下，始终请求一个IP，只有这个IP被Ban了，才会使用下一个。</li>
+<li>分析者Ban了第一个IP，并在观察木马还有没有请求其他IP，然后继续Ban
+<ol>
+<li>如果之前没有一次请求成功，且轮询了1个IP（失败5次）也没有成功，那就睡眠加2分钟（考虑到第一次上线时某些ip已经被Ban的情况，策略不能太严格）</li>
+<li>如果之前有一次请求成功了，且轮询了1个IP也没有成功，那就睡眠加20分钟（考虑到可能当前CDN IP不可用或是目标断网的情况，而不仅是被ban的情况。
+但一般情况下，请求成功过，又开始轮询ip一般都是被Ban或断网的情况，所以时间可以大一些，因为一般情况下是不会进行轮询的）</li>
 </ol>
-<p><strong>启动cs设置listener</strong></p>
-<p>这里<code>https port(bind):</code>设置的8022（cs会把端口开在8022），在nginx配置文件中的将proxy_pass设置为：https://127.0.0.1:8022。</p>
-<p><img src="/images/image-20201213182507733.png" alt=""></p>
-<p>开启listener之后设置iptables，只允许127.0.0.1访问。这下nmap也就扫不出来了。</p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">iptables -A INPUT -s 127.0.0.1 -p tcp --dport <span class="m">8022</span> -j ACCEPT
-</span></span><span class="line"><span class="cl">iptables -A INPUT -p tcp --dport <span class="m">8022</span> -j DROP
-</span></span></code></pre></td></tr></table></div>
-</div>
-</div><h2 id="cobalt-strike配置cdn"><a href="#cobalt-strike配置cdn" class="anchor-link">#</a><a href="#contents:cobalt-strike配置cdn" class="headings">Cobalt Strike配置CDN</a></h2>
-<p>部署cdn是为了隐藏cs服务器的真实IP，以Cloudflare的免费cdn为例，过程也非常简单。</p>
-<ol>
-<li>
-<p>添加域名
-<img src="/images/2020-12-13-18.44.29.png" alt=""></p>
-</li>
-<li>
-<p>选择免费版本，设置要加速的子域名，并在你的域名服务商处修改域名解析dns为cloudflare的dns。
-<img src="/images/image-20201213184858683.png" alt=""></p>
-</li>
-<li>
-<p>经过cloudflare验证成功后，在进行多地ping，看一下生效没有。</p>
 </li>
 </ol>
-<h3 id="cloudflare-缓存"><a href="#cloudflare-缓存" class="anchor-link">#</a><a href="#contents:cloudflare-缓存" class="headings">cloudflare 缓存</a></h3>
-<p>cloudflare能开启开发模式，来禁用缓存，但是只有3个小时。可以通过页面规则来永久设置缓存规则。</p>
-<p><img src="/images/image-20201213191246826.png" alt=""></p>
-<p>因为cs配置文件中设置的uri都是js结尾的，所以这里使用<code>*js</code>来匹配所有uri。</p>
-<h3 id="坑点"><a href="#坑点" class="anchor-link">#</a><a href="#contents:坑点" class="headings">坑点</a></h3>
-<p>配置完cdn后，会发现机器能上线，但是执行命令无回显。这个问题困扰了好半天，一直以为是cloudlflare缓存配置问题，然而禁用缓存后问题依旧存在。最后逐步定位到是cs配置文件的问题。</p>
-<p>这里用的是<a href="https://github.com/threatexpress/malleable-c2/blob/master/jquery-c2.4.0.profile" target="_blank" rel="noopener">jquery-c2.4.0.profile</a>配置文件。它设置<code>header &quot;Content-Type&quot; &quot;application/javascript; charset=utf-8&quot;;</code>为响应头。修改所有响应头为：<code>header &quot;Content-Type&quot; &quot;application/*; charset=utf-8&quot;;</code>即可正常执行命令回显。</p>
-<p>这里的mime-type如果为application/javascript、text/html等，机器执行命令就无法回显。猜测是cdn会检测响应头content-type的值，如果是一些静态文件的mime-type可能就导致这个问题。</p>
-<h2 id="cloudflare-worker配置"><a href="#cloudflare-worker配置" class="anchor-link">#</a><a href="#contents:cloudflare-worker配置" class="headings">Cloudflare Worker配置</a></h2>
-<p>Cloudflare Worker能够执行无服务器函数，免费用户有10万请求/每天的额度。并且能自定义workers.dev的子域。我们可以编写js处理以及转发请求。</p>
-<p><img src="/images/image-20201213192923764.png" alt=""></p>
-<p>js脚本如下（需要设置<code>X-Forwarded-For</code>头，不然上线的ip是worker的ipv6地址）</p>
-<div class="highlight"><div class="chroma">
-<div class="table-container"><table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">upstream</span> <span class="o">=</span> <span class="s1">&#39;https://img.xxx.com&#39;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;fetch&#39;</span><span class="p">,</span> <span class="nx">event</span> <span class="p">=&gt;</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">event</span><span class="p">.</span><span class="nx">respondWith</span><span class="p">(</span><span class="nx">fetchAndApply</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">request</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl"><span class="p">})</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kr">async</span> <span class="kd">function</span> <span class="nx">fetchAndApply</span><span class="p">(</span><span class="nx">request</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">ipAddress</span> <span class="o">=</span> <span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;cf-connecting-ip&#39;</span><span class="p">)</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kd">let</span> <span class="nx">requestURL</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">URL</span><span class="p">(</span><span class="nx">request</span><span class="p">.</span><span class="nx">url</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="kd">let</span> <span class="nx">upstreamURL</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">URL</span><span class="p">(</span><span class="nx">upstream</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">requestURL</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">=</span> <span class="nx">upstreamURL</span><span class="p">.</span><span class="nx">protocol</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">requestURL</span><span class="p">.</span><span class="nx">host</span> <span class="o">=</span> <span class="nx">upstreamURL</span><span class="p">.</span><span class="nx">host</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">requestURL</span><span class="p">.</span><span class="nx">pathname</span> <span class="o">=</span> <span class="nx">upstreamURL</span><span class="p">.</span><span class="nx">pathname</span> <span class="o">+</span> <span class="nx">requestURL</span><span class="p">.</span><span class="nx">pathname</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="kd">let</span> <span class="nx">new_request_headers</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Headers</span><span class="p">(</span><span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">new_request_headers</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s2">&#34;X-Forwarded-For&#34;</span><span class="p">,</span> <span class="nx">ipAddress</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="kd">let</span> <span class="nx">fetchedResponse</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">fetch</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">        <span class="k">new</span> <span class="nx">Request</span><span class="p">(</span><span class="nx">requestURL</span><span class="p">,</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nx">method</span><span class="o">:</span> <span class="nx">request</span><span class="p">.</span><span class="nx">method</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">            <span class="nx">headers</span><span class="o">:</span> <span class="nx">new_request_headers</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">            <span class="nx">body</span><span class="o">:</span> <span class="nx">request</span><span class="p">.</span><span class="nx">body</span>
-</span></span><span class="line"><span class="cl">        <span class="p">})</span>
-</span></span><span class="line"><span class="cl">    <span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="kd">let</span> <span class="nx">modifiedResponseHeaders</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Headers</span><span class="p">(</span><span class="nx">fetchedResponse</span><span class="p">.</span><span class="nx">headers</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">modifiedResponseHeaders</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="s1">&#39;set-cookie&#39;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">(</span>
-</span></span><span class="line"><span class="cl">        <span class="nx">fetchedResponse</span><span class="p">.</span><span class="nx">body</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">        <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="nx">headers</span><span class="o">:</span> <span class="nx">modifiedResponseHeaders</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">            <span class="nx">status</span><span class="o">:</span> <span class="nx">fetchedResponse</span><span class="p">.</span><span class="nx">status</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">            <span class="nx">statusText</span><span class="o">:</span> <span class="nx">fetchedResponse</span><span class="p">.</span><span class="nx">statusText</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table></div>
-</div>
-</div><p><img src="/images/2020-12-14-10-16.png" alt=""></p>
-<p>点击保存部署，访问<code>xxx.youtobe-mail.workers.dev</code>域名，看看是否正常。然后在listener中设置</p>
-<p><img src="/images/image-20201213194022291.png" alt=""></p>
-<p>到此设置完毕，之后通信的请求都是通过<code>xxx.xxx.workers.dev</code>进行的，隐藏了真实域名和IP。</p>
-<h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
+<p>SSL Pinning 实现代码：
+<img src="/images/16786712476419.jpg" alt="">
+这样就限制防守人员的反制策略为以下两点：</p>
 <ol>
-<li><a href="https://paper.seebug.org/1349/" target="_blank" rel="noopener">Cobalt Strike 绕过流量审计</a></li>
-<li><a href="https://www.freebuf.com/sectool/232555.html" target="_blank" rel="noopener">利用Cloudflare Worker来隐藏C2基础设施 - FreeBuf网络安全行业门户</a></li>
-<li><a href="https://www.secrss.com/articles/24765" target="_blank" rel="noopener">关于Cobalt Strike检测方法与去特征的思考 - 安全内参 | 决策者的网络安全知识库</a></li>
-<li><a href="http://blog.leanote.com/post/snowming/6a724671de78" target="_blank" rel="noopener">CS 合法证书 + Powershell 上线</a></li>
-<li><a href="https://github.com/threatexpress/cs2modrewrite" target="_blank" rel="noopener">GitHub - threatexpress/cs2modrewrite: Convert Cobalt Strike profiles to modrewrite scripts</a></li>
-<li><a href="https://github.com/threatexpress/malleable-c2/blob/master/jquery-c2.4.0.profile" target="_blank" rel="noopener">malleable-c2/jquery-c2.4.0.profile at master · threatexpress/malleable-c2 · GitHub</a></li>
+<li>机器关机或断网</li>
+<li>防守人员动态调试上线马，从内存中dump出IP池里的IP，然后通过防火墙等设备对这些IP进行封堵。（耗费时间，也可能对正常流量有影响）</li>
 </ol>
+<p>***Tips：***通过CDN IP，并指定Host 方式上线。在腾讯云CDN下，要注意一些Header头的大小写问题。腾讯云会将某些Header头转换为小写。</p>
+<p>end.</p>
 
             </div>
 
@@ -552,7 +423,7 @@
                 
                 
                 
-                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2020/12/Cobalt-Strike%E5%8E%BB%E7%89%B9%E5%BE%81%E9%85%8D%E7%BD%AENginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86CDN%E4%B8%8ECloudflare-Worker/" target="_blank" rel="noopener">https://myzxcg.com/2020/12/Cobalt-Strike去特征配置Nginx反向代理CDN与Cloudflare-Worker/</a></li>
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2023/03/%E7%BA%AFC%E9%87%8D%E6%9E%84CS-Beacon-%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3%E4%B8%8E%E5%BC%80%E5%8F%91%E5%AE%9E%E7%8E%B0/" target="_blank" rel="noopener">https://myzxcg.com/2023/03/纯C重构CS-Beacon-原理详解与开发实现/</a></li>
             
             <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
             
@@ -582,11 +453,11 @@
             <ul class="related-list">
                 
                     <li class="related-item">
-                        <a href="/2023/03/%E7%BA%AFC%E9%87%8D%E6%9E%84CS-Beacon-%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3%E4%B8%8E%E5%BC%80%E5%8F%91%E5%AE%9E%E7%8E%B0/" class="related-link">纯C重构CS Beacon - 原理详解与开发实现</a>
+                        <a href="/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/" class="related-link">Cobalt Strike 代码分析(一)</a>
                     </li>
                 
                     <li class="related-item">
-                        <a href="/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/" class="related-link">Cobalt Strike 代码分析(一)</a>
+                        <a href="/2020/12/Cobalt-Strike%E5%8E%BB%E7%89%B9%E5%BE%81%E9%85%8D%E7%BD%AENginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86CDN%E4%B8%8ECloudflare-Worker/" class="related-link">Cobalt Strike去特征：配置Nginx反向代理、CDN与Cloudflare Worker</a>
                     </li>
                 
             </ul>
@@ -624,10 +495,10 @@
     
         <ul class="post-nav">
             
-                <li class="post-nav-prev">
-                    <a href="/2020/12/Windows-Https%E6%B5%81%E9%87%8F%E6%8A%93%E5%8F%96%E4%B8%8E%E8%A7%A3%E5%AF%86/" rel="prev">&lt; Windows Https流量抓取与解密</a>
-                </li>
             
+                <li class="post-nav-next">
+                    <a href="/2022/11/Kubernetes-%E5%AE%9E%E9%99%85%E5%88%A9%E7%94%A8%E4%B8%8E%E5%88%86%E6%9E%90/" rel="next">Kubernetes 实际利用与分析 &gt;</a>
+                </li>
             
         </ul>
     
