@@ -23,7 +23,7 @@
         
             <copyright>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</copyright>
         
-        <lastBuildDate>Fri, 22 Sep 2023 16:53:17 &#43;0800</lastBuildDate>
+        <lastBuildDate>Fri, 22 Sep 2023 16:59:54 &#43;0800</lastBuildDate>
         
             <atom:link rel="self" type="application/rss&#43;xml" href="https://myzxcg.com/rss.xml" />
         
@@ -1117,7 +1117,8 @@
 &lt;p&gt;其中1、2 两点是咱们有希望能够利用的，第三点对系统影响较大所以暂不考虑。&lt;/p&gt;
 &lt;p&gt;需要说明的是，第一点禁用用户态的服务和进程在绝大多数情况下是有效的。但是如果EDR 总控通信、监控拦截等主要功能如果写在驱动程序里，那么kill 用户态进程意义不大。测试发现，国内的那些主要杀软/EDR 主要还是很依靠用户态进程进行处理，所以目前来说Kill 用户态进程还是很有效的。&lt;/p&gt;
 &lt;p&gt;下篇文章中，将会介绍利用白驱动实现去kill 任意进程、进行任意地址写利用的具体方法，敬请期待。&lt;/p&gt;
-&lt;p&gt;by the way ~ 欢迎关注公众号，新的文章会在公众号上第一时间发布&lt;/p&gt;
+&lt;p&gt;by the way ~&lt;/p&gt;
+&lt;p&gt;欢迎关注我的微信公众号：北秋风清 （新的文章会在公众号上第一时间发布）&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16953727256091.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;参考&#34;&gt;参考&lt;/h2&gt;
 &lt;ol&gt;

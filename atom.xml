@@ -4,7 +4,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-CN">
     <title type="text">MYZXCG</title>
     <subtitle type="html">专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～</subtitle>
-    <updated>2023-09-22T16:53:17&#43;08:00</updated>
+    <updated>2023-09-22T16:59:54&#43;08:00</updated>
     <id>https://myzxcg.com/</id>
     <link rel="alternate" type="text/html" href="https://myzxcg.com/" />
     <link rel="self" type="application/atom&#43;xml" href="https://myzxcg.com/atom.xml" />
@@ -20,7 +20,7 @@
             <title type="text">白驱动 Kill AV/EDR（上）</title>
             <link rel="alternate" type="text/html" href="https://myzxcg.com/2023/09/%E7%99%BD%E9%A9%B1%E5%8A%A8-Kill-AV/EDR%E4%B8%8A/" />
             <id>https://myzxcg.com/2023/09/%E7%99%BD%E9%A9%B1%E5%8A%A8-Kill-AV/EDR%E4%B8%8A/</id>
-            <updated>2023-09-22T16:52:46&#43;08:00</updated>
+            <updated>2023-09-22T16:59:44&#43;08:00</updated>
             <published>2023-09-22T16:19:54&#43;08:00</published>
             <author>
                     <name>myzxcg</name>
@@ -1108,7 +1108,8 @@
 &lt;p&gt;其中1、2 两点是咱们有希望能够利用的，第三点对系统影响较大所以暂不考虑。&lt;/p&gt;
 &lt;p&gt;需要说明的是，第一点禁用用户态的服务和进程在绝大多数情况下是有效的。但是如果EDR 总控通信、监控拦截等主要功能如果写在驱动程序里，那么kill 用户态进程意义不大。测试发现，国内的那些主要杀软/EDR 主要还是很依靠用户态进程进行处理，所以目前来说Kill 用户态进程还是很有效的。&lt;/p&gt;
 &lt;p&gt;下篇文章中，将会介绍利用白驱动实现去kill 任意进程、进行任意地址写利用的具体方法，敬请期待。&lt;/p&gt;
-&lt;p&gt;by the way ~ 欢迎关注公众号，新的文章会在公众号上第一时间发布&lt;/p&gt;
+&lt;p&gt;by the way ~&lt;/p&gt;
+&lt;p&gt;欢迎关注我的微信公众号：北秋风清 （新的文章会在公众号上第一时间发布）&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16953727256091.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;参考&#34;&gt;参考&lt;/h2&gt;
 &lt;ol&gt;
