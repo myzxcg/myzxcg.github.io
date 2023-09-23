@@ -4,7 +4,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-CN">
     <title type="text">MYZXCG</title>
     <subtitle type="html">专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～</subtitle>
-    <updated>2023-09-22T16:59:54&#43;08:00</updated>
+    <updated>2023-09-23T16:46:22&#43;08:00</updated>
     <id>https://myzxcg.com/</id>
     <link rel="alternate" type="text/html" href="https://myzxcg.com/" />
     <link rel="self" type="application/atom&#43;xml" href="https://myzxcg.com/atom.xml" />
@@ -20,7 +20,7 @@
             <title type="text">白驱动 Kill AV/EDR（上）</title>
             <link rel="alternate" type="text/html" href="https://myzxcg.com/2023/09/%E7%99%BD%E9%A9%B1%E5%8A%A8-Kill-AV/EDR%E4%B8%8A/" />
             <id>https://myzxcg.com/2023/09/%E7%99%BD%E9%A9%B1%E5%8A%A8-Kill-AV/EDR%E4%B8%8A/</id>
-            <updated>2023-09-22T16:59:44&#43;08:00</updated>
+            <updated>2023-09-23T16:46:05&#43;08:00</updated>
             <published>2023-09-22T16:19:54&#43;08:00</published>
             <author>
                     <name>myzxcg</name>
@@ -68,7 +68,7 @@
 &lt;p&gt;&lt;strong&gt;系统调用过程&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;应用程序总是需要进行一些不纯是计算的操作，例如打开文件、分配内存，这些操作最终只能由位于内核模式的代码来进行。&lt;/p&gt;
 &lt;p&gt;例如： 用户要打开一个文件，记事本会调用CreateFile（Kernel32.dll） 来响应。在进行了错误检查后，CreateFile 会进一步调用NtCreateFile（NTDLL.dll），NTDLL.dll 实际上是位于用户模式最底层的代码，这个NtCreateFile 是执行到内核模式转换的API。&lt;/p&gt;
-&lt;p&gt;在进行实际的转换之前，它会先把一个叫系统服务号的数字放到一个EAX 寄存器里，然后执行一个特殊的CPU 指令（syscall/sysenter）来实际转换到内核模式，并跳转到系统服务分发器的例程中去，系统服务分发器读取改寄存器中的值，作为系统服务分发表（SSDT）的索引，代码跳转至相应的系统调用中。&lt;/p&gt;
+&lt;p&gt;在进行实际的转换之前，它会先把系统调用号放到一个EAX 寄存器里，然后执行一个特殊的CPU 指令（syscall/sysenter）来实际转换到内核模式，并跳转到系统服务分发器的例程中去，系统服务分发器读取改寄存器中的值，作为系统服务分发表（SSDT）的索引，代码跳转至相应的系统调用中。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16953709776012.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;杀软edr-监控原理&#34;&gt;杀软/EDR 监控原理&lt;/h2&gt;
 &lt;p&gt;传统杀软主要是为了检测拦截主机上的恶意行为和程序，而传统的EDR 并不是为了阻止主机上的恶意活动，而是通过机器学习、行为检测等方式来检测主机上更复杂的恶意活动，并将结果通知到管理员。下面讨论的也是这两者基本通用的检测原理。（&lt;em&gt;&lt;strong&gt;Tips:&lt;/strong&gt;&lt;/em&gt; 后文以&amp;quot;EDR&amp;quot; 为&amp;quot;杀软/EDR&amp;quot; 的简称）&lt;/p&gt;
@@ -98,7 +98,7 @@
 &lt;h3 id=&#34;内核态的实现r0&#34;&gt;内核态的实现（R0）&lt;/h3&gt;
 &lt;p&gt;EDR 的核心拦截能力主要在内核中实现。通过在内核中注册回调例程，EDR 可以在用户态创建进程、注册表操作、对象获取等等方面进行监控和拦截，属于系统底层的拦截机制。在Windows XP SP3 发布之前，EDR 可以在Windows 内核中进行Hook，比如对SSDT 表的Hook，但微软为了Windows 内核稳定引入了Patch Guard 到内核中。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;Patch Guard 会在不规则的时间间隔内来检查 Windows 内核中某些代码区域是否存在诸如挂钩之类的操作，在必要时通过蓝屏死机 (BSOD) 来阻止 Windows 的进一步执行。Patch Guard 也有Bypass 方法，但现在的杀软/EDR 一般不会用bypass 来绕过，因为可能会导致蓝屏。&lt;/p&gt;
+&lt;p&gt;Patch Guard 会在不规则的时间间隔内来检查 Windows 内核中某些代码区域是否存在诸如挂钩之类的操作，在必要时通过蓝屏死机 (BSOD) 来阻止 Windows 的进一步执行。Patch Guard 也有Bypass 方法，但现在的杀软/EDR 一般不会通过漏洞来bypass，因为可能会导致蓝屏。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;虽然微软引入了Patch Guard 来禁止EDR 在内核中进行Hook 操作，但是它也引入了另一种机制 — 内核回调对象来让EDR 可以在内核中实现保护、检测策略。内核回调机制允许EDR 通过筛选器驱动程序以回调例程的形式注册回调对象，这允许EDR在Windows内核的回调数组中注册不同的回调例程。&lt;/p&gt;
 &lt;p&gt;举个例子：EDR 在内核中注册了在回调数组中注册了一个进程通知的回调例程，那么进程在用户态中被创建和终止时，都会触发这个回调通知，这样EDR 就知道哪个进程被创建了，从而进行后面一系列的保护或检测操作。&lt;/p&gt;
@@ -945,10 +945,10 @@
 当前对于这种方式的远程线程注入检测，也有绕过方法，但是这篇文章主要是讲EDR，就不展开说。后面有空再写一篇文章来介绍。&lt;/p&gt;
 &lt;h3 id=&#34;实现---对edr-进程保护&#34;&gt;实现 - 对EDR 进程保护&lt;/h3&gt;
 &lt;p&gt;前面也说到了，国内的大多数杀软/EDR 都不是PPL 进程，那么它是如何保证它的用户态进程不被Kill 的呢？&lt;/p&gt;
-&lt;p&gt;这里就来实现一下：通过驱动保护上面写的EDRClient.exe 进程不被用户态进程Kill 掉。&lt;/p&gt;
+&lt;p&gt;下面就来实现通过驱动保护上面写的EDRClient.exe 进程不被用户态进程Kill 掉。&lt;/p&gt;
 &lt;p&gt;这次为了方便，就直接在驱动中写好要保护的进程，这样就不用写与用户态进程通信来获取要保护的进程的代码了。&lt;/p&gt;
 &lt;p&gt;实现效果图：
-&lt;img src=&#34;https://myzxcg.com/images/16953712633898.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://myzxcg.com/images/123.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;阻止原理：&lt;/p&gt;
 &lt;p&gt;内核支持在当有进程试图打开或者复制特定对象类型的句柄时通知注册了回调的驱动程序。这里通过&lt;code&gt;ObRegisterCallbacks()&lt;/code&gt; 来注册一个操作前回调函数。操作前回调是在实际的句柄创建/打开/复制操作完成之前被调用，这样我们就可以在当有进程打开指定进程句柄前，去除掉句柄中的&lt;code&gt;PROCESS_TERMINATE(1)&lt;/code&gt; 权限，使其返回的句柄没有杀死进程的权限。&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;&lt;strong&gt;Tips:&lt;/strong&gt;&lt;/em&gt; 当然程序自身调用&lt;code&gt;ExitProcess()&lt;/code&gt; 函数是可以退出程序的。并且如果是像notepad 这类有窗口的程序，点击窗口的关闭按钮也可退出。&lt;/p&gt;
@@ -1110,7 +1110,6 @@
 &lt;p&gt;下篇文章中，将会介绍利用白驱动实现去kill 任意进程、进行任意地址写利用的具体方法，敬请期待。&lt;/p&gt;
 &lt;p&gt;by the way ~&lt;/p&gt;
 &lt;p&gt;欢迎关注我的微信公众号：北秋风清 （新的文章会在公众号上第一时间发布）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16953727256091.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;参考&#34;&gt;参考&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;《Windows 内核编程》&lt;/li&gt;
