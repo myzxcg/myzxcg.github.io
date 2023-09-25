@@ -23,7 +23,7 @@
         
             <copyright>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)</copyright>
         
-        <lastBuildDate>Sat, 23 Sep 2023 16:48:19 &#43;0800</lastBuildDate>
+        <lastBuildDate>Mon, 25 Sep 2023 09:05:00 &#43;0800</lastBuildDate>
         
             <atom:link rel="self" type="application/rss&#43;xml" href="https://myzxcg.com/rss.xml" />
         
@@ -1119,6 +1119,7 @@
 &lt;p&gt;下篇文章中，将会介绍利用白驱动实现去kill 任意进程、进行任意地址写利用的具体方法，敬请期待。&lt;/p&gt;
 &lt;p&gt;by the way ~&lt;/p&gt;
 &lt;p&gt;欢迎关注我的微信公众号：北秋风清 （新的文章会在公众号上第一时间发布）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://myzxcg.com/images/16956037772992.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;参考&#34;&gt;参考&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;《Windows 内核编程》&lt;/li&gt;
