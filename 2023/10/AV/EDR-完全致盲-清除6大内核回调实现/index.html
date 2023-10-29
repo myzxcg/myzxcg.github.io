@@ -12,7 +12,7 @@
     
     <meta http-equiv="Cache-Control" content="no-siteapp" />
 
-    <title>纯C重构CS Beacon - 原理详解与开发实现 | MYZXCG</title>
+    <title>AV/EDR 完全致盲 - 清除6大内核回调实现 | MYZXCG</title>
 
     <link rel="stylesheet" href="/css/meme.min.248ffc922f6c9975e8625f71e7ebc1a9e2180e744b9528665612bf7c124dea69.css"/>
 
@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" media="print" onload="this.media='all'" />
         <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB&#43;Garamond:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Noto&#43;Serif&#43;SC:wght@400;500;700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" /></noscript>
 
-    <meta name="author" content="myzxcg" /><meta name="description" content="前言 去年上半年分析过CS 服务端代码，也发过相关的文章 ，之后就一直想根据TeamSer……" />
+    <meta name="author" content="myzxcg" /><meta name="description" content="本文于 2023.10.29日首发于微信公众号：北秋风清，欢迎关注。 AV/EDR 完全致盲 - 清除6……" />
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="" />
@@ -37,9 +37,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="application-name" content="MYZXCG" />
-    <meta name="msapplication-starturl" content="../../../" />
+    <meta name="msapplication-starturl" content="../../../../" />
     <meta name="msapplication-TileColor" content="#603cba" />
-    <meta name="msapplication-TileImage" content="../../../icons/mstile-150x150.png" />
+    <meta name="msapplication-TileImage" content="../../../../icons/mstile-150x150.png" />
     <link rel="manifest" href="/manifest.json" />
 
 
@@ -47,22 +47,22 @@
     
 
     
-    <link rel="canonical" href="https://myzxcg.com/2023/03/%E7%BA%AFC%E9%87%8D%E6%9E%84CS-Beacon-%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3%E4%B8%8E%E5%BC%80%E5%8F%91%E5%AE%9E%E7%8E%B0/" />
+    <link rel="canonical" href="https://myzxcg.com/2023/10/AV/EDR-%E5%AE%8C%E5%85%A8%E8%87%B4%E7%9B%B2-%E6%B8%85%E9%99%A46%E5%A4%A7%E5%86%85%E6%A0%B8%E5%9B%9E%E8%B0%83%E5%AE%9E%E7%8E%B0/" />
     
 
 <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
-        "datePublished": "2023-03-13T09:25:07+08:00",
-        "dateModified": "2023-10-16T10:17:49+08:00",
-        "url": "https://myzxcg.com/2023/03/%E7%BA%AFC%E9%87%8D%E6%9E%84CS-Beacon-%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3%E4%B8%8E%E5%BC%80%E5%8F%91%E5%AE%9E%E7%8E%B0/",
-        "headline": "纯C重构CS Beacon - 原理详解与开发实现",
-        "description": "前言 去年上半年分析过CS 服务端代码，也发过相关的文章 ，之后就一直想根据TeamSer……",
+        "datePublished": "2023-10-29T14:52:28+08:00",
+        "dateModified": "2023-10-29T15:09:08+08:00",
+        "url": "https://myzxcg.com/2023/10/AV/EDR-%E5%AE%8C%E5%85%A8%E8%87%B4%E7%9B%B2-%E6%B8%85%E9%99%A46%E5%A4%A7%E5%86%85%E6%A0%B8%E5%9B%9E%E8%B0%83%E5%AE%9E%E7%8E%B0/",
+        "headline": "AV/EDR 完全致盲 - 清除6大内核回调实现",
+        "description": "本文于 2023.10.29日首发于微信公众号：北秋风清，欢迎关注。 AV/EDR 完全致盲 - 清除6……",
         "inLanguage" : "zh-CN",
         "articleSection": "posts",
-        "wordCount":  3950 ,
-        "image": ["https://myzxcg.com/images/16786708353739.jpg","https://myzxcg.com/images/16786708539338.jpg","https://myzxcg.com/images/16786708752087.jpg","https://myzxcg.com/images/16786709490531.jpg","https://myzxcg.com/images/16786710053789.jpg","https://myzxcg.com/images/16786710229399.jpg","https://myzxcg.com/images/16786710365757.jpg","https://myzxcg.com/images/16786710690869.jpg","https://myzxcg.com/images/16786710897653.jpg","https://myzxcg.com/images/16786711482812.jpg","https://myzxcg.com/images/16786711589823.jpg","https://myzxcg.com/images/16786711756043.jpg","https://myzxcg.com/images/16786711951912.jpg","https://myzxcg.com/images/16786712104159.jpg","https://myzxcg.com/images/16786712322132.jpg","https://myzxcg.com/images/16786712476419.jpg"],
+        "wordCount":  6498 ,
+        "image": ["https://myzxcg.com/images/16985625533048.jpg","https://myzxcg.com/images/16985625720862.jpg","https://myzxcg.com/images/16985625931109.jpg","https://myzxcg.com/images/16985626035767.jpg","https://myzxcg.com/images/16985626221048.jpg","https://myzxcg.com/images/16985626339460.jpg","https://myzxcg.com/images/16985626482828.jpg","https://myzxcg.com/images/16985626630210.jpg","https://myzxcg.com/images/16985626893711.jpg","https://myzxcg.com/images/16985627015765.jpg","https://myzxcg.com/images/16985627132269.jpg","https://myzxcg.com/images/16985627244074.jpg","https://myzxcg.com/images/16985627357619.jpg","https://myzxcg.com/images/16985627485867.jpg","https://myzxcg.com/images/16985627596976.jpg","https://myzxcg.com/images/16985627723530.jpg","https://myzxcg.com/images/16985627891449.jpg","https://myzxcg.com/images/16985628239592.jpg","https://myzxcg.com/images/16985628397131.jpg","https://myzxcg.com/images/16985628528510.jpg","https://myzxcg.com/images/16985628799453.jpg","https://myzxcg.com/images/16985628927841.jpg","https://myzxcg.com/images/16985629082529.jpg","https://myzxcg.com/images/16985629279081.jpg","https://myzxcg.com/images/16985629440646.jpg","https://myzxcg.com/images/16985629657852.jpg","https://myzxcg.com/images/16985629822396.jpg","https://myzxcg.com/images/16985629942771.jpg","https://myzxcg.com/images/16985630140075.jpg","https://myzxcg.com/images/16985630319347.jpg","https://myzxcg.com/images/16985630448009.jpg","https://myzxcg.com/images/16985630628472.jpg","https://myzxcg.com/images/16985630773355.jpg","https://myzxcg.com/images/16956037772992.jpg"],
         "author": {
             "@type": "Person",
             "description": "专注于Web安全、内网渗透. 记录学习与渗透过程中遇到的有意思的点, 分享技巧与知识. 欢迎交流～",
@@ -100,14 +100,14 @@
 
 
 
-<meta property="og:title" content="纯C重构CS Beacon - 原理详解与开发实现" />
-<meta property="og:description" content="前言 去年上半年分析过CS 服务端代码，也发过相关的文章 ，之后就一直想根据TeamSer……" />
-<meta property="og:url" content="https://myzxcg.com/2023/03/%E7%BA%AFC%E9%87%8D%E6%9E%84CS-Beacon-%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3%E4%B8%8E%E5%BC%80%E5%8F%91%E5%AE%9E%E7%8E%B0/" />
+<meta property="og:title" content="AV/EDR 完全致盲 - 清除6大内核回调实现" />
+<meta property="og:description" content="本文于 2023.10.29日首发于微信公众号：北秋风清，欢迎关注。 AV/EDR 完全致盲 - 清除6……" />
+<meta property="og:url" content="https://myzxcg.com/2023/10/AV/EDR-%E5%AE%8C%E5%85%A8%E8%87%B4%E7%9B%B2-%E6%B8%85%E9%99%A46%E5%A4%A7%E5%86%85%E6%A0%B8%E5%9B%9E%E8%B0%83%E5%AE%9E%E7%8E%B0/" />
 <meta property="og:site_name" content="MYZXCG" />
-<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/16786708353739.jpg" />
+<meta property="og:locale" content="zh" /><meta property="og:image" content="https://myzxcg.com/images/16985625533048.jpg" />
 <meta property="og:type" content="article" />
-    <meta property="article:published_time" content="2023-03-13T09:25:07&#43;08:00" />
-    <meta property="article:modified_time" content="2023-10-16T10:17:49&#43;08:00" />
+    <meta property="article:published_time" content="2023-10-29T14:52:28&#43;08:00" />
+    <meta property="article:modified_time" content="2023-10-29T15:09:08&#43;08:00" />
     
     <meta property="article:section" content="posts" />
 
@@ -211,7 +211,7 @@
 
         <article class="content post h-entry" data-align="justify" data-type="posts" data-toc-num="true">
 
-            <h1 class="post-title p-name">纯C重构CS Beacon - 原理详解与开发实现</h1>
+            <h1 class="post-title p-name">AV/EDR 完全致盲 - 清除6大内核回调实现</h1>
 
             
 
@@ -225,7 +225,7 @@
 <div class="post-meta">
     
         
-        <time datetime="2023-03-13T09:25:07&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2023.3.13</time>
+        <time datetime="2023-10-29T14:52:28&#43;08:00" class="post-meta-item published dt-published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>&nbsp;2023.10.29</time>
     
     
     
@@ -239,7 +239,7 @@
     
     
         
-        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;8&nbsp;分钟</span>
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;13&nbsp;分钟</span>
     
 
    
@@ -253,97 +253,68 @@
 
             <nav class="contents">
   <h2 id="contents" class="contents-title">目录</h2><ol class="toc">
-    <li><a id="contents:前言" href="#前言">前言</a></li>
-    <li><a id="contents:实现的功能点" href="#实现的功能点">实现的功能点</a></li>
-    <li><a id="contents:cs-请求处理与数据封装" href="#cs-请求处理与数据封装">CS 请求处理与数据封装</a>
-      <ol>
-        <li><a id="contents:心跳包获取指令" href="#心跳包获取指令">心跳包获取指令</a></li>
-        <li><a id="contents:beacon-回传数据" href="#beacon-回传数据">Beacon 回传数据</a></li>
-      </ol>
-    </li>
-    <li><a id="contents:beacon-开发实现" href="#beacon-开发实现">Beacon 开发实现</a>
-      <ol>
-        <li><a id="contents:profile-适配与字符串加密" href="#profile-适配与字符串加密">Profile 适配与字符串加密</a></li>
-        <li><a id="contents:动态url-实现" href="#动态url-实现">动态URL 实现</a></li>
-        <li><a id="contents:防封域名ip-策略与ssl-pinning-实现" href="#防封域名ip-策略与ssl-pinning-实现">防封域名/IP 策略与SSL Pinning 实现</a></li>
-      </ol>
-    </li>
+    <li><a id="contents:edr-常用的回调注册函数" href="#edr-常用的回调注册函数">EDR 常用的回调注册函数</a></li>
+    <li><a id="contents:remove-obregistercallbacks" href="#remove-obregistercallbacks">Remove ObRegisterCallbacks</a></li>
+    <li><a id="contents:remove-cmregistercallback" href="#remove-cmregistercallback">Remove CmRegisterCallback</a></li>
+    <li><a id="contents:remove-minifilter-callback" href="#remove-minifilter-callback">Remove MiniFilter Callback</a></li>
+    <li><a id="contents:remove-three-callback" href="#remove-three-callback">Remove Three Callback</a></li>
+    <li><a id="contents:总结" href="#总结">总结</a></li>
+    <li><a id="contents:参考" href="#参考">参考</a></li>
   </ol>
 </nav><div class="post-body e-content">
-                <h2 id="前言"><a href="#前言" class="anchor-link">#</a><a href="#contents:前言" class="headings">前言</a></h2>
-<p>去年上半年分析过CS 服务端代码，也发过相关的<a href="https://myzxcg.com/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/" target="_blank" rel="noopener">文章
-</a>，之后就一直想根据TeamServer逻辑来重写一个Beacon。</p>
-<p><strong>实现重构Beacon 的目的：</strong></p>
-<ul>
-<li>去除现有CS Beacon 行为上的、流量上的、内存上的特征，使其对被控端来说就像一个新的C2 一样，没有现有C2的特征，但又能集成CS TeamServer 优秀的协同功能。</li>
-<li>更方便做免杀，源码级的免杀处理，能够完全自定义Beacon 行为、流量、按需增强功能。</li>
-</ul>
-<p>在开发Beacon 之前，我对Beacon 最基本要求是：<strong>稳定、无特征、最低支持Win XP/2003、体积小</strong>。在此基础上，我决定采用C 语言编写Beacon，且开发过程中不导入任何第三方外部库，只依赖Win32 API，这样能使Beacon 静态编译仅160kb 左右，并且可在兼容到Win XP/2003。其次，为追求稳定和占用内存小，在编写代码的时候注重内存管理和对失败的逻辑处理。</p>
-<hr>
-<p>去年完成了重构 Beacon 的第一版开发，实现了HTTP/HTTPS 协议上线，进行命令执行、文件上传下载、目录浏览、Sleep 抖动等渗透常用的基础功能。后面紧接着实现了内存解析BOF 文件，适配了二十几种常用的CS BOF。后续经过几次实战项目的使用，也证明了重构Beacon 的稳定和动静态与内存免杀效果。在之后根据实战中遇到的各种问题，对重构的Beacon 增加新了的功能。目前在流量方面上已实现的功能有：<strong>动态URL、SSL Pinning、域名/IP 防封策略</strong>，这些会在后面文章中介绍。</p>
-<h2 id="实现的功能点"><a href="#实现的功能点" class="anchor-link">#</a><a href="#contents:实现的功能点" class="headings">实现的功能点</a></h2>
-<ul>
+                <p>本文于 2023.10.29日首发于微信公众号：北秋风清，欢迎关注。 <a href="https://mp.weixin.qq.com/s/ZMTjDMMdQoOczxzZ7OAGtA" target="_blank" rel="noopener">AV/EDR 完全致盲 - 清除6大内核回调实现</a></p>
+<blockquote>
+<p>本文将介绍如何利用带签名驱动实现完全致盲、或杀死、或永久关闭 AV/EDR。</p>
+</blockquote>
+<p>承接上文，这次继续利用驱动的任意地址写 Bypass PatchGuard 实现：清除注册表通知回调、清除文件系统微驱动过滤器回调、清除对象通知回调、清除线程通知回调、清除Image 加载通知回调、清除进程通知回调，并开源实现代码及工具。</p>
+<p>Github 项目地址：<a href="https://github.com/myzxcg/RealBlindingEDR" target="_blank" rel="noopener">RealBlindingEDR</a>（含演示视频）</p>
+<p><strong>删除内核回调后，最终可实现以下3点效果：</strong></p>
+<ol>
 <li>
-<p>实现的命令：</p>
-<p><code>shell, execute, ls, rm、sleep（抖动）, cd, download, upload, pwd, mkdir, cp, exit, drives</code></p>
+<p><strong>致盲 AV/EDR</strong></p>
+<p>在保持AV/EDR 进程正常运行的情况下，使其无法监控任何进程/线程活动、任何文件落地、注册表删改、高权限句柄获取等众多敏感行为。（不直接Kill 是为了保证EDR 与总控保持通信，避免掉线导致被发现）</p>
 </li>
 <li>
-<p>下面图片显示的所有功能点均已实现：</p>
-<p><img src="/images/16786708353739.jpg" alt=""></p>
+<p><strong>永久关闭或禁用 AV/EDR</strong></p>
+<p>由于删除了注册表和微过滤器内核通知回调，可以修改注册表或直接删除AV/EDR 文件的方式永久关闭AV/EDR（即使系统重启）。</p>
 </li>
 <li>
-<p>内置集成的BOF：</p>
-<p><code>arp, cat, debug_privilege, env, get_clipboard, ipconfig, listdns, netstat, probe, quser, regsave, routeprint, scquery, screenshot_bof, self_delete, smbinfo, syscalls_dump, syscalls_inject, syscalls_shinject, tasklist, wdtoggle, whoami, wifidump, wifienum, windowlist, wmi_query, uptime</code></p>
+<p><strong>Kill AV/EDR 进程</strong></p>
+<p>由于删除了对象句柄通知回调，现在能够以普通管理员用户权限结束AV/EDR 进程。</p>
+</li>
+</ol>
+<h2 id="edr-常用的回调注册函数"><a href="#edr-常用的回调注册函数" class="anchor-link">#</a><a href="#contents:edr-常用的回调注册函数" class="headings">EDR 常用的回调注册函数</a></h2>
+<p>在<a href="http://mp.weixin.qq.com/s?__biz=MzkyNDUzMDEyNw==&amp;mid=2247484294&amp;idx=1&amp;sn=0bc661c95290be5110bed193fd4a883d&amp;chksm=c1d52726f6a2ae30995cf398532284cab0c1b2afdbdd795c7ac4cfa67f1af846d144bd6eb75a&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">白驱动 Kill AV/EDR（上）</a>一文中说到目前EDR 对各项内容的拦截监控都是依赖内核回调机制，下面先说明下EDR 通常会用到的回调注册函数以及清除相应的回调有什么效果。</p>
+<ol>
+<li>
+<p><code>ObRegisterCallbacks()</code></p>
+<p>驱动程序可利用此函数来注册回调函数，可以让驱动在试图打开或者复制特定对象类型的句柄时从内核得到实时通知。删除此回调函数，可以致盲EDR 对获取对象句柄的监控。例如可以拿到EDR 的进程完整句柄，从而可以调试/分析或Kill EDR 进程，屏蔽EDR 对其3环进程的保护。</p>
 </li>
 <li>
-<p>charset 命令或图形化设置Beacon控制台输出内容的编码，解决乱码问题。(如果charset参数为空，则恢复到原始编码)
-<img src="/images/16786708539338.jpg" alt="">
-或图形化设置
-<img src="/images/16786708752087.jpg" alt=""></p>
+<p><code>CmRegisterCallback(Ex)</code></p>
+<p>此注册函数可以让驱动在访问、修改注册表时从内核得到实时通知。如果能删除此回调，可以致盲EDR 对注册表的监控，例如添加正常情况会被拦截的注册表启动项，修改EDR 注册表服务配置从而永久禁用EDR。但是此回调地址受PatchGuard 保护，修改其回调函数地址会触发BSOD，后面会说明如何绕过。</p>
 </li>
-</ul>
-<h2 id="cs-请求处理与数据封装"><a href="#cs-请求处理与数据封装" class="anchor-link">#</a><a href="#contents:cs-请求处理与数据封装" class="headings">CS 请求处理与数据封装</a></h2>
-<p>首先介绍CS 的Team Server 是如何解析Beacon 发来的数据以及如何封装数据向Beacon 发送的（基于HTTP）。这也是后续开发Beacon 的基础依据。</p>
-<h3 id="心跳包获取指令"><a href="#心跳包获取指令" class="anchor-link">#</a><a href="#contents:心跳包获取指令" class="headings">心跳包获取指令</a></h3>
-<p>我们通过在CS 客户端下发指令（如执行命令、删除、上传文件等），TeamServer 会保存客户端发来的指令内容。心跳包就是Beacon 按照Sleep 设置的时间，定时向TeamServer 发起HTTP Get 请求，以获取客户端下发的指令，然后根据指令的内容执行对应的代码。</p>
-<p>首先来分析一下这个心跳包的组成结构：
-<img src="/images/16786709490531.jpg" alt="">
-如上图所示，Beacon 需要收集以上信息，然后使用公钥加密，根据Profile中的配置进行编码，然后在通过Get请求发送到TeamServer。由于这里需要使用公钥加密，所以在做马的时候就需要TeamServer 下的<code>.cobaltstrike.beacon_keys</code> ，这里面保存了TeamServer 启动后生成的公私钥信息。</p>
-<p>其次还需要根据Profile中的配置进行编码，下面是一个Profile Get请求配置的例子：
-<img src="/images/16786710053789.jpg" alt="">
-上图配置下的心跳请求包表现如下图：
-<img src="/images/16786710229399.jpg" alt="">
-TeamServer 在<code>beacon.BeaconC2.process_beacon_metadata()</code>方法中使用私钥对加密内容进行解密，获得机器的各种信息，然后在客户端就可以看到机器上线了。</p>
-<p>如果客户端输入了指令，例如<code>shell whoami</code> ，那么TeamServer 会使用心跳包里的密钥对此指令内容进行AES 加密，并按照Profile中的编码方式对加密的内容进行编码并返回，如上两张图。</p>
-<p>CS 默认的编码方式有：<code>Base64、Mask、Base64Url、NetBIOS、NetBIOSU</code>。后三种是CS 独有的特征，建议不要使用。这四种编码方式可以组合使用。</p>
-<p>Beacon 收到请求后，首先进行解码，然后利用密钥进行AES 解密，解密后的结构如下：</p>
-<p><code>[ 指令类型 + A内容长度 + A内容 ]+..+[ 6指令 + 随机数 ]</code>
-<img src="/images/16786710365757.jpg" alt="">
-以执行<code>shell whoami</code>为例：</p>
-<p>Beacon 会根据指令类型78，判断操作为执行命令，然后调用代码执行whoami 命令。</p>
-<h3 id="beacon-回传数据"><a href="#beacon-回传数据" class="anchor-link">#</a><a href="#contents:beacon-回传数据" class="headings">Beacon 回传数据</a></h3>
-<p>执行完命令后，Beacon 通过POST 请求将执行结果发送给TeamServer，TeamServer 在传给客户端进行展示。</p>
-<p>在发起POST 请求之前，首先会将执行结果进行AES 加密，然后根据Profile 中的配置的编码方式以及数据的放置位置等信息，对POST 请求包进行构造，构造完成后才会进行发送。TeamServer 再按照对应的方式进行解码解密。</p>
-<p>如下图，是一份POST 请求的Profile样例：
-<img src="/images/16786710690869.jpg" alt="">
-如下图，是Beacon 回传的POST 请求包的内容：
-<img src="/images/16786710897653.jpg" alt="">
-数据包组合结构为：<code>编码 {AES 加密[（请求次数）+（响应类型）+（执行结果）]}</code></p>
-<p>TeamServer会根据不同响应类型对执行结果进行不同的处理，对应的处理方法为：<code>beacon.BeaconC2.process_beacon_callback_decrypted()</code></p>
-<p>以上即为Beacon 与TeamServer 进行HTTP 双向通信的流程，不仅仅是命令执行，其他功能（文件操作等等）也都是这样的处理逻辑。</p>
-<h2 id="beacon-开发实现"><a href="#beacon-开发实现" class="anchor-link">#</a><a href="#contents:beacon-开发实现" class="headings">Beacon 开发实现</a></h2>
-<h3 id="profile-适配与字符串加密"><a href="#profile-适配与字符串加密" class="anchor-link">#</a><a href="#contents:profile-适配与字符串加密" class="headings">Profile 适配与字符串加密</a></h3>
-<p>上面分析中发现，Profile中配置了各种编码方式、自定义的请求头、对加密数据的前后字符串拼接等等，在实现Beacon 时需要考虑到这些内容，并且针对不同Profile 都能进行适配。</p>
-<p>如下图是部分请求头的处理逻辑。
-<img src="/images/16786711482812.jpg" alt="">
-<img src="/images/16786711589823.jpg" alt="">
-此外，域名，端口、以及Profile 配置中的各种请求头信息、公钥等敏感信息都是加密保存。加密效果如下图所示：
-<img src="/images/16786711756043.jpg" alt="">
-如果在不同的Profile下手动生成加密字符串，在一个一个替换太麻烦了。这里推荐一个python 库：<code>dissect.cobaltstrike.c2profile</code> ，它可以按照格式读取Profile 中的配置信息，然后写成键值对的形式，这样就可以用python脚本处理这些字符串了，简便了许多。</p>
-<h3 id="动态url-实现"><a href="#动态url-实现" class="anchor-link">#</a><a href="#contents:动态url-实现" class="headings">动态URL 实现</a></h3>
-<p>主要针对可能某些监控场景下会记录对同一个URL 请求的频次或是记录内容、大小始终相同的HTTP/HTTPS包（例如前面说的心跳包）。通过动态URL 能使心跳包每次都变得不同。</p>
-<p><strong>实现原理：</strong></p>
-<p>Beacon 端生成一个随机字符串，长度自定义，然后拼接到URL 中。并在Header 里指定这个随机字符串的长度，以便TeamServer 能够通过长度，截取该字符串，还原最原始的URL。</p>
+<li>
+<p><code>MiniFilter</code>微过滤器驱动</p>
+<p>通过注册文件系统微过滤器驱动程序，可以在创建/修改/删除文件时得到驱动程序得到通知。如果能删除此回调，可以使EDR 无法监控恶意文件落地，并且可以禁用EDR 对其自身文件的保护，从而删除EDR 文件来永久禁用EDR。但是某些回调地址也受PatchGuard 保护，修改某些回调地址时会触发BSOD，后面会说明如何绕过。</p>
+</li>
+<li>
+<p><code>PsSetCreateProcessNotifyRoutine(Ex)</code></p>
+<p>此注册函数可以让驱动在进程被创建或销毁时都能从内核得到实时通知。通过删除此回调函数，可以使致盲EDR 对进程活动的监控，例如使其无法监控进程启动、分析木马进程链关系。</p>
+</li>
+<li>
+<p><code>PsSetCreateThreadNotifyRoutine(Ex)</code></p>
+<p>此注册函数可以让驱动在线程被创建或销毁时都能从内核得到实时通知。删除此回调函数，可以致盲EDR 对线程活动的监控，例如使其无法对远程线程注入进行监控。</p>
+</li>
+<li>
+<p><code>PsSetLoadImageNotifyRoutine(Ex)</code></p>
+<p>此注册函数可以让驱动在任何Image（EXE、DLL、驱动）文件被加载时都能从内核得到实时通知。删除此回调函数，可以致盲EDR 对EXE、DLL、驱动执行加载的监控。</p>
+</li>
+</ol>
+<p>当然还有其他回调，例如网络过滤器驱动用于监控扫描行为（挖个坑，这个后面再开文章分析）。 这次主要分析以上6个回调注册函数的回调清除，达到前面所说的效果。</p>
+<h2 id="remove-obregistercallbacks"><a href="#remove-obregistercallbacks" class="anchor-link">#</a><a href="#contents:remove-obregistercallbacks" class="headings">Remove ObRegisterCallbacks</a></h2>
+<p>之前的文章中介绍了通过<code>ObRegisterCallbacks()</code>注册回调函数，实现对指定进程句柄进行降权，删除了<code>PROCESS_TERMINATE</code> 权限从而实现对该进程的保护。在注册回调函数时是通过<code>OB_OPERATION_REGISTRATION</code> 结构中指定回调函数地址，以及注册的对象类型（进程、线程）等其他信息，最终传给<code>ObRegisterCallbacks()</code>函数。</p>
+<p>其中注册的对象类型：<code>PsProcessType</code>、<code>PsThreadType</code> 为全局内核变量，它俩是<code>OBJECT_TYPE</code> 结构，如下：</p>
 <div class="highlight"><div class="chroma">
 <div class="table-container"><table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -358,58 +329,184 @@ TeamServer 在<code>beacon.BeaconC2.process_beacon_metadata()</code>方法中使
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">//Beacon生成随机字符串
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="n">IsDynamicUrl</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">		<span class="n">DWORD</span> <span class="n">RandomLen</span> <span class="o">=</span> <span class="nf">RandInt</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span> <span class="c1">//随机字符串5-10位
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">CHAR</span><span class="o">*</span> <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="n">CHAR</span><span class="o">*</span><span class="p">)</span><span class="nf">calloc</span><span class="p">(</span><span class="n">RandomLen</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="n">tmp</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">		<span class="nf">RandStr</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">RandomLen</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">		<span class="n">RandomStr</span> <span class="o">=</span> <span class="p">(</span><span class="n">CHAR</span><span class="o">*</span><span class="p">)</span><span class="nf">calloc</span><span class="p">(</span><span class="n">RandomLen</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="n">RandomStr</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">		<span class="nf">memcpy</span><span class="p">(</span><span class="n">RandomStr</span><span class="p">,</span> <span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">		<span class="nf">memcpy</span><span class="p">(</span><span class="n">RandomStr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="nf">strlen</span><span class="p">(</span><span class="n">tmp</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">		<span class="nf">free</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">_OBJECT_TYPE</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"> <span class="n">LIST_ENTRY</span> <span class="n">TypeList</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"> <span class="n">UNICODE_STRING</span> <span class="n">Name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"> <span class="n">VOID</span><span class="o">*</span> <span class="n">DefaultObject</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl"> <span class="n">UCHAR</span> <span class="n">Index</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"> <span class="kt">unsigned</span> <span class="kr">__int32</span> <span class="n">TotalNumberOfObjects</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"> <span class="kt">unsigned</span> <span class="kr">__int32</span> <span class="n">TotalNumberOfHandles</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"> <span class="kt">unsigned</span> <span class="kr">__int32</span> <span class="n">HighWaterNumberOfObjects</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"> <span class="kt">unsigned</span> <span class="kr">__int32</span> <span class="n">HighWaterNumberOfHandles</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"> <span class="n">OBJECT_TYPE_INITIALIZER</span> <span class="n">TypeInfo</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"> <span class="n">EX_PUSH_LOCK</span> <span class="n">TypeLock</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"> <span class="kt">unsigned</span> <span class="kr">__int32</span> <span class="n">Key</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"> <span class="n">LIST_ENTRY</span> <span class="n">CallbackList</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl"><span class="p">}</span><span class="n">OBJECT_TYPE</span><span class="p">,</span> <span class="o">*</span><span class="n">POBJECT_TYPE</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table></div>
 </div>
-</div><p>随后，需要修改TeamServer的<code>cloudstrike.NanoHTTPD.run()</code> 方法，获取对应的Header 头参数中的随机字符串长度，然后截取URL 中对应长度。
-<img src="/images/16786711951912.jpg" alt="">
-实现效果如下，每次心跳请求和POST 请求的URL 都不相同，避免心跳的数据报始终不变。
-<img src="/images/16786712104159.jpg" alt=""></p>
-<h3 id="防封域名ip-策略与ssl-pinning-实现"><a href="#防封域名ip-策略与ssl-pinning-实现" class="anchor-link">#</a><a href="#contents:防封域名ip-策略与ssl-pinning-实现" class="headings">防封域名/IP 策略与SSL Pinning 实现</a></h3>
-<p>实现效果：<strong>使防守方封锁域名无效，且通过一定的IP轮询策略减缓封锁IP带来的影响。</strong></p>
-<p>原理说明：</p>
-<p>这里利用的是CDN的特性，CDN 的转发HTTP/HTTPS 请求的策略是检测Host头里的域名，根据域名转发到CDN 后面的真实服务器。所以可以通过直接请求CDN 的IP，然后在Host里面指定配置的域名，一样可以转发到CDN 后面的C2上线。这样做的好处是，不会发起DNS请求，对抗一部分对域名的封锁。</p>
-<p>但是有的流量检测设备，也会检测HTTP 请求包里的Host 字段，根据Host 字段进行恶意域名的匹配。这样HTTP 的请求就会被检测到，所以进一步，需要通过HTTPS 上线，因为数据包都是加密的。</p>
-<p>在企业环境下，主机联网前都会安装企业的证书到本机的根证书区，就像我们通过BurpSuite 抓取HTTPS数据包的逻辑一样，这种环境下能够解密HTTPS 数据包。所以某些设备又能看到Host 头里的域名，进行封锁。但是可以通过SSL Pinning 来解决这个问题，通过固定CDN 的证书公钥指纹，以此判断是否有人尝试解密HTTPS 数据包，如果有就不往外发正常包，这样就避免被解密。</p>
-<p>CDN 的IP都是很多的，就腾讯云的来说，通过多地ping以及不同的DNS 服务器查询，获取到的有效CDN IP 就有60来个。</p>
-<p>以上的利用需要一定的策略来实现，如CDN IP池的轮询策略，需要根据不同的侧重点考虑情况。</p>
-<hr>
-<p>IP的轮询策略：</p>
-<p>首先，维护一个被Ban的IP池，将请求三次都失败的IP（被封锁）移到被Ban的IP池中，并将其字符串置为&quot;&quot;，这个函数就从CDN_IP 里读取那些不为&quot;&quot;的IP，如果所有的IP都进了被ban的IP池中，就重置CDN_IP，再一次进行轮询。
-<img src="/images/16786712322132.jpg" alt="">
-站在手动分析者视角（从流量分析角度，尽量避免暴露我们在使用很多个IP）</p>
+</div><p><code>OBJECT_TYPE</code>结构的CallbackList 是一个由<code>CALLBACK_ENTRY_ITEM</code> 结构（未记录）组成的双向链表，其结构如下：</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">_CALLBACK_ENTRY_ITEM</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="n">LIST_ENTRY</span> <span class="n">EntryItemList</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">OB_OPERATION</span> <span class="n">Operations</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">CALLBACK_ENTRY</span><span class="o">*</span> <span class="n">CallbackEntry</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl"><span class="n">POBJECT_TYPE</span> <span class="n">ObjectType</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">POB_PRE_OPERATION_CALLBACK</span> <span class="n">PreOperation</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">POB_POST_OPERATION_CALLBACK</span> <span class="n">PostOperation</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">__int64</span> <span class="n">unk</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span><span class="n">CALLBACK_ENTRY_ITEM</span><span class="p">,</span> <span class="o">*</span><span class="n">PCALLBACK_ENTRY_ITEM</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table></div>
+</div>
+</div><p>从上面的结构体可以明显看到，PreOperation 和 PostOperation 分别指向操作前回调函数地址与操作后回调函数地址。</p>
+<p><img src="/images/16985625533048.jpg" alt="">
+如上图，Flink 指向的<code>0xffff8c8589597680</code> 地址就是<code>CALLBACK_ENTRY_ITEM</code> 结构的地址。其中PreOperation 的偏移为<code>0x28</code> ，PostOperation 的偏移为<code>0x30</code> 。后面只需要将PreOperation和PostOperation 指向的地址设置为0即可。</p>
+<p><em><strong>Tips:</strong></em> 上图可以看到CallbackList 的偏移是<code>0xc8</code> ，但仅对于win10和win11。在win7 下它对应的偏移是<code>0xc0</code>。</p>
+<p>那么现在知道了回调函数的位置在哪儿，新的问题是如何通过代码定位<code>PsProcessType</code>和<code>PsThreadType</code> 这两个全局内核变量。</p>
+<p>通过IDA 的交叉引用可以找到调用了<code>PsProcessType</code> 和<code>PsThreadType</code> 的函数，并且还这个函数还需要是<code>ntoskrnl.exe</code> 的导出函数，因为这样我们就可以像上篇文章中删除进程回调那样去获取<code>PsProcessType</code> 和<code>PsThreadType</code> 的地址。</p>
+<p><img src="/images/16985625720862.jpg" alt="">
+通过分析发现<code>NtDuplicateObject()</code>函数中引用了<code>PsProcessType</code> 全局内核变量，而在<code>NtOpenThreadTokenEx()</code> 函数中引用了<code>PsThreadType</code> 全局内核变量。并且这两个函数在win7上也引用了相应的变量，同时也是<code>ntoskrnl.exe</code> 的导出函数。</p>
+<p>这样代码逻辑就通了：首先定位<code>PsProcessType</code> 和<code>PsThreadType</code> 全局内核变量地址，根据偏移获得<code>CALLBACK_ENTRY_ITEM</code> 的双向链表结构，遍历此结构将PreOperation 和PostOperation 指向的地址置0。</p>
+<p>部分代码截图如下，完整代码在文章首页的Github地址。</p>
+<p><img src="/images/16985625931109.jpg" alt=""></p>
+<p>实现效果，如下图：</p>
+<p><img src="/images/16985626035767.jpg" alt="">
+清除回调后，我们现在能以普通管理员用户权限去Kill 某杀软进程了。当然，我们的目的是为了致盲EDR 而不是干掉EDR，这只是删除回调后的的附带效果 — 我们随时能够Kill EDR。之后，杀软无法阻止我们获取任何进程的高权限句柄，也无法监控到我们获取句柄的这个行为。并且配合后面删除线程通知的回调，也能够规避远程线程注入的检测。</p>
+<h2 id="remove-cmregistercallback"><a href="#remove-cmregistercallback" class="anchor-link">#</a><a href="#contents:remove-cmregistercallback" class="headings">Remove CmRegisterCallback</a></h2>
+<p>前面说到，如果能清除注册表通知回调，我们对注册表的任何操作，都无法被监控。同时也能够清除EDR 对其服务注册表的保护，从而永久禁用EDR。</p>
+<p>话不多说下面来看下如何删除注册表回调以及有哪些坑。</p>
+<p><code>CallbackListHead</code> 是一个双向链表，它是一个<code>CMREG_CALLBACK</code> 结构（未记录），里面包含了注册表通知回调函数的地址。其结构如下：</p>
+<div class="highlight"><div class="chroma">
+<div class="table-container"><table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">_CMREG_CALLBACK</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">LIST_ENTRY</span> <span class="n">List</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ULONG</span> <span class="n">Unknown1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ULONG</span> <span class="n">Unknown2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">LARGE_INTEGER</span> <span class="n">Cookie</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">PVOID</span> <span class="n">Unknown3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">PEX_CALLBACK_FUNCTION</span> <span class="n">Function</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">CMREG_CALLBACK</span><span class="p">,</span> <span class="o">*</span><span class="n">PCMREG_CALLBACK</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table></div>
+</div>
+</div><p>可以看到Function指向回调函数的地址，其偏移为<code>0x28</code> 。我们可以在<code>CmUnRegisterCallback()</code>这个<code>ntoskrnl.exe</code>导出函数函数中找到<code>CallbackListHead</code> 地址，并且win7 和win 10+ 都有。</p>
+<p><img src="/images/16985626221048.jpg" alt=""></p>
+<p>这么简单就找到回调函数地址？问题来了，修改回调函数地址直接导致蓝屏 :(</p>
+<p><img src="/images/16985626339460.jpg" alt="">
+由于这个位置受PatchGard保护，那我们就无法像之前的方法一样去清除回调了。后面也尝试将修改<code>LIST_ENTRY</code> 这个链表地址的值为0，但是依旧蓝屏，这里需要想想怎么Bypass PG。</p>
+<p>峰回路转，经过无数次的蓝屏后发现，如果将双向链表的Flink 指向的地址修改为双向链表上已经存在的地址值，那就不会蓝屏，这就有了个思路，直接将第一个<code>CallbackListHead</code> 结构地址（也就是链表头） 指向为最后一个<code>CallbackListHead</code> ，这样就能够清除掉中间的EDR注册的链表。</p>
+<p><em><strong>Tips:</strong></em> 在Github里的代码实现是将下面<code>fffff804</code>7e848490<code> 地址值修改为</code>fffff804<code>7e848490</code> ，一样的效果。</p>
+<p><img src="/images/16985626482828.jpg" alt=""></p>
+<p>清除注册表回调后，这样就能禁用EDR 对其注册表项的保护。后续可以修改AV/EDR 的服务配置，以及注册表中的启动项。</p>
+<p>现在就有权限执行以下命令，可永久关闭某数字杀软，重启后此杀软也不会自动启动。</p>
+<p><em><strong>Tips:</strong></em> 建议仅永久禁用杀毒软件，但EDR 等安全解决方案不建议永久关闭，掉线可能会被管理员发现。</p>
+<p>如下图所示：</p>
+<p><img src="/images/16985626630210.jpg" alt=""></p>
+<h2 id="remove-minifilter-callback"><a href="#remove-minifilter-callback" class="anchor-link">#</a><a href="#contents:remove-minifilter-callback" class="headings">Remove MiniFilter Callback</a></h2>
+<p>EDR 注册了微过滤器驱动程序，能够监控所有落地的文件，并且也能保护其自身或指定的文件不被删除。如果我们能够清除微过滤器的回调，那么这些监控和保护效果自然就消失了。下面来看下EDR 注册的微过滤器驱动程序的回调函数位置。</p>
+<p><img src="/images/16985626893711.jpg" alt=""></p>
+<p>进入CallBackNodes数组，可以看到回调函数地址：</p>
+<p><img src="/images/16985627015765.jpg" alt=""></p>
+<p>这里的回调函数地址，某些可以直接置0，但是有些位置的地址置0之后会触发PatchGuard 保护，所以这里不能直接修改回调函数地址。</p>
+<p>经分析发现，不去修改他的回调函数地址，而是清空CallbackNodes 数组的话则不会触发蓝屏，成功Bypass PathGuard。接下来的问题就是该如何定位到<code>_FLT_INSTANCE</code> 结构？</p>
+<p>还是按照之前的思路，我们先去找一下<code>FLTMGR</code> 中的全局变量。</p>
+<p><img src="/images/16985627132269.jpg" alt=""></p>
+<p>发现有一个名为FrameList 的_FLT_RESOURCE_LIST_HEAD 结构，看看此结构。</p>
+<p><img src="/images/16985627244074.jpg" alt=""></p>
+<p>发现里面又包含一个LIST_ENTRY双向链表结构并且里面的值就是Frame 的地址。继续查看此地址中的值：
+<img src="/images/16985627357619.jpg" alt=""></p>
+<p>发现此地址中的值0xffffb1821f4cf018 - 0x8 就是FLTP_FRAME 的值。继续查看此结构内容：</p>
+<p><img src="/images/16985627485867.jpg" alt=""></p>
+<p>发现Flink 指向的地址减去0x10 就是_FLT_FILTER 的地址。Flink 默认指向的是_FLT_FILTER的PrimaryLink 字段，如下图：</p>
+<p><img src="/images/16985627596976.jpg" alt=""></p>
+<p>至此，我们成功找到了<code>_FLT_FILTER</code>的地址。</p>
+<p>现在，我们应该找一个调用了这个<code>FltGlobals</code> 全局变量的导出函数，那么我们就能以之前的思路来定位到<code>_FLT_FILTER</code> 的地址。</p>
+<p>分析发现<code>FltEnumerateFilters</code> 这个FLTMGR.sys 导出函数中就有指向Frame 的地址，如下图：</p>
+<p><img src="/images/16985627723530.jpg" alt=""></p>
+<p>至此，我们可以完美的用相同思路获取<code>_FLT_FILTER</code> 的地址。但是在代码实现时，有个小坑：获取不能再用loadlibrary 去加载 FLTMGR.sys 来获取句柄计算偏移了，这个函数加载得到的句柄是NULL。后面继续翻MSDN，发现还有个loadlibraryEx这个函数，通过传入<code>DONT_RESOLVE_DLL_REFERENCES</code> ，可以正常加载FLTMGR.sys 模块。</p>
+<p>其实上面分析还没完，还有个问题是该怎么通过<code>_FLT_FILTER</code> 定位<code>_FLT_INSTANCE</code> 结构呢？</p>
+<p><img src="/images/16985627891449.jpg" alt="">
+上面的图是<code>_FLT_FILTER</code> 结构，从名字可以看出这个<code>_FLT_RESOURCE_LIST_HEAD</code> 结构的InstanceList是极有可能保存了<code>_FLT_INSTANCE </code>结构的地址，继续跟下去。
+<img src="/images/16985628239592.jpg" alt=""></p>
+<p>可以看到<code>_FLT_RESOURCE_LIST_HEAD</code> 结构里的rList指向的是<code>_LIST_ENTRY</code> 双向链表。按理说这个地址应该就是<code>_FLT_INSTANCE</code> 结构的地址，但是仔细看这个地址，发现和我们执行<code>!fltkd.filters</code> 的结果对应不上。</p>
+<p>网上查了一下，ReactOS 上的<code>FltUnregisterFilter()</code> 函数处理逻辑给出了答案：（其实和上面PrimaryLink 是一种原因）</p>
+<p><img src="/images/16985628397131.jpg" alt=""></p>
+<p><code>_LIST_ENTRY</code> 中的地址还需要通过<code>CONTAINING_RECORD(CurrentEntry, FLT_INSTANCE, FilterLink);</code> 减去<code>FLT_INSTANCE </code>结构的FilterLink 偏移地址。这下刚好对应了，如下图：</p>
+<p><img src="/images/16985628528510.jpg" alt=""></p>
+<p>后面就简单了，定位CallbackNodes 数组并清空。</p>
+<p><em><strong>最后的但是，清空数组后你会发现还是没权限删除杀软的文件，并且例如mimikatz 这类的恶意文件一落地还是会被检测到！</strong></em>
+<img src="/images/16985628799453.jpg" alt=""></p>
+<p>难道内核调用微过滤器驱动的回调不是遍历<code>FLT_INSTANCE</code>中的<code>CallbackNodes</code> 数组？就上面的实际情况来看很有可能是，但是这个<code>CallbackNodes</code> 不可能一点用也没有吧？毕竟里面保存了回调函数结构的地址。</p>
+<p>一筹莫展之际，看到了一篇文章<a href="https://aviadshamriz.medium.com/part-1-fs-minifilter-hooking-7e743b042a9d" target="_blank" rel="noopener">Part 1: Fs Minifilter Hooking</a>，他通过断点调试发现内核是通过<code>FltpPerformPreCallbacks</code> 函数来调用微过滤器驱动的回调函数的。
+<img src="/images/16985628927841.jpg" alt="">
+上面的反编译代码直观的体现了，内核调用的是volume 中的callbacks列表中的回调函数。</p>
+<p>分析发现在<code>FLTP_FRAME</code> 结构的字段中保存<code>FLT_VOLUMES</code> 结构的地址链表，通过遍历此链表可以获得所有的<code>FLT_VOLUMES</code> 。
+<img src="/images/16985629082529.jpg" alt="">
+接着来看看FLT_VOLUMES 结构。
+<img src="/images/16985629279081.jpg" alt="">
+通过名称我们可以轻松的找到存储回调函数结构（<code>_CALLBACK_NODE</code>）的数组。
+<img src="/images/16985629440646.jpg" alt="">
+每个数组保存了一个<code>_CALLBACK_NODE</code> 结构的双向链表（这个结构中的地址和<code>FLT_INTANCE </code>的callbacknodes 数组中保存的地址相同），我们需要遍历并清除这个链表中的包含EDR 回调的<code>_CALLBACK_NODE</code> 结构。</p>
+<p><img src="/images/16985629657852.jpg" alt="">
+折磨加痛苦的事情又来了，修改Volumes 的callback 数组也会触发PG保护导致蓝屏。想放弃却又不甘心，又经过了无数次蓝屏后，找到了一个办法可以Bypass PG：</p>
+<p>比如数组中的其中一个<code>_LIST_ENTRY</code> 双向链表中，Flink 保存了EDR 注册的<code>_CALLBACK_NODE</code> 结构，下一个Flink 也保存了系统自带的例如FileInfo驱动的<code>_CALLBACK_NODE</code> 结构。我们可以将首地址直接修改为FileInfo驱动的<code>_CALLBACK_NODE</code> 结构地址。这样将EDR 的<code>_CALLBACK_NODE</code> 结构从整个双向链表中摘了出来，且这样不会触发蓝屏。</p>
+<p>注意：只清除EDR 的地址，不要清除系统本身驱动注册的地址，否则会导致系统崩溃。</p>
+<p>实现效果如下，成功删除某数字杀软的主文件：
+<img src="/images/16985629822396.jpg" alt="">
+要想永久禁用的话，还需要去把他的服务进程文件给删了：
+<img src="/images/16985629942771.jpg" alt="">
+注意：要先Kill 对应的进程，然后在删除。（有的EDR 会不断的重启，所以需要先保证进程被Kill 再删除）</p>
+<p>这可比删除注册表直接了当多了:)</p>
+<h2 id="remove-three-callback"><a href="#remove-three-callback" class="anchor-link">#</a><a href="#contents:remove-three-callback" class="headings">Remove Three Callback</a></h2>
+<p>这里将进程通知回调、线程通知回调、Image 加载通知回调放在一起说。因为这三部分寻找思路和代码逻辑基本相同。在上一篇文章<a href="https://mp.weixin.qq.com/s/ToJBxo203tjq8Pcx4Qzpmg" target="_blank" rel="noopener">白驱动 Kill AV/EDR（下）</a>中实现了清除进程通知回调，通过在回调注册函数<code>PsSetCreateProcessNotifyRoutine()</code> 中定位<code>PspCreateProcessNotifyRoutine</code> 数组从而找到了注册了进程回调函数的地址。
+<img src="/images/16985630140075.jpg" alt="">
+线程通知回调函数的地址是通过回调注册函数<code>PsSetCreateThreadNotifyRoutine()</code> 中定位<code>PspCreateProcessNotifyRoutine</code> 数组来获取的。</p>
+<p><img src="/images/16985630319347.jpg" alt="">
+Image 通知回调函数地址是通过回调注册函数PsSetLoadImageNotifyRoutine() 中定位PspLoadImageNotifyRoutine 数组来获取的。
+<img src="/images/16985630448009.jpg" alt=""></p>
+<p>所以代码逻辑基本完全一样，只是寻找的函数不同而已，由于前文已经说过原理了，这里不在多说。剩下的问题是适配win7 和 win10+ ，有些地方略有不同，可以直接参考文章首页的Github地址。</p>
+<p>实现效果：
+<img src="/images/16985630628472.jpg" alt=""></p>
+<h2 id="总结"><a href="#总结" class="anchor-link">#</a><a href="#contents:总结" class="headings">总结</a></h2>
+<p>上面实现Kill EDR、永久关闭EDR 的这些功能都是删除回调后自然而然能实现的附带功能。在实战中，真正重要的是在不Kill 它的情况下，通过删除以上回调使其致盲，这才是高度隐匿的最佳手法。</p>
+<p>近几年，做红队遇到的内网终端基本都有EDR 等类型的终端安全解决方案，我们在R3 层对抗EDR 行为监测也越来越难，让我们有时候不得不唯快论，拼应急/横向速度。未来终端测的AV /EDR 等安全解决方案的主流对抗将逐步迈入R0 时代。</p>
+<p>当然还有一些内核回调的删除，后续在分享给大家吧。</p>
+<p>如果有人有兴趣研究源码的话，你可能会像我一样记住这个图片中的表情 :(</p>
+<p><img src="/images/16985630773355.jpg" alt=""></p>
+<p>欢迎关注我的微信公众号：北秋风清 （新的文章会在公众号上第一时间发布）</p>
+<p><img src="/images/16956037772992.jpg" alt=""></p>
+<h2 id="参考"><a href="#参考" class="anchor-link">#</a><a href="#contents:参考" class="headings">参考</a></h2>
 <ol>
-<li>默认情况下，始终请求一个IP，只有这个IP被Ban了，才会使用下一个。</li>
-<li>分析者Ban了第一个IP，并在观察木马还有没有请求其他IP，然后继续Ban
-<ol>
-<li>如果之前没有一次请求成功，且轮询了1个IP（失败5次）也没有成功，那就睡眠加2分钟（考虑到第一次上线时某些ip已经被Ban的情况，策略不能太严格）</li>
-<li>如果之前有一次请求成功了，且轮询了1个IP也没有成功，那就睡眠加20分钟（考虑到可能当前CDN IP不可用或是目标断网的情况，而不仅是被ban的情况。
-但一般情况下，请求成功过，又开始轮询ip一般都是被Ban或断网的情况，所以时间可以大一些，因为一般情况下是不会进行轮询的）</li>
+<li><a href="https://douggemhax.wordpress.com/2015/05/27/obregistercallbacks-and-countermeasures/" target="_blank" rel="noopener">OBREGISTERCALLBACKS AND COUNTERMEASURES</a></li>
+<li><a href="https://blog.xpnsec.com/anti-debug-openprocess/" target="_blank" rel="noopener">Windows Anti-Debug techniques - OpenProcess filtering</a></li>
+<li><a href="https://medium.com/@matterpreter/mimidrv-in-depth-4d273d19e148" target="_blank" rel="noopener">Mimidrv In Depth: Exploring Mimikatz’s Kernel Driver</a></li>
+<li><a href="https://aviadshamriz.medium.com/part-1-fs-minifilter-hooking-7e743b042a9d" target="_blank" rel="noopener">Part 1: Fs Minifilter Hooking</a></li>
 </ol>
-</li>
-</ol>
-<p>SSL Pinning 实现代码：
-<img src="/images/16786712476419.jpg" alt="">
-这样就限制防守人员的反制策略为以下两点：</p>
-<ol>
-<li>机器关机或断网</li>
-<li>防守人员动态调试上线马，从内存中dump出IP池里的IP，然后通过防火墙等设备对这些IP进行封堵。（耗费时间，也可能对正常流量有影响）</li>
-</ol>
-<p><em><strong>Tips：</strong></em> 通过CDN IP，并指定Host 方式上线。在腾讯云CDN下，要注意一些Header头的大小写问题。腾讯云会将某些Header头转换为小写。</p>
-<p>end.</p>
 
             </div>
 
@@ -423,7 +520,7 @@ TeamServer 在<code>beacon.BeaconC2.process_beacon_metadata()</code>方法中使
                 
                 
                 
-                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2023/03/%E7%BA%AFC%E9%87%8D%E6%9E%84CS-Beacon-%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3%E4%B8%8E%E5%BC%80%E5%8F%91%E5%AE%9E%E7%8E%B0/" target="_blank" rel="noopener">https://myzxcg.com/2023/03/纯C重构CS-Beacon-原理详解与开发实现/</a></li>
+                <li class="copyright-item link"><span class="copyright-item-text">链接</span>：<a href="/2023/10/AV/EDR-%E5%AE%8C%E5%85%A8%E8%87%B4%E7%9B%B2-%E6%B8%85%E9%99%A46%E5%A4%A7%E5%86%85%E6%A0%B8%E5%9B%9E%E8%B0%83%E5%AE%9E%E7%8E%B0/" target="_blank" rel="noopener">https://myzxcg.com/2023/10/AV/EDR-完全致盲-清除6大内核回调实现/</a></li>
             
             <li class="copyright-item license"><span class="copyright-item-text">许可</span>：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></li>
             
@@ -453,11 +550,11 @@ TeamServer 在<code>beacon.BeaconC2.process_beacon_metadata()</code>方法中使
             <ul class="related-list">
                 
                     <li class="related-item">
-                        <a href="/2022/03/Cobalt-Strike-%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90%E4%B8%80/" class="related-link">Cobalt Strike 代码分析(一)</a>
+                        <a href="/2023/10/%E7%99%BD%E9%A9%B1%E5%8A%A8-Kill-AV/EDR%E4%B8%8B/" class="related-link">白驱动 Kill AV/EDR（下）</a>
                     </li>
                 
                     <li class="related-item">
-                        <a href="/2020/12/Cobalt-Strike%E5%8E%BB%E7%89%B9%E5%BE%81%E9%85%8D%E7%BD%AENginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86CDN%E4%B8%8ECloudflare-Worker/" class="related-link">Cobalt Strike去特征：配置Nginx反向代理、CDN与Cloudflare Worker</a>
+                        <a href="/2023/09/%E7%99%BD%E9%A9%B1%E5%8A%A8-Kill-AV/EDR%E4%B8%8A/" class="related-link">白驱动 Kill AV/EDR（上）</a>
                     </li>
                 
             </ul>
@@ -472,7 +569,7 @@ TeamServer 在<code>beacon.BeaconC2.process_beacon_metadata()</code>方法中使
         
     <footer class="minimal-footer">
         
-            <div class="post-tag"><a href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag" class="post-tag-link">#工具</a></div>
+            <div class="post-tag"><a href="/tags/AV/EDR-%E5%AF%B9%E6%8A%97/" rel="tag" class="post-tag-link">#avedr-对抗</a></div>
         
         
         
@@ -495,13 +592,9 @@ TeamServer 在<code>beacon.BeaconC2.process_beacon_metadata()</code>方法中使
     
         <ul class="post-nav">
             
-                <li class="post-nav-prev">
-                    <a href="/2023/09/%E7%99%BD%E9%A9%B1%E5%8A%A8-Kill-AV/EDR%E4%B8%8A/" rel="prev">&lt; 白驱动 Kill AV/EDR（上）</a>
-                </li>
-            
             
                 <li class="post-nav-next">
-                    <a href="/2022/11/Kubernetes-%E5%AE%9E%E9%99%85%E5%88%A9%E7%94%A8%E4%B8%8E%E5%88%86%E6%9E%90/" rel="next">Kubernetes 实际利用与分析 &gt;</a>
+                    <a href="/2023/10/%E7%99%BD%E9%A9%B1%E5%8A%A8-Kill-AV/EDR%E4%B8%8B/" rel="next">白驱动 Kill AV/EDR（下） &gt;</a>
                 </li>
             
         </ul>
